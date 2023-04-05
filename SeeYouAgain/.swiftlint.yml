@@ -1,0 +1,80 @@
+--- # 문서의 시작
+
+# 기본 적용되는 룰에서 사용하지 않는 룰
+disabled_rules:
+  - trailing_whitespace # 후행 공백 (선행 공백과 더불어 필요없다고 미적용이 불필요하다고 생각됨) - 선택 필요
+  - nesting # 중첩
+  - vertical_whitespace # 세로 공백
+  - redundant_optional_initialization # 옵셔널 타입을 nil로 초기화 중복
+  - unused_closure_parameter # 미사용 클로저 파라미터 _ 대체
+  - syntactic_sugar # 간결한 표현 (Array 대신 [Int] 등의 표현)
+  - cyclomatic_complexity # 순환 복잡성
+  - type_body_length # 타입 본문의 행 길이 제한
+  - file_length # 파일 줄 길이 제한
+  - unused_optional_binding # 사용되지 않는 옵셔널 바인딩 제한
+  - function_parameter_count # 파라미터 갯수 제한
+  - function_body_length # 함수 본문의 행 길이 제한
+  - large_tuple # 튜플 인자 수 제한
+  - unused_control_flow_label # 미사용 제어 플로우 제거
+  - trailing_comma # 배열 및 딕셔너리에서 후행 쉼표 조건 (적용 혹은 미적용)
+  - opening_brace # 중괄호 선언 조건 (중괄호 앞 단일 공백 및 선언과 같은 행)
+  - closure_parameter_position # 클로저 매개변수 위치 (중괄호와 같은 행)
+  - for_where # for where 절 선호 (for 문 내 if 사용 대체)
+  - inclusive_language # 포괄적 언어 사용 (인종, 성별, 사회경제적 지위를 나타내는 언어 사용금지)
+  - statement_position # 구문 위치 제한 (else, catch 등이 선언 바로 뒤 한칸 공백 후 위치함) - 선택 필요
+  - todo # TODO, FIXME 주석 제한
+  - private_over_fileprivate # fileprivate보다 private을 선호
+
+# 옵트 인 룰
+opt_in_rules:
+  - indentation_width # 인덴트 룰 적용
+  - closure_end_indentation # 클로저의 끝 괄호를 시작한 행과의 들여쓰기 맞춤
+  - empty_count # count보다 isEmpty 선호
+  - empty_string # == ""보다 isEmpty 선호
+  - sorted_imports # import 시 알파벳 순 정렬
+  - unused_import # 사용되지 않는 모듈 import 알림
+
+# 인덴트 커스텀 정의
+indentation_width:
+  indentation_width: 2
+  include_comments: false
+
+# 타입 네이밍 커스텀 정의
+type_name:
+  min_length:
+    warning: 1
+  max_length:
+    warning: 120
+  allowed_symbols:
+    - _
+
+# 식별자 네이밍 커스텀 정의
+identifier_name:
+  min_length:
+    warning: 0
+    error: 0
+  max_length:
+    warning: 120
+    error: 120
+  allowed_symbols:
+    - $
+    - _
+
+# 콜론 커스텀 정의
+colon:
+  apply_to_dictionaries: false # 딕셔너리에서 콜론이 키 옆에 있어야 하는 룰 미적용
+
+# 행 길이 커스텀 정의
+line_length:
+  ignores_urls: true # URL에 대해 행 길이 제한 미적용
+  ignores_comments: true # 코멘트에 대해 행 길이 제한 미적용
+  ignores_interpolated_strings: true # 보간된 문자열 행 길이 제한 미적용
+
+# 룰 적용 제외할 파일
+excluded:
+  - Project.swift
+  - Derived
+  - template
+  - .tuist-bin
+  - .git
+... # 문서의 끝

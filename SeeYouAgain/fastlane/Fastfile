@@ -1,0 +1,117 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+update_fastlane()
+
+default_platform(:ios)
+
+platform :ios do 
+  desc "Push a new beta build to TestFlight"
+  lane :beta do |options|
+    new_version_number = options[:new_version_number]
+    new_build_number = options[:new_build_number]
+    set_build_info(new_version_number, new_build_number)
+
+    update_and_build_app("Prod")
+    upload_to_testflight(skip_waiting_for_build_processing: true)
+
+    update_and_build_app("Dev")
+    upload_to_testflight(skip_waiting_for_build_processing: true)
+
+    create_tag(new_version_number, new_build_number)
+  end
+
+  desc "Push a new production build to TestFlight"
+  lane :prod do |options|
+    new_version_number = options[:new_version_number]
+    new_build_number = options[:new_build_number]
+    set_build_info(new_version_number, new_build_number)
+
+    update_and_build_app("Prod")
+    upload_to_testflight(skip_waiting_for_build_processing: true)
+
+    create_tag(new_version_number, new_build_number)
+  end
+
+  desc "Push a new dev build to TestFlight"
+  lane :dev do |options|
+    new_version_number = options[:new_version_number]
+    new_build_number = options[:new_build_number]
+    create_tag = options[:create_tag]
+    set_build_info(new_version_number, new_build_number)
+
+    update_and_build_app("Dev")
+    upload_to_testflight(skip_waiting_for_build_processing: true)
+    
+    if create_tag 
+      create_tag(new_version_number, new_build_number)
+    end
+  end
+end
+
+def set_build_info(new_version_number, new_build_number)
+  set_xcconfig_value("MARKETING_VERSION", new_version_number)
+  increment_build_number(
+    xcodeproj: './Projects/App/App.xcodeproj',
+    build_number: new_build_number
+  )
+end
+
+def create_tag(new_version_number, new_build_number)
+  tag_name = "#{new_version_number}-#{new_build_number}"
+  
+  system( `git tag #{tag_name} && git push -u origin "#{tag_name}"` )
+end
+
+def set_xcconfig_value(targetKey, targetValue, xcconfigs_file_path = '../Projects/App/xcconfigs/SeeYouAgain.shared.xcconfig')
+  configs = {}
+ 
+  # read configs
+  File.open(xcconfigs_file_path, "r").each_line do |line|
+    value = line.split("=")
+    configs[value[0]] = value[1].strip
+  end
+
+  # register configs
+  configs[targetKey] = targetValue
+
+  # write configs
+  File.open(xcconfigs_file_path, 'w') do |out_file|
+    configs.each do |key, value|
+      out_file.puts "#{key}=#{value}"
+    end
+  end
+end
+
+def update_and_build_app(scheme = "")
+  case scheme
+  when "Prod"
+    update_app_identifier(
+      xcodeproj: "./Projects/App/App.xcodeproj",
+      plist_path: "Info.plist",
+      app_identifier: "com.mashup.seeYouAgain"
+    )
+  when "Dev"
+    update_app_identifier(
+      xcodeproj: "./Projects/App/App.xcodeproj",
+      plist_path: "Info.plist",
+      app_identifier: "com.mashup.seeYouAgain"
+    )
+  else
+    throw
+  end
+  build_app(
+    workspace: "SeeYouAgain.xcworkspace",
+    scheme: "#{scheme}-Assingment",
+    xcargs: "-allowProvisioningUpdates"
+  )
+end
