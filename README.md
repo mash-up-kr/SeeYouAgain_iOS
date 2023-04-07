@@ -65,4 +65,24 @@
 
     7️⃣ 해당 PR과 관련하여 참고할 사항을 입력해 주세요.
       - 말그대로 테스트입니다!
+      
+4. deploy-local
+  - `grunt deploy-local`을 통해 터미널에서 fastlane 배포를 실행
+  - main branch가 배포됩니다.
+  - 버전 넘버는 지정할 수 있으나 빌드 넘버는 해당 명령어 실행 시각으로 자동화 설정 됩니다. (ex. 1.0.0 - 202304071048)
+  - fastlane 배포 뿐 아니라 릴리즈 커밋을 생성하고 자동 푸쉬합니다.
+  - 아래 스텝에 실행할 수 있습니다. (예시)
+
+    1️⃣ Apple Developer 이메일을 입력해 주세요. (ex. humains@nate.com)
+      - humains@nate.com
+
+    2️⃣ bump type (no, patch, minor, major) 또는 특정 버전(1.1.0)을 입력하세요. / 현재 버전은 1.0.0 입니다.
+      - patch
+
+    3️⃣ git reset --h 명령어가 실행됩니다. 커밋되지 않은 변경사항은 모두 삭제됩니다. (y/n)
+      - y
 ***
+### 배포 가이드
+1. `grunt deploy-local`을 통해 터미널에서 자동 배포
+2. `fastlane beta` or `fastlane dev` or `fastlane prod`를 통해 배포
+3. Xcode에서 직접 아카이빙하여 배포
