@@ -37,8 +37,8 @@ ${notes}
 async function createPullRequest(octokit, title, body, headBranch, baseBranch) {
   try {
     await octokit.rest.pulls.create({
-      owner: "jeongyookgak",
-      repo: "jyg-village-iOS",
+      owner: "mash-up-kr",
+      repo: "SeeYouAgain_iOS",
       title: title,
       body: body,
       head: headBranch,
@@ -51,7 +51,7 @@ async function createPullRequest(octokit, title, body, headBranch, baseBranch) {
 
 async function fetchEnv() {
   const prefix = await question(
-    `\n🙏 PR의 prefix를 입력해 주세요.\n(인프라, 문서, 기능, 버그, 수정, 성능, 리팩터, 스타일, 릴리즈, 제거)\n> `
+    `\n🙏 PR의 prefix를 입력해 주세요.\n(인프라, 문서, 기능, 버그, 수정, 성능, 리팩터, 스타일, 릴리즈, 제거, 테스트)\n> `
   );
 
   const title = await question(`\n🙏 PR의 제목을 입력해 주세요. \n> `);
@@ -62,7 +62,7 @@ async function fetchEnv() {
 
   const taskName = await question(`\n🙏 해당 PR에 해당하는 Task 이름을 입력해 주세요. \n> `);
 
-  const taskURL = await question(`\n🙏 해당 PR에 해당하는 Task URL을 입력해 주세요. (Notion/Asana 가능) \n> `);
+  const taskURL = await question(`\n🙏 해당 PR에 해당하는 참고할 URL을 입력해 주세요. \n> `);
 
   const notes = await question(`\n🙏 해당 PR과 관련하여 참고할 사항을 입력해 주세요. \n> `);
 

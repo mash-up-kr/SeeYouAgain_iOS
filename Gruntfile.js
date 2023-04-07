@@ -1,4 +1,6 @@
 const generateProjectFile = require("./grunt/generate-project-file");
+const onboarding = require("./grunt/onboarding");
+const pr = require("./grunt/pr");
 
 module.exports = function (grunt) {
   grunt.initConfig({
