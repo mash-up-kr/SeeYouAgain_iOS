@@ -58,7 +58,7 @@ async function fetchEnv() {
 
   const headBranch = await question(`\n🙏 head(머지시킬)branch 이름을 입력해 주세요. \n> `);
 
-  const baseBranch = await question(`\n🙏 head(머지당할)branch 이름을 입력해 주세요. \n> `);
+  const baseBranch = await question(`\n🙏 base(머지당할)branch 이름을 입력해 주세요. \n> `);
 
   const taskName = await question(`\n🙏 해당 PR에 해당하는 Task 이름을 입력해 주세요. \n> `);
 

@@ -30,3 +30,28 @@
 - DesignSystem: 앱 내 사용할 폰트, 컬러, 이미지, 아이콘 등의 에셋과 커스텀 뷰 등의 디자인 소스들을 담은 모듈
 - Coordinator: Scene들의 계층을 관리하는 모듈
 - Scene: 각 화면 별 타겟을 분리해 Scene 모듈을 구성하여 App 및 Scene 모듈에서 조합하여 사용 가능한 모듈
+
+### Grunt 명령어 가이드
+1. gp
+  - `grunt gp`를 통해 xcworkspace 파일을 생성
+2. onboarding
+  - `grunt onboarding`을 통해 Personal Access Token을 입력 받아 환경변수에 저장
+  - 추후 깃헙 PR 자동화 등 깃헙 권한에 필요
+3. pr
+  - `grunt pr`을 통해 터미널에서 PR을 보냄
+  - 사전에 Personal Access Token이 필요함으로 최초 `grunt onboarding`을 통해 저장이 필요
+  - 아래 스텝에 따라 PR을 작성할 수 있습니다. (예시)
+    1. PR의 Prefix를 입력해 주세요.
+      - 인프라, 기능, 테스트 등등 키워드 입력
+    2. PR의 제목을 입력해 주세요.
+      - PR 자동화 테스트
+    3. head(머지시킬) branch 이름을 입력해 주세요.
+      - infra/#1 (작업한 branch를 입력합니다.)
+    4. base(머지당할) branch 이름을 입력해 주세요.
+      - main
+    5. 해당 PR에 해당하는 Task 이름을 입력해 주세요.
+      - PR 자동화 기능 추가
+    6. 해당 PR에 해당하는 참고할 URL을 입력해 주세요.
+      - http://green.com
+    7. 해당 PR과 관련하여 참고할 사항을 입력해 주세요.
+      - 말그대로 테스트입니다!
