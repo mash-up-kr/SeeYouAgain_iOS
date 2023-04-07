@@ -40,6 +40,7 @@
 3. pr
   - `grunt pr`을 통해 터미널에서 PR을 보냄
   - 사전에 Personal Access Token이 필요함으로 최초 `grunt onboarding`을 통해 저장이 필요
+  - 해당 명령어 실행 전 꼭 remote에 해당 branch가 push 되어 있어야 합니다.
   - 아래 스텝에 따라 PR을 작성할 수 있습니다. (예시)
     1. PR의 Prefix를 입력해 주세요.
       - 인프라, 기능, 테스트 등등 키워드 입력
