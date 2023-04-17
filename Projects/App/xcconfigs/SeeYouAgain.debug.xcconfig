@@ -1,4 +1,4 @@
 #include "./SeeYouAgain.shared.xcconfig"
 
 ONLY_ACTIVE_ARH=YES
-BUNDLE_NAME=[DEV] 또보겠지
+BUNDLE_NAME=[DEV] 숏스
