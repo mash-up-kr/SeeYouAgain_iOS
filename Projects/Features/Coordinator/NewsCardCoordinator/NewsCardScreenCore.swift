@@ -7,8 +7,8 @@
 //
 
 import ComposableArchitecture
-import Services
 import NewsList
+import Services
 import TCACoordinators
 
 public enum NewsCardScreenState: Equatable {

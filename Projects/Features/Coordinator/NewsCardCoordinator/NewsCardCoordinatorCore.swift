@@ -32,6 +32,7 @@ public enum NewsCardCoordinatorAction: IndexedRouterAction {
 }
 
 public struct NewsCardCoordinatorEnvironment {
+  public init() {}
 }
 
 public let newsCardCoordinatorReducer: Reducer<
@@ -49,4 +50,3 @@ public let newsCardCoordinatorReducer: Reducer<
       }
     }
   )
-

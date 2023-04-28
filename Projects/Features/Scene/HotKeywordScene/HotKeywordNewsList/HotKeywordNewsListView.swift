@@ -23,4 +23,3 @@ public struct HotKeywordNewsListView: View {
     .navigationBarHidden(true)
   }
 }
-

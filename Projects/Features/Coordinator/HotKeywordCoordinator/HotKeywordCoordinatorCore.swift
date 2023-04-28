@@ -18,7 +18,7 @@ public struct HotKeywordCoordinatorState: Equatable, IndexedRouterState {
     routes: [Route<HotKeywordScreenState>] = [
       .root(
         .hotKeyword(.init()),
-        embedInNavigationView: true
+        embedInNavigationView: false
       )
     ]
   ) {
@@ -26,12 +26,13 @@ public struct HotKeywordCoordinatorState: Equatable, IndexedRouterState {
   }
 }
 
-public enum HotKeywordCoordinatorAction: IndexedRouterAction, Equatable {
+public enum HotKeywordCoordinatorAction: IndexedRouterAction {
   case updateRoutes([Route<HotKeywordScreenState>])
   case routeAction(Int, action: HotKeywordScreenAction)
 }
 
 public struct HotKeywordCoordinatorEnvironment {
+  public init() {}
 }
 
 public let hotKeywordCoordinatorReducer: Reducer<
@@ -49,4 +50,3 @@ public let hotKeywordCoordinatorReducer: Reducer<
       }
     }
   )
-

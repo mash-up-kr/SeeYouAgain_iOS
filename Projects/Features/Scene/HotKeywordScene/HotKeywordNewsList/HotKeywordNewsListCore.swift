@@ -35,6 +35,7 @@ public let hotKeywordNewsListReducer = Reducer.combine([
   HotKeywordNewsListEnvironment
   > { state, action, env in
     switch action {
+    default: return .none
     }
   }
 ])

@@ -29,6 +29,7 @@ public enum SplashAction: Equatable {
 }
 
 public struct SplashEnvironment {
+  public init() {}
 }
 
 public let splashReducer = Reducer.combine([

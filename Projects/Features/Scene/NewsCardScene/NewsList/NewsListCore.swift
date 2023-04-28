@@ -31,7 +31,7 @@ public struct NewsListEnvironment {
 public let newsListReducer = Reducer.combine([
   Reducer<NewsListState, NewsListAction, NewsListEnvironment> { state, action, env in
     switch action {
+    default: return .none
     }
   }
 ])
-

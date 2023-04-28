@@ -50,4 +50,3 @@ internal let shortStorageScreenReducer = Reducer<
       }
     ),
 ])
-

@@ -18,7 +18,7 @@ public struct LongStorageCoordinatorState: Equatable, IndexedRouterState {
     routes: [Route<LongStorageScreenState>] = [
       .root(
         .longStorageNewsList(.init()),
-        embedInNavigationView: true
+        embedInNavigationView: false
       )
     ]
   ) {
@@ -32,6 +32,7 @@ public enum LongStorageCoordinatorAction: IndexedRouterAction {
 }
 
 public struct LongStorageCoordinatorEnvironment {
+  public init() {}
 }
 
 public let longStorageCoordinatorReducer: Reducer<
@@ -49,4 +50,3 @@ public let longStorageCoordinatorReducer: Reducer<
       }
     }
   )
-

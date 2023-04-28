@@ -6,8 +6,8 @@
 //  Copyright © 2023 mashup.seeYouAgain. All rights reserved.
 //
 
-import ComposableArchitecture
 import AppCoordinator
+import ComposableArchitecture
 import SwiftUI
 
 struct AppView: View {

@@ -18,7 +18,7 @@ public struct SettingCoordinatorState: Equatable, IndexedRouterState {
     routes: [Route<SettingScreenState>] = [
       .root(
         .setting(.init()),
-        embedInNavigationView: true
+        embedInNavigationView: false
       )
     ]
   ) {
@@ -26,12 +26,13 @@ public struct SettingCoordinatorState: Equatable, IndexedRouterState {
   }
 }
 
-public enum SettingCoordinatorAction: IndexedRouterAction, Equatable {
+public enum SettingCoordinatorAction: IndexedRouterAction {
   case updateRoutes([Route<SettingScreenState>])
   case routeAction(Int, action: SettingScreenAction)
 }
 
 public struct SettingCoordinatorEnvironment {
+  public init() {}
 }
 
 public let settingCoordinatorReducer: Reducer<

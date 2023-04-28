@@ -9,14 +9,14 @@
 import Combine
 import ComposableArchitecture
 import Foundation
-import Main
-import Splash
-import SetCategory
 import HotKeywordCoordinator
-import ShortStorageCoordinator
 import LongStorageCoordinator
+import Main
 import NewsCardCoordinator
+import SetCategory
 import SettingCoordinator
+import ShortStorageCoordinator
+import Splash
 import TCACoordinators
 
 public enum AppScreenState: Equatable {
@@ -75,7 +75,7 @@ internal let appScreenReducer = Reducer<
         MainEnvironment()
       }
     ),
-  hotKeywordReducer
+  hotKeywordCoordinatorReducer
     .pullback(
       state: /AppScreenState.hotKeyword,
       action: /AppScreenAction.hotKeyword,
@@ -83,7 +83,7 @@ internal let appScreenReducer = Reducer<
         HotKeywordCoordinatorEnvironment()
       }
     ),
-  shortStorageReducer
+  shortStorageCoordinatorReducer
     .pullback(
       state: /AppScreenState.shortStorage,
       action: /AppScreenAction.shortStorage,
@@ -91,7 +91,7 @@ internal let appScreenReducer = Reducer<
         ShortStorageCoordinatorEnvironment()
       }
     ),
-  longStorageReducer
+  longStorageCoordinatorReducer
     .pullback(
       state: /AppScreenState.longStorage,
       action: /AppScreenAction.longStorage,
@@ -99,7 +99,7 @@ internal let appScreenReducer = Reducer<
         LongStorageCoordinatorEnvironment()
       }
     ),
-  newsCardReducer
+  newsCardCoordinatorReducer
     .pullback(
       state: /AppScreenState.newsCard,
       action: /AppScreenAction.newsCard,
@@ -107,7 +107,7 @@ internal let appScreenReducer = Reducer<
         NewsCardCoordinatorEnvironment()
       }
     ),
-  settingReducer
+  settingCoordinatorReducer
     .pullback(
       state: /AppScreenState.setting,
       action: /AppScreenAction.setting,

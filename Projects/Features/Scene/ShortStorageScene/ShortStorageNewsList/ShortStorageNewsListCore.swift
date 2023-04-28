@@ -35,7 +35,7 @@ public let shortStorageNewsListReducer = Reducer.combine([
   ShortStorageNewsListEnvironment
   > { state, action, env in
     switch action {
+    default: return .none
     }
   }
 ])
-

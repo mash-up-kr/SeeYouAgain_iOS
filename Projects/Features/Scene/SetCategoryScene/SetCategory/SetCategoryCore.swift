@@ -25,6 +25,7 @@ public enum SetCategoryAction: Equatable {
 }
 
 public struct SetCategoryEnvironment {
+  public init() {}
 }
 
 public let setCategoryReducer = Reducer.combine([

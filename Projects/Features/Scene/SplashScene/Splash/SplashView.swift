@@ -25,4 +25,3 @@ public struct SplashView: View {
     .navigationBarHidden(true)
   }
 }
-

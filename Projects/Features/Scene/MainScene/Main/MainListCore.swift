@@ -19,6 +19,7 @@ public enum MainAction: Equatable {
 }
 
 public struct MainEnvironment {
+  public init() {}
 }
 
 public let mainReducer = Reducer.combine([

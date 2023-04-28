@@ -32,6 +32,7 @@ public enum ShortStorageCoordinatorAction: IndexedRouterAction {
 }
 
 public struct ShortStorageCoordinatorEnvironment {
+  public init() {}
 }
 
 public let shortStorageCoordinatorReducer: Reducer<

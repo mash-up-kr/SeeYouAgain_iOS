@@ -8,14 +8,14 @@
 
 import Combine
 import ComposableArchitecture
-import Main
-import Splash
-import SetCategory
 import HotKeywordCoordinator
-import ShortStorageCoordinator
 import LongStorageCoordinator
+import Main
 import NewsCardCoordinator
+import SetCategory
 import SettingCoordinator
+import ShortStorageCoordinator
+import Splash
 import SwiftUI
 import TCACoordinators
 
