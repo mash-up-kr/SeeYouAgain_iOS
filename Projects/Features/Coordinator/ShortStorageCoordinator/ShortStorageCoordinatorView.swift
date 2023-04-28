@@ -24,13 +24,13 @@ public struct ShortStorageCoordinatorView: View {
       TCARouter(store) { screen in
         SwitchStore(screen) {
           CaseLet(
-            state: /ShortStorageCoordinatorState.shortStorageCardList,
-            action: ShortStorageCoordinatorAction.shortStorageCardList,
+            state: /ShortStorageScreenState.shortStorageCardList,
+            action: ShortStorageScreenAction.shortStorageCardList,
             then: ShortStorageCardListView.init
           )
           CaseLet(
-            state: /ShortStorageCoordinatorState.shortStorageNewsList,
-            action: ShortStorageCoordinatorAction.shortStorageNewsList,
+            state: /ShortStorageScreenState.shortStorageNewsList,
+            action: ShortStorageScreenAction.shortStorageNewsList,
             then: ShortStorageNewsListView.init
           )
         }

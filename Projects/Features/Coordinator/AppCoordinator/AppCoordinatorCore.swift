@@ -14,7 +14,7 @@ import TCACoordinators
 public struct AppCoordinatorState: Equatable, IndexedRouterState {
   public var routes: [Route<AppScreenState>]
 
-  public init(routes: [Route<TestScreenState>] = [.root(.splash(.init()), embedInNavigationView: true)]) {
+  public init(routes: [Route<AppScreenState>] = [.root(.splash(.init()), embedInNavigationView: true)]) {
     self.routes = routes
   }
 }
@@ -33,7 +33,7 @@ public let appCoordinatorReducer: Reducer<
   AppCoordinatorState,
   AppCoordinatorAction,
   AppCoordinatorEnvironment
-> = testScreenReducer
+> = appScreenReducer
   .forEachIndexedRoute(
     environment: { _ in
       AppScreenEnvironment()

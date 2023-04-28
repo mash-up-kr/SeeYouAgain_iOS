@@ -9,7 +9,6 @@
 import ComposableArchitecture
 import DesignSystem
 import SwiftUI
-import Views
 
 public struct SplashView: View {
   private let store: Store<SplashState, SplashAction>

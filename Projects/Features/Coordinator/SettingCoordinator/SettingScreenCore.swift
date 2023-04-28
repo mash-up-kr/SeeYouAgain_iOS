@@ -29,8 +29,8 @@ internal let settingScreenReducer = Reducer<
 >.combine([
   settingReducer
     .pullback(
-      state: /SettingScreenState.home,
-      action: /SettingScreenAction.home,
+      state: /SettingScreenState.setting,
+      action: /SettingScreenAction.setting,
       environment: { _ in
         SettingEnvironment()
       }

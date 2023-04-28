@@ -8,7 +8,6 @@
 
 import ComposableArchitecture
 import SwiftUI
-import Views
 
 public struct SettingView: View {
   private let store: Store<SettingState, SettingAction>
@@ -24,4 +23,3 @@ public struct SettingView: View {
     .navigationBarHidden(true)
   }
 }
-

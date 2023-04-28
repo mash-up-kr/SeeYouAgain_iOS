@@ -8,7 +8,6 @@
 
 import ComposableArchitecture
 import SwiftUI
-import Views
 
 public struct ShortStorageNewsListView: View {
   private let store: Store<ShortStorageNewsListState, ShortStorageNewsListAction>

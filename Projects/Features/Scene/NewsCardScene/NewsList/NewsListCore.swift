@@ -25,6 +25,7 @@ public enum NewsListAction: Equatable {
 }
 
 public struct NewsListEnvironment {
+  public init() {}
 }
 
 public let newsListReducer = Reducer.combine([

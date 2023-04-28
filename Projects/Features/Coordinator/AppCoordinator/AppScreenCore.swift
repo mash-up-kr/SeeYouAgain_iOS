@@ -12,7 +12,7 @@ import Foundation
 import Main
 import Splash
 import SetCategory
-import HotKeywordCoordinator
+import HotKewordCoordinator
 import ShortStorageCoordinator
 import LongStorageCoordinator
 import NewsCardCoordinator

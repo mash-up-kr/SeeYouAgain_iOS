@@ -23,8 +23,8 @@ public struct LongStorageCoordinatorView: View {
       TCARouter(store) { screen in
         SwitchStore(screen) {
           CaseLet(
-            state: /LongStorageCoordinatorState.longStorageNewsList,
-            action: LongStorageCoordinatorAction.longStorageNewsList,
+            state: /LongStorageScreenState.longStorageNewsList,
+            action: LongStorageScreenAction.longStorageNewsList,
             then: LongStorageNewsListView.init
           )
         }

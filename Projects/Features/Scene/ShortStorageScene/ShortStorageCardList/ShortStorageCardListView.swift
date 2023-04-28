@@ -8,7 +8,6 @@
 
 import ComposableArchitecture
 import SwiftUI
-import Views
 
 public struct ShortStorageCardListView: View {
   private let store: Store<ShortStorageCardListState, ShortStorageCardListAction>

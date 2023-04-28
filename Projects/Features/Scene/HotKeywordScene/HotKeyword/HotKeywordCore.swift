@@ -25,6 +25,7 @@ public enum HotKeywordAction: Equatable {
 }
 
 public struct HotKeywordEnvironment {
+  public init() {}
 }
 
 public let hotKeywordReducer = Reducer.combine([

@@ -25,9 +25,10 @@ public enum LongStorageNewsListAction: Equatable {
 }
 
 public struct LongStorageNewsListEnvironment {
+  public init() {}
 }
 
-public let longStorgageNewsListReducer = Reducer.combine([
+public let longStorageNewsListReducer = Reducer.combine([
   Reducer<
   LongStorageNewsListState,
   LongStorageNewsListAction,

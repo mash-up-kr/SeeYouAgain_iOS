@@ -7,7 +7,7 @@
 //
 
 import ComposableArchitecture
-import MainCoordinator
+import AppCoordinator
 import SwiftUI
 
 struct AppView: View {
@@ -19,11 +19,11 @@ struct AppView: View {
   
   var body: some View {
     WithViewStore(store) { viewStore in
-      MainCoordinatorView.init(
+      AppCoordinatorView.init(
         store: .init(
           initialState: .init(),
-          reducer: mainCoordinatorReducer,
-          environment: .init(userService: .unimplemented)
+          reducer: appCoordinatorReducer,
+          environment: .init()
         )
       )
       .onAppear { viewStore.send(.onAppear) }

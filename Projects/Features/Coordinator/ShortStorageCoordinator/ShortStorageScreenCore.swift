@@ -31,7 +31,7 @@ internal struct ShortStorageScreenEnvironment {
 internal let shortStorageScreenReducer = Reducer<
   ShortStorageScreenState,
   ShortStorageScreenAction,
-ShortStorageScreenEnvironment
+  ShortStorageScreenEnvironment
 >.combine([
   shortStorageCardListReducer
     .pullback(

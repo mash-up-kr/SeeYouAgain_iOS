@@ -25,9 +25,10 @@ public enum ShortStorageCardListAction: Equatable {
 }
 
 public struct ShortStorageCardListEnvironment {
+  public init() {}
 }
 
-public let shortStorgageCardListReducer = Reducer.combine([
+public let shortStorageCardListReducer = Reducer.combine([
   Reducer<
   ShortStorageCardListState,
   ShortStorageCardListAction,

@@ -38,7 +38,7 @@ public let hotKeywordCoordinatorReducer: Reducer<
   HotKeywordCoordinatorState,
   HotKeywordCoordinatorAction,
   HotKeywordCoordinatorEnvironment
-> = settingScreenReducer
+> = hotKeywordScreenReducer
   .forEachIndexedRoute(environment: { _ in
     HotKeywordScreenEnvironment()
   })

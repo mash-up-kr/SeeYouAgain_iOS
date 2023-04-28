@@ -18,7 +18,7 @@ public struct ShortStorageCoordinatorState: Equatable, IndexedRouterState {
     routes: [Route<ShortStorageScreenState>] = [
       .root(
         .shortStorageCardList(.init()),
-        embedInNavigationView: true
+        embedInNavigationView: false
       )
     ]
   ) {
@@ -26,7 +26,7 @@ public struct ShortStorageCoordinatorState: Equatable, IndexedRouterState {
   }
 }
 
-public enum ShortStorageCoordinatorAction: IndexedRouterAction, Equatable {
+public enum ShortStorageCoordinatorAction: IndexedRouterAction {
   case updateRoutes([Route<ShortStorageScreenState>])
   case routeAction(Int, action: ShortStorageScreenAction)
 }
@@ -38,7 +38,7 @@ public let shortStorageCoordinatorReducer: Reducer<
   ShortStorageCoordinatorState,
   ShortStorageCoordinatorAction,
   ShortStorageCoordinatorEnvironment
-> = settingScreenReducer
+> = shortStorageScreenReducer
   .forEachIndexedRoute(environment: { _ in
     ShortStorageScreenEnvironment()
   })
@@ -49,4 +49,3 @@ public let shortStorageCoordinatorReducer: Reducer<
       }
     }
   )
-

@@ -23,8 +23,8 @@ public struct NewsCardCoordinatorView: View {
       TCARouter(store) { screen in
         SwitchStore(screen) {
           CaseLet(
-            state: /NewsCardCoordinatorState.newsList,
-            action: NewsCardCoordinatorAction.newsList,
+            state: /NewsCardScreenState.newsList,
+            action: NewsCardScreenAction.newsList,
             then: NewsListView.init
           )
         }

@@ -8,7 +8,6 @@
 
 import ComposableArchitecture
 import SwiftUI
-import Views
 
 public struct LongStorageNewsListView: View {
   private let store: Store<LongStorageNewsListState, LongStorageNewsListAction>

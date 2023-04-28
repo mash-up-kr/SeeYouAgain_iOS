@@ -25,6 +25,7 @@ public enum SettingAction: Equatable {
 }
 
 public struct SettingEnvironment {
+  public init() {}
 }
 
 public let settingReducer = Reducer.combine([

@@ -8,7 +8,6 @@
 
 import ComposableArchitecture
 import SwiftUI
-import Views
 
 public struct SetCategoryView: View {
   private let store: Store<SetCategoryState, SetCategoryAction>

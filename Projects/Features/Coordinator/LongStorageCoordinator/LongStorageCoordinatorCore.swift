@@ -26,7 +26,7 @@ public struct LongStorageCoordinatorState: Equatable, IndexedRouterState {
   }
 }
 
-public enum LongStorageCoordinatorAction: IndexedRouterAction, Equatable {
+public enum LongStorageCoordinatorAction: IndexedRouterAction {
   case updateRoutes([Route<LongStorageScreenState>])
   case routeAction(Int, action: LongStorageScreenAction)
 }
@@ -34,11 +34,11 @@ public enum LongStorageCoordinatorAction: IndexedRouterAction, Equatable {
 public struct LongStorageCoordinatorEnvironment {
 }
 
-public let newsCardCoordinatorReducer: Reducer<
+public let longStorageCoordinatorReducer: Reducer<
   LongStorageCoordinatorState,
   LongStorageCoordinatorAction,
   LongStorageCoordinatorEnvironment
-> = settingScreenReducer
+> = longStorageScreenReducer
   .forEachIndexedRoute(environment: { _ in
     LongStorageScreenEnvironment()
   })

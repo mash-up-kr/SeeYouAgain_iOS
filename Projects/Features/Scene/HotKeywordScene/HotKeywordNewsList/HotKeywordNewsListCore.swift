@@ -25,6 +25,7 @@ public enum HotKeywordNewsListAction: Equatable {
 }
 
 public struct HotKeywordNewsListEnvironment {
+  public init() {}
 }
 
 public let hotKeywordNewsListReducer = Reducer.combine([

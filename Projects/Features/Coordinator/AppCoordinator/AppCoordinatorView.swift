@@ -11,7 +11,7 @@ import ComposableArchitecture
 import Main
 import Splash
 import SetCategory
-import HotKeywordCoordinator
+import HotKewordCoordinator
 import ShortStorageCoordinator
 import LongStorageCoordinator
 import NewsCardCoordinator
@@ -30,43 +30,43 @@ public struct AppCoordinatorView: View {
     TCARouter(store) { screen in
       SwitchStore(screen) {
         CaseLet(
-          state: /AppCoordinatorState.splash,
-          action: AppCoordinatorAction.splash,
+          state: /AppScreenState.splash,
+          action: AppScreenAction.splash,
           then: SplashView.init
         )
         CaseLet(
-          state: /AppCoordinatorState.setCategory,
-          action: AppCoordinatorAction.setCategory,
+          state: /AppScreenState.setCategory,
+          action: AppScreenAction.setCategory,
           then: SetCategoryView.init
         )
         CaseLet(
-          state: /AppCoordinatorState.main,
-          action: AppCoordinatorAction.main,
+          state: /AppScreenState.main,
+          action: AppScreenAction.main,
           then: MainView.init
         )
         CaseLet(
-          state: /AppCoordinatorState.hotKeyword,
-          action: AppCoordinatorAction.hotKeyword,
+          state: /AppScreenState.hotKeyword,
+          action: AppScreenAction.hotKeyword,
           then: HotKeywordCoordinatorView.init
         )
         CaseLet(
-          state: /AppCoordinatorState.shortStorage,
-          action: AppCoordinatorAction.shortStorage,
+          state: /AppScreenState.shortStorage,
+          action: AppScreenAction.shortStorage,
           then: ShortStorageCoordinatorView.init
         )
         CaseLet(
-          state: /AppCoordinatorState.longStorage,
-          action: AppCoordinatorAction.longStorage,
+          state: /AppScreenState.longStorage,
+          action: AppScreenAction.longStorage,
           then: LongStorageCoordinatorView.init
         )
         CaseLet(
-          state: /AppCoordinatorState.newsCard,
-          action: AppCoordinatorAction.newsCard,
+          state: /AppScreenState.newsCard,
+          action: AppScreenAction.newsCard,
           then: NewsCardCoordinatorView.init
         )
         CaseLet(
-          state: /AppCoordinatorState.setting,
-          action: AppCoordinatorAction.setting,
+          state: /AppScreenState.setting,
+          action: AppScreenAction.setting,
           then: SettingCoordinatorView.init
         )
       }

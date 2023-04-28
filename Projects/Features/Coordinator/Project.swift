@@ -14,7 +14,7 @@ let project = Project.make(
         .target(name: "NewsCardCoordinator"),
         .target(name: "ShortStorageCoordinator"),
         .target(name: "LongStorageCoordinator"),
-        .target(name: "HotKewordCoordinator"),
+        .target(name: "HotKeywordCoordinator"),
         .target(name: "SettingCoordinator"),
         .externalsrt("TCA"),
         .externalsrt("TCACoordinators"),
@@ -29,7 +29,7 @@ let project = Project.make(
         .target(name: "NewsCardCoordinator"),
         .target(name: "ShortStorageCoordinator"),
         .target(name: "LongStorageCoordinator"),
-        .target(name: "HotKewordCoordinator"),
+        .target(name: "HotKeywordCoordinator"),
         .target(name: "SettingCoordinator"),
         .project(target: "Splash", path: .relativeToRoot("Projects/Features/Scene")),
         .project(target: "SetCategory", path: .relativeToRoot("Projects/Features/Scene")),
@@ -73,7 +73,7 @@ let project = Project.make(
       ]
     ),
     .make(
-      name: "HotKewordCoordinator",
+      name: "HotKeywordCoordinator",
       product: .staticLibrary,
       bundleId: "com.mashup.seeYouAgain.hotKeyword",
       sources: ["HotKeywordCoordinator/**"],

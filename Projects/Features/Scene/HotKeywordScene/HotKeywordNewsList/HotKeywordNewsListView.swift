@@ -8,7 +8,6 @@
 
 import ComposableArchitecture
 import SwiftUI
-import Views
 
 public struct HotKeywordNewsListView: View {
   private let store: Store<HotKeywordNewsListState, HotKeywordNewsListAction>

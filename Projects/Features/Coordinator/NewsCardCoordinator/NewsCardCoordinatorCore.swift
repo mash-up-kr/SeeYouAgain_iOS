@@ -18,7 +18,7 @@ public struct NewsCardCoordinatorState: Equatable, IndexedRouterState {
     routes: [Route<NewsCardScreenState>] = [
       .root(
         .newsList(.init()),
-        embedInNavigationView: true
+        embedInNavigationView: false
       )
     ]
   ) {
@@ -26,7 +26,7 @@ public struct NewsCardCoordinatorState: Equatable, IndexedRouterState {
   }
 }
 
-public enum NewsCardCoordinatorAction: IndexedRouterAction, Equatable {
+public enum NewsCardCoordinatorAction: IndexedRouterAction {
   case updateRoutes([Route<NewsCardScreenState>])
   case routeAction(Int, action: NewsCardScreenAction)
 }
@@ -38,7 +38,7 @@ public let newsCardCoordinatorReducer: Reducer<
   NewsCardCoordinatorState,
   NewsCardCoordinatorAction,
   NewsCardCoordinatorEnvironment
-> = settingScreenReducer
+> = newsCardScreenReducer
   .forEachIndexedRoute(environment: { _ in
     NewsCardScreenEnvironment()
   })

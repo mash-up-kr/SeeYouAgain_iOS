@@ -25,9 +25,10 @@ public enum ShortStorageNewsListAction: Equatable {
 }
 
 public struct ShortStorageNewsListEnvironment {
+  public init() {}
 }
 
-public let shortStorgageNewsListReducer = Reducer.combine([
+public let shortStorageNewsListReducer = Reducer.combine([
   Reducer<
   ShortStorageNewsListState,
   ShortStorageNewsListAction,
