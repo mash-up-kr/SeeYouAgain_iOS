@@ -35,6 +35,7 @@ public let shortStorageCardListReducer = Reducer.combine([
   ShortStorageCardListEnvironment
   > { state, action, env in
     switch action {
+    default: return .none
     }
   }
 ])

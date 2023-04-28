@@ -31,6 +31,7 @@ public struct SettingEnvironment {
 public let settingReducer = Reducer.combine([
   Reducer<SettingState, SettingAction, SettingEnvironment> { state, action, env in
     switch action {
+    default: return .none
     }
   }
 ])

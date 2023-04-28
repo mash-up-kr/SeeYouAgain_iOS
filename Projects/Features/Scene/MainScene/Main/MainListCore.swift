@@ -25,6 +25,7 @@ public struct MainEnvironment {
 public let mainReducer = Reducer.combine([
   Reducer<MainState, MainAction, MainEnvironment> { state, action, env in
     switch action {
+    default: return .none
     }
   }
 ])

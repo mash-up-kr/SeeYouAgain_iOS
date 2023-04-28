@@ -31,6 +31,7 @@ public struct HotKeywordEnvironment {
 public let hotKeywordReducer = Reducer.combine([
   Reducer<HotKeywordState, HotKeywordAction, HotKeywordEnvironment> { state, action, env in
     switch action {
+    default: return .none
     }
   }
 ])

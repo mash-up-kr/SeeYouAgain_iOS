@@ -35,6 +35,7 @@ public let longStorageNewsListReducer = Reducer.combine([
   LongStorageNewsListEnvironment
   > { state, action, env in
     switch action {
+    default: return .none
     }
   }
 ])

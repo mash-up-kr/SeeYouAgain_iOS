@@ -31,6 +31,7 @@ public struct SetCategoryEnvironment {
 public let setCategoryReducer = Reducer.combine([
   Reducer<SetCategoryState, SetCategoryAction, SetCategoryEnvironment> { state, action, env in
     switch action {
+    default: return .none
     }
   }
 ])
