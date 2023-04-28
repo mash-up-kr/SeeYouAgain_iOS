@@ -1,16 +1,14 @@
 //
 //  SettingView.swift
-//  Setting
+//  Scene
 //
-//  Created by GREEN on 2023/04/05.
+//  Created by GREEN on 2023/04/28.
 //  Copyright © 2023 mashup.seeYouAgain. All rights reserved.
 //
 
-import Common
 import ComposableArchitecture
-import DesignSystem
-import NukeUI
 import SwiftUI
+import Views
 
 public struct SettingView: View {
   private let store: Store<SettingState, SettingAction>
@@ -21,15 +19,9 @@ public struct SettingView: View {
   
   public var body: some View {
     WithViewStore(store) { viewStore in
-      Button(
-        action: {
-          viewStore.send(.backButtonTapped)
-        },
-        label: {
-          Text("홈 화면으로 다시 슝~")
-        }
-      )
+      Text("설정 화면")
     }
     .navigationBarHidden(true)
   }
 }
+

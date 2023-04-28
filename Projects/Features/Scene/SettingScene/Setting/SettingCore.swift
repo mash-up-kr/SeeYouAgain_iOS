@@ -1,34 +1,35 @@
 //
 //  SettingCore.swift
-//  Setting
+//  Scene
 //
-//  Created by GREEN on 2023/04/05.
+//  Created by GREEN on 2023/04/28.
 //  Copyright © 2023 mashup.seeYouAgain. All rights reserved.
 //
 
+import Combine
 import ComposableArchitecture
-import Models
-import SwiftUI
+import Foundation
 
 public struct SettingState: Equatable {
-  
   public init() { }
 }
 
 public enum SettingAction: Equatable {
-  case backButtonTapped
+  // MARK: - User Action
+  
+  // MARK: - Inner Business Action
+  
+  // MARK: - Inner SetState Action
+  
+  // MARK: - Child Action
 }
 
 public struct SettingEnvironment {
-  
-  public init() { }
 }
 
 public let settingReducer = Reducer.combine([
   Reducer<SettingState, SettingAction, SettingEnvironment> { state, action, env in
     switch action {
-    case .backButtonTapped:
-      return .none
     }
   }
 ])
