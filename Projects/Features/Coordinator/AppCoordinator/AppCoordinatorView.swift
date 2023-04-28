@@ -11,7 +11,7 @@ import ComposableArchitecture
 import Main
 import Splash
 import SetCategory
-import HotKewordCoordinator
+import HotKeywordCoordinator
 import ShortStorageCoordinator
 import LongStorageCoordinator
 import NewsCardCoordinator
