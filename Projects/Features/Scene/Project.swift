@@ -92,19 +92,6 @@ let project = Project.make(
       ]
     ),
     .make(
-      name: "LongStorageNewsList",
-      product: .staticLibrary,
-      bundleId: "com.mashup.seeYouAgain.longStorage.longStorageNewsList",
-      sources: ["LongStorageScene/LongStorageNewsList/**"],
-      dependencies: [
-        .project(target: "CoreKit", path: .relativeToRoot("Projects/Core")),
-        .project(target: "DesignSystem", path: .relativeToRoot("Projects/DesignSystem")),
-        .externalsrt("TCA"),
-        .externalsrt("Nuke"),
-        .externalsrt("NukeUI"),
-      ]
-    ),
-    .make(
       name: "HotKeyword",
       product: .staticLibrary,
       bundleId: "com.mashup.seeYouAgain.hotKeyword.hotKeyword",
