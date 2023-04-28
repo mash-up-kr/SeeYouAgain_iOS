@@ -31,6 +31,12 @@
 - Coordinator: Scene들의 계층을 관리하는 모듈
 - Scene: 각 화면 별 타겟을 분리해 Scene 모듈을 구성하여 App 및 Scene 모듈에서 조합하여 사용 가능한 모듈
 ***
+### 프로젝트 구조 설계
+- Coordinator(6): Scene 단위를 관리하는 역할
+- Scene(8): 기능별 같은 주제가 묶인 단위로 하위 단위인 하나의 뷰를 나타내는 View들의 집합
+- View(10): 하위 단위로 실제 하나의 독립된 화면을 구성하는 역할
+![숏스_구조설계](https://user-images.githubusercontent.com/72292617/235046129-44098df3-ebad-4fae-b931-d1fc6ed88458.png)
+***
 ### Grunt 명령어 가이드
 1. gp
   - `grunt gp`를 통해 xcworkspace 파일을 생성
