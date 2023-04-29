@@ -8,8 +8,8 @@ let project = Project.make(
       name: "DesignSystem",
       product: .framework,
       bundleId: "com.mashup.seeYouAgain.designSystem",
-      sources: ["Source/**"],
-      resources: ["Resource//**"],
+      sources: ["Sources/**"],
+      resources: ["Resources/**"],
       dependencies: [
         .project(target: "CoreKit", path: .relativeToRoot("Projects/Core")),
       ]

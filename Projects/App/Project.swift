@@ -9,8 +9,8 @@ let project = Project.make(
       product: .app,
       bundleId: "com.mashup.seeYouAgain",
       infoPlist: .file(path: .relativeToRoot("Projects/App/Info.plist")),
-      sources: ["Source/**"],
-      resources: ["Resource/**"],
+      sources: ["Sources/**"],
+      resources: ["Resources/**"],
       dependencies: [
         .project(target: "CoreKit", path: .relativeToRoot("Projects/Core")),
         .project(target: "DesignSystem", path: .relativeToRoot("Projects/DesignSystem")),
@@ -31,8 +31,8 @@ let project = Project.make(
       product: .app,
       bundleId: "com.mashup.seeYouAgain-dev",
       infoPlist: .file(path: .relativeToRoot("Projects/App/Info.plist")),
-      sources: ["Source/**"],
-      resources: ["Resource/**"],
+      sources: ["Sources/**"],
+      resources: ["Resources/**"],
       dependencies: [
         .project(target: "CoreKit", path: .relativeToRoot("Projects/Core")),
         .project(target: "DesignSystem", path: .relativeToRoot("Projects/DesignSystem")),
