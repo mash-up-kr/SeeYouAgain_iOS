@@ -104,7 +104,7 @@ def update_and_build_app(scheme = "")
     update_app_identifier(
       xcodeproj: "./Projects/App/App.xcodeproj",
       plist_path: "Info.plist",
-      app_identifier: "com.mashup.seeYouAgain-dev"
+      app_identifier: "com.mashup.seeYouAgain.dev"
     )
   else
     throw
