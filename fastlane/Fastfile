@@ -104,14 +104,14 @@ def update_and_build_app(scheme = "")
     update_app_identifier(
       xcodeproj: "./Projects/App/App.xcodeproj",
       plist_path: "Info.plist",
-      app_identifier: "com.mashup.seeYouAgain"
+      app_identifier: "com.mashup.seeYouAgain.dev"
     )
   else
     throw
   end
   build_app(
     workspace: "SeeYouAgain.xcworkspace",
-    scheme: "#{scheme}-Assingment",
+    scheme: "#{scheme}-SeeYouAgain",
     xcargs: "-allowProvisioningUpdates"
   )
 end
