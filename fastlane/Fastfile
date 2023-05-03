@@ -111,7 +111,7 @@ def update_and_build_app(scheme = "")
   end
   build_app(
     workspace: "SeeYouAgain.xcworkspace",
-    scheme: "#{scheme}-Assingment",
+    scheme: "#{scheme}-SeeYouAgain",
     xcargs: "-allowProvisioningUpdates"
   )
 end
