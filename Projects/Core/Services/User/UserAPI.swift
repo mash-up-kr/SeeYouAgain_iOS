@@ -13,15 +13,15 @@ public enum UserAPI {
   case getUser
 }
 
-extension UserAPI: Router {
+extension UserAPI: TargetType {
   public var baseURL: URL {
-    return URL(string: "API도메인주소")!
+    return URL(string: "https://jsonplaceholder.typicode.com")!
   }
   
   public var path: String {
     switch self {
     case .getUser:
-      return "경로주소"
+      return "/users"
     }
   }
   
@@ -35,11 +35,21 @@ extension UserAPI: Router {
   public var task: Task {
     switch self {
     case .getUser:
-      return .requestPlain
+      return .requestParameters(parameters: ["id": "1"], encoding: URLEncoding.queryString)
     }
   }
   
   public var headers: [String: String]? {
-    return ["Content-type": "application/json"]
+    switch self {
+    case .getUser:
+      return ["Content-Type": "application/json"]
+    }
+  }
+  
+  public var sampleData: Data {
+    switch self {
+    case .getUser:
+      return Data()
+    }
   }
 }

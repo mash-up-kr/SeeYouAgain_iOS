@@ -10,8 +10,13 @@ import Foundation
 import UIKit
 
 public struct UserDTO: Decodable, Equatable {
+  public var id: Int
+  public var name: String
   
-  public init() { }
+  public init() {
+    self.id = 1
+    self.name = "Leanne Graham"
+  }
 }
 
 #if DEBUG
