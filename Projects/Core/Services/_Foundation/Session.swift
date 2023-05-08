@@ -12,14 +12,11 @@ import Foundation
 public final class Session {
   public static let shared = Session()
   
-  public let AFSession: Alamofire.Session
+  public let session: Alamofire.Session
   
   private init() {
     let configuration = URLSessionConfiguration.af.default
-    configuration.timeoutIntervalForRequest = 10
-    configuration.timeoutIntervalForResource = 10
-    
     let logger = NetworkEventLogger()
-    AFSession = Alamofire.Session(configuration: configuration, eventMonitors: [logger])
+    session = Alamofire.Session(configuration: configuration, eventMonitors: [logger])
   }
 }
