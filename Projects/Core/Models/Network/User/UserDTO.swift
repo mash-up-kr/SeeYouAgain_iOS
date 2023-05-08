@@ -7,20 +7,14 @@
 //
 
 import Foundation
-import UIKit
 
 public struct UserDTO: Decodable, Equatable {
   public var id: Int
   public var name: String
-  
-  public init() {
-    self.id = 1
-    self.name = "Leanne Graham"
-  }
 }
 
 #if DEBUG
 public extension UserDTO {
-  static let stub = UserDTO.init()
+  static let stub = UserDTO.init(id: 1, name: "Leanne Graham")
 }
 #endif
