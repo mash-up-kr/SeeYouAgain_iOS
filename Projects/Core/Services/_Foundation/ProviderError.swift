@@ -11,8 +11,8 @@ import Common
 import Foundation
 
 public struct ProviderError: SeeYouAgainError {
-  public var userInfo: [String: Any]?
   public var code: Code
+  public var userInfo: [String: Any]?
   public var underlying: Error?
   public var errorBody: ResponseDTO.Common?
   
