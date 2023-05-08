@@ -21,10 +21,11 @@ module.exports = async function deployLocal() {
 async function setBuildInfo(newVersionNumber, newBuildNumber) {
   const { execa } = await import("execa");
   const configFilePath = "./Projects/App/xcconfigs/SeeYouAgain.shared.xcconfig";
+  const xcodeProjPath = "./Projects/App/App.xcodeproj"
 
   _setXCConfigValue("MARKETING_VERSION", newVersionNumber, configFilePath);
 
-  await execa("bundle", ["exec", "fastlane", "run", "increment_build_number", `build_number:${newBuildNumber}`], {
+  await execa("bundle", ["exec", "fastlane", "run", "increment_build_number", `build_number:${newBuildNumber}`, `xcodeproj:${xcodeProjPath}`], {
     stdio: "inherit",
   });
 }
@@ -32,6 +33,7 @@ async function setBuildInfo(newVersionNumber, newBuildNumber) {
 function createReleaseCommit(newVersionNumber, newBuildNumber) {
   const configFilePath = "./Projects/App/xcconfigs/SeeYouAgain.shared.xcconfig";
   const commitMessage = `:bookmark: v${newVersionNumber}-${newBuildNumber}`;
+  const infoPlistFilePath = "./Projects/App/Info.plist"
 
   if (shell.exec(`git add ${infoPlistFilePath} ${configFilePath} && git commit -m "${commitMessage}" && git push`).code > 0) {
     shell.echo("❌ 'createReleaseCommit' failed");
