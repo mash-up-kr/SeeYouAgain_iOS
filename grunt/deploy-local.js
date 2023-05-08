@@ -100,7 +100,7 @@ async function checkoutBranch(newVersionNumber, newBuildNumber) {
   shell.echo("✅ 'git fetch' 완료\n");
 
   shell.echo("🌀 'git checkout main' 실행중");
-  await execa("git", ["checkout", "develop"]);
+  await execa("git", ["checkout", "main"]);
   shell.echo("✅ 'git checkout main' 완료\n");
 
   await execa("git", ["pull"]);
