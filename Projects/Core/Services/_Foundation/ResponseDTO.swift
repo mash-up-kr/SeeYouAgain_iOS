@@ -15,9 +15,9 @@ public enum ResponseDTO {
     public let data: ResponseType
     
     enum CodingKeys: String, CodingKey {
-      case data
       case statusCode = "status_code"
       case message
+      case data
     }
   }
   
@@ -35,9 +35,9 @@ public enum ResponseDTO {
 extension ResponseDTO.ExistData: Decodable where ResponseType: Decodable {
   public init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
-    data = try container.decode(ResponseType.self, forKey: .data)
     statusCode = try container.decode(Int.self, forKey: .statusCode)
     message = try container.decode(String.self, forKey: .message)
+    data = try container.decode(ResponseType.self, forKey: .data)
   }
 }
 
