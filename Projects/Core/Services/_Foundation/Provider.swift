@@ -11,16 +11,14 @@ import Combine
 import Foundation
 
 public struct Provider<Target: TargetType> {
-  
-  private let AFSession: Alamofire.Session
-  
+  private let session: Alamofire.Session
   private let stubBehavior: StubBehavior
   
   public init(
-    AFSession: Alamofire.Session = Session.shared.AFSession,
+    session: Alamofire.Session = Session.shared.session,
     stubBehavior: StubBehavior = .never
   ) {
-    self.AFSession = AFSession
+    self.session = session
     self.stubBehavior = stubBehavior
   }
   
@@ -35,10 +33,10 @@ public struct Provider<Target: TargetType> {
 }
 
 // MARK: Private Request Methods
-extension Provider {
-  private func requestObject<T: Decodable>(_ target: TargetType, type: T.Type) -> Future<T, Error> {
+private extension Provider {
+  func requestObject<T: Decodable>(_ target: TargetType, type: T.Type) -> Future<T, Error> {
     return Future { promise in
-      self.AFSession.request(target).responseData { response in
+      self.session.request(target).responseData { response in
         switch response.result {
         case .success(let value):
           guard let statusCode = response.response?.statusCode else { return }
@@ -49,11 +47,19 @@ extension Provider {
               let data = try JSONDecoder().decode(ResponseDTO.ExistData<T>.self, from: value)
               promise(.success(data.data))
             } catch {
-              let error = ProviderError(code: .failedDecode, userInfo: ["target" : target], response: response)
+              let error = ProviderError(
+                code: .failedDecode,
+                userInfo: ["target" : target],
+                response: response
+              )
               promise(.failure(error))
             }
           } else {
-            let error = ProviderError(code: .isNotSuccessful, userInfo: ["target": target], response: response)
+            let error = ProviderError(
+              code: .isNotSuccessful,
+              userInfo: ["target": target],
+              response: response
+            )
             promise(.failure(error))
           }
           
@@ -70,7 +76,7 @@ extension Provider {
     }
   }
   
-  private func requestStub<T: Decodable>(_ target: TargetType, type: T.Type) -> Future<T, Error> {
+  func requestStub<T: Decodable>(_ target: TargetType, type: T.Type) -> Future<T, Error> {
     return Future { promise in
       switch stubBehavior {
       case .never:
@@ -90,7 +96,6 @@ extension Provider {
 public enum StubBehavior {
   /// Do not stub.
   case never
-  
   /// Return a response immediately.
   case immediate
 }
