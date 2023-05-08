@@ -10,25 +10,21 @@ import Alamofire
 import Foundation
 
 public protocol TargetType: URLRequestConvertible {
-  
   /// The target's base `URL`.
   var baseURL: URL { get }
-  
   /// The HTTP method used in the request.
   var method: HTTPMethod { get }
-  
   /// The path to be appended to `baseURL` to form the full `URL`.
   var path: String { get }
-  
-  /// The headers to be used in the request.
-  var headers: [String: String]? { get }
-  
   /// Parameters that belongs to the Http header or body. Default is `requestPlain`.
   var task: Task { get }
-  
 }
 
 public extension TargetType {
+  /// Default is `["Content-Type": "application/json"]`
+  var headers: [String: String]? {
+    return ["Content-Type": "application/json"]
+  }
   /// Provides stub data for use in testing. Default is `Data()`.
   var sampleData: Data {
     return Data()
@@ -36,7 +32,6 @@ public extension TargetType {
 }
 
 extension TargetType {
-  
   /// Creats a `URLRequest` with the specified `path`, `method`, `header`, `parameters`
   /// or throws if an `Error` was encountered.
   ///
@@ -51,7 +46,6 @@ extension TargetType {
     urlRequest = try addParameter(to: urlRequest)
     return urlRequest
   }
-  
   /// Add `parameters` to `URLRequest` depending on parameters type.
   ///
   /// - Parameters:
@@ -64,12 +58,18 @@ extension TargetType {
     case .requestPlain:
       break
       
+    case let .requestJSONEncodable(parameters):
+      request.httpBody = try JSONEncoder().encode(parameters)
+      
+    case let .requestCustomJSONEncodable(parameters, encoder):
+      request.httpBody = try encoder.encode(parameters)
+      
     case let .requestParameters(parameters, encoding):
       request = try encoding.encode(request, with: parameters)
       
     case let .requestCompositeParameters(query, body):
-      request = try URLEncoding.queryString.encode(request, with: query)
-      request = try JSONEncoding.default.encode(request, with: body)
+      request = try EncodingType.queryString.encode(request, with: query)
+      request = try EncodingType.jsonBody.encode(request, with: body)
     }
     
     return request
@@ -77,7 +77,6 @@ extension TargetType {
 }
 
 fileprivate extension URL {
-  
   /// Initialize URL from `TargetType`.
   init<T: TargetType>(target: T) {
     let targetPath = target.path

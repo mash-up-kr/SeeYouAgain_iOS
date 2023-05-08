@@ -35,7 +35,7 @@ extension UserAPI: TargetType {
   public var task: Task {
     switch self {
     case .getUser:
-      return .requestParameters(parameters: ["id": "1"], encoding: URLEncoding.queryString)
+      return .requestParameters(parameters: ["id": "1"], encoding: .queryString)
     }
   }
   
