@@ -9,10 +9,7 @@ let project = Project.make(
       product: .framework,
       bundleId: "com.mashup.seeYouAgain.designSystem",
       sources: ["Sources/**"],
-      resources: ["Resources/**"],
-      dependencies: [
-        .project(target: "CoreKit", path: .relativeToRoot("Projects/Core")),
-      ]
+      resources: ["Resources/**"]
     )
   ],
   resourceSynthesizers: [

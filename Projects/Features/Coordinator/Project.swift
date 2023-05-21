@@ -5,24 +5,6 @@ let project = Project.make(
   name: "Coordinator",
   targets: [
     .make(
-      name: "CoordinatorKit",
-      product: .staticLibrary,
-      bundleId: "com.mashup.seeYouAgain.coordinatorKit",
-      sources: ["CoordinatorKit/**"],
-      dependencies: [
-        .target(name: "AppCoordinator"),
-        .target(name: "TabBarCoordinator"),
-        .target(name: "MainCoordinator"),
-        .target(name: "NewsCardCoordinator"),
-        .target(name: "ShortStorageCoordinator"),
-        .target(name: "LongStorageCoordinator"),
-        .target(name: "HotKeywordCoordinator"),
-        .target(name: "SettingCoordinator"),
-        .externalsrt("TCA"),
-        .externalsrt("TCACoordinators"),
-      ]
-    ),
-    .make(
       name: "AppCoordinator",
       product: .staticLibrary,
       bundleId: "com.mashup.seeYouAgain.appCoordinator",

@@ -14,7 +14,7 @@ let project = Project.make(
       dependencies: [
         .project(target: "CoreKit", path: .relativeToRoot("Projects/Core")),
         .project(target: "DesignSystem", path: .relativeToRoot("Projects/DesignSystem")),
-        .project(target: "CoordinatorKit", path: .relativeToRoot("Projects/Features/Coordinator")),
+        .project(target: "AppCoordinator", path: .relativeToRoot("Projects/Features/Coordinator")),
         .externalsrt("TCA"),
       ],
       settings: .settings(
@@ -36,7 +36,7 @@ let project = Project.make(
       dependencies: [
         .project(target: "CoreKit", path: .relativeToRoot("Projects/Core")),
         .project(target: "DesignSystem", path: .relativeToRoot("Projects/DesignSystem")),
-        .project(target: "CoordinatorKit", path: .relativeToRoot("Projects/Features/Coordinator")),
+        .project(target: "AppCoordinator", path: .relativeToRoot("Projects/Features/Coordinator")),
         .externalsrt("TCA"),
       ],
       settings: .settings(
