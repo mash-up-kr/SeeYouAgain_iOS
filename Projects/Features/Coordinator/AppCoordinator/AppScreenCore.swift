@@ -9,9 +9,7 @@
 import Combine
 import ComposableArchitecture
 import Foundation
-import HotKeywordCoordinator
 import LongStorageCoordinator
-import Main
 import NewsCardCoordinator
 import SetCategory
 import SettingCoordinator
@@ -24,7 +22,6 @@ public enum AppScreenState: Equatable {
   case splash(SplashState)
   case setCategory(SetCategoryState)
   case tabBar(TabBarCoordinatorState)
-  case main(MainState)
   case shortStorage(ShortStorageCoordinatorState)
   case longStorage(LongStorageCoordinatorState)
   case newsCard(NewsCardCoordinatorState)
@@ -35,7 +32,6 @@ public enum AppScreenAction {
   case splash(SplashAction)
   case setCategory(SetCategoryAction)
   case tabBar(TabBarCoordinatorAction)
-  case main(MainAction)
   case shortStorage(ShortStorageCoordinatorAction)
   case longStorage(LongStorageCoordinatorAction)
   case newsCard(NewsCardCoordinatorAction)
@@ -74,14 +70,6 @@ internal let appScreenReducer = Reducer<
       action: /AppScreenAction.tabBar,
       environment: { _ in
         TabBarCoordinatorEnvironment()
-      }
-    ),
-  mainReducer
-    .pullback(
-      state: /AppScreenState.main,
-      action: /AppScreenAction.main,
-      environment: { _ in
-        MainEnvironment()
       }
     ),
   shortStorageCoordinatorReducer

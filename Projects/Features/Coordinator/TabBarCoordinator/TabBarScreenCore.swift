@@ -9,12 +9,15 @@
 import Combine
 import ComposableArchitecture
 import HotKeywordCoordinator
+import MainCoordinator
 
 public enum TabBarScreenState: Equatable {
+  case main(MainCoordinatorState)
   case hotKeyword(HotKeywordCoordinatorState)
 }
 
 public enum TabBarScreenAction {
+  case main(MainCoordinatorAction)
   case hotKeyword(HotKeywordCoordinatorAction)
 }
 
@@ -27,6 +30,14 @@ internal let tabBarScreenReducer = Reducer<
   TabBarScreenAction,
   TabBarScreenEnvironment
 >.combine([
+  mainCoordinatorReducer
+    .pullback(
+      state: /TabBarScreenState.main,
+      action: /TabBarScreenAction.main,
+      environment: { _ in
+        MainCoordinatorEnvironment()
+      }
+    ),
   hotKeywordCoordinatorReducer
     .pullback(
       state: /TabBarScreenState.hotKeyword,

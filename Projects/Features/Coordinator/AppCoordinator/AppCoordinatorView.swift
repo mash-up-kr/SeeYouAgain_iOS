@@ -9,7 +9,6 @@
 import Combine
 import ComposableArchitecture
 import LongStorageCoordinator
-import Main
 import NewsCardCoordinator
 import SetCategory
 import SettingCoordinator
@@ -43,11 +42,6 @@ public struct AppCoordinatorView: View {
           state: /AppScreenState.tabBar,
           action: AppScreenAction.tabBar,
           then: TabBarCoordinatorView.init
-        )
-        CaseLet(
-          state: /AppScreenState.main,
-          action: AppScreenAction.main,
-          then: MainView.init
         )
         CaseLet(
           state: /AppScreenState.shortStorage,

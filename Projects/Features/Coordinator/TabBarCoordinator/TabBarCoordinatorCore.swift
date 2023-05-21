@@ -8,12 +8,13 @@
 
 import Combine
 import ComposableArchitecture
+import MainCoordinator
 import TCACoordinators
 
 public struct TabBarCoordinatorState: Equatable, IndexedRouterState {
   public var routes: [Route<TabBarScreenState>]
   
-  public init(routes: [Route<TabBarScreenState>] = [.root(.hotKeyword(.init()), embedInNavigationView: true)]) {
+  public init(routes: [Route<TabBarScreenState>] = [.root(.main(.init()), embedInNavigationView: true)]) {
     self.routes = routes
   }
 }

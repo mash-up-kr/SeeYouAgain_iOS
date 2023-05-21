@@ -9,6 +9,7 @@
 import Combine
 import ComposableArchitecture
 import HotKeywordCoordinator
+import MainCoordinator
 import SwiftUI
 import TCACoordinators
 
@@ -22,6 +23,11 @@ public struct TabBarCoordinatorView: View {
   public var body: some View {
     TCARouter(store) { screen in
       SwitchStore(screen) {
+        CaseLet(
+          state: /TabBarScreenState.main,
+          action: TabBarScreenAction.main,
+          then: MainCoordinatorView.init
+        )
         CaseLet(
           state: /TabBarScreenState.hotKeyword,
           action: TabBarScreenAction.hotKeyword,
