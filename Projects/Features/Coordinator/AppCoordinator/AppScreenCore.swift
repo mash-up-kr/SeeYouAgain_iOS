@@ -17,13 +17,14 @@ import SetCategory
 import SettingCoordinator
 import ShortStorageCoordinator
 import Splash
+import TabBarCoordinator
 import TCACoordinators
 
 public enum AppScreenState: Equatable {
   case splash(SplashState)
   case setCategory(SetCategoryState)
+  case tabBar(TabBarCoordinatorState)
   case main(MainState)
-  case hotKeyword(HotKeywordCoordinatorState)
   case shortStorage(ShortStorageCoordinatorState)
   case longStorage(LongStorageCoordinatorState)
   case newsCard(NewsCardCoordinatorState)
@@ -33,8 +34,8 @@ public enum AppScreenState: Equatable {
 public enum AppScreenAction {
   case splash(SplashAction)
   case setCategory(SetCategoryAction)
+  case tabBar(TabBarCoordinatorAction)
   case main(MainAction)
-  case hotKeyword(HotKeywordCoordinatorAction)
   case shortStorage(ShortStorageCoordinatorAction)
   case longStorage(LongStorageCoordinatorAction)
   case newsCard(NewsCardCoordinatorAction)
@@ -67,20 +68,20 @@ internal let appScreenReducer = Reducer<
         SetCategoryEnvironment()
       }
     ),
+  tabBarCoordinatorReducer
+    .pullback(
+      state: /AppScreenState.tabBar,
+      action: /AppScreenAction.tabBar,
+      environment: { _ in
+        TabBarCoordinatorEnvironment()
+      }
+    ),
   mainReducer
     .pullback(
       state: /AppScreenState.main,
       action: /AppScreenAction.main,
       environment: { _ in
         MainEnvironment()
-      }
-    ),
-  hotKeywordCoordinatorReducer
-    .pullback(
-      state: /AppScreenState.hotKeyword,
-      action: /AppScreenAction.hotKeyword,
-      environment: { _ in
-        HotKeywordCoordinatorEnvironment()
       }
     ),
   shortStorageCoordinatorReducer

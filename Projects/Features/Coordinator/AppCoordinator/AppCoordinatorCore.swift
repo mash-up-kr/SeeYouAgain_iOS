@@ -8,7 +8,7 @@
 
 import Combine
 import ComposableArchitecture
-import Foundation
+import Splash
 import TCACoordinators
 
 public struct AppCoordinatorState: Equatable, IndexedRouterState {

@@ -11,6 +11,7 @@ let project = Project.make(
       sources: ["CoordinatorKit/**"],
       dependencies: [
         .target(name: "AppCoordinator"),
+        .target(name: "TabBarCoordinator"),
         .target(name: "NewsCardCoordinator"),
         .target(name: "ShortStorageCoordinator"),
         .target(name: "LongStorageCoordinator"),
@@ -26,6 +27,7 @@ let project = Project.make(
       bundleId: "com.mashup.seeYouAgain.appCoordinator",
       sources: ["AppCoordinator/**"],
       dependencies: [
+        .target(name: "TabBarCoordinator"),
         .target(name: "NewsCardCoordinator"),
         .target(name: "ShortStorageCoordinator"),
         .target(name: "LongStorageCoordinator"),
@@ -34,6 +36,17 @@ let project = Project.make(
         .project(target: "Splash", path: .relativeToRoot("Projects/Features/Scene")),
         .project(target: "SetCategory", path: .relativeToRoot("Projects/Features/Scene")),
         .project(target: "Main", path: .relativeToRoot("Projects/Features/Scene")),
+        .externalsrt("TCA"),
+        .externalsrt("TCACoordinators"),
+      ]
+    ),
+    .make(
+      name: "TabBarCoordinator",
+      product: .staticLibrary,
+      bundleId: "com.mashup.seeYouAgain.tabBarCoordinator",
+      sources: ["TabBarCoordinator/**"],
+      dependencies: [
+        .project(target: "TabBar", path: .relativeToRoot("Projects/Features/Scene")),
         .externalsrt("TCA"),
         .externalsrt("TCACoordinators"),
       ]

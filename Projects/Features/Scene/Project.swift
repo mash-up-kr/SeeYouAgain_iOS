@@ -40,6 +40,19 @@ let project = Project.make(
       ]
     ),
     .make(
+      name: "TabBar",
+      product: .staticLibrary,
+      bundleId: "com.mashup.seeYouAgain.tabBar.tabBar",
+      sources: ["TabBarScene/TabBar/**"],
+      dependencies: [
+        .project(target: "CoreKit", path: .relativeToRoot("Projects/Core")),
+        .project(target: "DesignSystem", path: .relativeToRoot("Projects/DesignSystem")),
+        .externalsrt("TCA"),
+        .externalsrt("Nuke"),
+        .externalsrt("NukeUI"),
+      ]
+    ),
+    .make(
       name: "NewsList",
       product: .staticLibrary,
       bundleId: "com.mashup.seeYouAgain.newsCard.newsList",
