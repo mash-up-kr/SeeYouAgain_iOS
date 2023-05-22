@@ -27,7 +27,7 @@ let project = Project.make(
       dependencies: [
         .target(name: "MainCoordinator"),
         .target(name: "HotKeywordCoordinator"),
-        .target(name: "MyCoordinator"),
+        .target(name: "MyPageCoordinator"),
         .project(target: "TabBar", path: .relativeToRoot("Projects/Features/Scene")),
         .externalsrt("TCA"),
         .externalsrt("TCACoordinators"),
@@ -91,14 +91,14 @@ let project = Project.make(
       ]
     ),
     .make(
-      name: "MyCoordinator",
+      name: "MyPageCoordinator",
       product: .staticLibrary,
-      bundleId: "com.mashup.seeYouAgain.my",
-      sources: ["MyCoordinator/**"],
+      bundleId: "com.mashup.seeYouAgain.myPage",
+      sources: ["MyPageCoordinator/**"],
       dependencies: [
         .target(name: "ShortStorageCoordinator"),
         .target(name: "LongStorageCoordinator"),
-        .project(target: "My", path: .relativeToRoot("Projects/Features/Scene")),
+        .project(target: "MyPage", path: .relativeToRoot("Projects/Features/Scene")),
         .externalsrt("TCA"),
         .externalsrt("TCACoordinators"),
       ]

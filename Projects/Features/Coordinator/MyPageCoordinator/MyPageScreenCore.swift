@@ -1,6 +1,6 @@
 //
-//  MyScreenCore.swift
-//  MyCoordinator
+//  MyPageScreenCore.swift
+//  MyPageCoordinator
 //
 //  Created by 안상희 on 2023/05/22.
 //  Copyright © 2023 mashup.seeYouAgain. All rights reserved.
@@ -11,37 +11,37 @@ import ComposableArchitecture
 import LongStorageCoordinator
 import ShortStorageCoordinator
 
-public enum MyScreenState: Equatable {
+public enum MyPageScreenState: Equatable {
   case shortStorage(ShortStorageCoordinatorState)
   case longStorage(LongStorageCoordinatorState)
 }
 
-public enum MyScreenAction {
+public enum MyPageScreenAction {
   case shortStorage(ShortStorageCoordinatorAction)
   case longStorage(LongStorageCoordinatorAction)
 }
 
-internal struct MyScreenEnvironment {
+internal struct MyPageScreenEnvironment {
   internal init() {}
 }
 
-internal let myScreenReducer = Reducer<
-  MyScreenState,
-  MyScreenAction,
-  MyScreenEnvironment
+internal let myPageScreenReducer = Reducer<
+  MyPageScreenState,
+  MyPageScreenAction,
+  MyPageScreenEnvironment
 >.combine([
   shortStorageCoordinatorReducer
     .pullback(
-      state: /MyScreenState.shortStorage,
-      action: /MyScreenAction.shortStorage,
+      state: /MyPageScreenState.shortStorage,
+      action: /MyPageScreenAction.shortStorage,
       environment: { _ in
         ShortStorageCoordinatorEnvironment()
       }
     ),
   longStorageCoordinatorReducer
     .pullback(
-      state: /MyScreenState.longStorage,
-      action: /MyScreenAction.longStorage,
+      state: /MyPageScreenState.longStorage,
+      action: /MyPageScreenAction.longStorage,
       environment: { _ in
         LongStorageCoordinatorEnvironment()
       }

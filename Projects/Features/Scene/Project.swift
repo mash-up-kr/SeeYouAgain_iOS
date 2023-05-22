@@ -53,10 +53,10 @@ let project = Project.make(
       ]
     ),
     .make(
-      name: "My",
+      name: "MyPage",
       product: .staticLibrary,
-      bundleId: "com.mashup.seeYouAgain.my.my",
-      sources: ["MyScene/My/**"],
+      bundleId: "com.mashup.seeYouAgain.myPage.myPage",
+      sources: ["MyPageScene/MyPage/**"],
       dependencies: [
         .project(target: "CoreKit", path: .relativeToRoot("Projects/Core")),
         .project(target: "DesignSystem", path: .relativeToRoot("Projects/DesignSystem")),

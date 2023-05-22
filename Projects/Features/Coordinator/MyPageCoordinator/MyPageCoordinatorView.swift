@@ -1,6 +1,6 @@
 //
-//  MyCoordinatorView.swift
-//  MyCoordinator
+//  MyPageCoordinatorView.swift
+//  MyPageCoordinator
 //
 //  Created by 안상희 on 2023/05/22.
 //  Copyright © 2023 mashup.seeYouAgain. All rights reserved.
@@ -12,10 +12,10 @@ import ShortStorageCoordinator
 import SwiftUI
 import TCACoordinators
 
-public struct MyCoordinatorView: View {
-  private let store: Store<MyCoordinatorState, MyCoordinatorAction>
+public struct MyPageCoordinatorView: View {
+  private let store: Store<MyPageCoordinatorState, MyPageCoordinatorAction>
   
-  public init(store: Store<MyCoordinatorState, MyCoordinatorAction>) {
+  public init(store: Store<MyPageCoordinatorState, MyPageCoordinatorAction>) {
     self.store = store
   }
   
@@ -23,13 +23,13 @@ public struct MyCoordinatorView: View {
     TCARouter(store) { screen in
       SwitchStore(screen) {
         CaseLet(
-          state: /MyScreenState.shortStorage,
-          action: MyScreenAction.shortStorage,
+          state: /MyPageScreenState.shortStorage,
+          action: MyPageScreenAction.shortStorage,
           then: ShortStorageCoordinatorView.init
         )
         CaseLet(
-          state: /MyScreenState.longStorage,
-          action: MyScreenAction.longStorage,
+          state: /MyPageScreenState.longStorage,
+          action: MyPageScreenAction.longStorage,
           then: LongStorageCoordinatorView.init
         )
       }
