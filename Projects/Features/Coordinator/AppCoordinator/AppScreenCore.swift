@@ -9,11 +9,9 @@
 import Combine
 import ComposableArchitecture
 import Foundation
-import LongStorageCoordinator
 import NewsCardCoordinator
 import SetCategory
 import SettingCoordinator
-import ShortStorageCoordinator
 import Splash
 import TabBarCoordinator
 import TCACoordinators
@@ -22,8 +20,6 @@ public enum AppScreenState: Equatable {
   case splash(SplashState)
   case setCategory(SetCategoryState)
   case tabBar(TabBarCoordinatorState)
-  case shortStorage(ShortStorageCoordinatorState)
-  case longStorage(LongStorageCoordinatorState)
   case newsCard(NewsCardCoordinatorState)
   case setting(SettingCoordinatorState)
 }
@@ -32,8 +28,6 @@ public enum AppScreenAction {
   case splash(SplashAction)
   case setCategory(SetCategoryAction)
   case tabBar(TabBarCoordinatorAction)
-  case shortStorage(ShortStorageCoordinatorAction)
-  case longStorage(LongStorageCoordinatorAction)
   case newsCard(NewsCardCoordinatorAction)
   case setting(SettingCoordinatorAction)
 }
@@ -70,22 +64,6 @@ internal let appScreenReducer = Reducer<
       action: /AppScreenAction.tabBar,
       environment: { _ in
         TabBarCoordinatorEnvironment()
-      }
-    ),
-  shortStorageCoordinatorReducer
-    .pullback(
-      state: /AppScreenState.shortStorage,
-      action: /AppScreenAction.shortStorage,
-      environment: { _ in
-        ShortStorageCoordinatorEnvironment()
-      }
-    ),
-  longStorageCoordinatorReducer
-    .pullback(
-      state: /AppScreenState.longStorage,
-      action: /AppScreenAction.longStorage,
-      environment: { _ in
-        LongStorageCoordinatorEnvironment()
       }
     ),
   newsCardCoordinatorReducer

@@ -12,12 +12,9 @@ let project = Project.make(
       dependencies: [
         .target(name: "TabBarCoordinator"),
         .target(name: "NewsCardCoordinator"),
-        .target(name: "ShortStorageCoordinator"),
-        .target(name: "LongStorageCoordinator"),
         .target(name: "SettingCoordinator"),
         .project(target: "Splash", path: .relativeToRoot("Projects/Features/Scene")),
         .project(target: "SetCategory", path: .relativeToRoot("Projects/Features/Scene")),
-        .project(target: "Main", path: .relativeToRoot("Projects/Features/Scene")),
         .externalsrt("TCA"),
         .externalsrt("TCACoordinators"),
       ]
@@ -30,6 +27,7 @@ let project = Project.make(
       dependencies: [
         .target(name: "MainCoordinator"),
         .target(name: "HotKeywordCoordinator"),
+        .target(name: "MyCoordinator"),
         .project(target: "TabBar", path: .relativeToRoot("Projects/Features/Scene")),
         .externalsrt("TCA"),
         .externalsrt("TCACoordinators"),
@@ -88,6 +86,19 @@ let project = Project.make(
       dependencies: [
         .project(target: "HotKeyword", path: .relativeToRoot("Projects/Features/Scene")),
         .project(target: "HotKeywordNewsList", path: .relativeToRoot("Projects/Features/Scene")),
+        .externalsrt("TCA"),
+        .externalsrt("TCACoordinators"),
+      ]
+    ),
+    .make(
+      name: "MyCoordinator",
+      product: .staticLibrary,
+      bundleId: "com.mashup.seeYouAgain.my",
+      sources: ["MyCoordinator/**"],
+      dependencies: [
+        .target(name: "ShortStorageCoordinator"),
+        .target(name: "LongStorageCoordinator"),
+        .project(target: "My", path: .relativeToRoot("Projects/Features/Scene")),
         .externalsrt("TCA"),
         .externalsrt("TCACoordinators"),
       ]

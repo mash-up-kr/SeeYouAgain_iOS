@@ -53,6 +53,19 @@ let project = Project.make(
       ]
     ),
     .make(
+      name: "My",
+      product: .staticLibrary,
+      bundleId: "com.mashup.seeYouAgain.my.my",
+      sources: ["MyScene/My/**"],
+      dependencies: [
+        .project(target: "CoreKit", path: .relativeToRoot("Projects/Core")),
+        .project(target: "DesignSystem", path: .relativeToRoot("Projects/DesignSystem")),
+        .externalsrt("TCA"),
+        .externalsrt("Nuke"),
+        .externalsrt("NukeUI"),
+      ]
+    ),
+    .make(
       name: "NewsList",
       product: .staticLibrary,
       bundleId: "com.mashup.seeYouAgain.newsCard.newsList",
