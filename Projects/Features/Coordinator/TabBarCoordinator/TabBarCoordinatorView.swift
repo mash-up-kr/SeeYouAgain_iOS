@@ -10,6 +10,7 @@ import Combine
 import ComposableArchitecture
 import HotKeywordCoordinator
 import MainCoordinator
+import MyPageCoordinator
 import SwiftUI
 import TCACoordinators
 
@@ -32,6 +33,11 @@ public struct TabBarCoordinatorView: View {
           state: /TabBarScreenState.hotKeyword,
           action: TabBarScreenAction.hotKeyword,
           then: HotKeywordCoordinatorView.init
+        )
+        CaseLet(
+          state: /TabBarScreenState.myPage,
+          action: TabBarScreenAction.myPage,
+          then: MyPageCoordinatorView.init
         )
       }
     }

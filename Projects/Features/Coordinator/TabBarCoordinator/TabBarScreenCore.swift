@@ -10,15 +10,18 @@ import Combine
 import ComposableArchitecture
 import HotKeywordCoordinator
 import MainCoordinator
+import MyPageCoordinator
 
 public enum TabBarScreenState: Equatable {
   case main(MainCoordinatorState)
   case hotKeyword(HotKeywordCoordinatorState)
+  case myPage(MyPageCoordinatorState)
 }
 
 public enum TabBarScreenAction {
   case main(MainCoordinatorAction)
   case hotKeyword(HotKeywordCoordinatorAction)
+  case myPage(MyPageCoordinatorAction)
 }
 
 internal struct TabBarScreenEnvironment {
@@ -44,6 +47,14 @@ internal let tabBarScreenReducer = Reducer<
       action: /TabBarScreenAction.hotKeyword,
       environment: { _ in
         HotKeywordCoordinatorEnvironment()
+      }
+    ),
+  myPageCoordinatorReducer
+    .pullback(
+      state: /TabBarScreenState.myPage,
+      action: /TabBarScreenAction.myPage,
+      environment: { _ in
+        MyPageCoordinatorEnvironment()
       }
     )
 ])
