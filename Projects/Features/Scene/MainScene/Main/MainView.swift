@@ -1,5 +1,5 @@
 //
-//  MainListView.swift
+//  MainView.swift
 //  Main
 //
 //  Created by GREEN on 2023/04/05.

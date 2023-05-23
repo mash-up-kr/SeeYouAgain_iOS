@@ -14,7 +14,7 @@ import TCACoordinators
 public struct MainCoordinatorState: Equatable, IndexedRouterState {
   public var routes: [Route<MainScreenState>]
   
-  public init(routes: [Route<MainScreenState>] = [.root(.mainList(.init()), embedInNavigationView: true)]) {
+  public init(routes: [Route<MainScreenState>] = [.root(.main(.init()), embedInNavigationView: true)]) {
     self.routes = routes
   }
 }

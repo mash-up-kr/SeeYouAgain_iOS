@@ -12,11 +12,11 @@ import Main
 import TCACoordinators
 
 public enum MainScreenState: Equatable {
-  case mainList(MainState)
+  case main(MainState)
 }
 
 public enum MainScreenAction {
-  case mainList(MainAction)
+  case main(MainAction)
 }
 
 internal struct MainScreenEnvironment {
@@ -30,8 +30,8 @@ internal let mainScreenReducer = Reducer<
 >.combine([
   mainReducer
     .pullback(
-      state: /MainScreenState.mainList,
-      action: /MainScreenAction.mainList,
+      state: /MainScreenState.main,
+      action: /MainScreenAction.main,
       environment: { _ in
         MainEnvironment()
       }

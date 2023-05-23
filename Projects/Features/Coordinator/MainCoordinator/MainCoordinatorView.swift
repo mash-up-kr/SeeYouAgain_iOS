@@ -22,8 +22,8 @@ public struct MainCoordinatorView: View {
     TCARouter(store) { screen in
       SwitchStore(screen) {
         CaseLet(
-          state: /MainScreenState.mainList,
-          action: MainScreenAction.mainList,
+          state: /MainScreenState.main,
+          action: MainScreenAction.main,
           then: MainView.init
         )
       }
