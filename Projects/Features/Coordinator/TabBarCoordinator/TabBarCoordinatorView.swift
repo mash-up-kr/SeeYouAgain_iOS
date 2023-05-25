@@ -6,13 +6,11 @@
 //  Copyright © 2023 mashup.seeYouAgain. All rights reserved.
 //
 
-import Combine
 import ComposableArchitecture
 import HotKeywordCoordinator
 import MainCoordinator
 import MyPageCoordinator
 import SwiftUI
-import TCACoordinators
 
 public struct TabBarCoordinatorView: View {
   private let store: Store<TabBarCoordinatorState, TabBarCoordinatorAction>
@@ -22,24 +20,41 @@ public struct TabBarCoordinatorView: View {
   }
   
   public var body: some View {
-    TCARouter(store) { screen in
-      SwitchStore(screen) {
-        CaseLet(
-          state: /TabBarScreenState.main,
-          action: TabBarScreenAction.main,
-          then: MainCoordinatorView.init
+    WithViewStore(store, observe: \.selectedTab) { viewStore in
+      TabView(selection: viewStore.binding(get: { $0 }, send: TabBarCoordinatorAction.tabSelected)) {
+        HotKeywordCoordinatorView(
+          store: store.scope(
+            state: \TabBarCoordinatorState.hotKeyword,
+            action: TabBarCoordinatorAction.hotKeyword
+          )
         )
-        CaseLet(
-          state: /TabBarScreenState.hotKeyword,
-          action: TabBarScreenAction.hotKeyword,
-          then: HotKeywordCoordinatorView.init
+        .tabItem {
+          Text("HotKeyword")
+        }
+        .tag(Tab.hotKeyword)
+        
+        MainCoordinatorView(
+          store: store.scope(
+            state: \TabBarCoordinatorState.main,
+            action: TabBarCoordinatorAction.main
+          )
         )
-        CaseLet(
-          state: /TabBarScreenState.myPage,
-          action: TabBarScreenAction.myPage,
-          then: MyPageCoordinatorView.init
+        .tabItem {
+          Text("Main")
+        }
+        .tag(Tab.main)
+        
+        MyPageCoordinatorView(
+          store: store.scope(
+            state: \TabBarCoordinatorState.myPage,
+            action: TabBarCoordinatorAction.myPage
+          )
         )
+        .tabItem {
+          Text("MyPage")
+        }
+        .tag(Tab.myPage)
       }
-    }
+    }    
   }
 }

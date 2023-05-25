@@ -42,6 +42,11 @@ public let appCoordinatorReducer: Reducer<
   .withRouteReducer(
     Reducer { state, action, env in
       switch action {
+      case .routeAction(_, action: .splash(.viewDidLoad)):
+        state.routes = [
+          .root(.tabBar(.init(hotKeyword: .init(), main: .init(), myPage: .init())))
+        ]
+        return .none
       default: return .none
       }
     }
