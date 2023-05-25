@@ -36,7 +36,6 @@ let project = Project.make(
       bundleId: "com.mashup.seeYouAgain.shortStorageCoordinator",
       sources: ["ShortStorageCoordinator/**"],
       dependencies: [
-        .project(target: "ShortStorageCardList", path: .relativeToRoot("Projects/Features/Scene")),
         .project(target: "ShortStorageNewsList", path: .relativeToRoot("Projects/Features/Scene")),
         .externalsrt("TCA"),
         .externalsrt("TCACoordinators"),
@@ -71,7 +70,6 @@ let project = Project.make(
       sources: ["HotKeywordCoordinator/**"],
       dependencies: [
         .project(target: "HotKeyword", path: .relativeToRoot("Projects/Features/Scene")),
-        .project(target: "HotKeywordNewsList", path: .relativeToRoot("Projects/Features/Scene")),
         .externalsrt("TCA"),
         .externalsrt("TCACoordinators"),
       ]

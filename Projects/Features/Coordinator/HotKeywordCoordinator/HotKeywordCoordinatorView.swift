@@ -8,7 +8,6 @@
 
 import ComposableArchitecture
 import HotKeyword
-import HotKeywordNewsList
 import SwiftUI
 import TCACoordinators
 
@@ -27,11 +26,6 @@ public struct HotKeywordCoordinatorView: View {
             state: /HotKeywordScreenState.hotKeyword,
             action: HotKeywordScreenAction.hotKeyword,
             then: HotKeywordView.init
-          )
-          CaseLet(
-            state: /HotKeywordScreenState.hotKeywordNewsList,
-            action: HotKeywordScreenAction.hotKeywordNewsList,
-            then: HotKeywordNewsListView.init
           )
         }
       }

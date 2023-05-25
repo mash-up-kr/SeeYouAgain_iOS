@@ -82,19 +82,6 @@ let project = Project.make(
       ]
     ),
     .make(
-      name: "ShortStorageCardList",
-      product: .staticLibrary,
-      bundleId: "com.mashup.seeYouAgain.shortStorage.shortStorageCardList",
-      sources: ["ShortStorageScene/ShortStorageCardList/**"],
-      dependencies: [
-        .project(target: "CoreKit", path: .relativeToRoot("Projects/Core")),
-        .project(target: "DesignSystem", path: .relativeToRoot("Projects/DesignSystem")),
-        .externalsrt("TCA"),
-        .externalsrt("Nuke"),
-        .externalsrt("NukeUI"),
-      ]
-    ),
-    .make(
       name: "ShortStorageNewsList",
       product: .staticLibrary,
       bundleId: "com.mashup.seeYouAgain.shortStorage.shortStorageNewsList",
@@ -125,19 +112,6 @@ let project = Project.make(
       product: .staticLibrary,
       bundleId: "com.mashup.seeYouAgain.hotKeyword.hotKeyword",
       sources: ["HotKeywordScene/HotKeyword/**"],
-      dependencies: [
-        .project(target: "CoreKit", path: .relativeToRoot("Projects/Core")),
-        .project(target: "DesignSystem", path: .relativeToRoot("Projects/DesignSystem")),
-        .externalsrt("TCA"),
-        .externalsrt("Nuke"),
-        .externalsrt("NukeUI"),
-      ]
-    ),
-    .make(
-      name: "HotKeywordNewsList",
-      product: .staticLibrary,
-      bundleId: "com.mashup.seeYouAgain.hotKeyword.hotKeywordNewsList",
-      sources: ["HotKeywordScene/HotKeywordNewsList/**"],
       dependencies: [
         .project(target: "CoreKit", path: .relativeToRoot("Projects/Core")),
         .project(target: "DesignSystem", path: .relativeToRoot("Projects/DesignSystem")),

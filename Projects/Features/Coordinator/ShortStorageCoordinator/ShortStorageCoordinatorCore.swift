@@ -8,6 +8,7 @@
 
 import ComposableArchitecture
 import Services
+import ShortStorageNewsList
 import SwiftUI
 import TCACoordinators
 
@@ -17,7 +18,7 @@ public struct ShortStorageCoordinatorState: Equatable, IndexedRouterState {
   public init(
     routes: [Route<ShortStorageScreenState>] = [
       .root(
-        .shortStorageCardList(.init()),
+        .shortStorageNewsList(.init()),
         embedInNavigationView: false
       )
     ]

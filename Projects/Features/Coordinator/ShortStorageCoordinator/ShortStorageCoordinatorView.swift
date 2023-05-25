@@ -7,7 +7,6 @@
 //
 
 import ComposableArchitecture
-import ShortStorageCardList
 import ShortStorageNewsList
 import SwiftUI
 import TCACoordinators
@@ -23,11 +22,6 @@ public struct ShortStorageCoordinatorView: View {
     VStack(spacing: 0) {
       TCARouter(store) { screen in
         SwitchStore(screen) {
-          CaseLet(
-            state: /ShortStorageScreenState.shortStorageCardList,
-            action: ShortStorageScreenAction.shortStorageCardList,
-            then: ShortStorageCardListView.init
-          )
           CaseLet(
             state: /ShortStorageScreenState.shortStorageNewsList,
             action: ShortStorageScreenAction.shortStorageNewsList,

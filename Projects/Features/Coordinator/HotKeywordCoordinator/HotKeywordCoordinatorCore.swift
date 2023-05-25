@@ -7,6 +7,7 @@
 //
 
 import ComposableArchitecture
+import HotKeyword
 import Services
 import SwiftUI
 import TCACoordinators
