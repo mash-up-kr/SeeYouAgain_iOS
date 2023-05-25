@@ -1,6 +1,6 @@
 //
-//  TabBarCoordinatorCore.swift
-//  Coordinator
+//  TabBarCore.swift
+//  TabBar
 //
 //  Created by 안상희 on 2023/05/21.
 //  Copyright © 2023 mashup.seeYouAgain. All rights reserved.
@@ -17,7 +17,7 @@ public enum Tab: Hashable {
   case myPage
 }
 
-public struct TabBarCoordinatorState: Equatable {
+public struct TabBarState: Equatable {
   public var hotKeyword: HotKeywordCoordinatorState
   public var main: MainCoordinatorState
   public var myPage: MyPageCoordinatorState
@@ -34,42 +34,42 @@ public struct TabBarCoordinatorState: Equatable {
   }
 }
 
-public enum TabBarCoordinatorAction {
+public enum TabBarAction {
   case hotKeyword(HotKeywordCoordinatorAction)
   case main(MainCoordinatorAction)
   case myPage(MyPageCoordinatorAction)
   case tabSelected(Tab)
 }
 
-public struct TabBarCoordinatorEnvironment {
+public struct TabBarEnvironment {
   public init() { }
 }
 
-public let tabBarCoordinatorReducer = Reducer<
-  TabBarCoordinatorState,
-  TabBarCoordinatorAction,
-  TabBarCoordinatorEnvironment
+public let tabBarReducer = Reducer<
+  TabBarState,
+  TabBarAction,
+  TabBarEnvironment
 >.combine([
   hotKeywordCoordinatorReducer
     .pullback(
-      state: \TabBarCoordinatorState.hotKeyword,
-      action: /TabBarCoordinatorAction.hotKeyword,
+      state: \TabBarState.hotKeyword,
+      action: /TabBarAction.hotKeyword,
       environment: { _ in
         HotKeywordCoordinatorEnvironment()
       }
     ),
   mainCoordinatorReducer
     .pullback(
-      state: \TabBarCoordinatorState.main,
-      action: /TabBarCoordinatorAction.main,
+      state: \TabBarState.main,
+      action: /TabBarAction.main,
       environment: { _ in
         MainCoordinatorEnvironment()
       }
     ),
   myPageCoordinatorReducer
     .pullback(
-      state: \TabBarCoordinatorState.myPage,
-      action: /TabBarCoordinatorAction.myPage,
+      state: \TabBarState.myPage,
+      action: /TabBarAction.myPage,
       environment: { _ in
         MyPageCoordinatorEnvironment()
       }

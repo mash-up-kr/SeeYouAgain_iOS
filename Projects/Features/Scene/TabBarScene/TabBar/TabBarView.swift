@@ -1,6 +1,6 @@
 //
-//  TabBarCoordinatorView.swift
-//  Coordinator
+//  TabBarView.swift
+//  TabBar
 //
 //  Created by 안상희 on 2023/05/21.
 //  Copyright © 2023 mashup.seeYouAgain. All rights reserved.
@@ -12,20 +12,20 @@ import MainCoordinator
 import MyPageCoordinator
 import SwiftUI
 
-public struct TabBarCoordinatorView: View {
-  private let store: Store<TabBarCoordinatorState, TabBarCoordinatorAction>
+public struct TabBarView: View {
+  private let store: Store<TabBarState, TabBarAction>
   
-  public init(store: Store<TabBarCoordinatorState, TabBarCoordinatorAction>) {
+  public init(store: Store<TabBarState, TabBarAction>) {
     self.store = store
   }
   
   public var body: some View {
     WithViewStore(store, observe: \.selectedTab) { viewStore in
-      TabView(selection: viewStore.binding(get: { $0 }, send: TabBarCoordinatorAction.tabSelected)) {
+      TabView(selection: viewStore.binding(get: { $0 }, send: TabBarAction.tabSelected)) {
         HotKeywordCoordinatorView(
           store: store.scope(
-            state: \TabBarCoordinatorState.hotKeyword,
-            action: TabBarCoordinatorAction.hotKeyword
+            state: \TabBarState.hotKeyword,
+            action: TabBarAction.hotKeyword
           )
         )
         .tabItem {
@@ -35,8 +35,8 @@ public struct TabBarCoordinatorView: View {
         
         MainCoordinatorView(
           store: store.scope(
-            state: \TabBarCoordinatorState.main,
-            action: TabBarCoordinatorAction.main
+            state: \TabBarState.main,
+            action: TabBarAction.main
           )
         )
         .tabItem {
@@ -46,8 +46,8 @@ public struct TabBarCoordinatorView: View {
         
         MyPageCoordinatorView(
           store: store.scope(
-            state: \TabBarCoordinatorState.myPage,
-            action: TabBarCoordinatorAction.myPage
+            state: \TabBarState.myPage,
+            action: TabBarAction.myPage
           )
         )
         .tabItem {
@@ -55,6 +55,6 @@ public struct TabBarCoordinatorView: View {
         }
         .tag(Tab.myPage)
       }
-    }    
+    }
   }
 }

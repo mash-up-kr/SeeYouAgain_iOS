@@ -10,25 +10,11 @@ let project = Project.make(
       bundleId: "com.mashup.seeYouAgain.appCoordinator",
       sources: ["AppCoordinator/**"],
       dependencies: [
-        .target(name: "TabBarCoordinator"),
         .target(name: "NewsCardCoordinator"),
         .target(name: "SettingCoordinator"),
+        .project(target: "TabBar", path: .relativeToRoot("Projects/Features/Scene")),
         .project(target: "Splash", path: .relativeToRoot("Projects/Features/Scene")),
         .project(target: "SetCategory", path: .relativeToRoot("Projects/Features/Scene")),
-        .externalsrt("TCA"),
-        .externalsrt("TCACoordinators"),
-      ]
-    ),
-    .make(
-      name: "TabBarCoordinator",
-      product: .staticLibrary,
-      bundleId: "com.mashup.seeYouAgain.tabBarCoordinator",
-      sources: ["TabBarCoordinator/**"],
-      dependencies: [
-        .target(name: "MainCoordinator"),
-        .target(name: "HotKeywordCoordinator"),
-        .target(name: "MyPageCoordinator"),
-        .project(target: "TabBar", path: .relativeToRoot("Projects/Features/Scene")),
         .externalsrt("TCA"),
         .externalsrt("TCACoordinators"),
       ]

@@ -13,7 +13,7 @@ import SetCategory
 import SettingCoordinator
 import Splash
 import SwiftUI
-import TabBarCoordinator
+import TabBar
 import TCACoordinators
 
 public struct AppCoordinatorView: View {
@@ -39,7 +39,7 @@ public struct AppCoordinatorView: View {
         CaseLet(
           state: /AppScreenState.tabBar,
           action: AppScreenAction.tabBar,
-          then: TabBarCoordinatorView.init
+          then: TabBarView.init
         )
         CaseLet(
           state: /AppScreenState.newsCard,

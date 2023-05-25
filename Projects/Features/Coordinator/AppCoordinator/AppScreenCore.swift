@@ -13,13 +13,13 @@ import NewsCardCoordinator
 import SetCategory
 import SettingCoordinator
 import Splash
-import TabBarCoordinator
+import TabBar
 import TCACoordinators
 
 public enum AppScreenState: Equatable {
   case splash(SplashState)
   case setCategory(SetCategoryState)
-  case tabBar(TabBarCoordinatorState)
+  case tabBar(TabBarState)
   case newsCard(NewsCardCoordinatorState)
   case setting(SettingCoordinatorState)
 }
@@ -27,7 +27,7 @@ public enum AppScreenState: Equatable {
 public enum AppScreenAction {
   case splash(SplashAction)
   case setCategory(SetCategoryAction)
-  case tabBar(TabBarCoordinatorAction)
+  case tabBar(TabBarAction)
   case newsCard(NewsCardCoordinatorAction)
   case setting(SettingCoordinatorAction)
 }
@@ -58,12 +58,12 @@ internal let appScreenReducer = Reducer<
         SetCategoryEnvironment()
       }
     ),
-  tabBarCoordinatorReducer
+  tabBarReducer
     .pullback(
       state: /AppScreenState.tabBar,
       action: /AppScreenAction.tabBar,
       environment: { _ in
-        TabBarCoordinatorEnvironment()
+        TabBarEnvironment()
       }
     ),
   newsCardCoordinatorReducer

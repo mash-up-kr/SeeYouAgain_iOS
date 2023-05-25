@@ -45,6 +45,9 @@ let project = Project.make(
       bundleId: "com.mashup.seeYouAgain.tabBar.tabBar",
       sources: ["TabBarScene/TabBar/**"],
       dependencies: [
+        .project(target: "MainCoordinator", path: .relativeToRoot("Projects/Features/Coordinator")),
+        .project(target: "HotKeywordCoordinator", path: .relativeToRoot("Projects/Features/Coordinator")),
+        .project(target: "MyPageCoordinator", path: .relativeToRoot("Projects/Features/Coordinator")),
         .project(target: "CoreKit", path: .relativeToRoot("Projects/Core")),
         .project(target: "DesignSystem", path: .relativeToRoot("Projects/DesignSystem")),
         .externalsrt("TCA"),
