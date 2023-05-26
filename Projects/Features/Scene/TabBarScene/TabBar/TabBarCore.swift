@@ -45,19 +45,11 @@ public struct TabBarEnvironment {
   public init() { }
 }
 
-public let tabBarReducer = Reducer.combine([
-  Reducer<
+public let tabBarReducer = Reducer<
   TabBarState,
   TabBarAction,
   TabBarEnvironment
-  > { state, action, env in
-    switch action {
-    case let .tabSelected(tab):
-      state.selectedTab = tab
-      return .none
-    default: return .none
-    }
-  },
+>.combine([
   hotKeywordCoordinatorReducer
     .pullback(
       state: \TabBarState.hotKeyword,
@@ -81,5 +73,13 @@ public let tabBarReducer = Reducer.combine([
       environment: { _ in
         MyPageCoordinatorEnvironment()
       }
-    )
+    ),
+  Reducer { state, action, env in
+    switch action {
+    case let .tabSelected(tab):
+      state.selectedTab = tab
+      return .none
+    default: return .none
+    }
+  }
 ])
