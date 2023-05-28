@@ -8,7 +8,7 @@
 
 import Combine
 import ComposableArchitecture
-import Foundation
+import Splash
 import TCACoordinators
 
 public struct AppCoordinatorState: Equatable, IndexedRouterState {
@@ -42,6 +42,14 @@ public let appCoordinatorReducer: Reducer<
   .withRouteReducer(
     Reducer { state, action, env in
       switch action {
+      case .routeAction(_, action: .splash(.viewDidLoad)):
+        state.routes = [
+          .root(
+            .tabBar(.init(hotKeyword: .init(), main: .init(), myPage: .init())),
+            embedInNavigationView: true
+          )
+        ]
+        return .none
       default: return .none
       }
     }

@@ -1,8 +1,8 @@
 //
-//  MainListView.swift
-//  Main
+//  MyPageView.swift
+//  MyPage
 //
-//  Created by GREEN on 2023/04/05.
+//  Created by 안상희 on 2023/05/22.
 //  Copyright © 2023 mashup.seeYouAgain. All rights reserved.
 //
 
@@ -10,16 +10,16 @@ import ComposableArchitecture
 import DesignSystem
 import SwiftUI
 
-public struct MainView: View {
-  private let store: Store<MainState, MainAction>
+public struct MyPageView: View {
+  private let store: Store<MyPageState, MyPageAction>
   
-  public init(store: Store<MainState, MainAction>) {
+  public init(store: Store<MyPageState, MyPageAction>) {
     self.store = store
   }
   
   public var body: some View {
     WithViewStore(store) { viewStore in
-      Text("메인화면")
+      Text("마이뷰")
     }
     .navigationBarHidden(true)
   }

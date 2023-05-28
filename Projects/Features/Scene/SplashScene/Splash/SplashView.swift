@@ -20,7 +20,11 @@ public struct SplashView: View {
   public var body: some View {
     WithViewStore(store) { viewStore in
       // TODO: - 추후 로딩 화면 스플래쉬 이미지와 동일하게 변경 예정
-      Text("스플래쉬 화면")
+      VStack {
+        Button("스플래시") {
+          viewStore.send(.viewDidLoad)
+        }
+      }
     }
     .navigationBarHidden(true)
   }

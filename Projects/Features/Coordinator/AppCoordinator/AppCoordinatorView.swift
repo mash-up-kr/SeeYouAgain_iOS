@@ -8,15 +8,12 @@
 
 import Combine
 import ComposableArchitecture
-import HotKeywordCoordinator
-import LongStorageCoordinator
-import Main
 import NewsCardCoordinator
 import SetCategory
 import SettingCoordinator
-import ShortStorageCoordinator
 import Splash
 import SwiftUI
+import TabBar
 import TCACoordinators
 
 public struct AppCoordinatorView: View {
@@ -40,24 +37,9 @@ public struct AppCoordinatorView: View {
           then: SetCategoryView.init
         )
         CaseLet(
-          state: /AppScreenState.main,
-          action: AppScreenAction.main,
-          then: MainView.init
-        )
-        CaseLet(
-          state: /AppScreenState.hotKeyword,
-          action: AppScreenAction.hotKeyword,
-          then: HotKeywordCoordinatorView.init
-        )
-        CaseLet(
-          state: /AppScreenState.shortStorage,
-          action: AppScreenAction.shortStorage,
-          then: ShortStorageCoordinatorView.init
-        )
-        CaseLet(
-          state: /AppScreenState.longStorage,
-          action: AppScreenAction.longStorage,
-          then: LongStorageCoordinatorView.init
+          state: /AppScreenState.tabBar,
+          action: AppScreenAction.tabBar,
+          then: TabBarView.init
         )
         CaseLet(
           state: /AppScreenState.newsCard,

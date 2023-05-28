@@ -9,23 +9,17 @@
 import Combine
 import ComposableArchitecture
 import Foundation
-import HotKeywordCoordinator
-import LongStorageCoordinator
-import Main
 import NewsCardCoordinator
 import SetCategory
 import SettingCoordinator
-import ShortStorageCoordinator
 import Splash
+import TabBar
 import TCACoordinators
 
 public enum AppScreenState: Equatable {
   case splash(SplashState)
   case setCategory(SetCategoryState)
-  case main(MainState)
-  case hotKeyword(HotKeywordCoordinatorState)
-  case shortStorage(ShortStorageCoordinatorState)
-  case longStorage(LongStorageCoordinatorState)
+  case tabBar(TabBarState)
   case newsCard(NewsCardCoordinatorState)
   case setting(SettingCoordinatorState)
 }
@@ -33,10 +27,7 @@ public enum AppScreenState: Equatable {
 public enum AppScreenAction {
   case splash(SplashAction)
   case setCategory(SetCategoryAction)
-  case main(MainAction)
-  case hotKeyword(HotKeywordCoordinatorAction)
-  case shortStorage(ShortStorageCoordinatorAction)
-  case longStorage(LongStorageCoordinatorAction)
+  case tabBar(TabBarAction)
   case newsCard(NewsCardCoordinatorAction)
   case setting(SettingCoordinatorAction)
 }
@@ -67,36 +58,12 @@ internal let appScreenReducer = Reducer<
         SetCategoryEnvironment()
       }
     ),
-  mainReducer
+  tabBarReducer
     .pullback(
-      state: /AppScreenState.main,
-      action: /AppScreenAction.main,
+      state: /AppScreenState.tabBar,
+      action: /AppScreenAction.tabBar,
       environment: { _ in
-        MainEnvironment()
-      }
-    ),
-  hotKeywordCoordinatorReducer
-    .pullback(
-      state: /AppScreenState.hotKeyword,
-      action: /AppScreenAction.hotKeyword,
-      environment: { _ in
-        HotKeywordCoordinatorEnvironment()
-      }
-    ),
-  shortStorageCoordinatorReducer
-    .pullback(
-      state: /AppScreenState.shortStorage,
-      action: /AppScreenAction.shortStorage,
-      environment: { _ in
-        ShortStorageCoordinatorEnvironment()
-      }
-    ),
-  longStorageCoordinatorReducer
-    .pullback(
-      state: /AppScreenState.longStorage,
-      action: /AppScreenAction.longStorage,
-      environment: { _ in
-        LongStorageCoordinatorEnvironment()
+        TabBarEnvironment()
       }
     ),
   newsCardCoordinatorReducer

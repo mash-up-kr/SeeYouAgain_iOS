@@ -5,35 +5,16 @@ let project = Project.make(
   name: "Coordinator",
   targets: [
     .make(
-      name: "CoordinatorKit",
-      product: .staticLibrary,
-      bundleId: "com.mashup.seeYouAgain.coordinatorKit",
-      sources: ["CoordinatorKit/**"],
-      dependencies: [
-        .target(name: "AppCoordinator"),
-        .target(name: "NewsCardCoordinator"),
-        .target(name: "ShortStorageCoordinator"),
-        .target(name: "LongStorageCoordinator"),
-        .target(name: "HotKeywordCoordinator"),
-        .target(name: "SettingCoordinator"),
-        .externalsrt("TCA"),
-        .externalsrt("TCACoordinators"),
-      ]
-    ),
-    .make(
       name: "AppCoordinator",
       product: .staticLibrary,
       bundleId: "com.mashup.seeYouAgain.appCoordinator",
       sources: ["AppCoordinator/**"],
       dependencies: [
         .target(name: "NewsCardCoordinator"),
-        .target(name: "ShortStorageCoordinator"),
-        .target(name: "LongStorageCoordinator"),
-        .target(name: "HotKeywordCoordinator"),
         .target(name: "SettingCoordinator"),
+        .project(target: "TabBar", path: .relativeToRoot("Projects/Features/Scene")),
         .project(target: "Splash", path: .relativeToRoot("Projects/Features/Scene")),
         .project(target: "SetCategory", path: .relativeToRoot("Projects/Features/Scene")),
-        .project(target: "Main", path: .relativeToRoot("Projects/Features/Scene")),
         .externalsrt("TCA"),
         .externalsrt("TCACoordinators"),
       ]
@@ -55,7 +36,6 @@ let project = Project.make(
       bundleId: "com.mashup.seeYouAgain.shortStorageCoordinator",
       sources: ["ShortStorageCoordinator/**"],
       dependencies: [
-        .project(target: "ShortStorageCardList", path: .relativeToRoot("Projects/Features/Scene")),
         .project(target: "ShortStorageNewsList", path: .relativeToRoot("Projects/Features/Scene")),
         .externalsrt("TCA"),
         .externalsrt("TCACoordinators"),
@@ -73,13 +53,36 @@ let project = Project.make(
       ]
     ),
     .make(
+      name: "MainCoordinator",
+      product: .staticLibrary,
+      bundleId: "com.mashup.seeYouAgain.mainCoordinator",
+      sources: ["MainCoordinator/**"],
+      dependencies: [
+        .project(target: "Main", path: .relativeToRoot("Projects/Features/Scene")),
+        .externalsrt("TCA"),
+        .externalsrt("TCACoordinators"),
+      ]
+    ),
+    .make(
       name: "HotKeywordCoordinator",
       product: .staticLibrary,
       bundleId: "com.mashup.seeYouAgain.hotKeyword",
       sources: ["HotKeywordCoordinator/**"],
       dependencies: [
         .project(target: "HotKeyword", path: .relativeToRoot("Projects/Features/Scene")),
-        .project(target: "HotKeywordNewsList", path: .relativeToRoot("Projects/Features/Scene")),
+        .externalsrt("TCA"),
+        .externalsrt("TCACoordinators"),
+      ]
+    ),
+    .make(
+      name: "MyPageCoordinator",
+      product: .staticLibrary,
+      bundleId: "com.mashup.seeYouAgain.myPage",
+      sources: ["MyPageCoordinator/**"],
+      dependencies: [
+        .target(name: "ShortStorageCoordinator"),
+        .target(name: "LongStorageCoordinator"),
+        .project(target: "MyPage", path: .relativeToRoot("Projects/Features/Scene")),
         .externalsrt("TCA"),
         .externalsrt("TCACoordinators"),
       ]
