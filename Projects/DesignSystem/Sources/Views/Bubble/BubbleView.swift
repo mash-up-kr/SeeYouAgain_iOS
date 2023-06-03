@@ -145,17 +145,17 @@ public enum BubbleColor {
   var dropShadowColor: Color? {
     switch self {
     case .orange:
-      return Color(red: 244/255, green: 179/255, blue: 86/255, opacity: 0.3)
+      return Color(red: 244 / 255, green: 179 / 255, blue: 86 / 255, opacity: 0.3)
     case .green:
-      return Color(red: 98/255, green: 201/255, blue: 140/255, opacity: 0.3)
+      return Color(red: 98 / 255, green: 201 / 255, blue: 140 / 255, opacity: 0.3)
     case .violet:
-      return Color(red: 176/255, green: 128/255, blue: 230/255, opacity: 0.3)
+      return Color(red: 176 / 255, green: 128 / 255, blue: 230 / 255, opacity: 0.3)
     case .blue:
-      return Color(red: 114/255, green: 196/255, blue: 244/255, opacity: 0.3)
+      return Color(red: 114 / 255, green: 196 / 255, blue: 244 / 255, opacity: 0.3)
     case .red:
-      return Color(red: 244/255, green: 154/255, blue: 106/255, opacity: 0.3)
+      return Color(red: 244 / 255, green: 154 / 255, blue: 106 / 255, opacity: 0.3)
     case .lime:
-      return Color(red: 176/255, green: 205/255, blue: 92/255, opacity: 0.3)
+      return Color(red: 176 / 255, green: 205 / 255, blue: 92 / 255, opacity: 0.3)
     case .white:
       return nil
     }
