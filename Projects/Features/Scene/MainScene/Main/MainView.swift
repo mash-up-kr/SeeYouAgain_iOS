@@ -19,7 +19,14 @@ public struct MainView: View {
   
   public var body: some View {
     WithViewStore(store) { viewStore in
-      Text("메인화면")
+      HStack {
+        VStack {
+          Text("메인화면")
+          Spacer()
+        }
+        Spacer()
+      }
+      .background(Color.blue)
     }
     .navigationBarHidden(true)
   }

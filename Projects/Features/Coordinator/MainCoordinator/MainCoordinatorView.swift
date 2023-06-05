@@ -19,14 +19,17 @@ public struct MainCoordinatorView: View {
   }
   
   public var body: some View {
-    TCARouter(store) { screen in
-      SwitchStore(screen) {
-        CaseLet(
-          state: /MainScreenState.main,
-          action: MainScreenAction.main,
-          then: MainView.init
-        )
+    VStack(spacing: 0) {
+      TCARouter(store) { screen in
+        SwitchStore(screen) {
+          CaseLet(
+            state: /MainScreenState.main,
+            action: MainScreenAction.main,
+            then: MainView.init
+          )
+        }
       }
     }
+    .edgesIgnoringSafeArea(.all)
   }
 }

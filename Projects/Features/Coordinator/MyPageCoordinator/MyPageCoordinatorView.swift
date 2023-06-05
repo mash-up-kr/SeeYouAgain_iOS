@@ -20,19 +20,22 @@ public struct MyPageCoordinatorView: View {
   }
   
   public var body: some View {
-    TCARouter(store) { screen in
-      SwitchStore(screen) {
-        CaseLet(
-          state: /MyPageScreenState.shortStorage,
-          action: MyPageScreenAction.shortStorage,
-          then: ShortStorageCoordinatorView.init
-        )
-        CaseLet(
-          state: /MyPageScreenState.longStorage,
-          action: MyPageScreenAction.longStorage,
-          then: LongStorageCoordinatorView.init
-        )
+    VStack(spacing: 0) {
+      TCARouter(store) { screen in
+        SwitchStore(screen) {
+          CaseLet(
+            state: /MyPageScreenState.shortStorage,
+            action: MyPageScreenAction.shortStorage,
+            then: ShortStorageCoordinatorView.init
+          )
+          CaseLet(
+            state: /MyPageScreenState.longStorage,
+            action: MyPageScreenAction.longStorage,
+            then: LongStorageCoordinatorView.init
+          )
+        }
       }
     }
+    .edgesIgnoringSafeArea(.all)
   }
 }
