@@ -14,7 +14,14 @@ import TCACoordinators
 public struct MyPageCoordinatorState: Equatable, IndexedRouterState {
   public var routes: [Route<MyPageScreenState>]
   
-  public init(routes: [Route<MyPageScreenState>] = [.root(.shortStorage(.init()), embedInNavigationView: true)]) {
+  public init(
+    routes: [Route<MyPageScreenState>] = [
+      .root(
+        .shortStorage(.init()),
+        embedInNavigationView: true
+      )
+    ]
+  ) {
     self.routes = routes
   }
 }

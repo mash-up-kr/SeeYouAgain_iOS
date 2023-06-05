@@ -8,6 +8,7 @@
 
 import ComposableArchitecture
 import Services
+import Setting
 import SwiftUI
 import TCACoordinators
 
@@ -18,7 +19,7 @@ public struct SettingCoordinatorState: Equatable, IndexedRouterState {
     routes: [Route<SettingScreenState>] = [
       .root(
         .setting(.init()),
-        embedInNavigationView: false
+        embedInNavigationView: true
       )
     ]
   ) {

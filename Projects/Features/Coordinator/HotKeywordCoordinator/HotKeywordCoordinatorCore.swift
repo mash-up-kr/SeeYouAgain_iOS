@@ -19,7 +19,7 @@ public struct HotKeywordCoordinatorState: Equatable, IndexedRouterState {
     routes: [Route<HotKeywordScreenState>] = [
       .root(
         .hotKeyword(.init()),
-        embedInNavigationView: false
+        embedInNavigationView: true
       )
     ]
   ) {
