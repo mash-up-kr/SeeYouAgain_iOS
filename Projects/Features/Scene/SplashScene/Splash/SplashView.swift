@@ -25,6 +25,7 @@ public struct SplashView: View {
           viewStore.send(.viewDidLoad)
         }
       }
+      .shortsBackgroundView()
     }
     .navigationBarHidden(true)
   }

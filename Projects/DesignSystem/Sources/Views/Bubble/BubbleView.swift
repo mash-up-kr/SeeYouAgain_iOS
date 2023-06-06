@@ -55,7 +55,8 @@ public struct BubbleView: View {
               InnerShadow(
                 color: bubbleColor.innerShadowColor,
                 radius: 4,
-                offset: CGSize(width: 2, height: 2))
+                offset: CGSize(width: 2, height: 2)
+              )
             )
           
           Text(keyword)

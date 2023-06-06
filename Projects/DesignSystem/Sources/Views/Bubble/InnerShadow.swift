@@ -25,7 +25,8 @@ public struct InnerShadow: ViewModifier {
                 LinearGradient(
                   gradient: Gradient(colors: [Color.white, Color.clear]),
                   startPoint: .top,
-                  endPoint: .bottom)
+                  endPoint: .bottom
+                )
               )
           )
           .blur(radius: radius)
