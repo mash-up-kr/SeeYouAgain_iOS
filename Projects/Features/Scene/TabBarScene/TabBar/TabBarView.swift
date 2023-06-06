@@ -36,7 +36,6 @@ public struct TabBarView: View {
           tab: .hotKeyword,
           selection: viewStore.binding(get: { $0.selectedTab }, send: TabBarAction.tabSelected)
         )
-        .tag(TabBarItem.hotKeyword)
 
         MainCoordinatorView(
           store: store.scope(
@@ -48,7 +47,6 @@ public struct TabBarView: View {
           tab: .house,
           selection: viewStore.binding(get: { $0.selectedTab }, send: TabBarAction.tabSelected)
         )
-        .tag(TabBarItem.house)
 
         MyPageCoordinatorView(
           store: store.scope(
@@ -60,7 +58,6 @@ public struct TabBarView: View {
           tab: .myPage,
           selection: viewStore.binding(get: { $0.selectedTab }, send: TabBarAction.tabSelected)
         )
-        .tag(TabBarItem.myPage)
       }
     }
   }

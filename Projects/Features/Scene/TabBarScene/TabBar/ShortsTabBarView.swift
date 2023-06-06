@@ -18,6 +18,7 @@ public struct ShortsTabBarView: View {
     GeometryReader { geometry in
       VStack {
         Spacer()
+        
         HStack(spacing: 8) {
           ForEach(tabs, id: \.self) { tab in
             singleTabView(tab: tab)
