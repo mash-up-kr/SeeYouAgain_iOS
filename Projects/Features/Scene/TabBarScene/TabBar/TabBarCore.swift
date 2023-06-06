@@ -7,21 +7,16 @@
 //
 
 import ComposableArchitecture
+import DesignSystem
 import HotKeywordCoordinator
 import MainCoordinator
 import MyPageCoordinator
-
-public enum Tab: Hashable {
-  case hotKeyword
-  case main
-  case myPage
-}
 
 public struct TabBarState: Equatable {
   public var hotKeyword: HotKeywordCoordinatorState
   public var main: MainCoordinatorState
   public var myPage: MyPageCoordinatorState
-  public var selectedTab: Tab = .main
+  public var selectedTab: TabBarItem = .house
   
   public init(
     hotKeyword: HotKeywordCoordinatorState,
@@ -38,7 +33,7 @@ public enum TabBarAction {
   case hotKeyword(HotKeywordCoordinatorAction)
   case main(MainCoordinatorAction)
   case myPage(MyPageCoordinatorAction)
-  case tabSelected(Tab)
+  case tabSelected(TabBarItem)
 }
 
 public struct TabBarEnvironment {
