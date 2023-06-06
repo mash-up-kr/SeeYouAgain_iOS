@@ -1,5 +1,5 @@
 //
-//  SeeYouAgainTabBarView.swift
+//  ShortsTabBarView.swift
 //  TabBar
 //
 //  Created by 안상희 on 2023/06/04.
