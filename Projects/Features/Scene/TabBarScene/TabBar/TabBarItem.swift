@@ -25,7 +25,7 @@ public enum TabBarItem: Int, CaseIterable, Equatable {
     }
   }
   
-  public var icon: Image {
+  public var defaultIcon: Image {
     switch self {
     case .hotKeyword:
       return DesignSystem.Icons.defaultFire

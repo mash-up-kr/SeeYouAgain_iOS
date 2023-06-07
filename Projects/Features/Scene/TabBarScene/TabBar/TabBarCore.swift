@@ -7,7 +7,6 @@
 //
 
 import ComposableArchitecture
-import DesignSystem
 import HotKeywordCoordinator
 import MainCoordinator
 import MyPageCoordinator

@@ -10,7 +10,7 @@ import SwiftUI
 
 public struct ShortsTabBarContainerView<Content: View>: View {
   @Binding var selection: TabBarItem
-  let content: Content
+  private let content: Content
   
   @State private var tabs: [TabBarItem] = []
   

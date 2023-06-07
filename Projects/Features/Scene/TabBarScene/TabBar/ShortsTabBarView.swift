@@ -32,16 +32,14 @@ public struct ShortsTabBarView: View {
         .cornerRadius(24)
       }
     }
-    .padding(
-      EdgeInsets(top: 0, leading: 24, bottom: 0, trailing: 24)
-    )
+    .padding(.horizontal, 24)
   }
 }
 
 extension ShortsTabBarView {
   private func singleTabView(tab: TabBarItem) -> some View {
     HStack(spacing: 0) {
-      (selection == tab ? tab.selectedIcon : tab.icon)
+      (selection == tab ? tab.selectedIcon : tab.defaultIcon)
         .renderingMode(.template)
         .frame(width: 26, height: 26)
       
