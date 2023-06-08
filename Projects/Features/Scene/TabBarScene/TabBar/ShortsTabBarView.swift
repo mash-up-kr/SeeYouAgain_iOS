@@ -14,7 +14,7 @@ struct ShortsTabBarView: View {
   @Binding var selection: TabBarItem
   private let selectionWidth: [CGFloat] = [90, 105, 87]
   
-  public var body: some View {
+  var body: some View {
     GeometryReader { geometry in
       VStack {
         Spacer()
@@ -57,7 +57,7 @@ extension ShortsTabBarView {
           .frame(width: 8)
         
         Text(tab.description)
-          .font(DesignSystemFontFamily.Pretendard.bold._14)
+          .font(.b14)
           .foregroundColor(tab.textColor)
           .fixedSize()
       }
@@ -65,7 +65,7 @@ extension ShortsTabBarView {
     .padding(
       EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16)
     )
-    .scaleEffect(1)
+//    .scaleEffect(1)
     .frame(width: selection == tab ? selectionWidth[tab.rawValue] : 79)
     .background(
       selection == tab ? tab.backgroundColor : Color.clear
