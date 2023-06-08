@@ -8,7 +8,6 @@
 
 import ComposableArchitecture
 import DesignSystem
-import Models
 import SwiftUI
 
 public struct MainView: View {
@@ -23,15 +22,9 @@ public struct MainView: View {
       VStack {
         CategoriesView(store: store.scope(state: \.categories))
       }
-      .shortsBottomSheet(
-        isShowing: viewStore.binding(
-          get: \.bottomSheetShowed,
-          send: .closeBottomSheet
-        ),
-        content: {
-          CategoryBottomSheet(store: store.scope(state: \.categories))
-        }
-      )
+      .onAppear {
+        viewStore.send(.viewWillAppear)
+      }
     }
     .shortsBackgroundView()
     .navigationBarHidden(true)

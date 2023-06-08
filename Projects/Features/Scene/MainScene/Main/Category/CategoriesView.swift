@@ -23,20 +23,21 @@ struct CategoriesView: View {
         HStack(spacing: 8) {
           ForEach(viewStore.state, id: \.id) { category in
             if category.isSelected,
-              let category = CategoryType(rawValue: category.name) {
+               let category = CategoryType(rawValue: category.name) {
               CategoryBadgeButton(name: category.name, icon: category.icon) {
-                // TODO: filter news card.
+                // TODO: filter news cards.
               }
             }
           }
           
           CategoryDetailButton {
-            viewStore.send(.openBottomSheet)
+            viewStore.send(.openBottomSheet(viewStore.state))
           }
           
           Spacer()
         }
         .padding(.horizontal, 24)
+        .animation(.easeInOut, value: viewStore.state)
       }
     }
   }

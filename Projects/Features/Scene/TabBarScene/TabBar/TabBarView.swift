@@ -7,6 +7,7 @@
 //
 
 import ComposableArchitecture
+import DesignSystem
 import HotKeywordCoordinator
 import MainCoordinator
 import MyPageCoordinator
@@ -55,6 +56,29 @@ public struct TabBarView: View {
         }
         .tag(Tab.myPage)
       }
+      .bottomSheet(
+        title: "관심 키워드를 선택해주세요",
+        isPresented: viewStore.binding(
+          get: \.bottomSheet.categoryBottomSheetIsPresented,
+          send: .bottomSheet(.closeCategoryBottomSheet)
+        ),
+        content: {
+          CategoryBottomSheet(
+            store: store.scope(
+              state: \.bottomSheet,
+              action: TabBarAction.bottomSheet
+            )
+          )
+        },
+        bottomArea: {
+          BottomButton(
+            title: "변경",
+            action: {
+              viewStore.send(.bottomSheet(.closeCategoryBottomSheet))
+            }
+          )
+        }
+      )
     }
   }
 }
