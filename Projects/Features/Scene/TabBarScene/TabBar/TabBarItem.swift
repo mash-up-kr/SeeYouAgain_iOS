@@ -47,7 +47,18 @@ public enum TabBarItem: Int, CaseIterable, Equatable {
     }
   }
   
-  public var color: Color {
+  public var backgroundColor: Color {
+    switch self {
+    case .hotKeyword:
+      return DesignSystem.Colors.red50
+    case .house:
+      return DesignSystem.Colors.blue50
+    case .myPage:
+      return DesignSystem.Colors.green50
+    }
+  }
+  
+  public var textColor: Color {
     switch self {
     case .hotKeyword:
       return Color.red

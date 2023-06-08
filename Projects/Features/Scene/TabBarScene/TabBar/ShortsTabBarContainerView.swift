@@ -22,7 +22,6 @@ public struct ShortsTabBarContainerView<Content: View>: View {
   public var body: some View {
     ZStack(alignment: .bottom) {
       content
-        .ignoresSafeArea()
       
       ShortsTabBarView(
         tabs: tabs,

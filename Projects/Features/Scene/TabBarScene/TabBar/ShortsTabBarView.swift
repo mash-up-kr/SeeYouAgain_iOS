@@ -27,9 +27,19 @@ public struct ShortsTabBarView: View {
         }
         .frame(width: geometry.size.width, height: 82)
         .background(
-          Color.white.ignoresSafeArea(edges: .bottom)
+          DesignSystem.Colors.grey20
         )
         .cornerRadius(24)
+        .overlay(
+          RoundedRectangle(cornerRadius: 24)
+            .stroke(
+              LinearGradient(
+                gradient: Gradient(colors: [Color.clear, Color.white]),
+                startPoint: .leading,
+                endPoint: .trailing
+              )
+            )
+        )
       }
     }
     .padding(.horizontal, 24)
@@ -40,7 +50,6 @@ extension ShortsTabBarView {
   private func singleTabView(tab: TabBarItem) -> some View {
     HStack(spacing: 0) {
       (selection == tab ? tab.selectedIcon : tab.defaultIcon)
-        .renderingMode(.template)
         .frame(width: 26, height: 26)
       
       if selection == tab {
@@ -49,17 +58,17 @@ extension ShortsTabBarView {
         
         Text(tab.description)
           .font(DesignSystemFontFamily.Pretendard.bold._14)
+          .foregroundColor(tab.textColor)
           .fixedSize()
       }
     }
-    .foregroundColor(selection == tab ? tab.color : Color.gray)
     .padding(
       EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16)
     )
     .scaleEffect(1)
     .frame(width: selection == tab ? selectionWidth[tab.rawValue] : 79)
     .background(
-      selection == tab ? tab.color.opacity(0.2) : Color.clear
+      selection == tab ? tab.backgroundColor : Color.clear
     )
     .cornerRadius(20)
     .onTapGesture {

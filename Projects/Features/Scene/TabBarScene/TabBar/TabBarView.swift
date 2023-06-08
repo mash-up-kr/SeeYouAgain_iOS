@@ -14,6 +14,7 @@ import SwiftUI
 
 public struct TabBarView: View {
   private let store: Store<TabBarState, TabBarAction>
+  @State private var tabs: [TabBarItem] = []
   
   public init(store: Store<TabBarState, TabBarAction>) {
     self.store = store
@@ -24,7 +25,8 @@ public struct TabBarView: View {
       ShortsTabBarContainerView(
         selection: viewStore.binding(
           get: { $0.selectedTab },
-          send: TabBarAction.tabSelected)
+          send: TabBarAction.tabSelected
+        )
       ) {
         HotKeywordCoordinatorView(
           store: store.scope(
@@ -58,6 +60,9 @@ public struct TabBarView: View {
           tab: .myPage,
           selection: viewStore.binding(get: { $0.selectedTab }, send: TabBarAction.tabSelected)
         )
+      }
+      .onPreferenceChange(TabBarItemsPreferenceKey.self) { value in
+        self.tabs = value
       }
     }
   }
