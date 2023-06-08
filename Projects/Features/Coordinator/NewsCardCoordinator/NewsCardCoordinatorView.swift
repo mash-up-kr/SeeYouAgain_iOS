@@ -19,17 +19,14 @@ public struct NewsCardCoordinatorView: View {
   }
   
   public var body: some View {
-    VStack(spacing: 0) {
-      TCARouter(store) { screen in
-        SwitchStore(screen) {
-          CaseLet(
-            state: /NewsCardScreenState.newsList,
-            action: NewsCardScreenAction.newsList,
-            then: NewsListView.init
-          )
-        }
+    TCARouter(store) { screen in
+      SwitchStore(screen) {
+        CaseLet(
+          state: /NewsCardScreenState.newsList,
+          action: NewsCardScreenAction.newsList,
+          then: NewsListView.init
+        )
       }
     }
-    .edgesIgnoringSafeArea(.all)
   }
 }

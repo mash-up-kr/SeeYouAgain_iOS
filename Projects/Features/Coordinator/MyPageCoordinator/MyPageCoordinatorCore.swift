@@ -18,7 +18,7 @@ public struct MyPageCoordinatorState: Equatable, IndexedRouterState {
     routes: [Route<MyPageScreenState>] = [
       .root(
         .shortStorage(.init()),
-        embedInNavigationView: true
+        embedInNavigationView: false
       )
     ]
   ) {

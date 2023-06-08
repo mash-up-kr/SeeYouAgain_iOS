@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-public struct ShortsTabBarContainerView<Content: View>: View {
+struct ShortsTabBarContainerView<Content: View>: View {
   @Binding var selection: TabBarItem
   private let content: Content
   

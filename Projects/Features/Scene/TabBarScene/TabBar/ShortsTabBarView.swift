@@ -9,7 +9,7 @@
 import DesignSystem
 import SwiftUI
 
-public struct ShortsTabBarView: View {
+struct ShortsTabBarView: View {
   public let tabs: [TabBarItem]
   @Binding var selection: TabBarItem
   private let selectionWidth: [CGFloat] = [90, 105, 87]
