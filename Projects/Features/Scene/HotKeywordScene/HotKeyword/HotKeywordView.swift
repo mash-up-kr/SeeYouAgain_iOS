@@ -18,8 +18,8 @@ public struct HotKeywordView: View {
   
   public var body: some View {
     WithViewStore(store) { viewStore in
-      HStack {
-        VStack {
+      VStack {
+        HStack {
           Text("실시간 핫 키워드 화면")
           Spacer()
         }

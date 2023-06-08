@@ -19,8 +19,8 @@ public struct MainView: View {
   
   public var body: some View {
     WithViewStore(store) { viewStore in
-      HStack {
-        VStack {
+      VStack {
+        HStack {
           Text("메인화면")
           Spacer()
         }

@@ -18,8 +18,8 @@ public struct ShortStorageNewsListView: View {
   
   public var body: some View {
     WithViewStore(store) { viewStore in
-      HStack {
-        VStack {
+      VStack {
+        HStack {
           Text("단기저장 카드에 대한 뉴스 기사 리스트 화면")
           Spacer()
         }
