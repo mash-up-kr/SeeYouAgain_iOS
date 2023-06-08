@@ -95,16 +95,16 @@ public let tabBarReducer = Reducer<
       
     case let .main(.routeAction(_, action: .main(.openBottomSheet(category)))):
       state.bottomSheet.categories = category
-      state.bottomSheet.categoryBottomSheetIsPresented = true
+      state.bottomSheet.isPresented = true
       return .none
       
-    case .bottomSheet(.closeCategoryBottomSheet):
-      state.bottomSheet.categoryBottomSheetIsPresented = false
+    case .bottomSheet(.updateButtonTapped):
       let category = state.bottomSheet.categories
-      return Effect(
-        value: .main(.routeAction(0, action: .main(.updateCategories(category))))
-      )
-      
+      return Effect.concatenate([
+        Effect(value: .bottomSheet(.closeBottomSheet)),
+        Effect(value: .main(.routeAction(0, action: .main(.updateCategories(category)))))
+      ])
+        
     default: return .none
     }
   }

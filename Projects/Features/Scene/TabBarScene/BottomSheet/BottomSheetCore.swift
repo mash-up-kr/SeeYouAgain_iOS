@@ -12,13 +12,14 @@ import Models
 
 public struct BottomSheetState: Equatable {
   public var categories: [Category] = []
-  public var categoryBottomSheetIsPresented: Bool = false
+  public var isPresented: Bool = false
   
   public init() {}
 }
 
 public enum BottomSheetAction {
-  case closeCategoryBottomSheet
+  case updateButtonTapped
+  case closeBottomSheet
   case toggleCategory(Category)
 }
 
@@ -40,6 +41,10 @@ public let bottomSheetReducer: Reducer<
       }
       return updateCategory
     }
+    return .none
+    
+  case .closeBottomSheet:
+    state.isPresented = false
     return .none
     
   default:

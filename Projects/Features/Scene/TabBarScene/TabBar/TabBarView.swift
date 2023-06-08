@@ -59,8 +59,8 @@ public struct TabBarView: View {
       .bottomSheet(
         title: "관심 키워드를 선택해주세요",
         isPresented: viewStore.binding(
-          get: \.bottomSheet.categoryBottomSheetIsPresented,
-          send: .bottomSheet(.closeCategoryBottomSheet)
+          get: \.bottomSheet.isPresented,
+          send: .bottomSheet(.closeBottomSheet)
         ),
         content: {
           CategoryBottomSheet(
@@ -74,7 +74,7 @@ public struct TabBarView: View {
           BottomButton(
             title: "변경",
             action: {
-              viewStore.send(.bottomSheet(.closeCategoryBottomSheet))
+              viewStore.send(.bottomSheet(.updateButtonTapped))
             }
           )
         }
