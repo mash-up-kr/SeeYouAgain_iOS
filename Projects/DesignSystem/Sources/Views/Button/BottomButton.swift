@@ -41,7 +41,8 @@ public struct BottomButton: View {
             Spacer()
           }
           .frame(height: 52)
-          .background(DesignSystem.Colors.blue200)
+          // TODO: - 추후 disabled에 대한 디자인 정의 시 변경될 예정
+          .background(disabled ? .gray : DesignSystem.Colors.blue200)
           .cornerRadius(12)
         }
       )
