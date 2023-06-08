@@ -10,6 +10,7 @@ import Combine
 import Common
 import ComposableArchitecture
 import Foundation
+import Services
 
 public struct SetCategoryState: Equatable {
   var allCategories: [String] = CategoryType.allCases.map {
@@ -20,7 +21,7 @@ public struct SetCategoryState: Equatable {
     !selectedCategories.isEmpty
   }
   
-  public init(selectedCategories: [String]) {
+  public init(selectedCategories: [String] = []) {
     self.selectedCategories = selectedCategories
   }
 }
@@ -31,15 +32,20 @@ public enum SetCategoryAction: Equatable {
   case selectButtonTapped
   
   // MARK: - Inner Business Action
-  case sendSelectedCategory
+  case _saveConnectHistory
+  case _sendSelectedCategory
   
   // MARK: - Inner SetState Action
-  case setSelectedCategories([String])
+  case _setSelectedCategories([String])
 }
 
 public struct SetCategoryEnvironment {
   // TODO: - 추후 회원가입 API 추가 필요
-  public init() {}
+  let userDefaultsService: UserDefaultsService
+  
+  public init(userDefaultsService: UserDefaultsService) {
+    self.userDefaultsService = userDefaultsService
+  }
 }
 
 public let setCategoryReducer = Reducer.combine([
@@ -47,21 +53,27 @@ public let setCategoryReducer = Reducer.combine([
     switch action {
     case let .categoryTapped(category):
       if state.selectedCategories.contains(category) {
-        return Effect(value: .setSelectedCategories(state.selectedCategories.filter { $0 != category }))
+        return Effect(value: ._setSelectedCategories(state.selectedCategories.filter { $0 != category }))
       } else {
         state.selectedCategories.append(category)
       }
       return .none
       
     case .selectButtonTapped:
-      return Effect(value: .sendSelectedCategory)
+      return Effect(value: ._saveConnectHistory)
       
-    case .sendSelectedCategory:
-      // TODO: - 추후 선택된 카테고리에 대해 회원 정보를 담아 API 호출 연동 필요
+    case ._saveConnectHistory:
+      return env.userDefaultsService.save(true)
+        .map({ _ -> SetCategoryAction in
+          return ._sendSelectedCategory
+        })
+      
+    case ._sendSelectedCategory:
+      // TODO: - 추후 선택된 카테고리에 대해 회원 정보 (IDFV)를 담아 API 호출 연동 필요
       // TODO: - 호출 응답 확인 후 상위 AppCoordinator에서 메인 화면으로 이동 로직 필요
       return .none
       
-    case let .setSelectedCategories(categories):
+    case let ._setSelectedCategories(categories):
       state.selectedCategories = categories
       return .none
     }

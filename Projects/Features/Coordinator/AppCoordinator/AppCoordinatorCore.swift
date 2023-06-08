@@ -8,6 +8,7 @@
 
 import Combine
 import ComposableArchitecture
+import Services
 import Splash
 import TCACoordinators
 
@@ -25,7 +26,10 @@ public enum AppCoordinatorAction: IndexedRouterAction {
 }
 
 public struct AppCoordinatorEnvironment {
-  public init() {
+  var userDefaultsService: UserDefaultsService
+  
+  public init(userDefaultsService: UserDefaultsService) {
+    self.userDefaultsService = userDefaultsService
   }
 }
 
@@ -35,8 +39,8 @@ public let appCoordinatorReducer: Reducer<
   AppCoordinatorEnvironment
 > = appScreenReducer
   .forEachIndexedRoute(
-    environment: { _ in
-      AppScreenEnvironment()
+    environment: {
+      AppScreenEnvironment(userDefaultsService: $0.userDefaultsService)
     }
   )
   .withRouteReducer(
@@ -50,6 +54,25 @@ public let appCoordinatorReducer: Reducer<
           )
         ]
         return .none
+        
+      case .routeAction(_, action: .splash(._setCategoryViewLoad)):
+        state.routes = [
+          .root(
+            .setCategory(.init()),
+            embedInNavigationView: true
+          )
+        ]
+        return .none
+        
+      case .routeAction(_, action: .setCategory(._sendSelectedCategory)):
+        state.routes = [
+          .root(
+            .tabBar(.init(hotKeyword: .init(), main: .init(), myPage: .init())),
+            embedInNavigationView: true
+          )
+        ]
+        return .none
+        
       default: return .none
       }
     }
