@@ -19,17 +19,14 @@ public struct HotKeywordCoordinatorView: View {
   }
   
   public var body: some View {
-    VStack(spacing: 0) {
-      TCARouter(store) { screen in
-        SwitchStore(screen) {
-          CaseLet(
-            state: /HotKeywordScreenState.hotKeyword,
-            action: HotKeywordScreenAction.hotKeyword,
-            then: HotKeywordView.init
-          )
-        }
+    TCARouter(store) { screen in
+      SwitchStore(screen) {
+        CaseLet(
+          state: /HotKeywordScreenState.hotKeyword,
+          action: HotKeywordScreenAction.hotKeyword,
+          then: HotKeywordView.init
+        )
       }
     }
-    .edgesIgnoringSafeArea(.all)
   }
 }

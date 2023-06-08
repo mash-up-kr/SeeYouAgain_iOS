@@ -19,17 +19,14 @@ public struct LongStorageCoordinatorView: View {
   }
   
   public var body: some View {
-    VStack(spacing: 0) {
-      TCARouter(store) { screen in
-        SwitchStore(screen) {
-          CaseLet(
-            state: /LongStorageScreenState.longStorageNewsList,
-            action: LongStorageScreenAction.longStorageNewsList,
-            then: LongStorageNewsListView.init
-          )
-        }
+    TCARouter(store) { screen in
+      SwitchStore(screen) {
+        CaseLet(
+          state: /LongStorageScreenState.longStorageNewsList,
+          action: LongStorageScreenAction.longStorageNewsList,
+          then: LongStorageNewsListView.init
+        )
       }
     }
-    .edgesIgnoringSafeArea(.all)
   }
 }

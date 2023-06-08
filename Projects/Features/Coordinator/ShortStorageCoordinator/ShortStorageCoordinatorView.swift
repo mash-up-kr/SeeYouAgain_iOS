@@ -19,17 +19,14 @@ public struct ShortStorageCoordinatorView: View {
   }
   
   public var body: some View {
-    VStack(spacing: 0) {
-      TCARouter(store) { screen in
-        SwitchStore(screen) {
-          CaseLet(
-            state: /ShortStorageScreenState.shortStorageNewsList,
-            action: ShortStorageScreenAction.shortStorageNewsList,
-            then: ShortStorageNewsListView.init
-          )
-        }
+    TCARouter(store) { screen in
+      SwitchStore(screen) {
+        CaseLet(
+          state: /ShortStorageScreenState.shortStorageNewsList,
+          action: ShortStorageScreenAction.shortStorageNewsList,
+          then: ShortStorageNewsListView.init
+        )
       }
     }
-    .edgesIgnoringSafeArea(.all)
   }
 }

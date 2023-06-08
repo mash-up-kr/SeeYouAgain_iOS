@@ -7,6 +7,7 @@
 //
 
 import ComposableArchitecture
+import NewsList
 import Services
 import SwiftUI
 import TCACoordinators
@@ -18,7 +19,7 @@ public struct NewsCardCoordinatorState: Equatable, IndexedRouterState {
     routes: [Route<NewsCardScreenState>] = [
       .root(
         .newsList(.init()),
-        embedInNavigationView: false
+        embedInNavigationView: true
       )
     ]
   ) {
