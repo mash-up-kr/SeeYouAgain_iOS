@@ -9,12 +9,12 @@
 import SwiftUI
 
 public struct BottomSheet<Content: View, BottomArea: View>: View {
-  public var title: String
-  @Binding public var isPresented: Bool
-  public var content: Content
-  public var bottomArea: BottomArea
+  private var title: String
+  @Binding private var isPresented: Bool
+  private var content: Content
+  private var bottomArea: BottomArea
   
-  public let keyWindow = UIApplication.shared.connectedScenes
+  private let keyWindow = UIApplication.shared.connectedScenes
     .compactMap { $0 as? UIWindowScene }
     .flatMap { $0.windows }
     .first { $0.isKeyWindow }
@@ -80,8 +80,8 @@ private struct HeaderView: View {
   }
 }
 
-extension View {
-  public func bottomSheet<Content: View, BottomArea: View>(
+public extension View {
+   func bottomSheet<Content: View, BottomArea: View>(
     title: String,
     isPresented: Binding<Bool>,
     @ViewBuilder content: () -> Content,
@@ -110,5 +110,6 @@ extension View {
       }
     }
     .edgesIgnoringSafeArea(.bottom)
+    .animation(.easeInOut, value: isPresented.wrappedValue)
   }
 }
