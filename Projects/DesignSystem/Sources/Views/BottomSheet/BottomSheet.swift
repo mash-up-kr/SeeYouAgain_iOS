@@ -48,7 +48,7 @@ public struct BottomSheet<Content: View, BottomArea: View>: View {
         .padding(.top, 8)
     }
     .background(Color.white.opacity(0.8).blurEffect())
-    .clipShape(RoundCorners(radius: 20, corners: [.topLeft, .topRight]))    
+    .clipShape(RoundCorners(radius: 20, corners: [.topLeft, .topRight]))
   }
 }
 
@@ -81,7 +81,7 @@ private struct HeaderView: View {
 }
 
 public extension View {
-   func bottomSheet<Content: View, BottomArea: View>(
+  func bottomSheet<Content: View, BottomArea: View>(
     title: String,
     isPresented: Binding<Bool>,
     @ViewBuilder content: () -> Content,
