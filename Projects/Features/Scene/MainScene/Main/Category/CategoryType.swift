@@ -19,22 +19,6 @@ public enum CategoryType: String {
 }
 
 extension CategoryType {
-  var name: String {
-    switch self {
-    case .economy:
-      return "경제"
-    case .itscience:
-      return "IT/과학"
-    case .lifeCulture:
-      return "생활/문화"
-    case .politics:
-      return "정치"
-    case .society:
-      return "사회"
-    case .world:
-      return "세계"
-    }
-  }
   var icon: Image {
     switch self {
     default:
