@@ -23,7 +23,7 @@ public struct MainView: View {
         CategoriesView(store: store.scope(state: \.categories))
       }
       .onAppear {
-        viewStore.send(.viewWillAppear)
+        viewStore.send(._viewWillAppear)
       }
     }
     .shortsBackgroundView()

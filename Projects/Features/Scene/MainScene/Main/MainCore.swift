@@ -21,43 +21,46 @@ public struct MainState: Equatable {
 
 public enum MainAction {
   // MARK: - User Action
-  case openBottomSheet([Category])
+  case showCategoryBottomSheet([Category])
   
   // MARK: - Inner Business Action
-  case viewWillAppear
-  case fetchCategories
-  case updateCategories([Category])
+  case _viewWillAppear
+  case _fetchCategories
+  case _updateCategories
   
   // MARK: - Inner SetState Action
-  case setIsLoading(Bool)
+  case _setIsLoading(Bool)
+  case _setCategories([Category])
 }
 
-public struct MainEnvironment {
-  var mainQueue: AnySchedulerOf<DispatchQueue> = .main
-  var userService: UserService = .live
+public struct MainEnvironment {  
   public init() {}
 }
 
 public let mainReducer = Reducer.combine([
   Reducer<MainState, MainAction, MainEnvironment> { state, action, env in
     switch action {
-    case .viewWillAppear:
+    case ._viewWillAppear:
       return Effect.concatenate([
-        Effect(value: .setIsLoading(true)),
-        Effect(value: .fetchCategories),
-        Effect(value: .setIsLoading(false))
+        Effect(value: ._setIsLoading(true)),
+        Effect(value: ._fetchCategories),
+        Effect(value: ._setIsLoading(false))
       ])
       
-    case .fetchCategories:
+    case ._fetchCategories:
       state.categories = Category.stub
       return .none
       
-    case let .updateCategories(categories):
-      state.categories = categories
+    case ._updateCategories:
+      // TODO: update categories to sever
       return .none
       
-    case let .setIsLoading(loading):
-      state.isLoading = loading
+    case let ._setIsLoading(isLoading):
+      state.isLoading = isLoading
+      return .none
+      
+    case let ._setCategories(categories):
+      state.categories = categories
       return .none
       
     default:
