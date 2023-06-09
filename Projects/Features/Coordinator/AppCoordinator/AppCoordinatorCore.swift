@@ -74,7 +74,7 @@ public let appCoordinatorReducer: Reducer<
       case .routeAction(_, action: .setCategory(._sendSelectedCategory)):
         state.routes = [
           .root(
-            .tabBar(.init(hotKeyword: .init(), main: .init(), myPage: .init())),
+            .tabBar(.init(hotKeyword: .init(), main: .init(), myPage: .init(), categoryBottomSheet: .init())),
             embedInNavigationView: true
           )
         ]
