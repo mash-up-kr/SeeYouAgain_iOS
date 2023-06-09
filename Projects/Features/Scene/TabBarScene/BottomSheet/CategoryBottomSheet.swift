@@ -40,24 +40,14 @@ struct CategoryBottomSheet: View {
       ScrollView {
         LazyVGrid(columns: columns, spacing: 12) {
           ForEach(viewStore.state.categories, id: \.id) { category in
-            HStack {
-              Spacer()
-                            
-              VStack(spacing: 2) {
-                DesignSystem.Icons.badge
-                  .frame(width: 28, height: 28)
-                Text(category.name)
-                  .font(.b14)
-                  .foregroundColor(DesignSystem.Colors.grey100)
-              }
-              
-              Spacer()
-            }
-            .frame(height: 80)
-            .background(category.isSelected ? DesignSystem.Colors.grey50 : DesignSystem.Colors.white)
-            .cornerRadius(8)
-            .onTapGesture {
-              viewStore.send(._toggleCategory(category))
+            // TODO: 머지 후 CategoryType로 사용해 체크하는 것으로 수정
+            if category.name == "연애" || category.name == "스포츠" {
+              InActiveCategory(category: category)
+            } else {
+              ActiveCategory(category: category)
+                .onTapGesture {
+                  viewStore.send(._toggleCategory(category))
+                }
             }
           }
         }
@@ -65,5 +55,60 @@ struct CategoryBottomSheet: View {
       .scrollDisabled(true)
       .frame(height: 172)
     }
+  }
+}
+
+private struct ActiveCategory: View {
+  private let category: Category
+  
+  fileprivate init(category: Category) {
+    self.category = category
+  }
+  
+  fileprivate var body: some View {
+    HStack {
+      Spacer()
+      
+      VStack(spacing: 2) {
+        DesignSystem.Icons.badge
+          .frame(width: 28, height: 28)
+        Text(category.name)
+          .font(.b14)
+          .foregroundColor(DesignSystem.Colors.grey100)
+      }
+      
+      Spacer()
+    }
+    .frame(height: 80)
+    .background(category.isSelected ? DesignSystem.Colors.grey50 : DesignSystem.Colors.white)
+    .cornerRadius(8)
+  }
+}
+
+private struct InActiveCategory: View {
+  private let category: Category
+  
+  fileprivate init(category: Category) {
+    self.category = category
+  }
+  
+  fileprivate var body: some View {
+    HStack {
+      Spacer()
+      
+      VStack(spacing: 2) {
+        Text(category.name)
+          .font(.b14)
+          .foregroundColor(DesignSystem.Colors.grey60)
+        Text("Coming\nsoon!")
+          .font(.b14)
+          .foregroundColor(DesignSystem.Colors.grey60)
+          .multilineTextAlignment(.center)
+      }
+      
+      Spacer()
+    }
+    .frame(height: 80)
+    .background(DesignSystem.Colors.white)
   }
 }
