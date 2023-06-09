@@ -110,5 +110,6 @@ private struct InActiveCategory: View {
     }
     .frame(height: 80)
     .background(DesignSystem.Colors.white)
+    .cornerRadius(8)
   }
 }
