@@ -13,7 +13,7 @@ import TCACoordinators
 
 public struct AppCoordinatorState: Equatable, IndexedRouterState {
   public var routes: [Route<AppScreenState>]
-
+  
   public init(routes: [Route<AppScreenState>] = [.root(.splash(.init()), embedInNavigationView: true)]) {
     self.routes = routes
   }
@@ -45,7 +45,14 @@ public let appCoordinatorReducer: Reducer<
       case .routeAction(_, action: .splash(.viewDidLoad)):
         state.routes = [
           .root(
-            .tabBar(.init(hotKeyword: .init(), main: .init(), myPage: .init())),
+            .tabBar(
+              .init(
+                hotKeyword: .init(),
+                main: .init(),
+                myPage: .init(),
+                categoryBottomSheet: .init()
+              )
+            ),
             embedInNavigationView: true
           )
         ]

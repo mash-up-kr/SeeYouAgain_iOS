@@ -8,10 +8,20 @@
 
 import ComposableArchitecture
 import DesignSystem
-import Models
 import SwiftUI
 
-public typealias Category = Models.Category
+struct CategoryBottomSheetHeader: View {
+  var body: some View {
+    HStack {
+      Text("관심 키워드를 선택해주세요")
+        .font(.b18)
+        .foregroundColor(DesignSystem.Colors.grey100)
+      Spacer()
+    }
+    .padding(.horizontal, 24)
+  }
+}
+
 struct CategoryBottomSheet: View {
   private let columns = [
     GridItem(.flexible()),
@@ -19,9 +29,9 @@ struct CategoryBottomSheet: View {
     GridItem(.flexible()),
     GridItem(.flexible())
   ]
-  private let store: Store<BottomSheetState, BottomSheetAction>
+  private let store: Store<CategoryBottomSheetState, CategoryBottomSheetAction>
   
-  init(store: Store<BottomSheetState, BottomSheetAction>) {
+  init(store: Store<CategoryBottomSheetState, CategoryBottomSheetAction>) {
     self.store = store
   }
   
@@ -32,7 +42,7 @@ struct CategoryBottomSheet: View {
           ForEach(viewStore.state.categories, id: \.id) { category in
             HStack {
               Spacer()
-              
+                            
               VStack(spacing: 2) {
                 DesignSystem.Icons.badge
                   .frame(width: 28, height: 28)
@@ -47,7 +57,7 @@ struct CategoryBottomSheet: View {
             .background(category.isSelected ? DesignSystem.Colors.grey50 : DesignSystem.Colors.white)
             .cornerRadius(8)
             .onTapGesture {
-              viewStore.send(.toggleCategory(category))
+              viewStore.send(._toggleCategory(category))
             }
           }
         }

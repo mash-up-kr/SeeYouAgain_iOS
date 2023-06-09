@@ -57,16 +57,20 @@ public struct TabBarView: View {
         .tag(Tab.myPage)
       }
       .bottomSheet(
-        title: "관심 키워드를 선택해주세요",
         isPresented: viewStore.binding(
-          get: \.bottomSheet.categoryBottomSheetIsPresented,
-          send: .bottomSheet(.closeCategoryBottomSheet)
+          get: \.categoryBottomSheet.isPresented,
+          send: {
+            TabBarAction.categoryBottomSheet(
+              CategoryBottomSheetAction._setIsPresented($0)
+            )
+          }
         ),
+        headerArea: { CategoryBottomSheetHeader() },
         content: {
           CategoryBottomSheet(
             store: store.scope(
-              state: \.bottomSheet,
-              action: TabBarAction.bottomSheet
+              state: \.categoryBottomSheet,
+              action: TabBarAction.categoryBottomSheet
             )
           )
         },
@@ -74,7 +78,7 @@ public struct TabBarView: View {
           BottomButton(
             title: "변경",
             action: {
-              viewStore.send(.bottomSheet(.categoryUpdateButtonTapped))
+              viewStore.send(.categoryBottomSheet(.updateButtonTapped))
             }
           )
         }

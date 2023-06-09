@@ -22,19 +22,19 @@ public struct TabBarState: Equatable {
   public var hotKeyword: HotKeywordCoordinatorState
   public var main: MainCoordinatorState
   public var myPage: MyPageCoordinatorState
-  public var bottomSheet: BottomSheetState
+  public var categoryBottomSheet: CategoryBottomSheetState
   public var selectedTab: Tab = .main
   
   public init(
     hotKeyword: HotKeywordCoordinatorState,
     main: MainCoordinatorState,
     myPage: MyPageCoordinatorState,
-    bottomSheet: BottomSheetState
+    categoryBottomSheet: CategoryBottomSheetState
   ) {
     self.hotKeyword = hotKeyword
     self.main = main
     self.myPage = myPage
-    self.bottomSheet = bottomSheet
+    self.categoryBottomSheet = categoryBottomSheet
   }
 }
 
@@ -42,7 +42,7 @@ public enum TabBarAction {
   case hotKeyword(HotKeywordCoordinatorAction)
   case main(MainCoordinatorAction)
   case myPage(MyPageCoordinatorAction)
-  case bottomSheet(BottomSheetAction)
+  case categoryBottomSheet(CategoryBottomSheetAction)
   case tabSelected(Tab)
 }
 
@@ -79,12 +79,12 @@ public let tabBarReducer = Reducer<
         MyPageCoordinatorEnvironment()
       }
     ),
-  bottomSheetReducer
+  categoryBottomSheetReducer
     .pullback(
-      state: \TabBarState.bottomSheet,
-      action: /TabBarAction.bottomSheet,
+      state: \TabBarState.categoryBottomSheet,
+      action: /TabBarAction.categoryBottomSheet,
       environment: { _ in
-        BottomSheetEnvironment()
+        CategoryBottomSheetEnvironment()
       }
     ),
   Reducer { state, action, env in
@@ -93,18 +93,19 @@ public let tabBarReducer = Reducer<
       state.selectedTab = tab
       return .none
       
-    case let .main(.routeAction(_, action: .main(.openBottomSheet(category)))):
-      state.bottomSheet.categories = category
-      state.bottomSheet.categoryBottomSheetIsPresented = true
-      return .none
+    case let .main(.routeAction(_, action: .main(.showCategoryBottomSheet(categories)))):
+      return Effect.concatenate(
+        Effect(value: .categoryBottomSheet(._setCategories(categories))),
+        Effect(value: .categoryBottomSheet(._setIsPresented(true)))
+      )
       
-    case .bottomSheet(.categoryUpdateButtonTapped):
-      let category = state.bottomSheet.categories
-      return Effect.concatenate([
-        Effect(value: .bottomSheet(.closeCategoryBottomSheet)),
-        Effect(value: .main(.routeAction(0, action: .main(.updateCategories(category)))))
-      ])
-        
+    case .categoryBottomSheet(.updateButtonTapped):
+      let categories = state.categoryBottomSheet.categories
+      return Effect.concatenate(
+        Effect(value: .categoryBottomSheet(._setIsPresented(false))),
+        Effect(value: .main(.routeAction(0, action: .main(._setCategories(categories)))))
+      )
+      
     default: return .none
     }
   }

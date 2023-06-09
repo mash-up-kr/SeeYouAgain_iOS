@@ -24,14 +24,14 @@ struct CategoriesView: View {
           ForEach(viewStore.state, id: \.id) { category in
             if category.isSelected,
               let category = CategoryType(rawValue: category.name) {
-              CategoryBadgeButton(name: category.name, icon: category.icon) {
+              CategoryBadgeButton(name: category.rawValue, icon: category.icon) {
                 // TODO: filter news cards.
               }
             }
           }
           
           CategoryDetailButton {
-            viewStore.send(.openBottomSheet(viewStore.state))
+            viewStore.send(.showCategoryBottomSheet(viewStore.state))
           }
           
           Spacer()

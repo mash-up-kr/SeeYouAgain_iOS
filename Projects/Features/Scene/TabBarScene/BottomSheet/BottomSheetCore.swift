@@ -10,41 +10,51 @@ import CombineExt
 import ComposableArchitecture
 import Models
 
-public struct BottomSheetState: Equatable {
+public typealias Category = Models.Category
+
+public struct CategoryBottomSheetState: Equatable {
   public var categories: [Category] = []
-  public var categoryBottomSheetIsPresented: Bool = false
+  public var isPresented: Bool = false
   
   public init() {}
 }
 
-public enum BottomSheetAction {
-  case categoryUpdateButtonTapped
-  case closeCategoryBottomSheet
-  case toggleCategory(Category)
+public enum CategoryBottomSheetAction {
+  // MARK: - User Action
+  case updateButtonTapped
+
+  // MARK: - Inner SetState Action
+  case _toggleCategory(Category)
+  case _setCategories([Category])
+  case _setIsPresented(Bool)
 }
 
-public struct BottomSheetEnvironment {
+public struct CategoryBottomSheetEnvironment {
   
 }
 
-public let bottomSheetReducer: Reducer<
-  BottomSheetState,
-  BottomSheetAction,
-  BottomSheetEnvironment
+public let categoryBottomSheetReducer: Reducer<
+  CategoryBottomSheetState,
+  CategoryBottomSheetAction,
+  CategoryBottomSheetEnvironment
 > = Reducer { state, action, env in
   switch action {
-  case let .toggleCategory(targetCategory):
-    state.categories = state.categories.map { category in
+  case let ._toggleCategory(targetCategory):
+    let updateCategories = state.categories.map { category in
       var updateCategory = category
       if targetCategory == updateCategory {
         updateCategory.isSelected.toggle()
       }
       return updateCategory
     }
+    return Effect(value: ._setCategories(updateCategories))
+    
+  case let ._setCategories(categories):
+    state.categories = categories
     return .none
     
-  case .closeCategoryBottomSheet:
-    state.categoryBottomSheetIsPresented = false
+  case let ._setIsPresented(isPresented):
+    state.isPresented = isPresented
     return .none
     
   default:
