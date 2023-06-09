@@ -21,7 +21,8 @@ public enum SplashAction: Equatable {
   case viewDidLoad
   
   // MARK: - Inner Business Action
-  case _exitSplash
+  case _checkConnectHistory
+  case _setCategoryViewLoad
   
   // MARK: - Inner SetState Action
   
@@ -29,7 +30,11 @@ public enum SplashAction: Equatable {
 }
 
 public struct SplashEnvironment {
-  public init() {}
+  let userDefaultsService: UserDefaultsService
+  
+  public init(userDefaultsService: UserDefaultsService) {
+    self.userDefaultsService = userDefaultsService
+  }
 }
 
 public let splashReducer = Reducer.combine([
@@ -39,7 +44,17 @@ public let splashReducer = Reducer.combine([
       // TODO: - 추후 데이터 로드 되는 용도 (데이터 다 받아올 시 exitSplash 액션 방출)
       return .none
       
-    case ._exitSplash:
+    case ._checkConnectHistory:
+      return env.userDefaultsService.load()
+        .map({ status -> SplashAction in
+          if status {
+            return .viewDidLoad
+          } else {
+            return ._setCategoryViewLoad
+          }
+        })
+      
+    case ._setCategoryViewLoad:
       return .none
     }
   }
