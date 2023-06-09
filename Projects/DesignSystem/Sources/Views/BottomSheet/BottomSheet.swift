@@ -6,12 +6,15 @@
 //  Copyright © 2023 mashup.seeYouAgain. All rights reserved.
 //
 
-import Common
 import SwiftUI
 
-public struct BottomSheet<Content: View, BottomArea: View>: View {
-  private var title: String
+public struct BottomSheet<
+  HeaderArea: View,
+  Content: View,
+  BottomArea: View
+>: View {
   @Binding private var isPresented: Bool
+  private var headerArea: HeaderArea
   private var content: Content
   private var bottomArea: BottomArea
   
@@ -21,20 +24,20 @@ public struct BottomSheet<Content: View, BottomArea: View>: View {
     .first { $0.isKeyWindow }
   
   public init(
-    title: String,
     isPresented: Binding<Bool>,
+    @ViewBuilder headerArea: () -> HeaderArea,
     @ViewBuilder content: () -> Content,
     @ViewBuilder bottomArea: () -> BottomArea
   ) {
-    self.title = title
     self._isPresented = isPresented
+    self.headerArea = headerArea()
     self.content = content()
     self.bottomArea = bottomArea()
   }
   
   public var body: some View {
     VStack(spacing: 0) {
-      HeaderView(title: title)
+      headerArea
         .padding(.top, 32)
       
       content
@@ -49,28 +52,18 @@ public struct BottomSheet<Content: View, BottomArea: View>: View {
         .padding(.top, 8)
     }
     .background(Color.white.opacity(0.8).blurEffect())
-    .cornerRadius(20, corners: [.topLeft, .topRight])
-  }
-}
-
-private struct HeaderView: View {
-  var title: String
-  
-  var body: some View {
-    HStack {
-      Text(title)
-        .font(.b18)
-        .foregroundColor(DesignSystem.Colors.grey100)
-      Spacer()
-    }
-    .padding(.horizontal, 24)
+    .cornerRadius(20)
   }
 }
 
 public extension View {
-  func bottomSheet<Content: View, BottomArea: View>(
-    title: String,
+  func bottomSheet<
+    HeaderArea: View,
+    Content: View,
+    BottomArea: View
+  >(
     isPresented: Binding<Bool>,
+    @ViewBuilder headerArea: () -> HeaderArea,
     @ViewBuilder content: () -> Content,
     @ViewBuilder bottomArea: () -> BottomArea
   ) -> some View {
@@ -87,8 +80,8 @@ public extension View {
           .transition(.opacity)
         
         BottomSheet(
-          title: title,
           isPresented: isPresented,
+          headerArea: headerArea,
           content: content,
           bottomArea: bottomArea
         )
