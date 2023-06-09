@@ -36,7 +36,7 @@ public struct SetCategoryView: View {
         
         BottomButton(
           title: "선택",
-          disabled: !viewStore.state.isAvailabledSelectButton,
+          disabled: !viewStore.state.isSelectButtonEnabled,
           action: { viewStore.send(.selectButtonTapped) }
         )
         .padding(.bottom, 8)

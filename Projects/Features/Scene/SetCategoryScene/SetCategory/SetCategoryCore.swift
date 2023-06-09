@@ -17,7 +17,7 @@ public struct SetCategoryState: Equatable {
     $0.rawValue
   }
   var selectedCategories: [String]
-  var isAvailabledSelectButton: Bool {
+  var isSelectButtonEnabled: Bool {
     !selectedCategories.isEmpty
   }
   
