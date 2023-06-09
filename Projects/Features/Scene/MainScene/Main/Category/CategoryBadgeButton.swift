@@ -6,6 +6,7 @@
 //  Copyright © 2023 mashup.seeYouAgain. All rights reserved.
 //
 
+import DesignSystem
 import SwiftUI
 
 public struct CategoryBadgeButton: View {
