@@ -12,18 +12,12 @@ import Main
 import MainCoordinator
 import MyPageCoordinator
 
-public enum Tab: Hashable {
-  case hotKeyword
-  case main
-  case myPage
-}
-
 public struct TabBarState: Equatable {
   public var hotKeyword: HotKeywordCoordinatorState
   public var main: MainCoordinatorState
   public var myPage: MyPageCoordinatorState
   public var categoryBottomSheet: CategoryBottomSheetState
-  public var selectedTab: Tab = .main
+  public var selectedTab: TabBarItem = .house
   
   public init(
     hotKeyword: HotKeywordCoordinatorState,
@@ -43,7 +37,7 @@ public enum TabBarAction {
   case main(MainCoordinatorAction)
   case myPage(MyPageCoordinatorAction)
   case categoryBottomSheet(CategoryBottomSheetAction)
-  case tabSelected(Tab)
+  case tabSelected(TabBarItem)
 }
 
 public struct TabBarEnvironment {

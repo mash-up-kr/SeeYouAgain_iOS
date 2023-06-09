@@ -23,7 +23,7 @@ struct AppView: View {
         store: .init(
           initialState: .init(),
           reducer: appCoordinatorReducer,
-          environment: .init()
+          environment: .init(userDefaultsService: .live)
         )
       )
       .onAppear { viewStore.send(.onAppear) }

@@ -19,7 +19,7 @@ public struct ShortStorageCoordinatorState: Equatable, IndexedRouterState {
     routes: [Route<ShortStorageScreenState>] = [
       .root(
         .shortStorageNewsList(.init()),
-        embedInNavigationView: false
+        embedInNavigationView: true
       )
     ]
   ) {

@@ -15,6 +15,7 @@ import SwiftUI
 
 public struct TabBarView: View {
   private let store: Store<TabBarState, TabBarAction>
+  @State private var tabs: [TabBarItem] = []
   
   public init(store: Store<TabBarState, TabBarAction>) {
     self.store = store
@@ -22,39 +23,47 @@ public struct TabBarView: View {
   
   public var body: some View {
     WithViewStore(store) { viewStore in
-      TabView(selection: viewStore.binding(get: { $0.selectedTab }, send: TabBarAction.tabSelected)) {
+      ShortsTabBarContainerView(
+        selection: viewStore.binding(
+          get: { $0.selectedTab },
+          send: TabBarAction.tabSelected
+        )
+      ) {
         HotKeywordCoordinatorView(
           store: store.scope(
             state: \TabBarState.hotKeyword,
             action: TabBarAction.hotKeyword
           )
         )
-        .tabItem {
-          Text("HotKeyword")
-        }
-        .tag(Tab.hotKeyword)
-        
+        .tabBarItem(
+          tab: .hotKeyword,
+          selection: viewStore.binding(get: { $0.selectedTab }, send: TabBarAction.tabSelected)
+        )
+
         MainCoordinatorView(
           store: store.scope(
             state: \TabBarState.main,
             action: TabBarAction.main
           )
         )
-        .tabItem {
-          Text("Main")
-        }
-        .tag(Tab.main)
-        
+        .tabBarItem(
+          tab: .house,
+          selection: viewStore.binding(get: { $0.selectedTab }, send: TabBarAction.tabSelected)
+        )
+
         MyPageCoordinatorView(
           store: store.scope(
             state: \TabBarState.myPage,
             action: TabBarAction.myPage
           )
         )
-        .tabItem {
-          Text("MyPage")
-        }
-        .tag(Tab.myPage)
+        .tabBarItem(
+          tab: .myPage,
+          selection: viewStore.binding(get: { $0.selectedTab }, send: TabBarAction.tabSelected)
+        )
+      }
+      .onPreferenceChange(TabBarItemsPreferenceKey.self) { value in
+        self.tabs = value
       }
       .bottomSheet(
         isPresented: viewStore.binding(

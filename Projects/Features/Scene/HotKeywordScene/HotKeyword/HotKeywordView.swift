@@ -18,7 +18,14 @@ public struct HotKeywordView: View {
   
   public var body: some View {
     WithViewStore(store) { viewStore in
-      Text("실시간 핫 키워드 화면")
+      VStack {
+        HStack {
+          Text("실시간 핫 키워드 화면")
+          Spacer()
+        }
+        Spacer()
+      }
+      .background(Color.red)
     }
     .navigationBarHidden(true)
   }

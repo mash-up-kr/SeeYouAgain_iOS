@@ -7,6 +7,7 @@
 //
 
 import ComposableArchitecture
+import LongStorageNewsList
 import Services
 import SwiftUI
 import TCACoordinators
@@ -18,7 +19,7 @@ public struct LongStorageCoordinatorState: Equatable, IndexedRouterState {
     routes: [Route<LongStorageScreenState>] = [
       .root(
         .longStorageNewsList(.init()),
-        embedInNavigationView: false
+        embedInNavigationView: true
       )
     ]
   ) {

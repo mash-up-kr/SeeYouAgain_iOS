@@ -10,6 +10,7 @@ import Combine
 import ComposableArchitecture
 import Foundation
 import NewsCardCoordinator
+import Services
 import SetCategory
 import SettingCoordinator
 import Splash
@@ -33,7 +34,10 @@ public enum AppScreenAction {
 }
 
 internal struct AppScreenEnvironment {
-  internal init() {
+  let userDefaultsService: UserDefaultsService
+  
+  internal init(userDefaultsService: UserDefaultsService) {
+    self.userDefaultsService = userDefaultsService
   }
 }
 
@@ -46,16 +50,16 @@ internal let appScreenReducer = Reducer<
     .pullback(
       state: /AppScreenState.splash,
       action: /AppScreenAction.splash,
-      environment: { _ in
-        SplashEnvironment()
+      environment: {
+        SplashEnvironment(userDefaultsService: $0.userDefaultsService)
       }
     ),
   setCategoryReducer
     .pullback(
       state: /AppScreenState.setCategory,
       action: /AppScreenAction.setCategory,
-      environment: { _ in
-        SetCategoryEnvironment()
+      environment: {
+        SetCategoryEnvironment(userDefaultsService: $0.userDefaultsService)
       }
     ),
   tabBarReducer

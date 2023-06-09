@@ -19,17 +19,14 @@ public struct SettingCoordinatorView: View {
   }
   
   public var body: some View {
-    VStack(spacing: 0) {
-      TCARouter(store) { screen in
-        SwitchStore(screen) {
-          CaseLet(
-            state: /SettingScreenState.setting,
-            action: SettingScreenAction.setting,
-            then: SettingView.init
-          )
-        }
+    TCARouter(store) { screen in
+      SwitchStore(screen) {
+        CaseLet(
+          state: /SettingScreenState.setting,
+          action: SettingScreenAction.setting,
+          then: SettingView.init
+        )
       }
     }
-    .edgesIgnoringSafeArea(.all)
   }
 }
