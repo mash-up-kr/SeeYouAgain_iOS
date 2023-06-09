@@ -28,7 +28,7 @@ public struct CategoryBadgeButton: View {
     Button(action: action) {
       HStack(spacing: 8) {
         icon
-        Text("\(name)")
+        Text(name)
           .font(.r14)
           .foregroundColor(DesignSystem.Colors.grey90)
       }
