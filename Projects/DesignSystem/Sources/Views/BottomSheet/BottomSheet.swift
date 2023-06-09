@@ -6,6 +6,7 @@
 //  Copyright © 2023 mashup.seeYouAgain. All rights reserved.
 //
 
+import Common
 import SwiftUI
 
 public struct BottomSheet<Content: View, BottomArea: View>: View {
@@ -48,21 +49,7 @@ public struct BottomSheet<Content: View, BottomArea: View>: View {
         .padding(.top, 8)
     }
     .background(Color.white.opacity(0.8).blurEffect())
-    .clipShape(RoundCorners(radius: 20, corners: [.topLeft, .topRight]))
-  }
-}
-
-private struct RoundCorners: Shape {
-  var radius: CGFloat = 20
-  var corners: UIRectCorner = .allCorners
-  
-  func path(in rect: CGRect) -> Path {
-    let path = UIBezierPath(
-      roundedRect: rect,
-      byRoundingCorners: corners,
-      cornerRadii: CGSize(width: radius, height: radius)
-    )
-    return Path(path.cgPath)
+    .cornerRadius(20, corners: [.topLeft, .topRight])
   }
 }
 
