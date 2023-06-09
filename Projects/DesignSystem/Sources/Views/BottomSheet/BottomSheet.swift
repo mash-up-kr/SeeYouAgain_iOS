@@ -67,29 +67,31 @@ public extension View {
     @ViewBuilder content: () -> Content,
     @ViewBuilder bottomArea: () -> BottomArea
   ) -> some View {
-    ZStack(alignment: .bottom) {
+    ZStack {
       self
       
-      if isPresented.wrappedValue {
-        DesignSystem.Colors.grey100.opacity(0.4)
-          .ignoresSafeArea(.container, edges: .all)
-          .zIndex(1)
-          .onTapGesture {
-            isPresented.wrappedValue = false
-          }
-          .transition(.opacity)
-        
-        BottomSheet(
-          isPresented: isPresented,
-          headerArea: headerArea,
-          content: content,
-          bottomArea: bottomArea
-        )
-        .zIndex(2)
-        .transition(.move(edge: .bottom))
+      ZStack(alignment: .bottom) {
+        if isPresented.wrappedValue {
+          DesignSystem.Colors.grey100.opacity(0.4)
+            .ignoresSafeArea(.container, edges: .all)
+            .zIndex(1)
+            .onTapGesture {
+              isPresented.wrappedValue = false
+            }
+            .transition(.opacity)
+          
+          BottomSheet(
+            isPresented: isPresented,
+            headerArea: headerArea,
+            content: content,
+            bottomArea: bottomArea
+          )
+          .zIndex(2)
+          .transition(.move(edge: .bottom))
+        }
       }
+      .ignoresSafeArea()
     }
-    .edgesIgnoringSafeArea(.bottom)
     .animation(.easeInOut, value: isPresented.wrappedValue)
   }
 }
