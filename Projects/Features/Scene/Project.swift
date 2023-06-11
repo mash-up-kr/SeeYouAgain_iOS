@@ -43,7 +43,7 @@ let project = Project.make(
       name: "TabBar",
       product: .staticLibrary,
       bundleId: "com.mashup.seeYouAgain.tabBar.tabBar",
-      sources: ["TabBarScene/TabBar/**"],
+      sources: ["TabBarScene/**"],
       dependencies: [
         .project(target: "MainCoordinator", path: .relativeToRoot("Projects/Features/Coordinator")),
         .project(target: "HotKeywordCoordinator", path: .relativeToRoot("Projects/Features/Coordinator")),

@@ -20,14 +20,13 @@ public struct MainView: View {
   public var body: some View {
     WithViewStore(store) { viewStore in
       VStack {
-        HStack {
-          Text("메인화면")
-          Spacer()
-        }
-        Spacer()
+        CategoriesView(store: store.scope(state: \.categories))
       }
-      .background(Color.blue)
+      .onAppear {
+        viewStore.send(._viewWillAppear)
+      }
     }
+    .shortsBackgroundView()
     .navigationBarHidden(true)
   }
 }

@@ -7,6 +7,7 @@
 //
 
 import ComposableArchitecture
+import DesignSystem
 import HotKeywordCoordinator
 import MainCoordinator
 import MyPageCoordinator
@@ -64,6 +65,33 @@ public struct TabBarView: View {
       .onPreferenceChange(TabBarItemsPreferenceKey.self) { value in
         self.tabs = value
       }
+      .bottomSheet(
+        isPresented: viewStore.binding(
+          get: \.categoryBottomSheet.isPresented,
+          send: {
+            TabBarAction.categoryBottomSheet(
+              CategoryBottomSheetAction._setIsPresented($0)
+            )
+          }
+        ),
+        headerArea: { CategoryBottomSheetHeader() },
+        content: {
+          CategoryBottomSheet(
+            store: store.scope(
+              state: \.categoryBottomSheet,
+              action: TabBarAction.categoryBottomSheet
+            )
+          )
+        },
+        bottomArea: {
+          BottomButton(
+            title: "변경",
+            action: {
+              viewStore.send(.categoryBottomSheet(.updateButtonTapped))
+            }
+          )
+        }
+      )
     }
   }
 }

@@ -8,6 +8,7 @@
 
 import ComposableArchitecture
 import HotKeywordCoordinator
+import Main
 import MainCoordinator
 import MyPageCoordinator
 
@@ -15,16 +16,19 @@ public struct TabBarState: Equatable {
   public var hotKeyword: HotKeywordCoordinatorState
   public var main: MainCoordinatorState
   public var myPage: MyPageCoordinatorState
+  public var categoryBottomSheet: CategoryBottomSheetState
   public var selectedTab: TabBarItem = .house
   
   public init(
     hotKeyword: HotKeywordCoordinatorState,
     main: MainCoordinatorState,
-    myPage: MyPageCoordinatorState
+    myPage: MyPageCoordinatorState,
+    categoryBottomSheet: CategoryBottomSheetState
   ) {
     self.hotKeyword = hotKeyword
     self.main = main
     self.myPage = myPage
+    self.categoryBottomSheet = categoryBottomSheet
   }
 }
 
@@ -32,6 +36,7 @@ public enum TabBarAction {
   case hotKeyword(HotKeywordCoordinatorAction)
   case main(MainCoordinatorAction)
   case myPage(MyPageCoordinatorAction)
+  case categoryBottomSheet(CategoryBottomSheetAction)
   case tabSelected(TabBarItem)
 }
 
@@ -68,11 +73,33 @@ public let tabBarReducer = Reducer<
         MyPageCoordinatorEnvironment()
       }
     ),
+  categoryBottomSheetReducer
+    .pullback(
+      state: \TabBarState.categoryBottomSheet,
+      action: /TabBarAction.categoryBottomSheet,
+      environment: { _ in
+        CategoryBottomSheetEnvironment()
+      }
+    ),
   Reducer { state, action, env in
     switch action {
     case let .tabSelected(tab):
       state.selectedTab = tab
       return .none
+      
+    case let .main(.routeAction(_, action: .main(.showCategoryBottomSheet(categories)))):
+      return Effect.concatenate(
+        Effect(value: .categoryBottomSheet(._setCategories(categories))),
+        Effect(value: .categoryBottomSheet(._setIsPresented(true)))
+      )
+      
+    case .categoryBottomSheet(.updateButtonTapped):
+      let categories = state.categoryBottomSheet.categories
+      return Effect.concatenate(
+        Effect(value: .categoryBottomSheet(._setIsPresented(false))),
+        Effect(value: .main(.routeAction(0, action: .main(._setCategories(categories)))))
+      )
+      
     default: return .none
     }
   }
