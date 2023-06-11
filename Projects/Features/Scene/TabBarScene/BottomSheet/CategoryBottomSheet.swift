@@ -42,7 +42,7 @@ struct CategoryBottomSheet: View {
           ForEach(viewStore.state.categories, id: \.id) { category in
             // TODO: 머지 후 CategoryType로 사용해 체크하는 것으로 수정
             if category.name == "연애" || category.name == "스포츠" {
-              InActiveCategory(category: category)
+              InactiveCategory(category: category)
             } else {
               ActiveCategory(category: category)
                 .onTapGesture {
@@ -85,7 +85,7 @@ private struct ActiveCategory: View {
   }
 }
 
-private struct InActiveCategory: View {
+private struct InactiveCategory: View {
   private let category: Category
   
   fileprivate init(category: Category) {
