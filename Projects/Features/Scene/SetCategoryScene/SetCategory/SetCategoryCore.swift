@@ -45,9 +45,14 @@ public enum SetCategoryAction: Equatable {
 
 public struct SetCategoryEnvironment {
   // TODO: - 추후 회원가입 API 추가 필요
+  let mainQueue: AnySchedulerOf<DispatchQueue>
   let userDefaultsService: UserDefaultsService
   
-  public init(userDefaultsService: UserDefaultsService) {
+  public init(
+    mainQueue: AnySchedulerOf<DispatchQueue>,
+    userDefaultsService: UserDefaultsService
+  ) {
+    self.mainQueue = mainQueue
     self.userDefaultsService = userDefaultsService
   }
 }
@@ -86,7 +91,7 @@ public let setCategoryReducer = Reducer.combine([
         .cancel(id: SetCategoryToastCancelID()),
         Effect(value: ._hideToast)
           // MARK: - 추후 토스트 지속 시간 가이드에 따라 변경 예정
-          .delay(for: 2, scheduler: AnySchedulerOf<DispatchQueue>.main)
+          .delay(for: 2, scheduler: env.mainQueue)
           .eraseToEffect()
           .cancellable(id: SetCategoryToastCancelID(), cancelInFlight: true)
       ])
