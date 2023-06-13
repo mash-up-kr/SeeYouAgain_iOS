@@ -8,6 +8,7 @@
 
 import Combine
 import ComposableArchitecture
+import Foundation
 import Services
 import Splash
 import TCACoordinators
@@ -26,9 +27,14 @@ public enum AppCoordinatorAction: IndexedRouterAction {
 }
 
 public struct AppCoordinatorEnvironment {
-  var userDefaultsService: UserDefaultsService
+  let mainQueue: AnySchedulerOf<DispatchQueue>
+  let userDefaultsService: UserDefaultsService
   
-  public init(userDefaultsService: UserDefaultsService) {
+  public init(
+    mainQueue: AnySchedulerOf<DispatchQueue>,
+    userDefaultsService: UserDefaultsService
+  ) {
+    self.mainQueue = mainQueue
     self.userDefaultsService = userDefaultsService
   }
 }
@@ -40,7 +46,10 @@ public let appCoordinatorReducer: Reducer<
 > = appScreenReducer
   .forEachIndexedRoute(
     environment: {
-      AppScreenEnvironment(userDefaultsService: $0.userDefaultsService)
+      AppScreenEnvironment(
+        mainQueue: $0.mainQueue,
+        userDefaultsService: $0.userDefaultsService
+      )
     }
   )
   .withRouteReducer(
