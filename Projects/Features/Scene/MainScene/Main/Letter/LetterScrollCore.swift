@@ -101,13 +101,15 @@ private func calculateRotateDegrees(
   return state.rotateDegrees.indices.map { index in
     switch state.currentPageIndex {
     case let pageIndex where pageIndex > index:
-      return slope * gestureDragOffset - yOffset
+      let weight = min(2.0, Double(pageIndex - index))
+      return  slope * gestureDragOffset - weight * yOffset
       
     case let pageIndex where pageIndex == index:
       return slope * gestureDragOffset
       
     case let pageIndex where pageIndex < index:
-      return slope * gestureDragOffset + yOffset
+      let weight = min(2.0, Double(index - pageIndex))
+      return  slope * gestureDragOffset + weight * yOffset
       
     default:
       return 0.0
@@ -127,9 +129,10 @@ private func calculateOffsets(
   return state.offsets.indices.map { index in
     switch state.currentPageIndex {
     case let pageIndex where pageIndex > index:
+      let weight = min(2.0, Double(pageIndex - index))
       return CGSize(
-        width: slope * gestureDragOffset - yOffset,
-        height: -slope * gestureDragOffset + yOffset
+        width: slope * gestureDragOffset - weight * yOffset,
+        height: -slope * gestureDragOffset + weight * yOffset
       )
       
     case let pageIndex where pageIndex == index:
@@ -140,9 +143,10 @@ private func calculateOffsets(
       )
       
     case let pageIndex where pageIndex < index:
+      let weight = min(2.0, Double(index - pageIndex))
       return CGSize(
-        width: slope * gestureDragOffset + yOffset,
-        height: slope * gestureDragOffset + yOffset
+        width: slope * gestureDragOffset + weight * yOffset,
+        height: slope * gestureDragOffset + weight * yOffset
       )
       
     default:
