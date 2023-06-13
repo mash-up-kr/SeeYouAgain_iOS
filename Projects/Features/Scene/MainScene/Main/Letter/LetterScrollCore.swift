@@ -29,7 +29,6 @@ public enum LetterScrollAction {
   case dragOnChanged(CGSize)
   
   // MARK: - Inner Business Action
-
   case _countCurrentScrollOffset(CGFloat, CGFloat)
   case _calculateRotateDegrees(CGFloat)
   case _calculateOffsets(CGFloat)
@@ -102,14 +101,14 @@ private func calculateRotateDegrees(
     switch state.currentPageIndex {
     case let pageIndex where pageIndex > index:
       let weight = min(2.0, Double(pageIndex - index))
-      return  slope * gestureDragOffset - weight * yOffset
+      return slope * gestureDragOffset - weight * yOffset
       
     case let pageIndex where pageIndex == index:
       return slope * gestureDragOffset
       
     case let pageIndex where pageIndex < index:
       let weight = min(2.0, Double(index - pageIndex))
-      return  slope * gestureDragOffset + weight * yOffset
+      return slope * gestureDragOffset + weight * yOffset
       
     default:
       return 0.0
