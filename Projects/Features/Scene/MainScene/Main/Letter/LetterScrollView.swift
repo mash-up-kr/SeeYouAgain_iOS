@@ -28,7 +28,7 @@ struct LetterScrollView: View {
     self.screenWidth = UIScreen.main.bounds.width
     let screenRatio = screenWidth / Constant.iphone13MiniWidth
     self.itemWidth = Constant.defaultItemWidth * screenRatio
-    self.itemPadding =  (screenWidth - itemWidth) / 4
+    self.itemPadding = 10
     self.leadingOffset = (screenWidth - itemWidth) / 2
   }
   
