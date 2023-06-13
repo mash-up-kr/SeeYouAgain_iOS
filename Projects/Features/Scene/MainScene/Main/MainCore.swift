@@ -34,7 +34,7 @@ public enum MainAction {
   case _setIsLoading(Bool)
   case _setCategories([Category])
   
-  // MARK: - Child ACtion
+  // MARK: - Child Action
   case letterScrollAction(LetterScrollAction)
 }
 
