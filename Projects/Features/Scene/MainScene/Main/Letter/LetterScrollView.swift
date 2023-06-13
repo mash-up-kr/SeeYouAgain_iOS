@@ -34,8 +34,8 @@ struct LetterScrollView: View {
   
   var body: some View {
     WithViewStore(store) { viewStore in
-      GeometryReader { geometry in
-        HStack(alignment: .center, spacing: itemPadding) {
+      GeometryReader { _ in
+        LazyHStack(alignment: .center, spacing: itemPadding) {
           ForEach(0..<5) { index in
             Rectangle()
               .frame(width: itemWidth)
@@ -76,8 +76,8 @@ private extension LetterScrollView {
   ) {
     viewStore.send(.dragOnChanged(value.translation))
     viewStore.send(._countCurrentScrollOffset(leadingOffset, itemWidth + itemPadding))
-    viewStore.send(._calculateRotateDegrees(screenWidth))
-    viewStore.send(._calculateOffsets(screenWidth))
+    viewStore.send(._calculateRotateDegrees(itemWidth))
+    viewStore.send(._calculateOffsets(itemWidth))
   }
   
   func sendDragEndedActions(
@@ -87,8 +87,8 @@ private extension LetterScrollView {
     viewStore.send(._setGestureDragOffset(.zero))
     viewStore.send(._setCurrentPageIndex(pageIndex))
     viewStore.send(._countCurrentScrollOffset(leadingOffset, itemWidth + itemPadding))
-    viewStore.send(._calculateRotateDegrees(screenWidth))
-    viewStore.send(._calculateOffsets(screenWidth))
+    viewStore.send(._calculateRotateDegrees(itemWidth))
+    viewStore.send(._calculateOffsets(itemWidth))
   }
   
   func countPageIndex(for offset: CGFloat, itemsAmount: Int) -> Int {
