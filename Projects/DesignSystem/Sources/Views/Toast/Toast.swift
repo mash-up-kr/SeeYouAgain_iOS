@@ -27,7 +27,7 @@ struct ToastView: View {
     if isExistText {
       switch toastType {
       case .basic:
-        TextWithIconToast(text: text ?? "", toastType: toastType)
+        TextToast(text: text ?? "", toastType: toastType)
           .customToastPadding(backgroundColor: toastType.backgroundColor)
         
       default:
