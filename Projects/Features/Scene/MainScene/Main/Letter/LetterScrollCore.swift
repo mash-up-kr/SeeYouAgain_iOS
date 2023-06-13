@@ -25,12 +25,16 @@ public struct LetterScrollState: Equatable {
 }
 
 public enum LetterScrollAction {
+  // MARK: - User Action
   case dragOnChanged(CGSize)
   
+  // MARK: - Inner Business Action
+
   case _countCurrentScrollOffset(CGFloat, CGFloat)
   case _calculateRotateDegrees(CGFloat)
   case _calculateOffsets(CGFloat)
   
+  // MARK: - Inner SetState Action
   case _setRotateDegrees([Double])
   case _setOffsets([CGSize])
   case _setGestureDragOffset(CGFloat)
@@ -55,55 +59,11 @@ public let letterScrollReducer: Reducer<
     return Effect(value: ._setCurrentScrollOffset(scrollOffset))
     
   case let ._calculateRotateDegrees(screenWidth):
-    let slope: Double = 11.0 / screenWidth
-    let gestureDragOffset = state.gestureDragOffset
-    let yOffset: Double = 11.0
-    let updateDegrees = state.rotateDegrees.indices.map { index in
-      switch state.currentPageIndex {
-      case let pageIndex where pageIndex > index:
-        return slope * gestureDragOffset - 11.0
-        
-      case let pageIndex where pageIndex == index:
-        return slope * gestureDragOffset
-        
-      case let pageIndex where pageIndex < index:
-        return slope * gestureDragOffset + 11.0
-        
-      default:
-        return 0.0
-      }
-    }
+    let updateDegrees = calculateRotateDegrees(state, screenWidth: screenWidth)
     return Effect(value: ._setRotateDegrees(updateDegrees))
     
   case let ._calculateOffsets(screenWidth):
-    let slope: Double = 25.0 / screenWidth
-    let gestureDragOffset = state.gestureDragOffset
-    let yOffset: Double = 25.0
-    let updateOffsets = state.offsets.indices.map { index in
-      switch state.currentPageIndex {
-      case let pageIndex where pageIndex > index:
-        return CGSize(
-          width: slope * gestureDragOffset - yOffset,
-          height: -slope * gestureDragOffset + yOffset
-        )
-        
-      case let pageIndex where pageIndex == index:
-        let sign: Double = (gestureDragOffset > 0 ? 1.0 : -1.0)
-        return CGSize(
-          width: slope * gestureDragOffset,
-          height: sign * slope * gestureDragOffset
-        )
-        
-      case let pageIndex where pageIndex < index:
-        return CGSize(
-          width: slope * gestureDragOffset + yOffset,
-          height: slope * gestureDragOffset + yOffset
-        )
-        
-      default:
-        return CGSize(width: 0, height: 0)
-      }
-    }
+    let updateOffsets = calculateOffsets(state, screenWidth: screenWidth)
     return Effect(value: ._setOffsets(updateOffsets))
     
   case let ._setRotateDegrees(degrees):
@@ -117,7 +77,7 @@ public let letterScrollReducer: Reducer<
   case let ._setGestureDragOffset(dragOffset):
     state.gestureDragOffset = dragOffset
     return .none
-  
+    
   case let ._setCurrentScrollOffset(scrollOffset):
     state.currentScrollOffset = scrollOffset
     return .none
@@ -125,5 +85,68 @@ public let letterScrollReducer: Reducer<
   case let ._setCurrentPageIndex(pageIndex):
     state.currentPageIndex = pageIndex
     return .none
+  }
+}
+
+
+private func calculateRotateDegrees(
+  _ state: LetterScrollState,
+  screenWidth: CGFloat
+) -> [Double] {
+  let rotateAngle: Double = 11.0
+  let slope = rotateAngle / screenWidth
+  let gestureDragOffset = state.gestureDragOffset
+  let yOffset = rotateAngle
+  
+  return state.rotateDegrees.indices.map { index in
+    switch state.currentPageIndex {
+    case let pageIndex where pageIndex > index:
+      return slope * gestureDragOffset - yOffset
+      
+    case let pageIndex where pageIndex == index:
+      return slope * gestureDragOffset
+      
+    case let pageIndex where pageIndex < index:
+      return slope * gestureDragOffset + yOffset
+      
+    default:
+      return 0.0
+    }
+  }
+}
+
+private func calculateOffsets(
+  _ state: LetterScrollState,
+  screenWidth: CGFloat
+) -> [CGSize] {
+  let distance: Double = 25.0
+  let slope = distance / screenWidth
+  let gestureDragOffset = state.gestureDragOffset
+  let yOffset = distance
+  
+  return state.offsets.indices.map { index in
+    switch state.currentPageIndex {
+    case let pageIndex where pageIndex > index:
+      return CGSize(
+        width: slope * gestureDragOffset - yOffset,
+        height: -slope * gestureDragOffset + yOffset
+      )
+      
+    case let pageIndex where pageIndex == index:
+      let sign: Double = (gestureDragOffset > 0 ? 1.0 : -1.0)
+      return CGSize(
+        width: slope * gestureDragOffset,
+        height: sign * slope * gestureDragOffset
+      )
+      
+    case let pageIndex where pageIndex < index:
+      return CGSize(
+        width: slope * gestureDragOffset + yOffset,
+        height: slope * gestureDragOffset + yOffset
+      )
+      
+    default:
+      return CGSize(width: 0, height: 0)
+    }
   }
 }
