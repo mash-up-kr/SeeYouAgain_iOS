@@ -14,7 +14,7 @@ public struct ProviderError: SeeYouAgainError {
   public var code: Code
   public var userInfo: [String: Any]?
   public var underlying: Error?
-  public var errorBody: ResponseDTO.Common?
+  public var errorBody: ResponseDTO.ErrorData?
   
   public enum Code: Int {
     case failedRequest = 0
@@ -34,7 +34,11 @@ public struct ProviderError: SeeYouAgainError {
     self.userInfo?["response"] = response
     
     if let data = response?.data {
-      self.errorBody = try? JSONDecoder().decode(ResponseDTO.Common.self, from: data)
+      do {
+        self.errorBody = try JSONDecoder().decode(ResponseDTO.ErrorData.self, from: data)
+      } catch {
+        dump(error)
+      }
     }
   }
 }
@@ -55,5 +59,14 @@ public extension SeeYouAgainError {
     }
     
     return routerManagerError
+  }
+}
+
+public extension Error {
+  func toProviderError() -> ProviderError? {
+    if let error = self as? ProviderError {
+      return error
+    }
+    return nil
   }
 }
