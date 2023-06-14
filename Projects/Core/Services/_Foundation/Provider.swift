@@ -22,7 +22,7 @@ public struct Provider<Target: TargetType> {
     self.stubBehavior = stubBehavior
   }
   
-  public func request<T: Decodable>(_ target: TargetType, type: T.Type) -> Future<T, Error> {
+  public func request<T: Decodable>(_ target: TargetType, type: T.Type) -> Future<T?, Error> {
     switch stubBehavior {
     case .never:
       return requestObject(target, type: type)
@@ -34,7 +34,7 @@ public struct Provider<Target: TargetType> {
 
 // MARK: Private Request Methods
 private extension Provider {
-  func requestObject<T: Decodable>(_ target: TargetType, type: T.Type) -> Future<T, Error> {
+  func requestObject<T: Decodable>(_ target: TargetType, type: T.Type) -> Future<T?, Error> {
     return Future { promise in
       self.session.request(target).responseData { response in
         switch response.result {
@@ -76,7 +76,7 @@ private extension Provider {
     }
   }
   
-  func requestStub<T: Decodable>(_ target: TargetType, type: T.Type) -> Future<T, Error> {
+  func requestStub<T: Decodable>(_ target: TargetType, type: T.Type) -> Future<T?, Error> {
     return Future { promise in
       switch stubBehavior {
       case .never:

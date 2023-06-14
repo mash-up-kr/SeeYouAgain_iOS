@@ -1,54 +1,56 @@
 //
-//  UserAPI.swift
+//  CategoryAPI.swift
 //  Services
 //
-//  Created by GREEN on 2023/04/05.
+//  Created by GREEN on 2023/06/14.
 //  Copyright © 2023 mashup.seeYouAgain. All rights reserved.
 //
 
 import Alamofire
 import Foundation
+import Models
 
-public enum UserAPI {
-  case getUser
+public enum CategoryAPI {
+  case saveCategory(categories: [String])
 }
 
-extension UserAPI: TargetType {
+extension CategoryAPI: TargetType {
   public var baseURL: URL {
-    return URL(string: "https://jsonplaceholder.typicode.com")!
+    return URL(string: "http://3.38.65.72:8080/v1")!
   }
   
   public var path: String {
     switch self {
-    case .getUser:
-      return "/users"
+    case .saveCategory:
+      return "/member/category"
     }
   }
   
   public var method: HTTPMethod {
     switch self {
-    case .getUser:
-      return .get
+    case .saveCategory:
+      return .post
     }
   }
   
   public var task: Task {
     switch self {
-    case .getUser:
-      return .requestParameters(parameters: ["id": "1"], encoding: .queryString)
+    case let .saveCategory(categories):
+      let requestBody = SaveCategoryDTO(categoryNames: categories)
+      return .requestJSONEncodable(requestBody)
     }
   }
   
   public var headers: [String: String]? {
     switch self {
-    case .getUser:
+    case .saveCategory:
       return ["Content-Type": "application/json"]
     }
   }
   
   public var sampleData: Data {
     switch self {
-    case .getUser:
+    case .saveCategory:
       return Data()
     }
   }

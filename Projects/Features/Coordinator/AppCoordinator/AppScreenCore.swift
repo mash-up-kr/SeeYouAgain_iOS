@@ -34,9 +34,14 @@ public enum AppScreenAction {
 }
 
 internal struct AppScreenEnvironment {
+  let mainQueue: AnySchedulerOf<DispatchQueue>
   let userDefaultsService: UserDefaultsService
   
-  internal init(userDefaultsService: UserDefaultsService) {
+  internal init(
+    mainQueue: AnySchedulerOf<DispatchQueue>,
+    userDefaultsService: UserDefaultsService
+  ) {
+    self.mainQueue = mainQueue
     self.userDefaultsService = userDefaultsService
   }
 }
@@ -59,7 +64,10 @@ internal let appScreenReducer = Reducer<
       state: /AppScreenState.setCategory,
       action: /AppScreenAction.setCategory,
       environment: {
-        SetCategoryEnvironment(userDefaultsService: $0.userDefaultsService)
+        SetCategoryEnvironment(
+          mainQueue: $0.mainQueue,
+          userDefaultsService: $0.userDefaultsService
+        )
       }
     ),
   tabBarReducer

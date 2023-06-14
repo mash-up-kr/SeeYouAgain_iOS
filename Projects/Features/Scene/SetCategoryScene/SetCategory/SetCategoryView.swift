@@ -41,6 +41,14 @@ public struct SetCategoryView: View {
         )
         .padding(.bottom, 8)
       }
+      .apply(content: { view in
+        WithViewStore(store.scope(state: \.toastMessage)) { toastMessageViewStore in
+          view.toast(
+            text: toastMessageViewStore.state,
+            toastType: .warning
+          )
+        }
+      })
     }
     .shortsBackgroundView()
     .navigationBarHidden(true)

@@ -50,11 +50,11 @@ public enum TabBarItem: Int, CaseIterable, Equatable {
   public var backgroundColor: Color {
     switch self {
     case .hotKeyword:
-      return DesignSystem.Colors.red50
+      return DesignSystem.Colors.red100
     case .house:
       return DesignSystem.Colors.blue50
     case .myPage:
-      return DesignSystem.Colors.green50
+      return DesignSystem.Colors.green100
     }
   }
   
