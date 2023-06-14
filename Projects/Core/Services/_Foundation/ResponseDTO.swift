@@ -11,23 +11,30 @@ import Foundation
 public enum ResponseDTO {
   public struct ExistData<ResponseType: Decodable> {
     public let statusCode: Int
-    public let message: String
-    public let data: ResponseType
+    public let data: ResponseType?
     
     enum CodingKeys: String, CodingKey {
-      case statusCode = "status_code"
-      case message
-      case data
+      case statusCode = "status"
+      case data = "result"
     }
   }
   
-  public struct Common {
+  public struct ErrorData {
     public var statusCode: Int
-    public var message: String
+    public var error: Error
     
     enum CodingKeys: String, CodingKey {
-      case statusCode = "status_code"
-      case message
+      case statusCode = "status"
+      case error
+    }
+  }
+  
+  public struct Error {
+    public var code: String
+    public var detailMessage: String?
+    
+    enum CodingKeys: CodingKey {
+      case code, detailMessage
     }
   }
 }
@@ -36,15 +43,22 @@ extension ResponseDTO.ExistData: Decodable where ResponseType: Decodable {
   public init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
     statusCode = try container.decode(Int.self, forKey: .statusCode)
-    message = try container.decode(String.self, forKey: .message)
-    data = try container.decode(ResponseType.self, forKey: .data)
+    data = try container.decodeIfPresent(ResponseType.self, forKey: .data)
   }
 }
 
-extension ResponseDTO.Common: Decodable {
+extension ResponseDTO.ErrorData: Decodable {
   public init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
     statusCode = try container.decode(Int.self, forKey: .statusCode)
-    message = try container.decode(String.self, forKey: .message)
+    error = try container.decode(ResponseDTO.Error.self, forKey: .error)
+  }
+}
+
+extension ResponseDTO.Error: Decodable {
+  public init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+    code = try container.decode(String.self, forKey: .code)
+    detailMessage = try container.decodeIfPresent(String.self, forKey: .detailMessage)
   }
 }
