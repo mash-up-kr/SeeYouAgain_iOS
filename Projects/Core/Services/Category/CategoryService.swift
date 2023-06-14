@@ -35,6 +35,7 @@ extension CategoryService {
           CategoryAPI.saveCategory(categories: categories),
           type: CategoryDTO.self
         )
+        .compactMap { $0 }
         .eraseToEffect()
     }
   )

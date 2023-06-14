@@ -11,7 +11,7 @@ import Foundation
 public enum ResponseDTO {
   public struct ExistData<ResponseType: Decodable> {
     public let statusCode: Int
-    public let data: ResponseType
+    public let data: ResponseType?
     
     enum CodingKeys: String, CodingKey {
       case statusCode = "status"
@@ -43,7 +43,7 @@ extension ResponseDTO.ExistData: Decodable where ResponseType: Decodable {
   public init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
     statusCode = try container.decode(Int.self, forKey: .statusCode)
-    data = try container.decode(ResponseType.self, forKey: .data)
+    data = try container.decodeIfPresent(ResponseType.self, forKey: .data)
   }
 }
 
