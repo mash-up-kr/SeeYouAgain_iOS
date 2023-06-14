@@ -11,7 +11,6 @@ let project = Project.make(
       sources: ["AppCoordinator/**"],
       dependencies: [
         .target(name: "NewsCardCoordinator"),
-        .target(name: "SettingCoordinator"),
         .project(target: "TabBar", path: .relativeToRoot("Projects/Features/Scene")),
         .project(target: "Splash", path: .relativeToRoot("Projects/Features/Scene")),
         .project(target: "SetCategory", path: .relativeToRoot("Projects/Features/Scene")),
@@ -82,6 +81,7 @@ let project = Project.make(
       dependencies: [
         .target(name: "ShortStorageCoordinator"),
         .target(name: "LongStorageCoordinator"),
+        .target(name: "SettingCoordinator"),
         .project(target: "MyPage", path: .relativeToRoot("Projects/Features/Scene")),
         .externalsrt("TCA"),
         .externalsrt("TCACoordinators"),
