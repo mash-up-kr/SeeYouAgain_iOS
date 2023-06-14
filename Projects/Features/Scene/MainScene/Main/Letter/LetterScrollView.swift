@@ -12,38 +12,46 @@ import SwiftUI
 
 struct LetterScrollView: View {
   private enum Constant {
-    static let defaultItemWidth: CGFloat = 280
+    static let defaultLetterWidth: CGFloat = 280
+    static let defaultLetterHeight: CGFloat = 378
     static let iphone13MiniWidth: CGFloat = 375
     static let iphone13MiniHeight: CGFloat = 812
   }
   
   private let store: Store<LetterScrollState, LetterScrollAction>
-  private let screenWidth: CGFloat
-  private let itemWidth: CGFloat
-  private let itemPadding: CGFloat
+  private let letterWidth: CGFloat
+  private let letterHeight: CGFloat
+  private let letterPadding: CGFloat
   private let leadingOffset: CGFloat
   
   init(store: Store<LetterScrollState, LetterScrollAction>) {
     self.store = store
-    self.screenWidth = UIScreen.main.bounds.width
-    let screenRatio = screenWidth / Constant.iphone13MiniWidth
-    self.itemWidth = Constant.defaultItemWidth * screenRatio
-    self.itemPadding = 10
-    self.leadingOffset = (screenWidth - itemWidth) / 2
+    
+    let screenSize = UIScreen.main.bounds
+    let deviceRatio = CGSize(
+      width: screenSize.width / Constant.iphone13MiniWidth,
+      height: screenSize.height / Constant.iphone13MiniHeight
+    )
+    
+    self.letterWidth = Constant.defaultLetterWidth * deviceRatio.width
+    self.letterHeight = Constant.defaultLetterHeight * deviceRatio.height
+    self.letterPadding = (screenSize.width - letterWidth) / 5
+    self.leadingOffset = (screenSize.width - letterWidth) / 2
   }
   
   var body: some View {
     WithViewStore(store) { viewStore in
       GeometryReader { _ in
-        LazyHStack(alignment: .center, spacing: itemPadding) {
+        LazyHStack(alignment: .center, spacing: letterPadding) {
           ForEach(0..<5) { index in
             Rectangle()
-              .frame(width: itemWidth)
+              .frame(width: letterWidth)
               .offset(viewStore.offsets[index])
               .rotationEffect(.degrees(viewStore.degrees[index]))
               .animation(.easeInOut, value: viewStore.gestureDragOffset)
           }
         }
+        .frame(height: letterHeight)
       }
       .onAppear { sendOnAppearActions(to: viewStore) }
       .offset(x: viewStore.currentScrollOffset, y: 0)
@@ -66,8 +74,8 @@ private extension LetterScrollView {
     to viewStore: ViewStore<LetterScrollState, LetterScrollAction>
   ) {
     viewStore.send(._setCurrentScrollOffset(leadingOffset))
-    viewStore.send(._calculateDegrees(itemWidth))
-    viewStore.send(._calculateOffsets(itemWidth))
+    viewStore.send(._calculateDegrees(letterWidth))
+    viewStore.send(._calculateOffsets(letterWidth))
   }
   
   func sendDragChangedActions(
@@ -75,9 +83,9 @@ private extension LetterScrollView {
     with value: DragGesture.Value
   ) {
     viewStore.send(.dragOnChanged(value.translation))
-    viewStore.send(._countCurrentScrollOffset(leadingOffset, itemWidth + itemPadding))
-    viewStore.send(._calculateDegrees(itemWidth))
-    viewStore.send(._calculateOffsets(itemWidth))
+    viewStore.send(._countCurrentScrollOffset(leadingOffset, letterWidth + letterPadding))
+    viewStore.send(._calculateDegrees(letterWidth))
+    viewStore.send(._calculateOffsets(letterWidth))
   }
   
   func sendDragEndedActions(
@@ -86,15 +94,15 @@ private extension LetterScrollView {
   ) {
     viewStore.send(._setGestureDragOffset(.zero))
     viewStore.send(._setCurrentPageIndex(pageIndex))
-    viewStore.send(._countCurrentScrollOffset(leadingOffset, itemWidth + itemPadding))
-    viewStore.send(._calculateDegrees(itemWidth))
-    viewStore.send(._calculateOffsets(itemWidth))
+    viewStore.send(._countCurrentScrollOffset(leadingOffset, letterWidth + letterPadding))
+    viewStore.send(._calculateDegrees(letterWidth))
+    viewStore.send(._calculateOffsets(letterWidth))
   }
   
   func countPageIndex(for offset: CGFloat, itemsAmount: Int) -> Int {
     guard itemsAmount > 0 else { return 0 }
     let logicalOffset = (offset - leadingOffset ) * -1.0
-    let floatIndex = (logicalOffset) / (itemWidth + itemPadding)
+    let floatIndex = (logicalOffset) / (letterWidth + letterPadding)
     let index = Int(round(floatIndex))
     return min(max(index, 0), itemsAmount - 1)
   }

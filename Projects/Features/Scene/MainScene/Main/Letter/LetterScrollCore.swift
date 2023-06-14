@@ -57,12 +57,12 @@ public let letterScrollReducer: Reducer<
     let scrollOffset = leadingOffset - activePageOffset + state.gestureDragOffset
     return Effect(value: ._setCurrentScrollOffset(scrollOffset))
     
-  case let ._calculateDegrees(itemWidth):
-    let updateDegrees = calculateDegrees(state, itemWidth: itemWidth)
+  case let ._calculateDegrees(letterWidth):
+    let updateDegrees = calculateDegrees(state, letterWidth: letterWidth)
     return Effect(value: ._setDegrees(updateDegrees))
     
-  case let ._calculateOffsets(itemWidth):
-    let updateOffsets = calculateOffsets(state, itemWidth: itemWidth)
+  case let ._calculateOffsets(letterWidth):
+    let updateOffsets = calculateOffsets(state, letterWidth: letterWidth)
     return Effect(value: ._setOffsets(updateOffsets))
     
   case let ._setDegrees(degrees):
@@ -89,10 +89,10 @@ public let letterScrollReducer: Reducer<
 
 private func calculateDegrees(
   _ state: LetterScrollState,
-  itemWidth: CGFloat
+  letterWidth: CGFloat
 ) -> [Double] {
   let rotationDegree: Double = 11.0
-  let slope = rotationDegree / itemWidth
+  let slope = rotationDegree / letterWidth
   let gestureDragOffset = state.gestureDragOffset
   let yOffset = rotationDegree
   
@@ -117,10 +117,10 @@ private func calculateDegrees(
 
 private func calculateOffsets(
   _ state: LetterScrollState,
-  itemWidth: CGFloat
+  letterWidth: CGFloat
 ) -> [CGSize] {
   let distance: Double = 25.0
-  let slope = distance / itemWidth
+  let slope = distance / letterWidth
   let gestureDragOffset = state.gestureDragOffset
   let yOffset = distance
   
