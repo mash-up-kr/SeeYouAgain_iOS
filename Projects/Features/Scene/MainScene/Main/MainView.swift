@@ -20,7 +20,22 @@ public struct MainView: View {
   public var body: some View {
     WithViewStore(store) { viewStore in
       VStack {
+        Spacer().frame(height: 40)
+        
         CategoriesView(store: store.scope(state: \.categories))
+        
+        Spacer().frame(height: 40)
+        
+        IfLetStore(
+          store.scope(
+            state: \.letterScrollState,
+            action: MainAction.letterScrollAction
+          )
+        ) { store in
+          LetterScrollView(store: store)
+            .frame(height: 200)
+        }
+        Spacer()
       }
       .onAppear {
         viewStore.send(._viewWillAppear)
