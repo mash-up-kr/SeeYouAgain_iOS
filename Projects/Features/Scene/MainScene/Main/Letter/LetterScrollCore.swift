@@ -14,12 +14,12 @@ public struct LetterScrollState: Equatable {
   var currentScrollOffset: CGFloat = 0
   var currentPageIndex: Int = 0
   
-  var rotateDegrees: [Double]
+  var degrees: [Double]
   var offsets: [CGSize]
   
   init() {
     // 임시로 5개
-    self.rotateDegrees = Array(repeating: 0, count: 5)
+    self.degrees = Array(repeating: 0, count: 5)
     self.offsets = Array(repeating: .zero, count: 5)
   }
 }
@@ -30,11 +30,11 @@ public enum LetterScrollAction {
   
   // MARK: - Inner Business Action
   case _countCurrentScrollOffset(CGFloat, CGFloat)
-  case _calculateRotateDegrees(CGFloat)
+  case _calculateDegrees(CGFloat)
   case _calculateOffsets(CGFloat)
   
   // MARK: - Inner SetState Action
-  case _setRotateDegrees([Double])
+  case _setDegrees([Double])
   case _setOffsets([CGSize])
   case _setGestureDragOffset(CGFloat)
   case _setCurrentScrollOffset(CGFloat)
@@ -57,16 +57,16 @@ public let letterScrollReducer: Reducer<
     let scrollOffset = leadingOffset - activePageOffset + state.gestureDragOffset
     return Effect(value: ._setCurrentScrollOffset(scrollOffset))
     
-  case let ._calculateRotateDegrees(screenWidth):
-    let updateDegrees = calculateRotateDegrees(state, screenWidth: screenWidth)
-    return Effect(value: ._setRotateDegrees(updateDegrees))
+  case let ._calculateDegrees(itemWidth):
+    let updateDegrees = calculateDegrees(state, itemWidth: itemWidth)
+    return Effect(value: ._setDegrees(updateDegrees))
     
-  case let ._calculateOffsets(screenWidth):
-    let updateOffsets = calculateOffsets(state, screenWidth: screenWidth)
+  case let ._calculateOffsets(itemWidth):
+    let updateOffsets = calculateOffsets(state, itemWidth: itemWidth)
     return Effect(value: ._setOffsets(updateOffsets))
     
-  case let ._setRotateDegrees(degrees):
-    state.rotateDegrees = degrees
+  case let ._setDegrees(degrees):
+    state.degrees = degrees
     return .none
     
   case let ._setOffsets(offsets):
@@ -87,17 +87,16 @@ public let letterScrollReducer: Reducer<
   }
 }
 
-
-private func calculateRotateDegrees(
+private func calculateDegrees(
   _ state: LetterScrollState,
-  screenWidth: CGFloat
+  itemWidth: CGFloat
 ) -> [Double] {
-  let rotateAngle: Double = 11.0
-  let slope = rotateAngle / screenWidth
+  let rotationDegree: Double = 11.0
+  let slope = rotationDegree / itemWidth
   let gestureDragOffset = state.gestureDragOffset
-  let yOffset = rotateAngle
+  let yOffset = rotationDegree
   
-  return state.rotateDegrees.indices.map { index in
+  return state.degrees.indices.map { index in
     switch state.currentPageIndex {
     case let pageIndex where pageIndex > index:
       let weight = min(2.0, Double(pageIndex - index))
@@ -118,10 +117,10 @@ private func calculateRotateDegrees(
 
 private func calculateOffsets(
   _ state: LetterScrollState,
-  screenWidth: CGFloat
+  itemWidth: CGFloat
 ) -> [CGSize] {
   let distance: Double = 25.0
-  let slope = distance / screenWidth
+  let slope = distance / itemWidth
   let gestureDragOffset = state.gestureDragOffset
   let yOffset = distance
   

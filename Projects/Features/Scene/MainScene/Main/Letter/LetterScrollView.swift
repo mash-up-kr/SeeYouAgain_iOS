@@ -40,7 +40,7 @@ struct LetterScrollView: View {
             Rectangle()
               .frame(width: itemWidth)
               .offset(viewStore.offsets[index])
-              .rotationEffect(.degrees(viewStore.rotateDegrees[index]))
+              .rotationEffect(.degrees(viewStore.degrees[index]))
               .animation(.easeInOut, value: viewStore.gestureDragOffset)
           }
         }
@@ -66,8 +66,8 @@ private extension LetterScrollView {
     to viewStore: ViewStore<LetterScrollState, LetterScrollAction>
   ) {
     viewStore.send(._setCurrentScrollOffset(leadingOffset))
-    viewStore.send(._calculateRotateDegrees(screenWidth))
-    viewStore.send(._calculateOffsets(screenWidth))
+    viewStore.send(._calculateDegrees(itemWidth))
+    viewStore.send(._calculateOffsets(itemWidth))
   }
   
   func sendDragChangedActions(
@@ -76,7 +76,7 @@ private extension LetterScrollView {
   ) {
     viewStore.send(.dragOnChanged(value.translation))
     viewStore.send(._countCurrentScrollOffset(leadingOffset, itemWidth + itemPadding))
-    viewStore.send(._calculateRotateDegrees(itemWidth))
+    viewStore.send(._calculateDegrees(itemWidth))
     viewStore.send(._calculateOffsets(itemWidth))
   }
   
@@ -87,7 +87,7 @@ private extension LetterScrollView {
     viewStore.send(._setGestureDragOffset(.zero))
     viewStore.send(._setCurrentPageIndex(pageIndex))
     viewStore.send(._countCurrentScrollOffset(leadingOffset, itemWidth + itemPadding))
-    viewStore.send(._calculateRotateDegrees(itemWidth))
+    viewStore.send(._calculateDegrees(itemWidth))
     viewStore.send(._calculateOffsets(itemWidth))
   }
   
