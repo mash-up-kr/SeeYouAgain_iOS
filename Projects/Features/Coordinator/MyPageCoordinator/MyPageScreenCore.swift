@@ -9,16 +9,19 @@
 import Combine
 import ComposableArchitecture
 import LongStorageCoordinator
+import MyPage
 import SettingCoordinator
 import ShortStorageCoordinator
 
 public enum MyPageScreenState: Equatable {
+  case myPage(MyPageState)
   case shortStorage(ShortStorageCoordinatorState)
   case longStorage(LongStorageCoordinatorState)
   case setting(SettingCoordinatorState)
 }
 
 public enum MyPageScreenAction {
+  case myPage(MyPageAction)
   case shortStorage(ShortStorageCoordinatorAction)
   case longStorage(LongStorageCoordinatorAction)
   case setting(SettingCoordinatorAction)
@@ -33,6 +36,14 @@ internal let myPageScreenReducer = Reducer<
   MyPageScreenAction,
   MyPageScreenEnvironment
 >.combine([
+  myPageReducer
+    .pullback(
+      state: /MyPageScreenState.myPage,
+      action: /MyPageScreenAction.myPage,
+      environment: { _ in
+        MyPageEnvironment()
+      }
+    ),
   shortStorageCoordinatorReducer
     .pullback(
       state: /MyPageScreenState.shortStorage,

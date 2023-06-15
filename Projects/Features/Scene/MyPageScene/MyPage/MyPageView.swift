@@ -19,7 +19,10 @@ public struct MyPageView: View {
   
   public var body: some View {
     WithViewStore(store) { viewStore in
-      Text("마이뷰")
+      VStack {
+        TopNavigationBar(rightIcon: DesignSystem.Icons.iconSetting)
+        Spacer()
+      }
     }
     .navigationBarHidden(true)
   }

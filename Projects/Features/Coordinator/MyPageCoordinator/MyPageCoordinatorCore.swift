@@ -8,7 +8,7 @@
 
 import Combine
 import ComposableArchitecture
-import ShortStorageCoordinator
+import MyPage
 import TCACoordinators
 
 public struct MyPageCoordinatorState: Equatable, IndexedRouterState {
@@ -17,8 +17,8 @@ public struct MyPageCoordinatorState: Equatable, IndexedRouterState {
   public init(
     routes: [Route<MyPageScreenState>] = [
       .root(
-        .shortStorage(.init()),
-        embedInNavigationView: false
+        .myPage(.init()),
+        embedInNavigationView: true
       )
     ]
   ) {

@@ -20,7 +20,7 @@ struct ShortsTabBarContainerView<Content: View>: View {
   }
   
   public var body: some View {
-    ZStack(alignment: .bottom) {
+    ZStack {
       content
       
       ShortsTabBarView(
