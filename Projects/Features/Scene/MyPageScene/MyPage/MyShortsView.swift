@@ -48,8 +48,7 @@ struct MyShortsView: View {
           }
           
           Rectangle()
-          
-          .size(width: 1, height: 36)
+            .size(width: 1, height: 36)
             .fill(DesignSystem.Colors.grey30)
             .frame(width: 1, height: 36)
           
@@ -70,6 +69,7 @@ struct MyShortsView: View {
       }
       .padding(.horizontal, 20)
       .padding(.vertical, 16)
+      // TODO: 블러 배경 수정 필요
       .background(Material.regularMaterial)
       .overlay(
         RoundedRectangle(cornerRadius: 8)
@@ -77,6 +77,7 @@ struct MyShortsView: View {
             LinearGradient(
               gradient: Gradient(
                 colors: [
+                  // TODO: 디자인시스템에 정의되지 않은 색상으로 수정 필요
                   Color(hex: 0x556272).opacity(0.4),
                   Color(hex: 0x3C414F).opacity(0.08)
                 ]
@@ -100,10 +101,11 @@ fileprivate struct ShortsInfoView: View {
   fileprivate init(
     title: String,
     count: Int,
-    fontColor: Color) {
-      self.title = title
-      self.count = count
-      self.fontColor = fontColor
+    fontColor: Color
+  ) {
+    self.title = title
+    self.count = count
+    self.fontColor = fontColor
   }
   
   fileprivate var body: some View {

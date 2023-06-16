@@ -28,6 +28,7 @@ public struct MyPageView: View {
         )
         
         ZStack(alignment: .topTrailing) {
+          // TODO: 지구본 이미지 확정 시 수정 필요
           DesignSystem.Images.earth
             .frame(width: 106, height: 106)
             .padding(.trailing, 24)
@@ -47,6 +48,7 @@ public struct MyPageView: View {
         Spacer()
           .frame(height: 39)
         
+        // TODO: 디자인시스템 색상 정의되지 않은 부분으로 수정 필요
         DesignSystem.Colors.blue100
       }
     }
