@@ -26,7 +26,7 @@ public struct MyInfoState: Equatable {
   public var shorts: MyShortsState
   
   public init(
-    myInfo: MyInfo = MyInfo(nickname: "똑똑한여행가", day: 1004),
+    myInfo: MyInfo,
     shorts: MyShortsState
   ) {
     self.myInfo = myInfo

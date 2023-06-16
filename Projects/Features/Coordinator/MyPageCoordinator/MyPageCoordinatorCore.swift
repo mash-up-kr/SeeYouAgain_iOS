@@ -20,6 +20,10 @@ public struct MyPageCoordinatorState: Equatable, IndexedRouterState {
         .myPage(
           .init(
             info: .init(
+              myInfo: .init(
+                nickname: "똑똑한여행가",
+                day: 1004
+              ),
               shorts: .init(
                 myShorts: MyShorts(
                   totalShortsCount: 56,
