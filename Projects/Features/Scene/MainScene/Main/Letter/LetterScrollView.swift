@@ -20,7 +20,7 @@ struct LetterScrollView: View {
   private let store: Store<LetterScrollState, LetterScrollAction>
   private let deviceRatio: CGSize
   private let letterSize: CGSize
-  private let letterPadding: CGFloat
+  private let letterSpacing: CGFloat
   private let leadingOffset: CGFloat
   
   init(store: Store<LetterScrollState, LetterScrollAction>) {
@@ -35,34 +35,39 @@ struct LetterScrollView: View {
       width: Constant.defaultLetterWidth * deviceRatio.width,
       height: Constant.defaultLetterHeight * deviceRatio.height
     )
-    self.letterPadding = (screenSize.width - letterSize.width) / 5
+    self.letterSpacing = (screenSize.width - letterSize.width) / 5
     self.leadingOffset = (screenSize.width - letterSize.width) / 2
   }
   
   var body: some View {
     WithViewStore(store) { viewStore in
       GeometryReader { _ in
-        LazyHStack(alignment: .center, spacing: letterPadding) {
+        LazyHStack(alignment: .center, spacing: letterSpacing) {
           ForEach(0..<5) { index in
-            LetterView(deviceRatio: deviceRatio)
-              .frame(width: letterSize.width)
-              .offset(viewStore.offsets[index])
-              .rotationEffect(.degrees(viewStore.degrees[index]))
-              .animation(.easeInOut, value: viewStore.gestureDragOffset)
+            LetterView(
+              isFold: viewStore.binding(
+                get: \.isFolded[index], send: { LetterScrollAction._setIsFolded(index, $0) }
+              ),
+              deviceRatio: deviceRatio
+            )
+            .frame(width: letterSize.width)
+            .offset(viewStore.offsets[index])
+            .rotationEffect(.degrees(viewStore.degrees[index]))
+            .animation(.easeInOut, value: viewStore.currentScrollOffset)
           }
         }
         .frame(height: letterSize.height)
       }
-      .onAppear { sendOnAppearActions(to: viewStore) }
+      .onAppear { sendOnAppearAction(to: viewStore) }
       .offset(x: viewStore.currentScrollOffset, y: 0)
       .simultaneousGesture(
         DragGesture()
           .onChanged { value in
-            sendDragChangedActions(to: viewStore, with: value)
+            viewStore.send(.dragOnChanged(value.translation))
           }
-          .onEnded { value in
-            let newPageIndex = countPageIndex(for: viewStore.currentScrollOffset, itemsAmount: 5)
-            sendDragEndedActions(to: viewStore, pageIndex: newPageIndex)
+          .onEnded { _ in
+            viewStore.send(._countPageIndex)
+            viewStore.send(.dragOnEnded, animation: .easeInOut)
           }
       )
     }
@@ -70,40 +75,15 @@ struct LetterScrollView: View {
 }
 
 private extension LetterScrollView {
-  func sendOnAppearActions(
-    to viewStore: ViewStore<LetterScrollState, LetterScrollAction>
-  ) {
-    viewStore.send(._setCurrentScrollOffset(leadingOffset))
-    viewStore.send(._calculateDegrees(letterSize.width))
-    viewStore.send(._calculateOffsets(letterSize.width))
-  }
-  
-  func sendDragChangedActions(
-    to viewStore: ViewStore<LetterScrollState, LetterScrollAction>,
-    with value: DragGesture.Value
-  ) {
-    viewStore.send(.dragOnChanged(value.translation))
-    viewStore.send(._countCurrentScrollOffset(leadingOffset, letterSize.width + letterPadding))
-    viewStore.send(._calculateDegrees(letterSize.width))
-    viewStore.send(._calculateOffsets(letterSize.width))
-  }
-  
-  func sendDragEndedActions(
-    to viewStore: ViewStore<LetterScrollState, LetterScrollAction>,
-    pageIndex: Int
-  ) {
-    viewStore.send(._setGestureDragOffset(.zero))
-    viewStore.send(._setCurrentPageIndex(pageIndex))
-    viewStore.send(._countCurrentScrollOffset(leadingOffset, letterSize.width + letterPadding))
-    viewStore.send(._calculateDegrees(letterSize.width))
-    viewStore.send(._calculateOffsets(letterSize.width))
-  }
-  
-  func countPageIndex(for offset: CGFloat, itemsAmount: Int) -> Int {
-    guard itemsAmount > 0 else { return 0 }
-    let logicalOffset = (offset - leadingOffset ) * -1.0
-    let floatIndex = (logicalOffset) / (letterSize.width + letterPadding)
-    let index = Int(round(floatIndex))
-    return min(max(index, 0), itemsAmount - 1)
+  func sendOnAppearAction(to viewStore: ViewStore<LetterScrollState, LetterScrollAction>) {
+    viewStore.send(
+      ._onAppear(
+        .init(
+          size: letterSize,
+          spacing: letterSpacing,
+          leadingOffset: leadingOffset
+        )
+      )
+    )
   }
 }

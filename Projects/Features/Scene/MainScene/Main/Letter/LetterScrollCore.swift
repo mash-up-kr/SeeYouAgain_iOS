@@ -9,36 +9,52 @@
 import ComposableArchitecture
 import Foundation
 
+public struct LetterLayout: Equatable {
+  var size: CGSize
+  var spacing: CGFloat
+  var leadingOffset: CGFloat
+}
+
 public struct LetterScrollState: Equatable {
+  fileprivate var layout: LetterLayout = .init(size: .zero, spacing: 0, leadingOffset: 0)
+  
   var gestureDragOffset: CGFloat = 0
   var currentScrollOffset: CGFloat = 0
+  var previousPageIndex: Int = 0
   var currentPageIndex: Int = 0
-  
+  var letters: [Int] = [1, 2, 3, 4, 5]
   var degrees: [Double]
   var offsets: [CGSize]
+  var isFolded: [Bool]
   
   init() {
     // 임시로 5개
     self.degrees = Array(repeating: 0, count: 5)
     self.offsets = Array(repeating: .zero, count: 5)
+    self.isFolded = Array(repeating: true, count: 5)
   }
 }
 
 public enum LetterScrollAction {
   // MARK: - User Action
   case dragOnChanged(CGSize)
+  case dragOnEnded
   
   // MARK: - Inner Business Action
-  case _countCurrentScrollOffset(CGFloat, CGFloat)
-  case _calculateDegrees(CGFloat)
-  case _calculateOffsets(CGFloat)
+  case _onAppear(LetterLayout)
+  case _countPageIndex
+  case _countCurrentScrollOffset
+  case _updateIsFolds
+  case _calculateDegrees
+  case _calculateOffsets
   
   // MARK: - Inner SetState Action
   case _setDegrees([Double])
   case _setOffsets([CGSize])
+  case _setIsFolded(Int, Bool)
   case _setGestureDragOffset(CGFloat)
   case _setCurrentScrollOffset(CGFloat)
-  case _setCurrentPageIndex(Int)
+  case _setPageIndex(Int)
 }
 
 public struct LetterScrollEnvironmnet {}
@@ -50,19 +66,59 @@ public let letterScrollReducer: Reducer<
 > = Reducer { state, action, environment in
   switch action {
   case let .dragOnChanged(translation):
-    return Effect(value: ._setGestureDragOffset(translation.width))
+    return Effect.concatenate(
+      Effect(value: ._setGestureDragOffset(translation.width)),
+      Effect(value: ._countCurrentScrollOffset),
+      Effect(value: ._calculateDegrees),
+      Effect(value: ._calculateOffsets)
+    )
     
-  case let ._countCurrentScrollOffset(leadingOffset, itemWidth):
-    let activePageOffset = CGFloat(state.currentPageIndex) * itemWidth
-    let scrollOffset = leadingOffset - activePageOffset + state.gestureDragOffset
+  case .dragOnEnded:
+    return Effect.concatenate(
+      Effect(value: ._setGestureDragOffset(.zero)),
+      Effect(value: ._countCurrentScrollOffset),
+      Effect(value: ._updateIsFolds),
+      Effect(value: ._calculateDegrees),
+      Effect(value: ._calculateOffsets)
+    )
+    
+  case let ._onAppear(layout):
+    state.layout = layout
+    
+    return Effect.concatenate(
+      Effect(value: ._countCurrentScrollOffset),
+      Effect(value: ._setIsFolded(0, false)),
+      Effect(value: ._calculateDegrees),
+      Effect(value: ._calculateOffsets)
+    )
+    
+  case ._countPageIndex:
+    guard !state.letters.isEmpty else { return .none }
+    let logicalOffset = (state.currentScrollOffset - state.layout.leadingOffset ) * -1.0
+    let contentWidth = state.layout.size.width + state.layout.spacing
+    let floatIndex = (logicalOffset) / contentWidth
+    let intIndex = Int(round(floatIndex))
+    let newPageIndex = min(max(intIndex, 0), state.letters.count - 1)
+    return Effect(value: ._setPageIndex(newPageIndex))
+    
+  case ._countCurrentScrollOffset:
+    let contentWidth = state.layout.size.width + state.layout.spacing
+    let activePageOffset = CGFloat(state.currentPageIndex) * contentWidth
+    let scrollOffset = state.layout.leadingOffset - activePageOffset + state.gestureDragOffset
     return Effect(value: ._setCurrentScrollOffset(scrollOffset))
     
-  case let ._calculateDegrees(letterWidth):
-    let updateDegrees = calculateDegrees(state, letterWidth: letterWidth)
+  case ._updateIsFolds:
+    return Effect.concatenate(
+      Effect(value: ._setIsFolded(state.previousPageIndex, true)),
+      Effect(value: ._setIsFolded(state.currentPageIndex, false))
+    )
+    
+  case ._calculateDegrees:
+    let updateDegrees = calculateDegrees(state, letterWidth: state.layout.size.width)
     return Effect(value: ._setDegrees(updateDegrees))
     
-  case let ._calculateOffsets(letterWidth):
-    let updateOffsets = calculateOffsets(state, letterWidth: letterWidth)
+  case ._calculateOffsets:
+    let updateOffsets = calculateOffsets(state, letterWidth: state.layout.size.width)
     return Effect(value: ._setOffsets(updateOffsets))
     
   case let ._setDegrees(degrees):
@@ -73,6 +129,10 @@ public let letterScrollReducer: Reducer<
     state.offsets = offsets
     return .none
     
+  case let ._setIsFolded(index, isFold):
+    state.isFolded[index] = isFold
+    return .none
+    
   case let ._setGestureDragOffset(dragOffset):
     state.gestureDragOffset = dragOffset
     return .none
@@ -81,7 +141,8 @@ public let letterScrollReducer: Reducer<
     state.currentScrollOffset = scrollOffset
     return .none
     
-  case let ._setCurrentPageIndex(pageIndex):
+  case let ._setPageIndex(pageIndex):
+    state.previousPageIndex = state.currentPageIndex
     state.currentPageIndex = pageIndex
     return .none
   }

@@ -63,8 +63,8 @@ struct LetterTop: View {
         .cornerRadius(isFold ? 20 : 0, corners: [.topLeft, .topRight])
         .frame(height: geometry.size.height / 2)
         .opacity(isFold ? 1 : 0)
+        .animation(.easeOut(duration: 0.3), value: isFold)
       }
-      .animation(.easeInOut(duration: 0.1), value: isFold)
       .rotation3DEffect(.degrees(isFold ? 0 : 180), axis: (x: 1, y: 0, z: 0))
     }
   }

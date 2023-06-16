@@ -28,7 +28,9 @@ struct OpaqueShape<Content: Shape>: View {
   }
   
   var body: some View {
-    color.blurEffect()
+    shape
+      .stroke(strokeColor, lineWidth: 0.3)
+      .background(Material.regularMaterial)
       .clipShape(shape)
       .rotationEffect(.degrees(degree))
   }
