@@ -17,7 +17,19 @@ public struct MyPageCoordinatorState: Equatable, IndexedRouterState {
   public init(
     routes: [Route<MyPageScreenState>] = [
       .root(
-        .myPage(.init()),
+        .myPage(
+          .init(
+            info: .init(
+              shorts: .init(
+                myShorts: MyShorts(
+                  totalShortsCount: 56,
+                  shortShortsCount: 5,
+                  longShortsCount: 56
+                )
+              )
+            )
+          )
+        ),
         embedInNavigationView: true
       )
     ]

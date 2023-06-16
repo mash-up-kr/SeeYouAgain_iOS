@@ -9,10 +9,18 @@
 import ComposableArchitecture
 
 public struct MyPageState: Equatable {
-  public init() {}
+  var info: MyInfoState
+  
+  public init(
+    info: MyInfoState
+  ) {
+    self.info = info
+  }
 }
 
-public enum MyPageAction {}
+public enum MyPageAction {
+  case myInfo(MyInfoAction)
+}
 
 public struct MyPageEnvironment {
   public init() {}

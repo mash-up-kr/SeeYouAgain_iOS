@@ -19,11 +19,33 @@ public struct MyPageView: View {
   
   public var body: some View {
     WithViewStore(store) { viewStore in
-      VStack {
+      VStack(spacing: 0) {
         TopNavigationBar(rightIcon: DesignSystem.Icons.iconSetting)
+        
+        ZStack(alignment: .topTrailing) {
+          DesignSystem.Images.earth
+            .frame(width: 106, height: 106)
+            .padding(.trailing, 24)
+          
+          MyInfoView(
+            store: store.scope(
+              state: \.info,
+              action: MyPageAction.myInfo
+            )
+          )
+          .padding(.horizontal, 24)
+          
+          Spacer()
+        }
+        .padding(.top, 32)
+        
         Spacer()
+          .frame(height: 39)
+        
+        DesignSystem.Colors.blue100
       }
     }
     .navigationBarHidden(true)
+    .edgesIgnoringSafeArea(.bottom)
   }
 }
