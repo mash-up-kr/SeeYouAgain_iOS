@@ -72,12 +72,17 @@ struct MyShortsView: View {
       }
       .padding(.horizontal, 20)
       .padding(.vertical, 16)
-      .background(DesignSystem.Colors.grey20)
+      .background(Material.regularMaterial)
       .overlay(
         RoundedRectangle(cornerRadius: 8)
-          .stroke(
+          .strokeBorder(
             LinearGradient(
-              gradient: Gradient(colors: [Color.gray, Color.gray]),
+              gradient: Gradient(
+                colors: [
+                  Color(hex: 0x556272).opacity(0.4),
+                  Color(hex: 0x3C414F).opacity(0.08)
+                ]
+              ),
               startPoint: .topLeading,
               endPoint: .bottomTrailing
             ),
@@ -85,7 +90,6 @@ struct MyShortsView: View {
           )
       )
     }
-    .background(Color.white)
     .cornerRadius(8)
   }
 }
