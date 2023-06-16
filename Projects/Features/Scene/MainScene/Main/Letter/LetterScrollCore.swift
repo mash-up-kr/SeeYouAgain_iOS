@@ -22,13 +22,18 @@ public struct LetterScrollState: Equatable {
   var currentScrollOffset: CGFloat = 0
   var previousPageIndex: Int = 0
   var currentPageIndex: Int = 0
-  var letters: [Int] = [1, 2, 3, 4, 5]
+  
+  // TODO: API 연결 후 해야하는 작업
+  // 모델로 교체
+  var letters: [Int]
   var degrees: [Double]
   var offsets: [CGSize]
   var isFolded: [Bool]
   
   init() {
-    // 임시로 5개
+    // TODO: API 연결 후 해야하는 작업
+    // 데이터에 따라 배열 길이 변경
+    self.letters = Array(repeating: 0, count: 5)
     self.degrees = Array(repeating: 0, count: 5)
     self.offsets = Array(repeating: .zero, count: 5)
     self.isFolded = Array(repeating: true, count: 5)
@@ -94,7 +99,7 @@ public let letterScrollReducer: Reducer<
     
   case ._countPageIndex:
     guard !state.letters.isEmpty else { return .none }
-    let logicalOffset = (state.currentScrollOffset - state.layout.leadingOffset ) * -1.0
+    let logicalOffset = (state.currentScrollOffset - state.layout.leadingOffset) * -1.0
     let contentWidth = state.layout.size.width + state.layout.spacing
     let floatIndex = (logicalOffset) / contentWidth
     let intIndex = Int(round(floatIndex))

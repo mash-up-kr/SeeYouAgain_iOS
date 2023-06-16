@@ -21,19 +21,23 @@ struct LetterView: View {
   var body: some View {
     GeometryReader { geometry in
       ZStack(alignment: .bottom) {
-        // background
-        Rectangle()
-          .fill(DesignSystem.Colors.white.opacity(0.8))
-          .frame(height: geometry.size.height / 2)
-          .cornerRadius(isFold ? 20 : 0, corners: [.topLeft, .topRight])
-          .cornerRadius(10, corners: [.bottomLeft, .bottomRight])
+        DesignSystem.Images.letterBackground
+          .resizable()
+          .scaledToFit()
+          .opacity(isFold ? 0 : 1)
+          .animation(.easeInOut.delay(0.3), value: isFold)
         
-        Paper(isFold: $isFold)
+        LetterPaper(isFold: $isFold)
           .padding(.all, 20)
-          .frame(
-            height: isFold ? geometry.size.height / 2 : geometry.size.height
-          )
-          .animation(.interpolatingSpring(stiffness: 300, damping: 15).delay(0.2), value: isFold)
+        
+        DesignSystem.Images.imgPolitics
+          .resizable()
+          .scaledToFit()
+          .offset(y: -10)
+          .padding(.all, 20)
+          .frame(width: isFold ? 0 : geometry.size.width)
+          .animation(.interpolatingSpring(stiffness: 300, damping: 20).delay(0.3), value: isFold)
+          .opacity(isFold ? 0 : 1)
         
         LetterBottom(deviceRatio: deviceRatio)
           .cornerRadius(10, corners: [.bottomLeft, .bottomRight])

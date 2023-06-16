@@ -55,15 +55,16 @@ struct LetterTop: View {
     GeometryReader { geometry in
       VStack {
         Spacer()
+        
         OpaqueShape(
           color: DesignSystem.Colors.white.opacity(0.5),
-          strokeColor: DesignSystem.Colors.white.opacity(0.4),
+          strokeOpacity: 0.4,
           shape: { LetterTopTriangle(deviceRatio: deviceRatio) }
         )
-        .cornerRadius(isFold ? 20 : 0, corners: [.topLeft, .topRight])
         .frame(height: geometry.size.height / 2)
+        .cornerRadius(isFold ? 20 : 0, corners: [.topLeft, .topRight])
         .opacity(isFold ? 1 : 0)
-        .animation(.easeOut(duration: 0.3), value: isFold)
+        .animation(.easeInOut, value: isFold)
       }
       .rotation3DEffect(.degrees(isFold ? 0 : 180), axis: (x: 1, y: 0, z: 0))
     }

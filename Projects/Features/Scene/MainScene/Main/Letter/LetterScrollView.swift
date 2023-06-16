@@ -43,10 +43,13 @@ struct LetterScrollView: View {
     WithViewStore(store) { viewStore in
       GeometryReader { _ in
         LazyHStack(alignment: .center, spacing: letterSpacing) {
+          // TODO: API 연결 후 해야하는 작업
+          // 뉴스 데이터로 바꾸기
           ForEach(0..<5) { index in
             LetterView(
               isFold: viewStore.binding(
-                get: \.isFolded[index], send: { LetterScrollAction._setIsFolded(index, $0) }
+                get: \.isFolded[index],
+                send: { LetterScrollAction._setIsFolded(index, $0) }
               ),
               deviceRatio: deviceRatio
             )
@@ -67,7 +70,7 @@ struct LetterScrollView: View {
           }
           .onEnded { _ in
             viewStore.send(._countPageIndex)
-            viewStore.send(.dragOnEnded, animation: .easeInOut)
+            viewStore.send(.dragOnEnded)
           }
       )
     }

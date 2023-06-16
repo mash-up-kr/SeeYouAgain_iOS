@@ -6,9 +6,10 @@
 //  Copyright © 2023 mashup.seeYouAgain. All rights reserved.
 //
 
+import DesignSystem
 import SwiftUI
 
-struct Paper: View {
+struct LetterPaper: View {
   @Binding private var isFold: Bool
   
   init(isFold: Binding<Bool>) {
@@ -16,17 +17,20 @@ struct Paper: View {
   }
   
   var body: some View {
-    Rectangle()
-      .fill(
-        LinearGradient(
-          colors: [
-            Color(hex: 0x45B2FF),
-            Color(hex: 0x45BBFF)
-          ],
-          startPoint: .top,
-          endPoint: .bottom
-        )
-      )
-      .cornerRadius(10)
+    GeometryReader { geometry in
+      VStack {
+        Spacer()
+        
+        // TODO: API 연결 후 해야하는 작업
+        // 1. 카테고리에 따라 편지 색 바꾸기
+        // 2. 편지에 키워드 적기
+        DesignSystem.Images.letter
+          .resizable()
+          .offset(y: isFold ? 0 : -10)
+          .frame(height: isFold ? 0 : geometry.size.height)
+          .animation(.interpolatingSpring(stiffness: 300, damping: 20).delay(0.3), value: isFold)
+      }
+      .opacity(isFold ? 0 : 1)
+    }
   }
 }
