@@ -50,8 +50,9 @@ struct LetterSide: View {
   
   var body: some View {
     GeometryReader { geometry in
-      VStack{
+      VStack {
         Spacer()
+        
         HStack(spacing: contentSpacing(geometry)) {
           left
           right
@@ -63,7 +64,7 @@ struct LetterSide: View {
   private var left: some View {
     OpaqueShape(
       color: DesignSystem.Colors.white.opacity(0.6),
-      strokeColor: DesignSystem.Colors.white.opacity(0.8),
+      strokeOpacity: 0.7,
       shape: { LetterSideTriangle() }
     )
     .frame(
@@ -75,7 +76,7 @@ struct LetterSide: View {
   private var right: some View {
     OpaqueShape(
       color: DesignSystem.Colors.white.opacity(0.6),
-      strokeColor: DesignSystem.Colors.white.opacity(0.8),
+      strokeOpacity: 0.7,
       shape: { LetterSideTriangle() }
     )
     .frame(

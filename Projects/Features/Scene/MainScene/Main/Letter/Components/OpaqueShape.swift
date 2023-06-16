@@ -11,25 +11,35 @@ import SwiftUI
 
 struct OpaqueShape<Content: Shape>: View {
   private let color: Color
-  private let strokeColor: Color
+  private let strokeOpacity: CGFloat
   private let degree: Double
   private let shape: Content
   
   init(
     color: Color,
-    strokeColor: Color = .clear,
+    strokeOpacity: CGFloat,
     degree: Double = 0,
     shape: @escaping () -> Content
   ) {
     self.color = color
-    self.strokeColor = strokeColor
+    self.strokeOpacity = strokeOpacity
     self.degree = degree
     self.shape = shape()
   }
   
   var body: some View {
     shape
-      .stroke(strokeColor, lineWidth: 0.3)
+      .stroke(
+        .linearGradient(
+          colors: [
+            DesignSystem.Colors.white,
+            DesignSystem.Colors.white.opacity(0)
+          ],
+          startPoint: .top,
+          endPoint: .bottom
+        ),
+        lineWidth: 0.3
+      )
       .background(Material.regularMaterial)
       .clipShape(shape)
       .rotationEffect(.degrees(degree))

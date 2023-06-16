@@ -48,9 +48,10 @@ struct LetterBottom: View {
     GeometryReader { geometry in
       VStack {
         Spacer()
+        
         OpaqueShape(
-          color: DesignSystem.Colors.white.opacity(0.5),
-          strokeColor: DesignSystem.Colors.white.opacity(0.5),
+          color: DesignSystem.Colors.white.opacity(0.55),
+          strokeOpacity: 0.5,
           shape: { LetterBottomTriangle(heightRatio: deviceRatio.height) }
         )
         .frame(height: Constant.bottomTriangleHeight * deviceRatio.height)
