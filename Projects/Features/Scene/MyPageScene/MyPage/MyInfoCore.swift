@@ -42,8 +42,20 @@ public struct MyInfoEnvironment {
   public init() {}
 }
 
-public let myInfoReducer = Reducer.combine([
-  Reducer<MyInfoState, MyInfoAction, MyInfoEnvironment> { state, action, env in
+public let myInfoReducer = Reducer<
+  MyInfoState,
+  MyInfoAction,
+  MyInfoEnvironment
+>.combine([
+  myShortsReducer
+    .pullback(
+      state: \MyInfoState.shorts,
+      action: /MyInfoAction.shortsAction,
+      environment: { _ in
+        MyShortsEnvironment()
+      }
+    ),
+  Reducer { state, action, env in
     switch action {
     default: return .none
     }
