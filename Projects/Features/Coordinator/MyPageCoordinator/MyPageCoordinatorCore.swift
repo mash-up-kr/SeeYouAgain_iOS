@@ -64,6 +64,15 @@ public let myPageCoordinatorReducer: Reducer<
   .withRouteReducer(
     Reducer { state, action, env in
       switch action {
+      case .routeAction(_, action: .myPage(.settingButtonTapped)):
+        state.routes.push(.setting(.init()))
+        return .none
+      case .routeAction(_, action: .myPage(.myInfo(.shortsAction(.shortShortsButtonTapped)))):
+        state.routes.push(.shortStorage(.init()))
+        return .none
+      case .routeAction(_, action: .myPage(.myInfo(.shortsAction(.longShortsButtonTapped)))):
+        state.routes.push(.longStorage(.init()))
+        return .none
       default: return .none
       }
     }

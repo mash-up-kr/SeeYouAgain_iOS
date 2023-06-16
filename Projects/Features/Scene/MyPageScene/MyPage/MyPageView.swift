@@ -20,7 +20,12 @@ public struct MyPageView: View {
   public var body: some View {
     WithViewStore(store) { viewStore in
       VStack(spacing: 0) {
-        TopNavigationBar(rightIcon: DesignSystem.Icons.iconSetting)
+        TopNavigationBar(
+          rightIcon: DesignSystem.Icons.iconSetting,
+          rightIconButtonAction: {
+            viewStore.send(.settingButtonTapped)
+          }
+        )
         
         ZStack(alignment: .topTrailing) {
           DesignSystem.Images.earth

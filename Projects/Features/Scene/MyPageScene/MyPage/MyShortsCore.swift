@@ -34,7 +34,10 @@ public struct MyShortsState: Equatable {
   }
 }
 
-public enum MyShortsAction { }
+public enum MyShortsAction {
+  case shortShortsButtonTapped
+  case longShortsButtonTapped
+}
 
 public struct MyShortsEnvironment {
   public init() {}

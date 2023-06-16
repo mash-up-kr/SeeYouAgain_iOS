@@ -39,7 +39,7 @@ struct MyShortsView: View {
         
         HStack(spacing: 16) {
           Button {
-            // TODO: 오늘의 숏스 화면으로 이동
+            viewStore.send(.shortShortsButtonTapped)
           } label: {
             ShortsInfoView(
               title: "오늘의 숏스",
@@ -56,7 +56,7 @@ struct MyShortsView: View {
           
 
           Button {
-            // TODO: 오래 간직할 숏스 화면으로 이동
+            viewStore.send(.longShortsButtonTapped)
           } label: {
             ShortsInfoView(
               title: "오래 간직할 숏스",

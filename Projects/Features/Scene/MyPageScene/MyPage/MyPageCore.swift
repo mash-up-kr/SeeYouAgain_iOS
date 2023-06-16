@@ -20,6 +20,7 @@ public struct MyPageState: Equatable {
 
 public enum MyPageAction {
   case myInfo(MyInfoAction)
+  case settingButtonTapped
 }
 
 public struct MyPageEnvironment {
