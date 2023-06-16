@@ -19,7 +19,7 @@ public struct MyPageState: Equatable {
 }
 
 public enum MyPageAction {
-  case myInfo(MyInfoAction)
+  case info(MyInfoAction)
   case settingButtonTapped
 }
 

@@ -22,14 +22,14 @@ public struct MyInfo: Equatable {
 }
 
 public struct MyInfoState: Equatable {
-  public var myInfo: MyInfo
+  public var info: MyInfo
   public var shorts: MyShortsState
   
   public init(
-    myInfo: MyInfo,
+    info: MyInfo,
     shorts: MyShortsState
   ) {
-    self.myInfo = myInfo
+    self.info = info
     self.shorts = shorts
   }
 }

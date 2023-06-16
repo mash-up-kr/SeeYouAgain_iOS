@@ -36,7 +36,7 @@ public struct MyPageView: View {
           MyInfoView(
             store: store.scope(
               state: \.info,
-              action: MyPageAction.myInfo
+              action: MyPageAction.info
             )
           )
           .padding(.horizontal, 24)

@@ -26,7 +26,7 @@ struct MyShortsView: View {
             
             Text("이번 달 ")
               .font(.r14)
-            Text("\(viewStore.myShorts.totalShortsCount)숏스 ")
+            Text("\(viewStore.shorts.totalShortsCount)숏스 ")
               .font(.b14)
             Text("중")
               .font(.r14)

@@ -20,12 +20,12 @@ public struct MyPageCoordinatorState: Equatable, IndexedRouterState {
         .myPage(
           .init(
             info: .init(
-              myInfo: .init(
+              info: .init(
                 nickname: "똑똑한여행가",
                 day: 1004
               ),
               shorts: .init(
-                myShorts: MyShorts(
+                shorts: MyShorts(
                   totalShortsCount: 56,
                   shortShortsCount: 5,
                   longShortsCount: 56
@@ -67,10 +67,10 @@ public let myPageCoordinatorReducer: Reducer<
       case .routeAction(_, action: .myPage(.settingButtonTapped)):
         state.routes.push(.setting(.init()))
         return .none
-      case .routeAction(_, action: .myPage(.myInfo(.shortsAction(.shortShortsButtonTapped)))):
+      case .routeAction(_, action: .myPage(.info(.shortsAction(.shortShortsButtonTapped)))):
         state.routes.push(.shortStorage(.init()))
         return .none
-      case .routeAction(_, action: .myPage(.myInfo(.shortsAction(.longShortsButtonTapped)))):
+      case .routeAction(_, action: .myPage(.info(.shortsAction(.longShortsButtonTapped)))):
         state.routes.push(.longStorage(.init()))
         return .none
       default: return .none

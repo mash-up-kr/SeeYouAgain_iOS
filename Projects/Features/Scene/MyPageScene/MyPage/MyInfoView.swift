@@ -22,11 +22,11 @@ struct MyInfoView: View {
       VStack(spacing: 32) {
         HStack(spacing: 0) {
           VStack(alignment: .leading, spacing: 4) {
-            Text("\(viewStore.state.myInfo.nickname)님")
+            Text("\(viewStore.state.info.nickname)님")
               .font(.b24)
               .foregroundColor(DesignSystem.Colors.grey100)
             
-            Text("\(viewStore.state.myInfo.day)일째 숏스와 세상을 읽는 중")
+            Text("\(viewStore.state.info.day)일째 숏스와 세상을 읽는 중")
               .font(.r14)
               .foregroundColor(DesignSystem.Colors.grey70)
           }
