@@ -30,7 +30,6 @@ struct MyShortsView: View {
               .font(.b14)
             Text("중")
               .font(.r14)
-            
           }
           .foregroundColor(DesignSystem.Colors.grey90)
           
@@ -54,7 +53,6 @@ struct MyShortsView: View {
             .fill(DesignSystem.Colors.grey30)
             .frame(width: 1, height: 36)
           
-
           Button {
             viewStore.send(.longShortsButtonTapped)
           } label: {
