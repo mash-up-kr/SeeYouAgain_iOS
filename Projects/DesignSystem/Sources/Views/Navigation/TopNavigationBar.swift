@@ -72,17 +72,17 @@ public struct TopNavigationBar: View {
 }
 
 fileprivate struct BarButton: View {
-  public var type: `Type` = .left
-  public var icon: Image?
-  public var text: String?
-  public var action: () -> Void = {}
+  private var type: `Type` = .left
+  private var icon: Image?
+  private var text: String?
+  private var action: () -> Void = {}
   
-  public enum `Type` {
+  fileprivate enum `Type` {
     case left
     case right
   }
   
-  public init(
+  fileprivate init(
     type: `Type` = .left,
     icon: Image? = nil,
     text: String? = nil,
@@ -94,7 +94,7 @@ fileprivate struct BarButton: View {
     self.action = action
   }
   
-  public var body: some View {
+  fileprivate var body: some View {
     Button(action: action) {
       HStack {
         if let icon = icon {

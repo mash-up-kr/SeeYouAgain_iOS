@@ -67,12 +67,15 @@ public let myPageCoordinatorReducer: Reducer<
       case .routeAction(_, action: .myPage(.settingButtonTapped)):
         state.routes.push(.setting(.init()))
         return .none
+        
       case .routeAction(_, action: .myPage(.info(.shortsAction(.shortShortsButtonTapped)))):
         state.routes.push(.shortStorage(.init()))
         return .none
+        
       case .routeAction(_, action: .myPage(.info(.shortsAction(.longShortsButtonTapped)))):
         state.routes.push(.longStorage(.init()))
         return .none
+        
       default: return .none
       }
     }
