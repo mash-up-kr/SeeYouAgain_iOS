@@ -18,17 +18,20 @@ public struct TabBarState: Equatable {
   public var myPage: MyPageCoordinatorState
   public var categoryBottomSheet: CategoryBottomSheetState
   public var selectedTab: TabBarItem = .house
+  public var isTabHidden: Bool = false
   
   public init(
     hotKeyword: HotKeywordCoordinatorState,
     main: MainCoordinatorState,
     myPage: MyPageCoordinatorState,
-    categoryBottomSheet: CategoryBottomSheetState
+    categoryBottomSheet: CategoryBottomSheetState,
+    isTabHidden: Bool
   ) {
     self.hotKeyword = hotKeyword
     self.main = main
     self.myPage = myPage
     self.categoryBottomSheet = categoryBottomSheet
+    self.isTabHidden = isTabHidden
   }
 }
 
@@ -38,6 +41,7 @@ public enum TabBarAction {
   case myPage(MyPageCoordinatorAction)
   case categoryBottomSheet(CategoryBottomSheetAction)
   case tabSelected(TabBarItem)
+  case _setTabHiddenStatus(Bool)
 }
 
 public struct TabBarEnvironment {
@@ -100,6 +104,28 @@ public let tabBarReducer = Reducer<
         Effect(value: .main(.routeAction(0, action: .main(._setCategories(categories)))))
       )
       
+    case ._setTabHiddenStatus(let status):
+      state.isTabHidden = status
+      return .none
+      
+    case .myPage(.routeAction(_, action: .myPage(.settingButtonTapped))):
+      return Effect(value: ._setTabHiddenStatus(true))
+      
+    case .myPage(.routeAction(_, action: .myPage(.info(.shortsAction(.shortShortsButtonTapped))))):
+      return Effect(value: ._setTabHiddenStatus(true))
+      
+    case .myPage(.routeAction(_, action: .myPage(.info(.shortsAction(.longShortsButtonTapped))))):
+      return Effect(value: ._setTabHiddenStatus(true))
+      
+    case .myPage(.routeAction(_, action: .shortStorage(.routeAction(_, action: .shortStorageNewsList(.backButtonTapped))))):
+      return Effect(value: ._setTabHiddenStatus(false))
+      
+    case .myPage(.routeAction(_, action: .longStorage(.routeAction(_, action: .longStorageNewsList(.backButtonTapped))))):
+      return Effect(value: ._setTabHiddenStatus(false))
+      
+    case .myPage(.routeAction(_, action: .setting(.routeAction(_, action: .setting(.backButtonTapped))))):
+      return Effect(value: ._setTabHiddenStatus(false))
+
     default: return .none
     }
   }

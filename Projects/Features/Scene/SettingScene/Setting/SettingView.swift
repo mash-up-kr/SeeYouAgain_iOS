@@ -7,6 +7,7 @@
 //
 
 import ComposableArchitecture
+import DesignSystem
 import SwiftUI
 
 public struct SettingView: View {
@@ -18,7 +19,18 @@ public struct SettingView: View {
   
   public var body: some View {
     WithViewStore(store) { viewStore in
-      Text("설정 화면")
+      VStack(spacing: 0) {
+        TopNavigationBar(
+          leftIcon: DesignSystem.Icons.iconNavigationLeft,
+          leftIconButtonAction: {
+            viewStore.send(.backButtonTapped)
+          }
+        )
+        
+        Text("설정화면")
+        
+        Spacer()
+      }
     }
     .navigationBarHidden(true)
   }

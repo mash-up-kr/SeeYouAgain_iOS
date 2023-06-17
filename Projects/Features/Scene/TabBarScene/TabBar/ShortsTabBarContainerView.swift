@@ -10,18 +10,25 @@ import SwiftUI
 
 struct ShortsTabBarContainerView<Content: View>: View {
   @Binding var selection: TabBarItem
+  @Binding var isHidden: Bool
   private let content: Content
   
   @State private var tabs: [TabBarItem] = []
   
-  init(selection: Binding<TabBarItem>, @ViewBuilder content: () -> Content) {
+  init(
+    selection: Binding<TabBarItem>,
+    isHidden: Binding<Bool>,
+    @ViewBuilder content: () -> Content
+  ) {
     self._selection = selection
+    self._isHidden = isHidden
     self.content = content()
   }
   
   public var body: some View {
-    ZStack(alignment: .bottom) {
+    ZStack {
       content
+        .zIndex(isHidden ? 1 : 0)
       
       ShortsTabBarView(
         tabs: tabs,

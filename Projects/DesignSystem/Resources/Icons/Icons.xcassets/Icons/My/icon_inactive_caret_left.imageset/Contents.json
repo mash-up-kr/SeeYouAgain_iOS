@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "icon_inactive_caret_left.svg",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

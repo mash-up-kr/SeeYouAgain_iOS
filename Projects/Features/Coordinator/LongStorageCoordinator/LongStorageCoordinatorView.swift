@@ -28,5 +28,6 @@ public struct LongStorageCoordinatorView: View {
         )
       }
     }
+    .navigationBarHidden(true)
   }
 }

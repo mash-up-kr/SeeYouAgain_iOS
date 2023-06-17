@@ -63,7 +63,8 @@ public let appCoordinatorReducer: Reducer<
                 hotKeyword: .init(),
                 main: .init(),
                 myPage: .init(),
-                categoryBottomSheet: .init()
+                categoryBottomSheet: .init(),
+                isTabHidden: false
               )
             ),
             embedInNavigationView: true
@@ -88,7 +89,8 @@ public let appCoordinatorReducer: Reducer<
                 hotKeyword: .init(),
                 main: .init(),
                 myPage: .init(),
-                categoryBottomSheet: .init()
+                categoryBottomSheet: .init(),
+                isTabHidden: false
               )
             ),
             embedInNavigationView: true

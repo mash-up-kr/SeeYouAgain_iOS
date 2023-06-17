@@ -16,6 +16,7 @@ public struct ShortStorageNewsListState: Equatable {
 
 public enum ShortStorageNewsListAction: Equatable {
   // MARK: - User Action
+  case backButtonTapped
   
   // MARK: - Inner Business Action
   

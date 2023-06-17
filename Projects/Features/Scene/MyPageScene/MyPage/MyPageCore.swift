@@ -9,17 +9,38 @@
 import ComposableArchitecture
 
 public struct MyPageState: Equatable {
-  public init() {}
+  var info: MyInfoState
+  
+  public init(
+    info: MyInfoState
+  ) {
+    self.info = info
+  }
 }
 
-public enum MyPageAction {}
+public enum MyPageAction {
+  case info(MyInfoAction)
+  case settingButtonTapped
+}
 
 public struct MyPageEnvironment {
   public init() {}
 }
 
-public let myPageReducer = Reducer.combine([
-  Reducer<MyPageState, MyPageAction, MyPageEnvironment> { state, action, env in
+public let myPageReducer = Reducer<
+  MyPageState,
+  MyPageAction,
+  MyPageEnvironment
+>.combine([
+  myInfoReducer
+    .pullback(
+      state: \MyPageState.info,
+      action: /MyPageAction.info,
+      environment: { _ in
+        MyInfoEnvironment()
+      }
+    ),
+  Reducer { state, action, env in
     switch action {
     default: return .none
     }

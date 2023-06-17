@@ -65,7 +65,7 @@ extension ShortsTabBarView {
     .padding(
       EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16)
     )
-//    .scaleEffect(1)
+    .scaleEffect(1)
     .frame(width: selection == tab ? selectionWidth[tab.rawValue] : 79)
     .background(
       selection == tab ? tab.backgroundColor : Color.clear

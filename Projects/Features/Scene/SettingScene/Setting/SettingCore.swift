@@ -16,6 +16,7 @@ public struct SettingState: Equatable {
 
 public enum SettingAction: Equatable {
   // MARK: - User Action
+  case backButtonTapped
   
   // MARK: - Inner Business Action
   
