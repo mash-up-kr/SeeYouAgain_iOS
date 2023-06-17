@@ -103,7 +103,7 @@ public let tabBarReducer = Reducer<
         Effect(value: .categoryBottomSheet(._setIsPresented(false))),
         Effect(value: .main(.routeAction(0, action: .main(._setCategories(categories)))))
       )
-  
+      
     case ._setTabHiddenStatus(let status):
       state.isTabHidden = status
       return .none
@@ -111,9 +111,21 @@ public let tabBarReducer = Reducer<
     case .myPage(.routeAction(_, action: .myPage(.settingButtonTapped))):
       return Effect(value: ._setTabHiddenStatus(true))
       
-    case .myPage(.routeAction(_, action: .setting(.routeAction(_, action: .setting(.backButtonTapped))))):
+    case .myPage(.routeAction(_, action: .myPage(.info(.shortsAction(.shortShortsButtonTapped))))):
+      return Effect(value: ._setTabHiddenStatus(true))
+      
+    case .myPage(.routeAction(_, action: .myPage(.info(.shortsAction(.longShortsButtonTapped))))):
+      return Effect(value: ._setTabHiddenStatus(true))
+      
+    case .myPage(.routeAction(_, action: .shortStorage(.routeAction(_, action: .shortStorageNewsList(.backButtonTapped))))):
       return Effect(value: ._setTabHiddenStatus(false))
       
+    case .myPage(.routeAction(_, action: .longStorage(.routeAction(_, action: .longStorageNewsList(.backButtonTapped))))):
+      return Effect(value: ._setTabHiddenStatus(false))
+      
+    case .myPage(.routeAction(_, action: .setting(.routeAction(_, action: .setting(.backButtonTapped))))):
+      return Effect(value: ._setTabHiddenStatus(false))
+
     default: return .none
     }
   }

@@ -7,6 +7,7 @@
 //
 
 import ComposableArchitecture
+import DesignSystem
 import SwiftUI
 
 public struct LongStorageNewsListView: View {
@@ -18,7 +19,18 @@ public struct LongStorageNewsListView: View {
   
   public var body: some View {
     WithViewStore(store) { viewStore in
-      Text("장기저장 뉴스 기사 리스트 화면")
+      VStack(spacing: 0) {
+        TopNavigationBar(
+          leftIcon: DesignSystem.Icons.iconNavigationLeft,
+          leftIconButtonAction: {
+            viewStore.send(.backButtonTapped)
+          }
+        )
+        
+        Text("장기저장 뉴스 기사 리스트 화면")
+        
+        Spacer()
+      }
     }
     .navigationBarHidden(true)
   }

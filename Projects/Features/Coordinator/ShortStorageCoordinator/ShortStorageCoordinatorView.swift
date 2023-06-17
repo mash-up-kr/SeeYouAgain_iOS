@@ -28,5 +28,6 @@ public struct ShortStorageCoordinatorView: View {
         )
       }
     }
+    .navigationBarHidden(true)
   }
 }
