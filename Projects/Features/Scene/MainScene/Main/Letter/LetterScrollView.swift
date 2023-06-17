@@ -61,7 +61,17 @@ struct LetterScrollView: View {
         }
         .frame(height: letterSize.height)
       }
-      .onAppear { sendOnAppearAction(to: viewStore) }
+      .onAppear {
+        viewStore.send(
+          ._onAppear(
+            .init(
+              size: letterSize,
+              spacing: letterSpacing,
+              leadingOffset: leadingOffset
+            )
+          )
+        )
+      }
       .offset(x: viewStore.currentScrollOffset, y: 0)
       .simultaneousGesture(
         DragGesture()
@@ -74,19 +84,5 @@ struct LetterScrollView: View {
           }
       )
     }
-  }
-}
-
-private extension LetterScrollView {
-  func sendOnAppearAction(to viewStore: ViewStore<LetterScrollState, LetterScrollAction>) {
-    viewStore.send(
-      ._onAppear(
-        .init(
-          size: letterSize,
-          spacing: letterSpacing,
-          leadingOffset: leadingOffset
-        )
-      )
-    )
   }
 }
