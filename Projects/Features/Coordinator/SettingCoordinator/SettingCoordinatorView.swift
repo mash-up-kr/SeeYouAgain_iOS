@@ -28,5 +28,6 @@ public struct SettingCoordinatorView: View {
         )
       }
     }
+    .navigationBarHidden(true)
   }
 }

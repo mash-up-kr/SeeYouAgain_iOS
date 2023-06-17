@@ -76,6 +76,10 @@ public let myPageCoordinatorReducer: Reducer<
         state.routes.push(.longStorage(.init()))
         return .none
         
+      case .routeAction(_, action: .setting(.routeAction(_, action: .setting(.backButtonTapped)))):
+        state.routes.pop()
+        return .none
+        
       default: return .none
       }
     }

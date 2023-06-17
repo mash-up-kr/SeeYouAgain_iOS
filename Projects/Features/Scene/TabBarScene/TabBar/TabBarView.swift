@@ -27,6 +27,10 @@ public struct TabBarView: View {
         selection: viewStore.binding(
           get: { $0.selectedTab },
           send: TabBarAction.tabSelected
+        ),
+        isHidden: viewStore.binding(
+          get: { $0.isTabHidden },
+          send: TabBarAction._setTabHiddenStatus
         )
       ) {
         HotKeywordCoordinatorView(
