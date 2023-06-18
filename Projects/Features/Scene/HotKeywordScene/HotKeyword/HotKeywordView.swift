@@ -74,7 +74,7 @@ public struct HotKeywordView: View {
         .frame(height: 30)
         
         HStack {
-          Text(viewStore.subTitleText)
+          Text("\(viewStore.subTitleText) 기준")
             .font(.r13)
             .foregroundColor(DesignSystem.Colors.grey70)
             .frame(height: 16)
