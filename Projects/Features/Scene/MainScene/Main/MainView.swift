@@ -11,13 +11,6 @@ import DesignSystem
 import SwiftUI
 
 public struct MainView: View {
-  private enum Constant {
-    static let defaultLetterWidth: CGFloat = 280
-    static let defaultLetterHeight: CGFloat = 378
-    static let iphone13MiniWidth: CGFloat = 375
-    static let iphone13MiniHeight: CGFloat = 812
-  }
-  
   private let store: Store<MainState, MainAction>
   
   public init(store: Store<MainState, MainAction>) {
