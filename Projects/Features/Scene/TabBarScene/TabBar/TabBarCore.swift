@@ -11,6 +11,7 @@ import HotKeywordCoordinator
 import Main
 import MainCoordinator
 import MyPageCoordinator
+import Services
 
 public struct TabBarState: Equatable {
   public var hotKeyword: HotKeywordCoordinatorState
@@ -52,7 +53,11 @@ public enum TabBarAction {
 }
 
 public struct TabBarEnvironment {
-  public init() { }
+  let appVersionService: AppVersionService
+  
+  public init(appVersionService: AppVersionService) {
+    self.appVersionService = appVersionService
+  }
 }
 
 public let tabBarReducer = Reducer<
@@ -80,8 +85,8 @@ public let tabBarReducer = Reducer<
     .pullback(
       state: \TabBarState.myPage,
       action: /TabBarAction.myPage,
-      environment: { _ in
-        MyPageCoordinatorEnvironment()
+      environment: {
+        MyPageCoordinatorEnvironment(appVersionService: $0.appVersionService)
       }
     ),
   categoryBottomSheetReducer

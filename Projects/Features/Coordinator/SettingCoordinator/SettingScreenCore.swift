@@ -20,6 +20,11 @@ public enum SettingScreenAction: Equatable {
 }
 
 internal struct SettingScreenEnvironment {
+  let appVersionService: AppVersionService
+  
+  init(appVersionService: AppVersionService) {
+    self.appVersionService = appVersionService
+  }
 }
 
 internal let settingScreenReducer = Reducer<
@@ -31,8 +36,8 @@ internal let settingScreenReducer = Reducer<
     .pullback(
       state: /SettingScreenState.setting,
       action: /SettingScreenAction.setting,
-      environment: { _ in
-        SettingEnvironment()
+      environment: {
+        SettingEnvironment(appVersionService: $0.appVersionService)
       }
     ),
 ])

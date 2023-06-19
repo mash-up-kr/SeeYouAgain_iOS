@@ -33,7 +33,11 @@ public enum SettingCoordinatorAction: IndexedRouterAction {
 }
 
 public struct SettingCoordinatorEnvironment {
-  public init() {}
+  let appVersionService: AppVersionService
+  
+  public init(appVersionService: AppVersionService) {
+    self.appVersionService = appVersionService
+  }
 }
 
 public let settingCoordinatorReducer: Reducer<
@@ -41,8 +45,8 @@ public let settingCoordinatorReducer: Reducer<
   SettingCoordinatorAction,
   SettingCoordinatorEnvironment
 > = settingScreenReducer
-  .forEachIndexedRoute(environment: { _ in
-    SettingScreenEnvironment()
+  .forEachIndexedRoute(environment: {
+    SettingScreenEnvironment(appVersionService: $0.appVersionService)
   })
   .withRouteReducer(
     Reducer { state, action, env in
