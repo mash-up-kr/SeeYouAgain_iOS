@@ -31,12 +31,14 @@ public struct MainView: View {
           .resizable()
           .scaledToFit()
         
-        Spacer().frame(height: 16)
+        Spacer()
+          .frame(height: 16)
         
         CategoriesView(store: store.scope(state: \.categories))
           .frame(height: 32)
         
-        Spacer().frame(height: 40)
+        Spacer()
+          .frame(height: 40)
         
         IfLetStore(
           store.scope(
