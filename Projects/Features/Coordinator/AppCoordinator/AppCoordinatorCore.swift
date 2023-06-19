@@ -29,13 +29,16 @@ public enum AppCoordinatorAction: IndexedRouterAction {
 public struct AppCoordinatorEnvironment {
   let mainQueue: AnySchedulerOf<DispatchQueue>
   let userDefaultsService: UserDefaultsService
+  let appVersionService: AppVersionService
   
   public init(
     mainQueue: AnySchedulerOf<DispatchQueue>,
-    userDefaultsService: UserDefaultsService
+    userDefaultsService: UserDefaultsService,
+    appVersionService: AppVersionService
   ) {
     self.mainQueue = mainQueue
     self.userDefaultsService = userDefaultsService
+    self.appVersionService = appVersionService
   }
 }
 
@@ -48,7 +51,8 @@ public let appCoordinatorReducer: Reducer<
     environment: {
       AppScreenEnvironment(
         mainQueue: $0.mainQueue,
-        userDefaultsService: $0.userDefaultsService
+        userDefaultsService: $0.userDefaultsService,
+        appVersionService: $0.appVersionService
       )
     }
   )

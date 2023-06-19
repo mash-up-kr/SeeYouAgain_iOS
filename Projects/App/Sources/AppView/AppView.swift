@@ -25,7 +25,8 @@ struct AppView: View {
           reducer: appCoordinatorReducer,
           environment: .init(
             mainQueue: .main,
-            userDefaultsService: .live
+            userDefaultsService: .live,
+            appVersionService: .live
           )
         )
       )

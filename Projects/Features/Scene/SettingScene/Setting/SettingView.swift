@@ -21,17 +21,58 @@ public struct SettingView: View {
     WithViewStore(store) { viewStore in
       VStack(spacing: 0) {
         TopNavigationBar(
+          title: "설정",
           leftIcon: DesignSystem.Icons.iconNavigationLeft,
           leftIconButtonAction: {
             viewStore.send(.backButtonTapped)
           }
         )
         
-        Text("설정화면")
+        AppVersionView(store: store)
         
         Spacer()
       }
+      .onAppear {
+        viewStore.send(._onAppear)
+      }
     }
     .navigationBarHidden(true)
+  }
+}
+
+// MARK: - 앱 버전
+private struct AppVersionView: View {
+  private let store: Store<SettingState, SettingAction>
+  
+  fileprivate init(store: Store<SettingState, SettingAction>) {
+    self.store = store
+  }
+  
+  fileprivate var body: some View {
+    WithViewStore(store) { viewStore in
+      HStack {
+        VStack(alignment: .leading, spacing: 4) {
+          Text("앱 버전 v\(viewStore.state.appVersion)")
+            .font(.b16)
+            .foregroundColor(DesignSystem.Colors.grey100)
+          
+          if viewStore.state.isLatestAppVersion {
+            Text(viewStore.state.appVersionDescription)
+              .font(.r14)
+              .foregroundColor(DesignSystem.Colors.grey80)
+          } else {
+            Link(
+              viewStore.state.appVersionDescription,
+              destination: URL(string: "https://apps.apple.com/app/\(viewStore.state.appID)")!
+            )
+            .font(.r14)
+          }
+        }
+        
+        Spacer()
+      }
+      .padding(.top, 16)
+      .padding(.horizontal, 24)
+    }
   }
 }
