@@ -9,12 +9,12 @@
 import SwiftUI
 
 public struct TopNavigationBar: View {
-  public var title: String?
-  public var leftIcon: Image?
-  public var leftText: String?
+  public let title: String?
+  public let leftIcon: Image?
+  public let leftText: String?
   public var leftIconButtonAction: () -> Void = {}
-  public var rightIcon: Image?
-  public var rightText: String?
+  public let rightIcon: Image?
+  public let rightText: String?
   public var rightIconButtonAction: () -> Void = {}
   
   public init(
@@ -61,6 +61,7 @@ public struct TopNavigationBar: View {
           
           Text(title)
             .font(.r16)
+            .foregroundColor(DesignSystem.Colors.grey100)
           
           Spacer()
         }
@@ -106,6 +107,7 @@ fileprivate struct BarButton: View {
         if let text = text {
           Text(text)
             .font(.r16)
+            .foregroundColor(DesignSystem.Colors.grey100)
             .padding(type == .left ? .leading : .trailing, 16)
         }
       }
