@@ -11,6 +11,7 @@ import HotKeywordCoordinator
 import Main
 import MainCoordinator
 import MyPageCoordinator
+import Services
 
 public struct TabBarState: Equatable {
   public var hotKeyword: HotKeywordCoordinatorState
@@ -36,16 +37,27 @@ public struct TabBarState: Equatable {
 }
 
 public enum TabBarAction {
+  // MARK: - User Action
+  case tabSelected(TabBarItem)
+  
+  // MARK: - Inner Business Action
+  
+  // MARK: - Inner SetState Action
+  case _setTabHiddenStatus(Bool)
+  
+  // MARK: - Child Action
   case hotKeyword(HotKeywordCoordinatorAction)
   case main(MainCoordinatorAction)
   case myPage(MyPageCoordinatorAction)
   case categoryBottomSheet(CategoryBottomSheetAction)
-  case tabSelected(TabBarItem)
-  case _setTabHiddenStatus(Bool)
 }
 
 public struct TabBarEnvironment {
-  public init() { }
+  let appVersionService: AppVersionService
+  
+  public init(appVersionService: AppVersionService) {
+    self.appVersionService = appVersionService
+  }
 }
 
 public let tabBarReducer = Reducer<
@@ -73,8 +85,8 @@ public let tabBarReducer = Reducer<
     .pullback(
       state: \TabBarState.myPage,
       action: /TabBarAction.myPage,
-      environment: { _ in
-        MyPageCoordinatorEnvironment()
+      environment: {
+        MyPageCoordinatorEnvironment(appVersionService: $0.appVersionService)
       }
     ),
   categoryBottomSheetReducer
@@ -117,10 +129,30 @@ public let tabBarReducer = Reducer<
     case .myPage(.routeAction(_, action: .myPage(.info(.shortsAction(.longShortsButtonTapped))))):
       return Effect(value: ._setTabHiddenStatus(true))
       
-    case .myPage(.routeAction(_, action: .shortStorage(.routeAction(_, action: .shortStorageNewsList(.backButtonTapped))))):
+    case .myPage(
+      .routeAction(
+        _,
+        action: .shortStorage(
+          .routeAction(
+            _,
+            action: .shortStorageNewsList(.backButtonTapped)
+          )
+        )
+      )
+    ):
       return Effect(value: ._setTabHiddenStatus(false))
       
-    case .myPage(.routeAction(_, action: .longStorage(.routeAction(_, action: .longStorageNewsList(.backButtonTapped))))):
+    case .myPage(
+      .routeAction(
+        _,
+        action: .longStorage(
+          .routeAction(
+            _,
+            action: .longStorageNewsList(.backButtonTapped)
+          )
+        )
+      )
+    ):
       return Effect(value: ._setTabHiddenStatus(false))
       
     case .myPage(.routeAction(_, action: .setting(.routeAction(_, action: .setting(.backButtonTapped))))):

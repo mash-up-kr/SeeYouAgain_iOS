@@ -12,8 +12,18 @@ import Foundation
 import Models
 import Services
 
+private enum Constant {
+  static let defaultLetterWidth: CGFloat = 280
+  static let defaultLetterHeight: CGFloat = 378
+  static let iphone13MiniWidth: CGFloat = 375
+  static let iphone13MiniHeight: CGFloat = 812
+}
+
 public typealias Category = Models.Category
 public struct MainState: Equatable {
+  var screenSize: CGSize = .zero
+  var letterSize: CGSize = .zero
+  
   var isLoading: Bool = false
   var categories: [Category] = []
   var letterScrollState: LetterScrollState?
@@ -25,20 +35,22 @@ public enum MainAction {
   case showCategoryBottomSheet([Category])
   
   // MARK: - Inner Business Action
-  case _viewWillAppear
+  case _viewWillAppear(CGSize)
   case _fetchCategories
-  case _fetchLetters
   case _updateCategories
+  case _fetchLetters
+  case _calculateLetterSize
   
   // MARK: - Inner SetState Action
   case _setIsLoading(Bool)
   case _setCategories([Category])
+  case _setLetterScrollState(LetterLayout)
   
   // MARK: - Child Action
   case letterScrollAction(LetterScrollAction)
 }
 
-public struct MainEnvironment {  
+public struct MainEnvironment {
   public init() {}
 }
 
@@ -52,7 +64,8 @@ public let mainReducer = Reducer.combine([
     ),
   Reducer<MainState, MainAction, MainEnvironment> { state, action, env in
     switch action {
-    case ._viewWillAppear:
+    case let ._viewWillAppear(screen):
+      state.screenSize = screen
       return Effect.concatenate([
         Effect(value: ._setIsLoading(true)),
         Effect(value: ._fetchCategories),
@@ -64,13 +77,16 @@ public let mainReducer = Reducer.combine([
       state.categories = Category.stub
       return .none
       
-    case ._fetchLetters:
-      state.letterScrollState = .init()
-      return .none
-      
     case ._updateCategories:
       // TODO: update categories to sever
       return .none
+      
+    case ._fetchLetters:
+      return Effect(value: ._calculateLetterSize)
+      
+    case ._calculateLetterSize:
+      let letterLayout = buildLetterLayout(screenSize: state.screenSize)
+      return Effect(value: ._setLetterScrollState(letterLayout))
       
     case let ._setIsLoading(isLoading):
       state.isLoading = isLoading
@@ -80,8 +96,37 @@ public let mainReducer = Reducer.combine([
       state.categories = categories
       return .none
       
+    case let ._setLetterScrollState(letterLayout):
+      state.letterSize = letterLayout.size
+      state.letterScrollState = LetterScrollState(
+        layout: buildLetterLayout(
+          screenSize: state.screenSize
+        )
+      )
+      return .none
+      
     default:
       return .none
     }
   }
 ])
+
+private func buildLetterLayout(screenSize: CGSize) -> LetterLayout {
+  let deviceRatio = CGSize(
+    width: screenSize.width / Constant.iphone13MiniWidth,
+    height: screenSize.height / Constant.iphone13MiniHeight
+  )
+  let letterSize = CGSize(
+    width: Constant.defaultLetterWidth * deviceRatio.width,
+    height: Constant.defaultLetterHeight * deviceRatio.height
+  )
+  let letterSpacing = (screenSize.width - letterSize.width) / 5
+  let leadingOffset = (screenSize.width - letterSize.width) / 2
+  
+  return LetterLayout(
+    ratio: deviceRatio,
+    size: letterSize,
+    spacing: letterSpacing,
+    leadingOffset: leadingOffset
+  )
+}

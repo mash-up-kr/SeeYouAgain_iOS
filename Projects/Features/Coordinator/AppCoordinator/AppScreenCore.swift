@@ -36,13 +36,16 @@ public enum AppScreenAction {
 internal struct AppScreenEnvironment {
   let mainQueue: AnySchedulerOf<DispatchQueue>
   let userDefaultsService: UserDefaultsService
+  let appVersionService: AppVersionService
   
   internal init(
     mainQueue: AnySchedulerOf<DispatchQueue>,
-    userDefaultsService: UserDefaultsService
+    userDefaultsService: UserDefaultsService,
+    appVersionService: AppVersionService
   ) {
     self.mainQueue = mainQueue
     self.userDefaultsService = userDefaultsService
+    self.appVersionService = appVersionService
   }
 }
 
@@ -74,8 +77,8 @@ internal let appScreenReducer = Reducer<
     .pullback(
       state: /AppScreenState.tabBar,
       action: /AppScreenAction.tabBar,
-      environment: { _ in
-        TabBarEnvironment()
+      environment: {
+        TabBarEnvironment(appVersionService: $0.appVersionService)
       }
     ),
   newsCardCoordinatorReducer
@@ -90,8 +93,8 @@ internal let appScreenReducer = Reducer<
     .pullback(
       state: /AppScreenState.setting,
       action: /AppScreenAction.setting,
-      environment: { _ in
-        SettingCoordinatorEnvironment()
+      environment: {
+        SettingCoordinatorEnvironment(appVersionService: $0.appVersionService)
       }
     ),
 ])

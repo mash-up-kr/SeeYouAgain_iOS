@@ -15,7 +15,6 @@ import SwiftUI
 
 public struct TabBarView: View {
   private let store: Store<TabBarState, TabBarAction>
-  @State private var tabs: [TabBarItem] = []
   
   public init(store: Store<TabBarState, TabBarAction>) {
     self.store = store
@@ -65,9 +64,6 @@ public struct TabBarView: View {
           tab: .myPage,
           selection: viewStore.binding(get: { $0.selectedTab }, send: TabBarAction.tabSelected)
         )
-      }
-      .onPreferenceChange(TabBarItemsPreferenceKey.self) { value in
-        self.tabs = value
       }
       .bottomSheet(
         isPresented: viewStore.binding(

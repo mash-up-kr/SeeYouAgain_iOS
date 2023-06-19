@@ -10,6 +10,7 @@ import Combine
 import ComposableArchitecture
 import LongStorageCoordinator
 import MyPage
+import Services
 import SettingCoordinator
 import ShortStorageCoordinator
 
@@ -28,7 +29,11 @@ public enum MyPageScreenAction {
 }
 
 internal struct MyPageScreenEnvironment {
-  internal init() {}
+  let appVersionService: AppVersionService
+  
+  internal init(appVersionService: AppVersionService) {
+    self.appVersionService = appVersionService
+  }
 }
 
 internal let myPageScreenReducer = Reducer<
@@ -64,8 +69,8 @@ internal let myPageScreenReducer = Reducer<
     .pullback(
       state: /MyPageScreenState.setting,
       action: /MyPageScreenAction.setting,
-      environment: { _ in
-        SettingCoordinatorEnvironment()
+      environment: {
+        SettingCoordinatorEnvironment(appVersionService: $0.appVersionService)
       }
     )
 ])

@@ -10,14 +10,14 @@ import ComposableArchitecture
 import Foundation
 
 public struct LetterLayout: Equatable {
+  var ratio: CGSize
   var size: CGSize
   var spacing: CGFloat
   var leadingOffset: CGFloat
 }
 
 public struct LetterScrollState: Equatable {
-  fileprivate var layout: LetterLayout = .init(size: .zero, spacing: 0, leadingOffset: 0)
-  
+  var layout: LetterLayout
   var gestureDragOffset: CGFloat = 0
   var currentScrollOffset: CGFloat = 0
   var previousPageIndex: Int = 0
@@ -30,7 +30,8 @@ public struct LetterScrollState: Equatable {
   var offsets: [CGSize]
   var isFolded: [Bool]
   
-  init() {
+  init(layout: LetterLayout) {
+    self.layout = layout
     // TODO: API 연결 후 해야하는 작업
     // 데이터에 따라 배열 길이 변경
     self.letters = Array(repeating: 0, count: 5)
@@ -46,7 +47,7 @@ public enum LetterScrollAction {
   case dragOnEnded
   
   // MARK: - Inner Business Action
-  case _onAppear(LetterLayout)
+  case _onAppear
   case _countPageIndex
   case _countCurrentScrollOffset
   case _updateIsFolds
@@ -87,9 +88,7 @@ public let letterScrollReducer: Reducer<
       Effect(value: ._calculateOffsets)
     )
     
-  case let ._onAppear(layout):
-    state.layout = layout
-    
+  case ._onAppear:
     return Effect.concatenate(
       Effect(value: ._countCurrentScrollOffset),
       Effect(value: ._setIsFolded(0, false)),
