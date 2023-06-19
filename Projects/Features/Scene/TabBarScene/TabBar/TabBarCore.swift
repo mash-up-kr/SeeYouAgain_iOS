@@ -36,12 +36,19 @@ public struct TabBarState: Equatable {
 }
 
 public enum TabBarAction {
+  // MARK: - User Action
+  case tabSelected(TabBarItem)
+  
+  // MARK: - Inner Business Action
+  
+  // MARK: - Inner SetState Action
+  case _setTabHiddenStatus(Bool)
+  
+  // MARK: - Child Action
   case hotKeyword(HotKeywordCoordinatorAction)
   case main(MainCoordinatorAction)
   case myPage(MyPageCoordinatorAction)
   case categoryBottomSheet(CategoryBottomSheetAction)
-  case tabSelected(TabBarItem)
-  case _setTabHiddenStatus(Bool)
 }
 
 public struct TabBarEnvironment {
