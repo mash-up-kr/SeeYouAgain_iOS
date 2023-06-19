@@ -9,17 +9,16 @@
 import DesignSystem
 import SwiftUI
 
-public struct CategoryDetailButton: View {
+struct CategoryDetailButton: View {
   private var action: () -> Void
   
-  public init(action: @escaping () -> Void) {
+  init(action: @escaping () -> Void) {
     self.action = action
   }
   
-  public var body: some View {
+  var body: some View {
     Button(action: action) {
       DesignSystem.Icons.badgeDetail
-        .padding(.all, 5)
     }
   }
 }

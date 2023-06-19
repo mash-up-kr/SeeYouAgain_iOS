@@ -70,7 +70,7 @@ private struct ActiveCategory: View {
       Spacer()
       
       VStack(spacing: 2) {
-        DesignSystem.Icons.badge
+        Circle()
           .frame(width: 28, height: 28)
         Text(category.name)
           .font(.b14)

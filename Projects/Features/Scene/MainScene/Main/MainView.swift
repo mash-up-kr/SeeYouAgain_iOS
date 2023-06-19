@@ -20,11 +20,18 @@ public struct MainView: View {
   public var body: some View {
     WithViewStore(store) { viewStore in
       VStack {
-        Spacer().frame(height: 40)
+        DesignSystem.Images.mainTitle
+          .resizable()
+          .scaledToFit()
+        
+        Spacer()
+          .frame(height: 16)
         
         CategoriesView(store: store.scope(state: \.categories))
+          .frame(height: 32)
         
-        Spacer().frame(height: 40)
+        Spacer()
+          .frame(height: 40)
         
         IfLetStore(
           store.scope(
@@ -33,15 +40,33 @@ public struct MainView: View {
           )
         ) { store in
           LetterScrollView(store: store)
-            .frame(height: 200)
+            .frame(height: viewStore.letterSize.height)
         }
+        
+        Spacer()
+          .frame(height: 24)
+        
+        SaveTextView()
+        
         Spacer()
       }
       .onAppear {
-        viewStore.send(._viewWillAppear)
+        viewStore.send(._viewWillAppear(UIScreen.main.bounds.size))
       }
     }
     .shortsBackgroundView()
     .navigationBarHidden(true)
+  }
+}
+
+
+private struct SaveTextView: View {
+  fileprivate var body: some View {
+    VStack(spacing: 8) {
+      DesignSystem.Icons.caretDown
+      Text("아래로 내려서 저장하기")
+        .font(.b14)
+        .foregroundColor(DesignSystem.Colors.grey70)
+    }
   }
 }
