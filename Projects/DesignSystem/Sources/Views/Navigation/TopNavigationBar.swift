@@ -36,15 +36,24 @@ public struct TopNavigationBar: View {
   }
   
   public var body: some View {
-    HStack {
-      BarButton(
-        type: .left,
-        icon: leftIcon,
-        text: leftText,
-        action: leftIconButtonAction
-      )
-
-      Spacer()
+    ZStack {
+      HStack {
+        BarButton(
+          type: .left,
+          icon: leftIcon,
+          text: leftText,
+          action: leftIconButtonAction
+        )
+        
+        Spacer()
+        
+        BarButton(
+          type: .right,
+          icon: rightIcon,
+          text: rightText,
+          action: rightIconButtonAction
+        )
+      }
       
       if let title = title {
         HStack {
@@ -56,15 +65,6 @@ public struct TopNavigationBar: View {
           Spacer()
         }
       }
-      
-      Spacer()
-
-      BarButton(
-        type: .right,
-        icon: rightIcon,
-        text: rightText,
-        action: rightIconButtonAction
-      )
     }
     .frame(height: 48, alignment: .center)
     .background(Color.white)

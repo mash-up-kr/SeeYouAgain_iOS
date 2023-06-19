@@ -21,6 +21,7 @@ public struct SettingView: View {
     WithViewStore(store) { viewStore in
       VStack(spacing: 0) {
         TopNavigationBar(
+          title: "설정",
           leftIcon: DesignSystem.Icons.iconNavigationLeft,
           leftIconButtonAction: {
             viewStore.send(.backButtonTapped)
