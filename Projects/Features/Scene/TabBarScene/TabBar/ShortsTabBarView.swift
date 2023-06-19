@@ -12,7 +12,7 @@ import SwiftUI
 struct ShortsTabBarView: View {
   public let tabs: [TabBarItem]
   @Binding var selection: TabBarItem
-  private let selectionWidth: [CGFloat] = [90, 105, 87]
+  private let selectionWidth: [CGFloat] = [98, 113, 95]
   
   var body: some View {
     GeometryReader { geometry in
@@ -23,7 +23,7 @@ struct ShortsTabBarView: View {
           ForEach(tabs, id: \.self) { tab in
             singleTabView(tab: tab)
           }
-          .frame(height: 42)
+          .frame(height: 50)
         }
         .frame(width: geometry.size.width, height: 82)
         .background(
@@ -62,15 +62,14 @@ extension ShortsTabBarView {
           .fixedSize()
       }
     }
-    .padding(
-      EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16)
-    )
+    .padding(.horizontal, 20)
+    .padding(.vertical, 12)
     .scaleEffect(1)
     .frame(width: selection == tab ? selectionWidth[tab.rawValue] : 79)
     .background(
       selection == tab ? tab.backgroundColor : Color.clear
     )
-    .cornerRadius(20)
+    .cornerRadius(32)
     .onTapGesture {
       withAnimation(.linear(duration: 0.2)) {
         selection = tab
