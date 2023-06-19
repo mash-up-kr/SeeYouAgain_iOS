@@ -56,9 +56,17 @@ private struct AppVersionView: View {
             .font(.b16)
             .foregroundColor(DesignSystem.Colors.grey100)
           
-          Text(viewStore.state.appVersionDescription)
+          if viewStore.state.isLatestAppVersion {
+            Text(viewStore.state.appVersionDescription)
+              .font(.r14)
+              .foregroundColor(DesignSystem.Colors.grey80)
+          } else {
+            Link(
+              viewStore.state.appVersionDescription,
+              destination: URL(string: "https://apps.apple.com/app/\(viewStore.state.appID)")!
+            )
             .font(.r14)
-            .foregroundColor(DesignSystem.Colors.grey80)
+          }
         }
         
         Spacer()

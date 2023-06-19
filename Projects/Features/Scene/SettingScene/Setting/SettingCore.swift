@@ -14,13 +14,23 @@ import Services
 public struct SettingState: Equatable {
   var appVersion: String
   var appVersionDescription: String
+  var isLatestAppVersion: Bool
+  var appID: String {
+    #if DEBUG
+    "6448740360"
+    #else
+    "6447816671"
+    #endif
+  }
   
   public init(
     appVersion: String = "",
-    appVersionDescription: String = ""
+    appVersionDescription: String = "",
+    isLatestAppVersion: Bool = true
   ) {
     self.appVersion = appVersion
     self.appVersionDescription = appVersionDescription
+    self.isLatestAppVersion = isLatestAppVersion
   }
 }
 
@@ -36,6 +46,7 @@ public enum SettingAction: Equatable {
   // MARK: - Inner SetState Action
   case _setAppVersion(String)
   case _setAppVersionDescription(String)
+  case _setIsLatestAppVersion(Bool)
   
   // MARK: - Child Action
 }
@@ -81,7 +92,10 @@ public let settingReducer = Reducer.combine([
         .flatMapLatest { result -> Effect<SettingAction, Never> in
           switch result {
           case let .success(appVersionDescription):
-            return Effect(value: ._setAppVersionDescription(appVersionDescription))
+            return Effect.concatenate([
+              Effect(value: ._setAppVersionDescription(appVersionDescription.0)),
+              Effect(value: ._setIsLatestAppVersion(appVersionDescription.1)),
+            ])
             
           case .failure:
             // TODO: - 필요 시 에러 처리 추가 구현
@@ -96,6 +110,10 @@ public let settingReducer = Reducer.combine([
       
     case let ._setAppVersionDescription(appVersionDiscription):
       state.appVersionDescription = appVersionDiscription
+      return .none
+      
+    case let ._setIsLatestAppVersion(isLatestAppVersion):
+      state.isLatestAppVersion = isLatestAppVersion
       return .none
     }
   }

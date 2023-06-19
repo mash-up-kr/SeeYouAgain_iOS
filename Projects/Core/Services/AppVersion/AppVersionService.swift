@@ -15,11 +15,11 @@ import Models
 
 public struct AppVersionService {
   public let fetchAppVersion: () -> Effect<String, Never>
-  public let fetchLastestAppVersion: (String) -> Effect<String, Never>
+  public let fetchLastestAppVersion: (String) -> Effect<(String, Bool), Never>
   
   private init(
     fetchAppVersion: @escaping () -> Effect<String, Never>,
-    fetchLastestAppVersion: @escaping (String) -> Effect<String, Never>
+    fetchLastestAppVersion: @escaping (String) -> Effect<(String, Bool), Never>
   ) {
     self.fetchAppVersion = fetchAppVersion
     self.fetchLastestAppVersion = fetchLastestAppVersion
@@ -41,7 +41,7 @@ public extension AppVersionService {
       .eraseToEffect()
     },
     fetchLastestAppVersion: { currentAppVersion in
-      return Publishers.Create<String, Never>(factory: { subscriber -> Cancellable in
+      return Publishers.Create<(String, Bool), Never>(factory: { subscriber -> Cancellable in
         #if DEBUG
         let appID = "6448740360"
         #else
@@ -56,16 +56,16 @@ public extension AppVersionService {
             case let .success(appStoreResponse):
               if let appStoreVersion = appStoreResponse.results.first?.version {
                 if currentAppVersion == appStoreVersion {
-                  subscriber.send("최신버전입니다.")
+                  subscriber.send(("최신버전입니다.", true))
                 } else {
-                  subscriber.send("최신버전이 아닙니다.")
+                  subscriber.send(("최신버전이 아닙니다.", false))
                 }
               } else {
-                subscriber.send("앱 스토어 정보를 가져오지 못했습니다.")
+                subscriber.send(("앱 스토어 정보를 가져오지 못했습니다.", false))
               }
               
             case .failure:
-              subscriber.send("앱 스토어 정보를 가져오는데 실패했습니다.")
+              subscriber.send(("앱 스토어 정보를 가져오는데 실패했습니다.", false))
             }
             subscriber.send(completion: .finished)
           }
