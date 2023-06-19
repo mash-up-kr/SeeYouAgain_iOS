@@ -6,6 +6,7 @@
 //  Copyright © 2023 mashup.seeYouAgain. All rights reserved.
 //
 
+import Common
 import ComposableArchitecture
 import DesignSystem
 import SwiftUI
@@ -19,25 +20,45 @@ struct CategoriesView: View {
   
   var body: some View {
     WithViewStore(store) { viewStore in
-      ScrollView(.horizontal, showsIndicators: false) {
-        HStack(spacing: 8) {
-          ForEach(viewStore.state, id: \.id) { category in
-            if category.isSelected,
-              let category = CategoryType(rawValue: category.name) {
-              CategoryBadgeButton(name: category.rawValue, icon: category.icon) {
-                // TODO: filter news cards.
+      HStack(spacing: 0) {
+        LinearGradient(
+          colors: [
+            Color(red: 222, green: 234, blue: 243).opacity(0),
+            Color(red: 222, green: 234, blue: 243)
+          ],
+          startPoint: .leading,
+          endPoint: .trailing
+        )
+        .frame(width: 40)
+        
+        ScrollView(.horizontal, showsIndicators: false) {
+          HStack(spacing: 8) {
+            ForEach(viewStore.state, id: \.id) { category in
+              if category.isSelected, let category = CategoryType(rawValue: category.name) {
+                CategoryBadge(name: category.rawValue)
               }
             }
           }
-          
-          CategoryDetailButton {
-            viewStore.send(.showCategoryBottomSheet(viewStore.state))
-          }
-          
-          Spacer()
+          .animation(.easeInOut, value: viewStore.state)
         }
-        .padding(.horizontal, 24)
-        .animation(.easeInOut, value: viewStore.state)
+        
+        LinearGradient(
+          colors: [
+            Color(hex: 0xEBF2F6).opacity(0),
+            Color(hex: 0xEBF2F6)
+          ],
+          startPoint: .leading,
+          endPoint: .trailing
+        )
+        .frame(width: 40)
+        
+        Spacer().frame(width: 16)
+        
+        CategoryDetailButton {
+          viewStore.send(.showCategoryBottomSheet(viewStore.state))
+        }
+        
+        Spacer().frame(width: 24)
       }
     }
   }

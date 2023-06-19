@@ -23,6 +23,7 @@ public struct MainView: View {
         Spacer().frame(height: 40)
         
         CategoriesView(store: store.scope(state: \.categories))
+          .frame(height: 32)
         
         Spacer().frame(height: 40)
         
