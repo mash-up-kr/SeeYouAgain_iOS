@@ -27,7 +27,7 @@ struct ShortsTabBarView: View {
         }
         .frame(width: geometry.size.width, height: 82)
         .background(
-          DesignSystem.Colors.grey20
+          DesignSystem.Colors.coolgrey100
         )
         .cornerRadius(24)
         .overlay(
