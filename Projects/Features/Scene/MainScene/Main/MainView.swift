@@ -20,7 +20,9 @@ public struct MainView: View {
   public var body: some View {
     WithViewStore(store) { viewStore in
       VStack {
-        Spacer().frame(height: 40)
+        DesignSystem.Images.mainTitle
+        
+        Spacer().frame(height: 16)
         
         CategoriesView(store: store.scope(state: \.categories))
           .frame(height: 32)
