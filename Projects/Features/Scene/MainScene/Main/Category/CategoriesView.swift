@@ -21,16 +21,6 @@ struct CategoriesView: View {
   var body: some View {
     WithViewStore(store) { viewStore in
       HStack(spacing: 0) {
-        LinearGradient(
-          colors: [
-            Color(red: 222, green: 234, blue: 243).opacity(0),
-            Color(red: 222, green: 234, blue: 243)
-          ],
-          startPoint: .leading,
-          endPoint: .trailing
-        )
-        .frame(width: 40)
-        
         ScrollView(.horizontal, showsIndicators: false) {
           HStack(spacing: 8) {
             ForEach(viewStore.state, id: \.id) { category in
@@ -40,26 +30,50 @@ struct CategoriesView: View {
             }
           }
           .animation(.easeInOut, value: viewStore.state)
+          .offset(x: 24)
+        }
+        .overlay {
+          GradientView()
         }
         
-        LinearGradient(
-          colors: [
-            Color(hex: 0xEBF2F6).opacity(0),
-            Color(hex: 0xEBF2F6)
-          ],
-          startPoint: .leading,
-          endPoint: .trailing
-        )
-        .frame(width: 40)
-        
-        Spacer().frame(width: 16)
+        Spacer()
+          .frame(width: 16)
         
         CategoryDetailButton {
           viewStore.send(.showCategoryBottomSheet(viewStore.state))
         }
         
-        Spacer().frame(width: 24)
+        Spacer()
+          .frame(width: 24)
       }
+    }
+  }
+}
+
+private struct GradientView: View {
+  fileprivate var body: some View {
+    HStack {
+      LinearGradient(
+        colors: [
+          DesignSystem.Colors.lightBlue,
+          DesignSystem.Colors.lightBlue.opacity(0)
+        ],
+        startPoint: .leading,
+        endPoint: .trailing
+      )
+      .frame(width: 40, height: 32)
+      
+      Spacer()
+      
+      LinearGradient(
+        colors: [
+          DesignSystem.Colors.skyBlue.opacity(0),
+          DesignSystem.Colors.skyBlue
+        ],
+        startPoint: .leading,
+        endPoint: .trailing
+      )
+      .frame(width: 40, height: 32)
     }
   }
 }
