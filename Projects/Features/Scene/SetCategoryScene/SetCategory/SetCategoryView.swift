@@ -24,7 +24,7 @@ public struct SetCategoryView: View {
         TitleView()
         
         Spacer()
-          .frame(height: 64)
+          .frame(height: 56)
         
         ActiveCategoryGridView(store: store)
         
@@ -60,9 +60,15 @@ public struct SetCategoryView: View {
 private struct TitleView: View {
   fileprivate var body: some View {
     HStack {
-      Text("관심 키워드를 선택해주세요")
-        .font(.b20)
-        .foregroundColor(DesignSystem.Colors.grey100)
+      VStack(alignment: .leading, spacing: 4) {
+        Text("관심 키워드를 선택해주세요")
+          .font(.b20)
+          .foregroundColor(DesignSystem.Colors.grey100)
+        
+        Text("최소 1개 이상 선택해주세요")
+          .font(.r13)
+          .foregroundColor(DesignSystem.Colors.grey70)
+      }
       
       Spacer()
     }
