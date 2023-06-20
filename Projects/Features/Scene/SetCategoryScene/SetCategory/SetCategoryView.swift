@@ -145,18 +145,16 @@ private struct CategoryItemView: View {
   @State private var isPressed: Bool = false
   private var backgroundColor: Color {
     if isSelected {
-      return category.selectedColor
-    } else if isPressed {
       return category.pressedColor
     } else {
       return category.defaultColor
     }
   }
-  private var borderColor: Color {
-    if isSelected {
-      return DesignSystem.Colors.white.opacity(0.5)
+  private var iconImage: Image {
+    if isPressed {
+      return category.selectedIcon
     } else {
-      return DesignSystem.Colors.white
+      return category.defaultIcon
     }
   }
   
@@ -173,7 +171,7 @@ private struct CategoryItemView: View {
   fileprivate var body: some View {
     WithViewStore(store) { viewStore in
       VStack(spacing: 8) {
-        category.icon
+        iconImage
           .frame(width: 98, height: 98)
           .background(
             Circle()
@@ -181,7 +179,7 @@ private struct CategoryItemView: View {
           )
           .overlay(
             Circle()
-              .stroke(borderColor, lineWidth: 0.5)
+              .stroke(DesignSystem.Colors.white, lineWidth: 0.5)
           )
           .gesture(
             DragGesture(minimumDistance: 0)

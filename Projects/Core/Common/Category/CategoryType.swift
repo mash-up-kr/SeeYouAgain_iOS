@@ -22,7 +22,7 @@ public enum CategoryType: String, CaseIterable {
     return String(describing: self).uppercased()
   }
   
-  public var icon: Image {
+  public var defaultIcon: Image {
     switch self {
     case .politics:
       return DesignSystem.Icons.politics
@@ -39,28 +39,28 @@ public enum CategoryType: String, CaseIterable {
     }
   }
   
+  public var selectedIcon: Image {
+    switch self {
+    case .politics:
+      return DesignSystem.Icons.selectedPolitics
+    case .economic:
+      return DesignSystem.Icons.selectedEconomics
+    case .society:
+      return DesignSystem.Icons.selectedSociety
+    case .world:
+      return DesignSystem.Icons.selectedWorld
+    case .culture:
+      return DesignSystem.Icons.selectedCulture
+    case .science:
+      return DesignSystem.Icons.selectedScience
+    }
+  }
+  
   public var defaultColor: Color {
     return DesignSystem.Colors.white.opacity(0.28)
   }
   
   public var pressedColor: Color {
     return DesignSystem.Colors.white.opacity(0.5)
-  }
-  
-  public var selectedColor: Color {
-    switch self {
-    case .politics:
-      return DesignSystem.Colors.politics
-    case .economic:
-      return DesignSystem.Colors.economic
-    case .society:
-      return DesignSystem.Colors.society
-    case .world:
-      return DesignSystem.Colors.world
-    case .culture:
-      return DesignSystem.Colors.culture
-    case .science:
-      return DesignSystem.Colors.science
-    }
   }
 }
