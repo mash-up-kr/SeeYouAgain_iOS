@@ -18,7 +18,22 @@ public struct ShortStorageCoordinatorState: Equatable, IndexedRouterState {
   public init(
     routes: [Route<ShortStorageScreenState>] = [
       .root(
-        .shortStorageNewsList(.init()),
+        .shortStorageNewsList(
+          .init(
+            isInEditMode: false,
+            shortslistCount: 7,
+            shortsClearCount: 3,
+            itemState: .init(
+              id: 0,
+              isInEditMode: false,
+              isSelected: true,
+              cardState: .init(
+                shortsNews: ShortsNews(id: 0, category: "#세계", keywords: "#자위대 호위함 #사카이 료 (Sakai Ryo) #이스턴 엔데버23 #부산항"),
+                isCardSelectable: true
+              )
+            )
+          )
+        ),
         embedInNavigationView: true
       )
     ]
