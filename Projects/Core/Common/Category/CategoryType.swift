@@ -14,8 +14,8 @@ public enum CategoryType: String, CaseIterable {
   case politics = "정치"
   case economic = "경제"
   case society = "사회"
-  case culture = "생활/문화"
   case world = "세계"
+  case culture = "생활/문화"
   case science = "IT/과학"
   
   public var uppercasedName: String {
@@ -30,10 +30,10 @@ public enum CategoryType: String, CaseIterable {
       return DesignSystem.Icons.economics
     case .society:
       return DesignSystem.Icons.society
-    case .culture:
-      return DesignSystem.Icons.culture
     case .world:
       return DesignSystem.Icons.world
+    case .culture:
+      return DesignSystem.Icons.culture
     case .science:
       return DesignSystem.Icons.science
     }
@@ -55,10 +55,10 @@ public enum CategoryType: String, CaseIterable {
       return DesignSystem.Colors.economic
     case .society:
       return DesignSystem.Colors.society
-    case .culture:
-      return DesignSystem.Colors.culture
     case .world:
       return DesignSystem.Colors.world
+    case .culture:
+      return DesignSystem.Colors.culture
     case .science:
       return DesignSystem.Colors.science
     }
