@@ -36,7 +36,7 @@ extension CategoryAPI: TargetType {
   public var task: Task {
     switch self {
     case let .saveCategory(categories):
-      let requestBody = SaveCategoryDTO(categoryNames: categories)
+      let requestBody = SaveCategoryRequestDTO(categoryNames: categories)
       return .requestJSONEncodable(requestBody)
     }
   }

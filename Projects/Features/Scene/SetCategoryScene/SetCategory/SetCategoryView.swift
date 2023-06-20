@@ -6,6 +6,7 @@
 //  Copyright © 2023 mashup.seeYouAgain. All rights reserved.
 //
 
+import Common
 import ComposableArchitecture
 import DesignSystem
 import SwiftUI
@@ -89,7 +90,7 @@ private struct ActiveCategoryGridView: View {
         ForEach(viewStore.state.allCategories, id: \.self) { category in
           CategoryItemView(
             store: store,
-            categoryName: category,
+            category: category,
             isSelected: viewStore.state.selectedCategories.contains(category)
           )
         }
@@ -138,16 +139,16 @@ private struct InActiveCategoryGridView: View {
 // MARK: - 카테고리 아이템 뷰
 private struct CategoryItemView: View {
   private let store: Store<SetCategoryState, SetCategoryAction>
-  private var categoryName: String
+  private var category: CategoryType
   @State private var isSelected: Bool
   
   fileprivate init(
     store: Store<SetCategoryState, SetCategoryAction>,
-    categoryName: String,
+    category: CategoryType,
     isSelected: Bool
   ) {
     self.store = store
-    self.categoryName = categoryName
+    self.category = category
     self.isSelected = isSelected
   }
   
@@ -156,7 +157,7 @@ private struct CategoryItemView: View {
       Button(
         action: {
           isSelected.toggle()
-          viewStore.send(.categoryTapped(categoryName))
+          viewStore.send(.categoryTapped(category))
         },
         label: {
           VStack(spacing: 8) {
@@ -168,7 +169,7 @@ private struct CategoryItemView: View {
               .fill(.gray)
               .frame(width: 40, height: 40)
             
-            Text(categoryName)
+            Text(category.rawValue)
               .font(.r14)
               .foregroundColor(DesignSystem.Colors.grey90)
           }

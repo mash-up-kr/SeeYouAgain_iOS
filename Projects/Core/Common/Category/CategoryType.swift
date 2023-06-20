@@ -15,4 +15,8 @@ public enum CategoryType: String, CaseIterable {
   case culture = "생활/문화"
   case world = "세계"
   case science = "IT/과학"
+  
+  public var uppercasedName: String {
+    return String(describing: self).uppercased()
+  }
 }

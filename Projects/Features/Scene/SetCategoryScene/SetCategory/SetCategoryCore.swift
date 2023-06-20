@@ -13,23 +13,21 @@ import Foundation
 import Services
 
 public struct SetCategoryState: Equatable {
-  var allCategories: [String] = CategoryType.allCases.map {
-    $0.rawValue
-  }
-  var selectedCategories: [String]
+  var allCategories: [CategoryType] = CategoryType.allCases
+  var selectedCategories: [CategoryType]
   var isSelectButtonEnabled: Bool {
     !selectedCategories.isEmpty
   }
   var toastMessage: String?
   
-  public init(selectedCategories: [String] = []) {
+  public init(selectedCategories: [CategoryType] = []) {
     self.selectedCategories = selectedCategories
   }
 }
 
 public enum SetCategoryAction: Equatable {
   // MARK: - User Action
-  case categoryTapped(String)
+  case categoryTapped(CategoryType)
   case selectButtonTapped
   
   // MARK: - Inner Business Action
@@ -37,9 +35,10 @@ public enum SetCategoryAction: Equatable {
   case _sendSelectedCategory
   case _presentToast(String)
   case _hideToast
+  case _saveUserID(String)
   
   // MARK: - Inner SetState Action
-  case _setSelectedCategories([String])
+  case _setSelectedCategories([CategoryType])
   case _setToastMessage(String?)
 }
 
@@ -47,13 +46,16 @@ public struct SetCategoryEnvironment {
   // TODO: - 추후 회원가입 API 추가 필요
   let mainQueue: AnySchedulerOf<DispatchQueue>
   let userDefaultsService: UserDefaultsService
+  let categoryService: CategoryService
   
   public init(
     mainQueue: AnySchedulerOf<DispatchQueue>,
-    userDefaultsService: UserDefaultsService
+    userDefaultsService: UserDefaultsService,
+    categoryService: CategoryService
   ) {
     self.mainQueue = mainQueue
     self.userDefaultsService = userDefaultsService
+    self.categoryService = categoryService
   }
 }
 
@@ -80,10 +82,20 @@ public let setCategoryReducer = Reducer.combine([
         })
       
     case ._sendSelectedCategory:
-      // TODO: - 추후 선택된 카테고리에 대해 회원 정보 (IDFV)를 담아 API 호출 연동 필요
-      // TODO: - 위 API 호출 시 Response(성공/실패)에 따라 토스트 메시지 혹은 이동 로직 구분 필요
-      // TODO: - 호출 응답 확인 후 상위 AppCoordinator에서 메인 화면으로 이동 로직 필요
-      return .none
+      let selectedCategories = state.selectedCategories.map { $0.uppercasedName }
+      
+      return env.categoryService.saveCategory(selectedCategories)
+        .catchToEffect()
+        .flatMapLatest { result -> Effect<SetCategoryAction, Never> in
+          switch result {
+          case let .success(data):
+            return Effect(value: ._saveUserID(data.uniqueId))
+
+          case .failure:
+            return Effect(value: ._presentToast("인터넷 연결 상태를 확인하고 다시 시도해주세요."))
+          }
+        }
+        .eraseToEffect()
       
     case let ._presentToast(toastMessage):
       return .concatenate([
@@ -98,6 +110,10 @@ public let setCategoryReducer = Reducer.combine([
       
     case ._hideToast:
       return Effect(value: ._setToastMessage(nil))
+      
+    case let ._saveUserID(userID):
+      return env.userDefaultsService.saveUserID(userID)
+        .fireAndForget()
       
     case let ._setSelectedCategories(categories):
       state.selectedCategories = categories

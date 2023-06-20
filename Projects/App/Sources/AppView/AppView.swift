@@ -26,7 +26,8 @@ struct AppView: View {
           environment: .init(
             mainQueue: .main,
             userDefaultsService: .live,
-            appVersionService: .live
+            appVersionService: .live,
+            categoryService: .live
           )
         )
       )
