@@ -29,7 +29,7 @@ public struct SetCategoryView: View {
         ActiveCategoryGridView(store: store)
         
         Spacer()
-          .frame(height: 26)
+          .frame(height: 24)
         
         InActiveCategoryGridView()
         
@@ -86,7 +86,7 @@ private struct ActiveCategoryGridView: View {
 
   fileprivate var body: some View {
     WithViewStore(store) { viewStore in
-      LazyVGrid(columns: columns, spacing: 16) {
+      LazyVGrid(columns: columns, spacing: 24) {
         ForEach(viewStore.state.allCategories, id: \.self) { category in
           CategoryItemView(
             store: store,
@@ -140,7 +140,24 @@ private struct InActiveCategoryGridView: View {
 private struct CategoryItemView: View {
   private let store: Store<SetCategoryState, SetCategoryAction>
   private var category: CategoryType
-  @State private var isSelected: Bool
+  @State private var isSelected: Bool = false
+  @State private var isPressed: Bool = false
+  private var backgroundColor: Color {
+    if isSelected {
+      return category.selectedColor
+    } else if isPressed {
+      return category.pressedColor
+    } else {
+      return category.defaultColor
+    }
+  }
+  private var borderColor: Color {
+    if isSelected {
+      return DesignSystem.Colors.white.opacity(0.5)
+    } else {
+      return DesignSystem.Colors.white
+    }
+  }
   
   fileprivate init(
     store: Store<SetCategoryState, SetCategoryAction>,
@@ -154,40 +171,33 @@ private struct CategoryItemView: View {
   
   fileprivate var body: some View {
     WithViewStore(store) { viewStore in
-      Button(
-        action: {
-          isSelected.toggle()
-          viewStore.send(.categoryTapped(category))
-        },
-        label: {
-          VStack(spacing: 8) {
-            Spacer()
-              .frame(height: 1)
-            
-            // TODO: - 추후 디자인이 나오면 해당 이미지로 변경 예정
-            Rectangle()
-              .fill(.gray)
-              .frame(width: 40, height: 40)
-            
-            Text(category.rawValue)
-              .font(.r14)
-              .foregroundColor(DesignSystem.Colors.grey90)
-          }
+      VStack(spacing: 8) {
+        category.icon
           .frame(width: 98, height: 98)
-          // TODO: - 추후 선택/미선택에 대한 컬러값 확정 시 변경 예정
           .background(
-            isSelected ?
             Circle()
-              .fill(.green.opacity(0.64))
-            : Circle()
-              .fill(.white.opacity(0.64))
+              .fill(backgroundColor)
           )
           .overlay(
             Circle()
-              .stroke(.white, lineWidth: 0.5)
+              .stroke(borderColor, lineWidth: 0.5)
           )
-        }
-      )
+          .gesture(
+            DragGesture(minimumDistance: 0)
+              .onChanged { _ in
+                isSelected = true
+              }
+              .onEnded { _ in
+                isSelected = false
+                isPressed.toggle()
+                viewStore.send(.categoryTapped(category))
+              }
+          )
+        
+        Text(category.rawValue)
+          .font(.r14)
+          .foregroundColor(DesignSystem.Colors.grey100)
+      }
     }
   }
 }
