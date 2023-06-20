@@ -110,22 +110,17 @@ private struct InActiveCategoryGridView: View {
   private let title: [String?] = ["연예", "스포츠", nil]
   
   fileprivate var body: some View {
-    LazyVGrid(columns: columns, spacing: 16) {
+    LazyVGrid(columns: columns, spacing: 24) {
       ForEach(title, id: \.self) { title in
         if let title = title {
-          VStack(spacing: 6) {
-            Text(title)
-              .font(.b14)
-              .foregroundColor(.black)
+          VStack(spacing: 8) {
+            DesignSystem.Icons.comingSoon
+              .frame(width: 98, height: 98)
             
-            Text("Coming soon!")
-              .font(.r12)
+            Text(title)
+              .font(.r14)
+              .foregroundColor(DesignSystem.Colors.grey70)
           }
-          .frame(width: 98, height: 98)
-          .background(
-            Circle()
-              .fill(.white.opacity(0.3))
-          )
         } else {
           EmptyView()
             .frame(width: 98, height: 98)

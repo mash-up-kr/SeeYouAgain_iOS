@@ -92,6 +92,7 @@ public let setCategoryReducer = Reducer.combine([
             return Effect(value: ._saveUserID(data.uniqueId))
 
           case .failure:
+            // MARK: - 추후 한줄 width에 맞는 텍스트로 수정 예정
             return Effect(value: ._presentToast("인터넷 연결 상태를 확인하고 다시 시도해주세요."))
           }
         }
