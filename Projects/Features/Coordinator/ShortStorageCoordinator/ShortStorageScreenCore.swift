@@ -37,5 +37,5 @@ internal let shortStorageScreenReducer = Reducer<
       environment: { _ in
         ShortStorageNewsListEnvironment()
       }
-    ),
+    )
 ])

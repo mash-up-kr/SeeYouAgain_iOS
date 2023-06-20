@@ -24,10 +24,18 @@ struct TodayShortsItemView: View {
           Toggle("", isOn: viewStore.binding(get: \.isSelected, send: .shortsItemSelectionChanged))
             .labelsHidden()
             .toggleStyle(ShortsToggleStyle())
+            .frame(width: 24, height: 24)
           
           Spacer()
             .frame(width: 16)
         }
+        
+        TodayShortsCardView(
+          store: store.scope(
+            state: \TodayShortsItemState.cardState,
+            action: TodayShortsItemAction.cardAction
+          )
+        )
       }
     }
   }

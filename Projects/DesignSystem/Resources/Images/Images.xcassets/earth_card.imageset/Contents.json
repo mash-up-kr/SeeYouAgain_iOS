@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "earth_card.svg",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

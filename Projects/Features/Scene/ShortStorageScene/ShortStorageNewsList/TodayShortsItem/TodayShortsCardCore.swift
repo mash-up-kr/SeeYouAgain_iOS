@@ -11,13 +11,16 @@ import ComposableArchitecture
 public struct TodayShortsCardState: Equatable {
   public var shortsNews: ShortsNews
   public var isCardSelectable: Bool
+  public var isSelected: Bool
   
   public init(
     shortsNews: ShortsNews,
-    isCardSelectable: Bool
+    isCardSelectable: Bool,
+    isSelected: Bool
   ) {
     self.shortsNews = shortsNews
     self.isCardSelectable = isCardSelectable
+    self.isSelected = isSelected
   }
 }
 

@@ -27,18 +27,15 @@ public struct ShortStorageNewsListState: Equatable {
   public var shortslistCount: Int // 저장한 숏스 수
   public var shortsClearCount: Int // 완료한 숏스 수 (리스트에 표시되는 숏스 = 저장 숏스 - 완료 숏스)
   public var shortsNewsItems: IdentifiedArrayOf<TodayShortsItemState> = []
-  public var itemState: TodayShortsItemState
   
   public init(
     isInEditMode: Bool,
     shortslistCount: Int,
-    shortsClearCount: Int,
-    itemState: TodayShortsItemState
+    shortsClearCount: Int
   ) {
     self.isInEditMode = isInEditMode
     self.shortslistCount = shortslistCount
     self.shortsClearCount = shortsClearCount
-    self.itemState = itemState
   }
 }
 
@@ -61,22 +58,112 @@ public struct ShortStorageNewsListEnvironment {
   public init() {}
 }
 
-public let shortStorageNewsListReducer = Reducer.combine([
-  Reducer<
+public let shortStorageNewsListReducer = Reducer<
   ShortStorageNewsListState,
   ShortStorageNewsListAction,
   ShortStorageNewsListEnvironment
-  > { state, action, env in
+>.combine(
+  todayShortsItemReducer
+    .forEach(
+      state: \ShortStorageNewsListState.shortsNewsItems,
+      action: /ShortStorageNewsListAction.shortsNewsItem(id:action:),
+      environment: { _ in
+        TodayShortsItemEnvironment()
+      }
+    ),
+  Reducer { state, action, env in
     switch action {
     case .editButtonTapped:
       state.isInEditMode.toggle()
-      
-      if state.isInEditMode {
-        state.itemState.isInEditMode = true
-      }
-      return .none
+      return Effect(value: .viewDidLoad)
       
     case .viewDidLoad:
+      state.shortsNewsItems = [
+        TodayShortsItemState(
+          id: 0,
+          isInEditMode: state.isInEditMode,
+          isSelected: false,
+          cardState: TodayShortsCardState(
+            shortsNews: ShortsNews(
+              id: 0,
+              category: "#세계",
+              keywords: "#자위대 호위함 #사카이 료 (Sakai Ryo) #이스턴 엔데버23 #부산항"
+            ),
+            isCardSelectable: !state.isInEditMode,
+            isSelected: false
+          )
+        ),
+        TodayShortsItemState(
+          id: 1,
+          isInEditMode: state.isInEditMode,
+          isSelected: false,
+          cardState: TodayShortsCardState(
+            shortsNews: ShortsNews(
+              id: 0,
+              category: "#세계",
+              keywords: "#뿡뿡 호위함 #사카이 료 (Sakai Ryo) #이스턴 엔데버23 #부산항"
+            ),
+            isCardSelectable: !state.isInEditMode,
+            isSelected: false
+          )
+        ),
+        TodayShortsItemState(
+          id: 2,
+          isInEditMode: state.isInEditMode,
+          isSelected: false,
+          cardState: TodayShortsCardState(
+            shortsNews: ShortsNews(
+              id: 0,
+              category: "#세계",
+              keywords: "#뽕뽕 호위함 #사카이 료 (Sakai Ryo) #이스턴 엔데버23 #부산항"
+            ),
+            isCardSelectable: !state.isInEditMode,
+            isSelected: false
+          )
+        ),
+        TodayShortsItemState(
+          id: 3,
+          isInEditMode: state.isInEditMode,
+          isSelected: false,
+          cardState: TodayShortsCardState(
+            shortsNews: ShortsNews(
+              id: 0,
+              category: "#세계",
+              keywords: "#빵빵 호위함 #사카이 료 (Sakai Ryo) #이스턴 엔데버23 #부산항"
+            ),
+            isCardSelectable: !state.isInEditMode,
+            isSelected: false
+          )
+        ),
+        TodayShortsItemState(
+          id: 4,
+          isInEditMode: state.isInEditMode,
+          isSelected: false,
+          cardState: TodayShortsCardState(
+            shortsNews: ShortsNews(
+              id: 0,
+              category: "#세계",
+              keywords: "#쿵쿵 호위함 #사카이 료 (Sakai Ryo) #이스턴 엔데버23 #부산항"
+            ),
+            isCardSelectable: !state.isInEditMode,
+            isSelected: false
+          )
+        ),
+        TodayShortsItemState(
+          id: 5,
+          isInEditMode: state.isInEditMode,
+          isSelected: false,
+          cardState: TodayShortsCardState(
+            shortsNews: ShortsNews(
+              id: 0,
+              category: "#세계",
+              keywords: "#쿙쿙 호위함 #사카이 료 (Sakai Ryo) #이스턴 엔데버23 #부산항"
+            ),
+            isCardSelectable: !state.isInEditMode,
+            isSelected: false
+          )
+        )
+      ]
       return .none
       
     case let ._setTodayShortsItemState(itemState):
@@ -91,4 +178,4 @@ public let shortStorageNewsListReducer = Reducer.combine([
     default: return .none
     }
   }
-])
+)
