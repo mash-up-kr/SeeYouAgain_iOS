@@ -14,13 +14,16 @@ import Foundation
 public struct UserDefaultsService {
   public let save: (Bool) -> Effect<Void, Never>
   public let load: () -> Effect<Bool, Never>
+  public let saveUserID: (String) -> Effect<Void, Never>
   
   private init(
     save: @escaping (Bool) -> Effect<Void, Never>,
-    load: @escaping () -> Effect<Bool, Never>
+    load: @escaping () -> Effect<Bool, Never>,
+    saveUserID: @escaping (String) -> Effect<Void, Never>
   ) {
     self.save = save
     self.load = load
+    self.saveUserID = saveUserID
   }
 }
 
@@ -37,6 +40,14 @@ public extension UserDefaultsService {
     load: {
       return Publishers.Create<Bool, Never>(factory: { subscriber -> Cancellable in
         subscriber.send(UserDefaults.standard.bool(forKey: "registered"))
+        subscriber.send(completion: .finished)
+        return AnyCancellable({})
+      })
+      .eraseToEffect()
+    },
+    saveUserID: { value in
+      return Publishers.Create<Void, Never>(factory: { subscriber -> Cancellable in
+        subscriber.send(UserDefaults.standard.set(value, forKey: "userID"))
         subscriber.send(completion: .finished)
         return AnyCancellable({})
       })
