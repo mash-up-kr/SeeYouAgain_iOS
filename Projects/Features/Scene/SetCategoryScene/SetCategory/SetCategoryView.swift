@@ -200,3 +200,48 @@ private struct CategoryItemView: View {
     }
   }
 }
+
+// MARK: - 카테고리 타입 Extension
+fileprivate extension CategoryType {
+  var defaultIcon: Image {
+    switch self {
+    case .politics:
+      return DesignSystem.Icons.politics
+    case .economic:
+      return DesignSystem.Icons.economics
+    case .society:
+      return DesignSystem.Icons.society
+    case .world:
+      return DesignSystem.Icons.world
+    case .culture:
+      return DesignSystem.Icons.culture
+    case .science:
+      return DesignSystem.Icons.science
+    }
+  }
+  
+  var selectedIcon: Image {
+    switch self {
+    case .politics:
+      return DesignSystem.Icons.selectedPolitics
+    case .economic:
+      return DesignSystem.Icons.selectedEconomics
+    case .society:
+      return DesignSystem.Icons.selectedSociety
+    case .world:
+      return DesignSystem.Icons.selectedWorld
+    case .culture:
+      return DesignSystem.Icons.selectedCulture
+    case .science:
+      return DesignSystem.Icons.selectedScience
+    }
+  }
+  
+  var defaultColor: Color {
+    return DesignSystem.Colors.white.opacity(0.28)
+  }
+  
+  var pressedColor: Color {
+    return DesignSystem.Colors.white.opacity(0.5)
+  }
+}
