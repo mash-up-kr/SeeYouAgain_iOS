@@ -1,5 +1,5 @@
 //
-//  SaveCategoryDTO.swift
+//  SaveCategoryRequestDTO.swift
 //  Models
 //
 //  Created by GREEN on 2023/06/14.
