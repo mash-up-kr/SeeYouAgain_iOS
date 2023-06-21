@@ -17,10 +17,10 @@ import XCTestDynamicOverlay
 #endif
 
 public struct CategoryService {
-  public var saveCategory: (_ categories: [String]) -> Effect<CategoryDTO, Error>
+  public var saveCategory: (_ categories: [String]) -> Effect<SaveCategoryResponseDTO, Error>
   
   private init(
-    saveCategory: @escaping (_ categories: [String]) -> Effect<CategoryDTO, Error>
+    saveCategory: @escaping (_ categories: [String]) -> Effect<SaveCategoryResponseDTO, Error>
   ) {
     self.saveCategory = saveCategory
   }
@@ -33,7 +33,7 @@ extension CategoryService {
         .init()
         .request(
           CategoryAPI.saveCategory(categories: categories),
-          type: CategoryDTO.self
+          type: SaveCategoryResponseDTO.self
         )
         .compactMap { $0 }
         .eraseToEffect()

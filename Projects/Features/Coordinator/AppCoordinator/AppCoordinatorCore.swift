@@ -30,15 +30,18 @@ public struct AppCoordinatorEnvironment {
   let mainQueue: AnySchedulerOf<DispatchQueue>
   let userDefaultsService: UserDefaultsService
   let appVersionService: AppVersionService
+  let categoryService: CategoryService
   
   public init(
     mainQueue: AnySchedulerOf<DispatchQueue>,
     userDefaultsService: UserDefaultsService,
-    appVersionService: AppVersionService
+    appVersionService: AppVersionService,
+    categoryService: CategoryService
   ) {
     self.mainQueue = mainQueue
     self.userDefaultsService = userDefaultsService
     self.appVersionService = appVersionService
+    self.categoryService = categoryService
   }
 }
 
@@ -52,7 +55,8 @@ public let appCoordinatorReducer: Reducer<
       AppScreenEnvironment(
         mainQueue: $0.mainQueue,
         userDefaultsService: $0.userDefaultsService,
-        appVersionService: $0.appVersionService
+        appVersionService: $0.appVersionService,
+        categoryService: $0.categoryService
       )
     }
   )
@@ -85,7 +89,7 @@ public let appCoordinatorReducer: Reducer<
         ]
         return .none
         
-      case .routeAction(_, action: .setCategory(._sendSelectedCategory)):
+      case .routeAction(_, action: .setCategory(._saveUserID)):
         state.routes = [
           .root(
             .tabBar(

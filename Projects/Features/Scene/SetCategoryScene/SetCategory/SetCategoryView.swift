@@ -6,6 +6,7 @@
 //  Copyright © 2023 mashup.seeYouAgain. All rights reserved.
 //
 
+import Common
 import ComposableArchitecture
 import DesignSystem
 import SwiftUI
@@ -23,12 +24,12 @@ public struct SetCategoryView: View {
         TitleView()
         
         Spacer()
-          .frame(height: 64)
+          .frame(height: 56)
         
         ActiveCategoryGridView(store: store)
         
         Spacer()
-          .frame(height: 26)
+          .frame(height: 24)
         
         InActiveCategoryGridView()
         
@@ -59,9 +60,15 @@ public struct SetCategoryView: View {
 private struct TitleView: View {
   fileprivate var body: some View {
     HStack {
-      Text("관심 키워드를 선택해주세요")
-        .font(.b20)
-        .foregroundColor(DesignSystem.Colors.grey100)
+      VStack(alignment: .leading, spacing: 4) {
+        Text("관심 키워드를 선택해주세요")
+          .font(.b20)
+          .foregroundColor(DesignSystem.Colors.grey100)
+        
+        Text("최소 1개 이상 선택해주세요")
+          .font(.r13)
+          .foregroundColor(DesignSystem.Colors.grey70)
+      }
       
       Spacer()
     }
@@ -85,11 +92,11 @@ private struct ActiveCategoryGridView: View {
 
   fileprivate var body: some View {
     WithViewStore(store) { viewStore in
-      LazyVGrid(columns: columns, spacing: 16) {
+      LazyVGrid(columns: columns, spacing: 24) {
         ForEach(viewStore.state.allCategories, id: \.self) { category in
           CategoryItemView(
             store: store,
-            categoryName: category,
+            category: category,
             isSelected: viewStore.state.selectedCategories.contains(category)
           )
         }
@@ -109,22 +116,17 @@ private struct InActiveCategoryGridView: View {
   private let title: [String?] = ["연예", "스포츠", nil]
   
   fileprivate var body: some View {
-    LazyVGrid(columns: columns, spacing: 16) {
+    LazyVGrid(columns: columns, spacing: 24) {
       ForEach(title, id: \.self) { title in
         if let title = title {
-          VStack(spacing: 6) {
-            Text(title)
-              .font(.b14)
-              .foregroundColor(.black)
+          VStack(spacing: 8) {
+            DesignSystem.Icons.comingSoon
+              .frame(width: 98, height: 98)
             
-            Text("Coming soon!")
-              .font(.r12)
+            Text(title)
+              .font(.r14)
+              .foregroundColor(DesignSystem.Colors.grey70)
           }
-          .frame(width: 98, height: 98)
-          .background(
-            Circle()
-              .fill(.white.opacity(0.3))
-          )
         } else {
           EmptyView()
             .frame(width: 98, height: 98)
@@ -138,55 +140,108 @@ private struct InActiveCategoryGridView: View {
 // MARK: - 카테고리 아이템 뷰
 private struct CategoryItemView: View {
   private let store: Store<SetCategoryState, SetCategoryAction>
-  private var categoryName: String
-  @State private var isSelected: Bool
+  private var category: CategoryType
+  @State private var isSelected: Bool = false
+  @State private var isPressed: Bool = false
+  private var backgroundColor: Color {
+    if isSelected {
+      return category.pressedColor
+    } else {
+      return category.defaultColor
+    }
+  }
+  private var iconImage: Image {
+    if isPressed {
+      return category.selectedIcon
+    } else {
+      return category.defaultIcon
+    }
+  }
   
   fileprivate init(
     store: Store<SetCategoryState, SetCategoryAction>,
-    categoryName: String,
+    category: CategoryType,
     isSelected: Bool
   ) {
     self.store = store
-    self.categoryName = categoryName
+    self.category = category
     self.isSelected = isSelected
   }
   
   fileprivate var body: some View {
     WithViewStore(store) { viewStore in
-      Button(
-        action: {
-          isSelected.toggle()
-          viewStore.send(.categoryTapped(categoryName))
-        },
-        label: {
-          VStack(spacing: 8) {
-            Spacer()
-              .frame(height: 1)
-            
-            // TODO: - 추후 디자인이 나오면 해당 이미지로 변경 예정
-            Rectangle()
-              .fill(.gray)
-              .frame(width: 40, height: 40)
-            
-            Text(categoryName)
-              .font(.r14)
-              .foregroundColor(DesignSystem.Colors.grey90)
-          }
+      VStack(spacing: 8) {
+        iconImage
           .frame(width: 98, height: 98)
-          // TODO: - 추후 선택/미선택에 대한 컬러값 확정 시 변경 예정
           .background(
-            isSelected ?
             Circle()
-              .fill(.green.opacity(0.64))
-            : Circle()
-              .fill(.white.opacity(0.64))
+              .fill(backgroundColor)
           )
           .overlay(
             Circle()
-              .stroke(.white, lineWidth: 0.5)
+              .stroke(DesignSystem.Colors.white, lineWidth: 0.5)
           )
-        }
-      )
+          .gesture(
+            DragGesture(minimumDistance: 0)
+              .onChanged { _ in
+                isSelected = true
+              }
+              .onEnded { _ in
+                isSelected = false
+                isPressed.toggle()
+                viewStore.send(.categoryTapped(category))
+              }
+          )
+        
+        Text(category.rawValue)
+          .font(.r14)
+          .foregroundColor(DesignSystem.Colors.grey100)
+      }
     }
+  }
+}
+
+// MARK: - 카테고리 타입 Extension
+fileprivate extension CategoryType {
+  var defaultIcon: Image {
+    switch self {
+    case .politics:
+      return DesignSystem.Icons.politics
+    case .economic:
+      return DesignSystem.Icons.economics
+    case .society:
+      return DesignSystem.Icons.society
+    case .world:
+      return DesignSystem.Icons.world
+    case .culture:
+      return DesignSystem.Icons.culture
+    case .science:
+      return DesignSystem.Icons.science
+    }
+  }
+  
+  var selectedIcon: Image {
+    switch self {
+    case .politics:
+      return DesignSystem.Icons.selectedPolitics
+    case .economic:
+      return DesignSystem.Icons.selectedEconomics
+    case .society:
+      return DesignSystem.Icons.selectedSociety
+    case .world:
+      return DesignSystem.Icons.selectedWorld
+    case .culture:
+      return DesignSystem.Icons.selectedCulture
+    case .science:
+      return DesignSystem.Icons.selectedScience
+    }
+  }
+  
+  var defaultColor: Color {
+    return DesignSystem.Colors.white.opacity(0.28)
+  }
+  
+  var pressedColor: Color {
+    return DesignSystem.Colors.white.opacity(0.5)
   }
 }
