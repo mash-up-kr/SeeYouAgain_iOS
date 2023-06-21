@@ -16,7 +16,7 @@ public struct TopNavigationBar: View {
   public let rightIcon: Image?
   public let rightText: String?
   public var rightIconButtonAction: () -> Void = {}
-  @Binding public var isAvailableRight: Bool
+  @Binding public var isRightButtonActive: Bool
   
   public init(
     title: String? = nil,
@@ -26,7 +26,7 @@ public struct TopNavigationBar: View {
     rightIcon: Image? = nil,
     rightText: String? = nil,
     rightIconButtonAction: @escaping () -> Void = {},
-    isAvailableRight: Binding<Bool> = .constant(false)
+    isRightButtonActive: Binding<Bool> = .constant(false)
   ) {
     self.title = title
     self.leftIcon = leftIcon
@@ -35,7 +35,7 @@ public struct TopNavigationBar: View {
     self.rightIcon = rightIcon
     self.rightText = rightText
     self.rightIconButtonAction = rightIconButtonAction
-    self._isAvailableRight = isAvailableRight
+    self._isRightButtonActive = isRightButtonActive
   }
   
   public var body: some View {
@@ -55,7 +55,7 @@ public struct TopNavigationBar: View {
           icon: rightIcon,
           text: rightText,
           action: rightIconButtonAction,
-          disabled: $isAvailableRight
+          disabled: $isRightButtonActive
         )
       }
       

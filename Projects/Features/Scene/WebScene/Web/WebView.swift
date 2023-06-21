@@ -27,7 +27,7 @@ public struct WebView: View {
             leftIconButtonAction: { viewStore.send(.backButtonTapped) },
             rightText: "저장",
             rightIconButtonAction: { viewStore.send(.saveButtonTapped) },
-            isAvailableRight: viewStore.binding(
+            isRightButtonActive: viewStore.binding(
               get: \.saveButtonDisabled,
               send: { WebAction._setSaveButtonDisabled($0) }
             )
