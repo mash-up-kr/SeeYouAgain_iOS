@@ -2,7 +2,7 @@
 //  MainCore.swift
 //  Main
 //
-//  Created by GREEN on 2023/04/05.
+//  Created by 김영균 on 2023/06/21.
 //  Copyright © 2023 mashup.seeYouAgain. All rights reserved.
 //
 
@@ -13,8 +13,8 @@ import Models
 import Services
 
 private enum Constant {
-  static let defaultLetterWidth: CGFloat = 280
-  static let defaultLetterHeight: CGFloat = 378
+  static let defaultNewsCardWidth: CGFloat = 280
+  static let defaultNewsCardHeight: CGFloat = 378
   static let iphone13MiniWidth: CGFloat = 375
   static let iphone13MiniHeight: CGFloat = 812
 }
@@ -22,11 +22,11 @@ private enum Constant {
 public typealias Category = Models.Category
 public struct MainState: Equatable {
   var screenSize: CGSize = .zero
-  var letterSize: CGSize = .zero
+  var newsCardSize: CGSize = .zero
   
   var isLoading: Bool = false
   var categories: [Category] = []
-  var letterScrollState: LetterScrollState?
+  var newsCardScrollState: NewsCardScrollState?
   public init() { }
 }
 
@@ -38,16 +38,16 @@ public enum MainAction {
   case _viewWillAppear(CGSize)
   case _fetchCategories
   case _updateCategories
-  case _fetchLetters
-  case _calculateLetterSize
+  case _fetchNewsCards
+  case _calculateNewsCardSize
   
   // MARK: - Inner SetState Action
   case _setIsLoading(Bool)
   case _setCategories([Category])
-  case _setLetterScrollState(LetterLayout)
+  case _setNewsCardScrollState(NewsCardLayout)
   
   // MARK: - Child Action
-  case letterScrollAction(LetterScrollAction)
+  case newsCardScroll(NewsCardScrollAction)
 }
 
 public struct MainEnvironment {
@@ -56,12 +56,12 @@ public struct MainEnvironment {
 }
 
 public let mainReducer = Reducer.combine([
-  letterScrollReducer
+  newsCardScrollReducer
     .optional()
     .pullback(
-      state: \.letterScrollState,
-      action: /MainAction.letterScrollAction,
-      environment: { _ in LetterScrollEnvironmnet() }
+      state: \.newsCardScrollState,
+      action: /MainAction.newsCardScroll,
+      environment: { _ in NewsCardScrollEnvironmnet() }
     ),
   Reducer<MainState, MainAction, MainEnvironment> { state, action, env in
     switch action {
@@ -70,7 +70,7 @@ public let mainReducer = Reducer.combine([
       return Effect.concatenate([
         Effect(value: ._setIsLoading(true)),
         Effect(value: ._fetchCategories),
-        Effect(value: ._fetchLetters),
+        Effect(value: ._fetchNewsCards),
         Effect(value: ._setIsLoading(false))
       ])
       
@@ -82,12 +82,12 @@ public let mainReducer = Reducer.combine([
       // TODO: update categories to sever
       return .none
       
-    case ._fetchLetters:
-      return Effect(value: ._calculateLetterSize)
+    case ._fetchNewsCards:
+      return Effect(value: ._calculateNewsCardSize)
       
-    case ._calculateLetterSize:
-      let letterLayout = buildLetterLayout(screenSize: state.screenSize)
-      return Effect(value: ._setLetterScrollState(letterLayout))
+    case ._calculateNewsCardSize:
+      let newsCardLayout = buildNewsCardLayout(screenSize: state.screenSize)
+      return Effect(value: ._setNewsCardScrollState(newsCardLayout))
       
     case let ._setIsLoading(isLoading):
       state.isLoading = isLoading
@@ -97,13 +97,13 @@ public let mainReducer = Reducer.combine([
       state.categories = categories
       return .none
       
-    case let ._setLetterScrollState(letterLayout):
-      state.letterSize = letterLayout.size
-      state.letterScrollState = LetterScrollState(
-        layout: buildLetterLayout(
+    case let ._setNewsCardScrollState(newsCardLayout):
+      state.newsCardSize = newsCardLayout.size
+      state.newsCardScrollState = NewsCardScrollState(
+        layout: buildNewsCardLayout(
           screenSize: state.screenSize
         ),
-        letters: NewsCard.stub
+        newsCards: NewsCard.stub
       )
       return .none
       
@@ -113,22 +113,22 @@ public let mainReducer = Reducer.combine([
   }
 ])
 
-private func buildLetterLayout(screenSize: CGSize) -> LetterLayout {
+private func buildNewsCardLayout(screenSize: CGSize) -> NewsCardLayout {
   let deviceRatio = CGSize(
     width: screenSize.width / Constant.iphone13MiniWidth,
     height: screenSize.height / Constant.iphone13MiniHeight
   )
-  let letterSize = CGSize(
-    width: Constant.defaultLetterWidth * deviceRatio.width,
-    height: Constant.defaultLetterHeight * deviceRatio.height
+  let newsCardSize = CGSize(
+    width: Constant.defaultNewsCardWidth * deviceRatio.width,
+    height: Constant.defaultNewsCardHeight * deviceRatio.height
   )
-  let letterSpacing = (screenSize.width - letterSize.width) / 5
-  let leadingOffset = (screenSize.width - letterSize.width) / 2
+  let newsCardSpacing = (screenSize.width - newsCardSize.width) / 5
+  let leadingOffset = (screenSize.width - newsCardSize.width) / 2
   
-  return LetterLayout(
+  return NewsCardLayout(
     ratio: deviceRatio,
-    size: letterSize,
-    spacing: letterSpacing,
+    size: newsCardSize,
+    spacing: newsCardSpacing,
     leadingOffset: leadingOffset
   )
 }

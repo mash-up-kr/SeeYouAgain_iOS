@@ -8,7 +8,6 @@
 
 import ComposableArchitecture
 import DesignSystem
-import Models
 import SwiftUI
 
 struct NewsCardView: View {

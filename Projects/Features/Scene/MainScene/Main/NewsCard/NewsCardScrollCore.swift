@@ -1,5 +1,5 @@
 //
-//  LetterScrollCore.swift
+//  NewsCardScrollCore.swift
 //  Main
 //
 //  Created by 김영균 on 2023/06/13.
@@ -10,44 +10,42 @@ import ComposableArchitecture
 import Foundation
 import Models
 
-public struct LetterLayout: Equatable {
+public struct NewsCardLayout: Equatable {
   var ratio: CGSize
   var size: CGSize
   var spacing: CGFloat
   var leadingOffset: CGFloat
 }
 
-public struct LetterScrollState: Equatable {
-  var layout: LetterLayout
+public struct NewsCardScrollState: Equatable {
   var gestureDragOffset: CGFloat = 0
   var currentScrollOffset: CGFloat = 0
   var previousPageIndex: Int = 0
   var currentPageIndex: Int = 0
   
-  // TODO: API 연결 후 해야하는 작업
-  // 모델로 교체
+  var layout: NewsCardLayout
   var newsCards: IdentifiedArrayOf<NewsCardState>
   var degrees: [Double]
   var offsets: [CGSize]
   
   init(
-       layout: LetterLayout,
-    letters: [NewsCard]
+    layout: NewsCardLayout,
+    newsCards: [NewsCard]
   ) {
     self.layout = layout
     // TODO: API 연결 후 해야하는 작업
     // 데이터에 따라 배열 길이 변경
     self.newsCards = IdentifiedArray(
-      uniqueElements: letters.enumerated().map{ index, newscard in
+      uniqueElements: newsCards.enumerated().map{ index, newscard in
         NewsCardState(index: index, newsCard: newscard, layout: layout, isFolded: true)
       }
     )
-    self.degrees = Array(repeating: 0, count: letters.count)
-    self.offsets = Array(repeating: .zero, count: letters.count)
+    self.degrees = Array(repeating: 0, count: newsCards.count)
+    self.offsets = Array(repeating: .zero, count: newsCards.count)
   }
 }
 
-public enum LetterScrollAction {
+public enum NewsCardScrollAction {
   // MARK: - User Action
   case dragOnChanged(CGSize)
   case dragOnEnded
@@ -72,17 +70,17 @@ public enum LetterScrollAction {
   
 }
 
-public struct LetterScrollEnvironmnet {}
+public struct NewsCardScrollEnvironmnet {}
 
-public let letterScrollReducer = Reducer<
-  LetterScrollState,
-  LetterScrollAction,
-  LetterScrollEnvironmnet
+public let newsCardScrollReducer = Reducer<
+  NewsCardScrollState,
+  NewsCardScrollAction,
+  NewsCardScrollEnvironmnet
 >.combine(
   newsCardReducer
     .forEach(
       state: \.newsCards,
-      action: /LetterScrollAction.newsCard(id:action:),
+      action: /NewsCardScrollAction.newsCard(id:action:),
       environment: { _ in NewsCardEnvironment() }
     ),
   Reducer { state, action, environment in
@@ -137,11 +135,11 @@ public let letterScrollReducer = Reducer<
       )
       
     case ._calculateDegrees:
-      let updateDegrees = calculateDegrees(state, letterWidth: state.layout.size.width)
+      let updateDegrees = calculateDegrees(state, newsCardWidth: state.layout.size.width)
       return Effect(value: ._setDegrees(updateDegrees))
       
     case ._calculateOffsets:
-      let updateOffsets = calculateOffsets(state, letterWidth: state.layout.size.width)
+      let updateOffsets = calculateOffsets(state, newsCardWidth: state.layout.size.width)
       return Effect(value: ._setOffsets(updateOffsets))
       
     case let ._setDegrees(degrees):
@@ -172,11 +170,11 @@ public let letterScrollReducer = Reducer<
 )
 
 private func calculateDegrees(
-  _ state: LetterScrollState,
-  letterWidth: CGFloat
+  _ state: NewsCardScrollState,
+  newsCardWidth: CGFloat
 ) -> [Double] {
   let rotationDegree: Double = 11.0
-  let slope = rotationDegree / letterWidth
+  let slope = rotationDegree / newsCardWidth
   let gestureDragOffset = state.gestureDragOffset
   let yOffset = rotationDegree
   
@@ -200,11 +198,11 @@ private func calculateDegrees(
 }
 
 private func calculateOffsets(
-  _ state: LetterScrollState,
-  letterWidth: CGFloat
+  _ state: NewsCardScrollState,
+  newsCardWidth: CGFloat
 ) -> [CGSize] {
   let distance: Double = 25.0
-  let slope = distance / letterWidth
+  let slope = distance / newsCardWidth
   let gestureDragOffset = state.gestureDragOffset
   let yOffset = distance
   

@@ -7,13 +7,12 @@
 //
 
 import ComposableArchitecture
-import Foundation
 import Models
 
 public struct NewsCardState: Equatable, Identifiable {
   public var index: Int
   var newsCard: NewsCard
-  var layout: LetterLayout
+  var layout: NewsCardLayout
   var isFolded: Bool
   
   public var id: Int { self.index }

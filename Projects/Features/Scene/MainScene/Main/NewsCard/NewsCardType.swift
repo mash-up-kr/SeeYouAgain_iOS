@@ -7,7 +7,6 @@
 //
 
 import DesignSystem
-import Foundation
 import SwiftUI
 
 enum NewsCardType: String {

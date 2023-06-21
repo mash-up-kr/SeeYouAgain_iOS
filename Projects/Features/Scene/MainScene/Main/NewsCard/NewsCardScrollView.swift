@@ -1,5 +1,5 @@
 //
-//  LetterScrollView.swift
+//  NewsCardScrollView.swift
 //  Main
 //
 //  Created by 김영균 on 2023/06/13.
@@ -9,10 +9,10 @@
 import ComposableArchitecture
 import SwiftUI
 
-struct LetterScrollView: View {
-  private let store: Store<LetterScrollState, LetterScrollAction>
+struct NewsCardScrollView: View {
+  private let store: Store<NewsCardScrollState, NewsCardScrollAction>
   
-  init(store: Store<LetterScrollState, LetterScrollAction>) {
+  init(store: Store<NewsCardScrollState, NewsCardScrollAction>) {
     self.store = store
   }
   
@@ -43,13 +43,13 @@ struct LetterScrollView: View {
 }
 
 private struct NewsCardsView: View {
-  private var store: Store<LetterScrollState, LetterScrollAction>
+  private var store: Store<NewsCardScrollState, NewsCardScrollAction>
   
-  init(store: Store<LetterScrollState, LetterScrollAction>) {
+  fileprivate init(store: Store<NewsCardScrollState, NewsCardScrollAction>) {
     self.store = store
   }
   
-  var body: some View {
+  fileprivate var body: some View {
     WithViewStore(store) { viewStore in
       ForEach(viewStore.state.newsCards.indices, id: \.self) { id in
         NewsCardView(
