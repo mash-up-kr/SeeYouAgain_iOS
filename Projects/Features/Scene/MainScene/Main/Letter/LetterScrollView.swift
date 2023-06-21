@@ -22,12 +22,13 @@ struct LetterScrollView: View {
         LazyHStack(alignment: .center, spacing: viewStore.layout.spacing) {
           // TODO: API 연결 후 해야하는 작업
           // 뉴스 데이터로 바꾸기
-          ForEach(0..<5) { index in
+          ForEach(viewStore.state.letters.indices, id: \.self) { index in
             LetterView(
               isFold: viewStore.binding(
                 get: \.isFolded[index],
                 send: { LetterScrollAction._setIsFolded(index, $0) }
               ),
+              newsCard: viewStore.state.letters[index],
               deviceRatio: viewStore.layout.ratio
             )
             .frame(width: viewStore.layout.size.width)

@@ -7,14 +7,21 @@
 //
 
 import DesignSystem
+import Models
 import SwiftUI
 
 struct LetterView: View {
   @Binding private var isFold: Bool
+  private let newsCard: NewsCard
   private let deviceRatio: CGSize
   
-  init(isFold: Binding<Bool>, deviceRatio: CGSize) {
+  init(
+    isFold: Binding<Bool>,
+    newsCard: NewsCard,
+    deviceRatio: CGSize
+  ) {
     self._isFold = isFold
+    self.newsCard = newsCard
     self.deviceRatio = deviceRatio
   }
   
@@ -27,17 +34,17 @@ struct LetterView: View {
           .opacity(isFold ? 0 : 1)
           .animation(.easeInOut.delay(0.3), value: isFold)
         
-        LetterPaper(isFold: $isFold)
-          .padding(.all, 20)
-        
-        DesignSystem.Images.imgPolitics
-          .resizable()
-          .scaledToFit()
-          .offset(y: -10)
-          .padding(.all, 20)
-          .frame(width: isFold ? 0 : geometry.size.width)
-          .animation(.interpolatingSpring(stiffness: 300, damping: 20).delay(0.3), value: isFold)
-          .opacity(isFold ? 0 : 1)
+        if let newsCardType = NewsCardType(rawValue: newsCard.cateogry) {
+          if isFold {
+            newsCardType.background
+              .resizable()
+              .scaledToFit()
+              .padding(20)
+              .transition(.offset(x: 0, y: -10))
+          }
+          
+          LetterPaper(isFold: $isFold, newsPaper: newsCardType.image)
+        }
         
         LetterBottom(deviceRatio: deviceRatio)
           .cornerRadius(10, corners: [.bottomLeft, .bottomRight])

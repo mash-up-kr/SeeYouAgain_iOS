@@ -51,6 +51,7 @@ public enum MainAction {
 }
 
 public struct MainEnvironment {
+  let newsCardService: NewsCardService = .live
   public init() {}
 }
 
@@ -99,6 +100,7 @@ public let mainReducer = Reducer.combine([
     case let ._setLetterScrollState(letterLayout):
       state.letterSize = letterLayout.size
       state.letterScrollState = LetterScrollState(
+        letters: NewsCard.stub,
         layout: buildLetterLayout(
           screenSize: state.screenSize
         )

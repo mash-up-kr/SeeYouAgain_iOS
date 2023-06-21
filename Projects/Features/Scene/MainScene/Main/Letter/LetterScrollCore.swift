@@ -8,6 +8,7 @@
 
 import ComposableArchitecture
 import Foundation
+import Models
 
 public struct LetterLayout: Equatable {
   var ratio: CGSize
@@ -25,19 +26,22 @@ public struct LetterScrollState: Equatable {
   
   // TODO: API 연결 후 해야하는 작업
   // 모델로 교체
-  var letters: [Int]
+  var letters: [NewsCard]
   var degrees: [Double]
   var offsets: [CGSize]
   var isFolded: [Bool]
   
-  init(layout: LetterLayout) {
+  init(
+    letters: [NewsCard],
+    layout: LetterLayout
+  ) {
+    self.letters = letters
     self.layout = layout
     // TODO: API 연결 후 해야하는 작업
     // 데이터에 따라 배열 길이 변경
-    self.letters = Array(repeating: 0, count: 5)
-    self.degrees = Array(repeating: 0, count: 5)
-    self.offsets = Array(repeating: .zero, count: 5)
-    self.isFolded = Array(repeating: true, count: 5)
+    self.degrees = Array(repeating: 0, count: letters.count)
+    self.offsets = Array(repeating: .zero, count: letters.count)
+    self.isFolded = Array(repeating: true, count: letters.count)
   }
 }
 
@@ -89,6 +93,10 @@ public let letterScrollReducer: Reducer<
     )
     
   case ._onAppear:
+    if state.letters.isEmpty {
+      return .none
+    }
+    
     return Effect.concatenate(
       Effect(value: ._countCurrentScrollOffset),
       Effect(value: ._setIsFolded(0, false)),
