@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "letter_culture.svg",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}
