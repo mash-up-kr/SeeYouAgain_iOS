@@ -56,6 +56,10 @@ let todayShortsItemReducer = Reducer.combine([
     ),
   Reducer<TodayShortsItemState, TodayShortsItemAction, TodayShortsItemEnvironment> { state, action, env in
     switch action {
+    case .shortsItemSelectionChanged:
+      state.isSelected.toggle()
+      return .none
+      
     default: return .none
     }
   }

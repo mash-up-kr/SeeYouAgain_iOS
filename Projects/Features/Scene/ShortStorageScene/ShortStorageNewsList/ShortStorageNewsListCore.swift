@@ -43,12 +43,16 @@ public enum ShortStorageNewsListAction: Equatable {
   // MARK: - User Action
   case backButtonTapped
   case editButtonTapped
+  case deleteButtonTapped
   
   // MARK: - Inner Business Action
-  case viewDidLoad
+  case _onAppear
+  case _viewDidLoad
   
   // MARK: - Inner SetState Action
-  case _setTodayShortsItemState(TodayShortsItemState)
+  case _setTodayShortsItemEditMode
+  case _setTodayShortsItemList
+  case _setTodayShortsItemCount
   
   // MARK: - Child Action
   case shortsNewsItem(id: TodayShortsItemState.ID, action: TodayShortsItemAction)
@@ -75,9 +79,17 @@ public let shortStorageNewsListReducer = Reducer<
     switch action {
     case .editButtonTapped:
       state.isInEditMode.toggle()
-      return Effect(value: .viewDidLoad)
+      return Effect(value: ._setTodayShortsItemEditMode)
       
-    case .viewDidLoad:
+    case .deleteButtonTapped:
+      state.isInEditMode.toggle()
+      return Effect.concatenate([
+        Effect(value: ._setTodayShortsItemList),
+        Effect(value: ._setTodayShortsItemEditMode)
+      ])
+      
+    case ._onAppear:
+      // TODO: API 연결 시, 실데이터로 반영 필요
       state.shortsNewsItems = [
         TodayShortsItemState(
           id: 0,
@@ -166,7 +178,21 @@ public let shortStorageNewsListReducer = Reducer<
       ]
       return .none
       
-    case let ._setTodayShortsItemState(itemState):
+    case ._viewDidLoad:
+      return .none
+      
+    case ._setTodayShortsItemEditMode:
+      for index in 0..<state.shortsNewsItems.count {
+        state.shortsNewsItems[index].isInEditMode = state.isInEditMode
+      }
+      return .none
+      
+    case ._setTodayShortsItemList:
+      state.shortsNewsItems.removeAll(where: \.isSelected)
+      return Effect(value: ._setTodayShortsItemCount)
+      
+    case ._setTodayShortsItemCount:
+      state.shortslistCount = state.shortsNewsItems.count
       return .none
       
     case let .shortsNewsItem(id: tappedId, action: .itemTapped):

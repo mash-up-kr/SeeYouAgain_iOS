@@ -28,8 +28,10 @@ public struct ShortStorageNewsListView: View {
           },
           rightText: viewStore.shortslistCount == 0 ? nil : (viewStore.state.isInEditMode ? "삭제" : "편집"),
           rightIconButtonAction: {
-            if viewStore.shortslistCount != 0  {
+            if !viewStore.state.isInEditMode {
               viewStore.send(.editButtonTapped)
+            } else {
+              viewStore.send(.deleteButtonTapped)
             }
           }
         )
@@ -117,13 +119,14 @@ public struct ShortStorageNewsListView: View {
               }
             }
           }
+          .frame(maxWidth: .infinity)
         }
         // TODO: 스크롤뷰 SafeArea 확인 필요
         .ignoresSafeArea()
       }
       .navigationBarHidden(true)
       .onAppear {
-        viewStore.send(.viewDidLoad)
+        viewStore.send(._onAppear)
       }
     }
   }
