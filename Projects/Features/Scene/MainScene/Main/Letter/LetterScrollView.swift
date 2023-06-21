@@ -20,22 +20,7 @@ struct LetterScrollView: View {
     WithViewStore(store) { viewStore in
       GeometryReader { _ in
         LazyHStack(alignment: .center, spacing: viewStore.layout.spacing) {
-          // TODO: API 연결 후 해야하는 작업
-          // 뉴스 데이터로 바꾸기
-          ForEach(viewStore.state.letters.indices, id: \.self) { index in
-            LetterView(
-              isFold: viewStore.binding(
-                get: \.isFolded[index],
-                send: { LetterScrollAction._setIsFolded(index, $0) }
-              ),
-              newsCard: viewStore.state.letters[index],
-              deviceRatio: viewStore.layout.ratio
-            )
-            .frame(width: viewStore.layout.size.width)
-            .offset(viewStore.offsets[index])
-            .rotationEffect(.degrees(viewStore.degrees[index]))
-            .animation(.easeInOut, value: viewStore.currentScrollOffset)
-          }
+          NewsCardsView(store: store)
         }
         .frame(height: viewStore.layout.size.height)
       }
@@ -53,6 +38,31 @@ struct LetterScrollView: View {
             viewStore.send(.dragOnEnded)
           }
       )
+    }
+  }
+}
+
+private struct NewsCardsView: View {
+  private var store: Store<LetterScrollState, LetterScrollAction>
+  
+  init(store: Store<LetterScrollState, LetterScrollAction>) {
+    self.store = store
+  }
+  
+  var body: some View {
+    WithViewStore(store) { viewStore in
+      ForEach(viewStore.state.newsCards.indices, id: \.self) { id in
+        NewsCardView(
+          store: store.scope(
+            state: \.newsCards[id],
+            action: { .newsCard(id: id, action: $0) }
+          )
+        )
+        .frame(width: viewStore.state.layout.size.width)
+        .offset(viewStore.state.offsets[id])
+        .rotationEffect(.degrees(viewStore.state.degrees[id]))
+        .animation(.easeInOut, value: viewStore.state.currentScrollOffset)
+      }
     }
   }
 }
