@@ -27,7 +27,7 @@ public struct ShortStorageNewsListState: Equatable {
   public var shortslistCount: Int // 저장한 숏스 수
   public var shortsClearCount: Int // 완료한 숏스 수 (리스트에 표시되는 숏스 = 저장 숏스 - 완료 숏스)
   public var shortsNewsItems: IdentifiedArrayOf<TodayShortsItemState> = []
-  public var remainTimeString: String = "00:00:00"
+  public var remainTimeString: String
   var remainTime: Int = 24 * 60 * 60
   var currentTimeSeconds: Int = 0 // 지금 시간이 몇초를 담고있냐! 17:27:21 => 62841
   
@@ -39,6 +39,7 @@ public struct ShortStorageNewsListState: Equatable {
     self.isInEditMode = isInEditMode
     self.shortslistCount = shortslistCount
     self.shortsClearCount = shortsClearCount
+    self.remainTimeString = initializeRemainTimeString()
   }
 }
 
@@ -222,18 +223,7 @@ public let shortStorageNewsListReducer = Reducer<
       return .none
       
     case ._setCurrentTimeSeconds:
-      let date = Date()
-      var calendar = Calendar.current
-
-      if let timeZone = TimeZone(identifier: "KST") {
-        calendar.timeZone = timeZone
-      }
-      
-      let hour = calendar.component(.hour, from: date)
-      let minute = calendar.component(.minute, from: date)
-      let second = calendar.component(.second, from: date)
-      
-      state.currentTimeSeconds = hour * 60 * 60 + minute * 60 + second
+      state.currentTimeSeconds = calculateCurrentTimeSeconds()
       return Effect(value: ._setRemainTime(state.currentTimeSeconds))
       
     case let ._setRemainTime(currentTimeSeconds):
@@ -241,10 +231,7 @@ public let shortStorageNewsListReducer = Reducer<
       return Effect(value: ._updateTimer)
 
     case let ._setRemainTimeString(time):
-      let hour = Int(time) / 3600
-      let minute = Int(time) / 60 % 60
-      let second = Int(time) % 60
-      state.remainTimeString = String(format: "%02i:%02i:%02i", hour, minute, second)
+      state.remainTimeString = remainTimeToString(time: time)
       return .none
       
     case let .shortsNewsItem(id: tappedId, action: .itemTapped):
@@ -265,3 +252,31 @@ let dateComponentsFormatter: DateComponentsFormatter = {
   formatter.zeroFormattingBehavior = .pad
   return formatter
 }()
+
+fileprivate func initializeRemainTimeString() -> String {
+  let currentTimeSeconds = calculateCurrentTimeSeconds()
+  let remainTimeSeconds = 24 * 60 * 60 - currentTimeSeconds
+  return remainTimeToString(time: remainTimeSeconds)
+}
+
+fileprivate func calculateCurrentTimeSeconds() -> Int {
+  let date = Date()
+  var calendar = Calendar.current
+
+  if let timeZone = TimeZone(identifier: "KST") {
+    calendar.timeZone = timeZone
+  }
+  
+  let hour = calendar.component(.hour, from: date)
+  let minute = calendar.component(.minute, from: date)
+  let second = calendar.component(.second, from: date)
+  
+  return hour * 60 * 60 + minute * 60 + second
+}
+
+fileprivate func remainTimeToString(time: Int) -> String {
+  let hour = Int(time) / 3600
+  let minute = Int(time) / 60 % 60
+  let second = Int(time) % 60
+  return String(format: "%02i:%02i:%02i", hour, minute, second)
+}
