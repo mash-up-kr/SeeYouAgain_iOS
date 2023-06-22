@@ -40,7 +40,7 @@ public struct MainView: View {
           )
         ) { store in
           NewsCardScrollView(store: store)
-            .frame(height: viewStore.newsCardSize.height)
+            .frame(height: viewStore.newsCardLayout.size.height)
         }
         
         Spacer()
@@ -51,7 +51,7 @@ public struct MainView: View {
         Spacer()
       }
       .onAppear {
-        viewStore.send(._setScreenSize(UIScreen.main.bounds.size))
+        viewStore.send(._setNewsCardSize(UIScreen.main.bounds.size))
         viewStore.send(._viewWillAppear)
       }
     }

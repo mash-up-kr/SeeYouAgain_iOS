@@ -56,15 +56,18 @@ public enum TabBarAction {
 public struct TabBarEnvironment {
   fileprivate let mainQueue: AnySchedulerOf<DispatchQueue>
   let appVersionService: AppVersionService
+  fileprivate let newsCardService: NewsCardService
   fileprivate let categoryService: CategoryService
   
   public init(
     mainQueue: AnySchedulerOf<DispatchQueue>,
     appVersionService: AppVersionService,
+    newsCardService: NewsCardService,
     categoryService: CategoryService
   ) {
     self.mainQueue = mainQueue
     self.appVersionService = appVersionService
+    self.newsCardService = newsCardService
     self.categoryService = categoryService
   }
 }
@@ -86,8 +89,11 @@ public let tabBarReducer = Reducer<
     .pullback(
       state: \TabBarState.main,
       action: /TabBarAction.main,
-      environment: { env in
-        MainCoordinatorEnvironment(categoryService: env.categoryService)
+      environment: {
+        MainCoordinatorEnvironment(
+          newsCardService: $0.newsCardService,
+          categoryService: $0.categoryService
+        )
       }
     ),
   myPageCoordinatorReducer

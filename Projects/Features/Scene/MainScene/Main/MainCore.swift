@@ -21,12 +21,11 @@ private enum Constant {
 }
 
 public struct MainState: Equatable {
-  var screenSize: CGSize = .zero
-  var newsCardSize: CGSize = .zero
-  
+  var newsCardLayout: NewsCardLayout = .init()
   var isLoading: Bool = false
   var categories: [CategoryType] = []
   var newsCardScrollState: NewsCardScrollState?
+  
   public init() { }
 }
 
@@ -38,22 +37,26 @@ public enum MainAction {
   case _viewWillAppear
   case _fetchCategories
   case _fetchNewsCards
-  case _calculateNewsCardSize
   
   // MARK: - Inner SetState Action
-  case _setScreenSize(CGSize)
+  case _setNewsCardSize(CGSize)
   case _setIsLoading(Bool)
   case _setCategories([CategoryType])
-  case _setNewsCardScrollState(NewsCardLayout)
+  case _setNewsCardScrollState([NewsCard])
   
   // MARK: - Child Action
   case newsCardScroll(NewsCardScrollAction)
 }
 
 public struct MainEnvironment {
+  fileprivate let newsCardService: NewsCardService
   fileprivate let categoryService: CategoryService
   
-  public init(categoryService: CategoryService) {
+  public init(
+    newscardService: NewsCardService,
+    categoryService: CategoryService
+  ) {
+    self.newsCardService = newscardService    
     self.categoryService = categoryService
   }
 }
@@ -89,14 +92,22 @@ public let mainReducer = Reducer.combine([
         .eraseToEffect()
       
     case ._fetchNewsCards:
-      return Effect(value: ._calculateNewsCardSize)
+      return env.newsCardService.getAllNewsCards(Date(), 0, 10)
+        .catchToEffect()
+        .flatMapLatest { result -> Effect<MainAction, Never> in
+          switch result {
+          case let .success(newsCards):
+            return Effect(value: ._setNewsCardScrollState(newsCards))
+            
+          case .failure:
+            return .none
+          }
+        }
+        .eraseToEffect()
       
-    case ._calculateNewsCardSize:
-      let newsCardLayout = buildNewsCardLayout(screenSize: state.screenSize)
-      return Effect(value: ._setNewsCardScrollState(newsCardLayout))
       
-    case let ._setScreenSize(screenSize):
-      state.screenSize = screenSize
+    case let ._setNewsCardSize(screenSize):
+      state.newsCardLayout = buildNewsCardLayout(screenSize: screenSize)
       return .none
       
     case let ._setIsLoading(isLoading):
@@ -107,15 +118,16 @@ public let mainReducer = Reducer.combine([
       state.categories = categories
       return .none
       
-    case let ._setNewsCardScrollState(newsCardLayout):
-      state.newsCardSize = newsCardLayout.size
+    case let ._setNewsCardScrollState(newsCards):
       state.newsCardScrollState = NewsCardScrollState(
-        layout: buildNewsCardLayout(
-          screenSize: state.screenSize
-        ),
-        newsCards: NewsCard.stub
+        layout: state.newsCardLayout,
+        newsCards: IdentifiedArray(
+          uniqueElements: newsCards.enumerated().map{ index, newscard in
+            NewsCardState(index: index, newsCard: newscard, layout: state.newsCardLayout, isFolded: true)
+          }
+        )
       )
-      return Effect(value: .newsCardScroll(._onAppear))
+      return .none
       
     default:
       return .none

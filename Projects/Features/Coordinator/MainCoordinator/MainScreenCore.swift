@@ -21,9 +21,14 @@ public enum MainScreenAction {
 }
 
 internal struct MainScreenEnvironment {
+  fileprivate let newsCardService: NewsCardService
   fileprivate let categoryService: CategoryService
   
-  internal init(categoryService: CategoryService) {
+  internal init(
+    newsCardService: NewsCardService,
+    categoryService: CategoryService
+  ) {
+    self.newsCardService = newsCardService
     self.categoryService = categoryService
   }
 }
@@ -38,7 +43,10 @@ internal let mainScreenReducer = Reducer<
       state: /MainScreenState.main,
       action: /MainScreenAction.main,
       environment: {
-        MainEnvironment(categoryService: $0.categoryService)
+        MainEnvironment(
+          newscardService: $0.newsCardService,
+          categoryService: $0.categoryService
+        )
       }
     )
 ])

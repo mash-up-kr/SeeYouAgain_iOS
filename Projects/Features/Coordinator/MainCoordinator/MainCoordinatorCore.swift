@@ -33,9 +33,14 @@ public enum MainCoordinatorAction: IndexedRouterAction {
 }
 
 public struct MainCoordinatorEnvironment {
+  fileprivate let newsCardService: NewsCardService
   fileprivate let categoryService: CategoryService
   
-  public init(categoryService: CategoryService) {
+  public init(
+    newsCardService: NewsCardService,
+    categoryService: CategoryService
+  ) {
+    self.newsCardService = newsCardService
     self.categoryService = categoryService
   }
 }
@@ -47,7 +52,10 @@ public let mainCoordinatorReducer: Reducer<
 > = mainScreenReducer
   .forEachIndexedRoute(
     environment: {
-      MainScreenEnvironment(categoryService: $0.categoryService)
+      MainScreenEnvironment(
+        newsCardService: $0.newsCardService,
+        categoryService: $0.categoryService
+      )
     }
   )
   .withRouteReducer(

@@ -11,10 +11,10 @@ import Foundation
 import Models
 
 public struct NewsCardLayout: Equatable {
-  var ratio: CGSize
-  var size: CGSize
-  var spacing: CGFloat
-  var leadingOffset: CGFloat
+  var ratio: CGSize = .zero
+  var size: CGSize = .zero
+  var spacing: CGFloat = 0
+  var leadingOffset: CGFloat = 0
 }
 
 public struct NewsCardScrollState: Equatable {
@@ -30,16 +30,10 @@ public struct NewsCardScrollState: Equatable {
   
   init(
     layout: NewsCardLayout,
-    newsCards: [NewsCard]
+    newsCards: IdentifiedArrayOf<NewsCardState>
   ) {
     self.layout = layout
-    // TODO: API 연결 후 해야하는 작업
-    // 데이터에 따라 배열 길이 변경
-    self.newsCards = IdentifiedArray(
-      uniqueElements: newsCards.enumerated().map{ index, newscard in
-        NewsCardState(index: index, newsCard: newscard, layout: layout, isFolded: true)
-      }
-    )
+    self.newsCards = newsCards
     self.degrees = Array(repeating: 0, count: newsCards.count)
     self.offsets = Array(repeating: .zero, count: newsCards.count)
   }
@@ -67,7 +61,6 @@ public enum NewsCardScrollAction {
   
   // MARK: - Child Action
   case newsCard(id: Int, action: NewsCardAction)
-  
 }
 
 public struct NewsCardScrollEnvironmnet {}

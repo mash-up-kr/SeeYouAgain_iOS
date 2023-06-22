@@ -30,17 +30,20 @@ public struct AppCoordinatorEnvironment {
   let mainQueue: AnySchedulerOf<DispatchQueue>
   let userDefaultsService: UserDefaultsService
   let appVersionService: AppVersionService
+  let newsCardService: NewsCardService  
   let categoryService: CategoryService
   
   public init(
     mainQueue: AnySchedulerOf<DispatchQueue>,
     userDefaultsService: UserDefaultsService,
     appVersionService: AppVersionService,
+    newsCardService: NewsCardService,
     categoryService: CategoryService
   ) {
     self.mainQueue = mainQueue
     self.userDefaultsService = userDefaultsService
     self.appVersionService = appVersionService
+    self.newsCardService = newsCardService
     self.categoryService = categoryService
   }
 }
@@ -56,6 +59,7 @@ public let appCoordinatorReducer: Reducer<
         mainQueue: $0.mainQueue,
         userDefaultsService: $0.userDefaultsService,
         appVersionService: $0.appVersionService,
+        newsCardService: $0.newsCardService,
         categoryService: $0.categoryService
       )
     }

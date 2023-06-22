@@ -27,6 +27,7 @@ struct AppView: View {
             mainQueue: .main,
             userDefaultsService: .live,
             appVersionService: .live,
+            newsCardService: .live,
             categoryService: .live
           )
         )
