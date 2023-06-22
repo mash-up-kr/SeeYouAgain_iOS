@@ -23,8 +23,8 @@ struct CategoriesView: View {
       HStack(spacing: 0) {
         ScrollView(.horizontal, showsIndicators: false) {
           HStack(spacing: 8) {
-            ForEach(viewStore.state, id: \.self) { category in
-              CategoryBadge(name: category.rawValue)
+            ForEach(viewStore.indices, id: \.self) { index in
+              CategoryBadge(name: viewStore[index].rawValue)
             }
           }
           .animation(.easeInOut, value: viewStore.state)
