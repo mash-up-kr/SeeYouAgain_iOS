@@ -28,7 +28,7 @@ extension NewsCardService {
   public static let live = Self(
     getAllNewsCards: { targetDateTime, cursorId, pagingSize in
       return Provider<NewsCardAPI>
-        .init(stubBehavior: .immediate)
+        .init()
         .request(
           NewsCardAPI.getAllNewsCards(targetDateTime, cursorId, pagingSize),
           type: [NewsCardsResponseDTO].self

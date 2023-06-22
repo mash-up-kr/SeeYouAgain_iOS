@@ -37,11 +37,14 @@ extension NewsCardAPI: TargetType {
     switch self {
     case let .getAllNewsCards(targetDateTime, cursorId, pagingSize):
       let requestDTO = NewsCardsRequestDTO(
-        targetDateTime: targetDateTime,
+        targetDateTime: targetDateTime.toFormattedString(format: "yyyy-MM-dd'T'HH:mm:ss"),
         cursorId: cursorId,
         size: pagingSize
       )
-      return .requestJSONEncodable(requestDTO)
+      return .requestParameters(
+        parameters: requestDTO.toDictionary,
+        encoding: .queryString
+      )
     }
   }
   
