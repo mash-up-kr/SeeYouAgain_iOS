@@ -1,5 +1,5 @@
 //
-//  WebView.swift
+//  ShortsWebView.swift
 //  DesignSystem
 //
 //  Created by GREEN on 2023/04/28.
@@ -22,7 +22,7 @@ struct UIWebView: UIViewRepresentable {
   }
 }
 
-public struct WebView: View {
+public struct ShortsWebView: View {
   public let webAddress: String
   
   public init(webAddress: String) {
