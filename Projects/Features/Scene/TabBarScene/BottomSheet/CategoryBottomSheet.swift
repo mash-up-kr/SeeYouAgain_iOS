@@ -44,7 +44,7 @@ struct CategoryBottomSheet: View {
             CategoryItemView(
               store: store.stateless,
               category: category,
-              isSelected: viewStore.state.selectedCategories.contains(category)
+              isSelected: viewStore.selectedCategories.contains(category)
             )
           }
         }
@@ -59,7 +59,7 @@ struct CategoryBottomSheet: View {
 private struct CategoryItemView: View {
   private let store: Store<Void, CategoryBottomSheetAction>
   private var category: CategoryType
-  @State private var isSelected: Bool = false
+  @State private var isSelected: Bool
   
   private var iconImage: Image {
     if isSelected {

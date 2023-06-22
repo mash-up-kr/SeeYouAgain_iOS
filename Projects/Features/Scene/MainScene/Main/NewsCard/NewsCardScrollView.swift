@@ -51,17 +51,17 @@ private struct NewsCardsView: View {
   
   fileprivate var body: some View {
     WithViewStore(store) { viewStore in
-      ForEach(viewStore.state.newsCards.indices, id: \.self) { id in
+      ForEach(viewStore.newsCards.indices, id: \.self) { id in
         NewsCardView(
           store: store.scope(
             state: \.newsCards[id],
             action: { .newsCard(id: id, action: $0) }
           )
         )
-        .frame(width: viewStore.state.layout.size.width)
-        .offset(viewStore.state.offsets[id])
-        .rotationEffect(.degrees(viewStore.state.degrees[id]))
-        .animation(.easeInOut, value: viewStore.state.currentScrollOffset)
+        .frame(width: viewStore.layout.size.width)
+        .offset(viewStore.offsets[id])
+        .rotationEffect(.degrees(viewStore.degrees[id]))
+        .animation(.easeInOut, value: viewStore.currentScrollOffset)
       }
     }
   }

@@ -69,12 +69,10 @@ public let mainReducer = Reducer.combine([
   Reducer<MainState, MainAction, MainEnvironment> { state, action, env in
     switch action {
     case ._viewWillAppear:
-      return Effect.concatenate([
-        Effect(value: ._setIsLoading(true)),
+      return Effect.concatenate(
         Effect(value: ._fetchCategories),
-        Effect(value: ._fetchNewsCards),
-        Effect(value: ._setIsLoading(false))
-      ])
+        Effect(value: ._fetchNewsCards)
+      )
       
     case ._fetchCategories:
       return env.categoryService.getAllCategories()
@@ -89,7 +87,6 @@ public let mainReducer = Reducer.combine([
           }
         }
         .eraseToEffect()
-    
       
     case ._fetchNewsCards:
       return Effect(value: ._calculateNewsCardSize)
@@ -118,7 +115,7 @@ public let mainReducer = Reducer.combine([
         ),
         newsCards: NewsCard.stub
       )
-      return .none
+      return Effect(value: .newsCardScroll(._onAppear))
       
     default:
       return .none

@@ -19,12 +19,12 @@ import XCTestDynamicOverlay
 public struct CategoryService {
   public var saveCategory: (_ categories: [String]) -> Effect<SaveCategoryResponseDTO, Error>
   public var getAllCategories: () -> Effect<[CategoryType], Error>
-  public var updateCategories: (_ categories: [String]) -> Effect<VoidResponse, Error>
+  public var updateCategories: (_ categories: [String]) -> Effect<VoidResponse?, Error>
   
   private init(
     saveCategory: @escaping (_ categories: [String]) -> Effect<SaveCategoryResponseDTO, Error>,
     getAllCateogires: @escaping () -> Effect<[CategoryType], Error>,
-    updateCategories: @escaping (_ categories: [String]) -> Effect<VoidResponse, Error>
+    updateCategories: @escaping (_ categories: [String]) -> Effect<VoidResponse?, Error>
   ) {
     self.saveCategory = saveCategory
     self.getAllCategories = getAllCateogires
@@ -46,7 +46,7 @@ extension CategoryService {
     },
     getAllCateogires: {
       return Provider<CategoryAPI>
-        .init(stubBehavior: .immediate)
+        .init()
         .request(
           CategoryAPI.getAllCategories,
           type: GetAllCategoriesResponseDTO.self
@@ -62,7 +62,6 @@ extension CategoryService {
           CategoryAPI.updateCategories(categories: categories),
           type: VoidResponse.self
         )
-        .compactMap { $0 }
         .eraseToEffect()
     
     }

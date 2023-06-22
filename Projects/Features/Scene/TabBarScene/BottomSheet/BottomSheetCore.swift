@@ -28,6 +28,7 @@ public enum CategoryBottomSheetAction {
   case updateButtonTapped
   
   // MARK: - Inner Business Action
+  case _updateCategoires([String])
   case _categoriesIsUpdated
   case _presentToast(String)
   case _hideToast
@@ -51,7 +52,8 @@ public struct CategoryBottomSheetEnvironment {
   }
 }
 
-enum CancelID: Hashable {
+enum CategoryBottomSheetID: Hashable {
+  case _updateCategoires
   case _setCategoryToast
 }
 
@@ -72,7 +74,10 @@ public let categoryBottomSheetReducer: Reducer<
     
   case .updateButtonTapped:
     let selectedCategories = state.selectedCategories.map { $0.uppercasedName }
-    return env.categoryService.updateCategories(selectedCategories)
+    return Effect(value: ._updateCategoires(selectedCategories))
+    
+  case let ._updateCategoires(categories):
+    return env.categoryService.updateCategories(categories)
       .catchToEffect()
       .flatMapLatest { result -> Effect<CategoryBottomSheetAction, Never> in
         switch result {
@@ -84,18 +89,18 @@ public let categoryBottomSheetReducer: Reducer<
         }
       }
       .eraseToEffect()
-      
+    
   case ._categoriesIsUpdated:
     return Effect(value: ._setIsPresented(false))
     
   case let ._presentToast(toastMessage):
     return .concatenate(
       Effect(value: ._setToastMessage(toastMessage)),
-      Effect.cancel(id: CancelID._setCategoryToast),
+      Effect.cancel(id: CategoryBottomSheetID._setCategoryToast),
       Effect(value: ._hideToast)
         .delay(for: 2, scheduler: env.mainQueue)
         .eraseToEffect()
-        .cancellable(id: CancelID._setCategoryToast, cancelInFlight: true)
+        .cancellable(id: CategoryBottomSheetID._setCategoryToast, cancelInFlight: true)
     )
     
   case ._hideToast:
