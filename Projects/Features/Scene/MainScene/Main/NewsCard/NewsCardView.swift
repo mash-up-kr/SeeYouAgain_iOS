@@ -37,10 +37,7 @@ struct NewsCardView: View {
             }
             
             LetterPaper(
-              isFold: viewStore.binding(
-                get: \.isFolded,
-                send: { ._setIsFolded($0) }
-              ),
+              store: store,
               newsPaper: newsCardType.image
             )
           }
