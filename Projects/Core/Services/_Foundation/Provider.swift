@@ -36,7 +36,7 @@ public struct Provider<Target: TargetType> {
 private extension Provider {
   func requestObject<T: Decodable>(_ target: TargetType, type: T.Type) -> Future<T?, Error> {
     return Future { promise in
-      self.session.request(target).responseData { response in
+      self.session.request(target, interceptor: CustomRequestInterceptor()).responseData { response in
         switch response.result {
         case .success(let value):
           guard let statusCode = response.response?.statusCode else { return }
