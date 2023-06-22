@@ -18,11 +18,17 @@ import XCTestDynamicOverlay
 
 public struct CategoryService {
   public var saveCategory: (_ categories: [String]) -> Effect<SaveCategoryResponseDTO, Error>
+  public var getAllCategories: () -> Effect<[CategoryType], Error>
+  public var updateCategories: (_ categories: [String]) -> Effect<VoidResponse, Error>
   
   private init(
-    saveCategory: @escaping (_ categories: [String]) -> Effect<SaveCategoryResponseDTO, Error>
+    saveCategory: @escaping (_ categories: [String]) -> Effect<SaveCategoryResponseDTO, Error>,
+    getAllCateogires: @escaping () -> Effect<[CategoryType], Error>,
+    updateCategories: @escaping (_ categories: [String]) -> Effect<VoidResponse, Error>
   ) {
     self.saveCategory = saveCategory
+    self.getAllCategories = getAllCateogires
+    self.updateCategories = updateCategories
   }
 }
 
@@ -37,6 +43,28 @@ extension CategoryService {
         )
         .compactMap { $0 }
         .eraseToEffect()
+    },
+    getAllCateogires: {
+      return Provider<CategoryAPI>
+        .init(stubBehavior: .immediate)
+        .request(
+          CategoryAPI.getAllCategories,
+          type: GetAllCategoriesResponseDTO.self
+        )
+        .compactMap { $0 }
+        .map { $0.toDomain }
+        .eraseToEffect()
+    },
+    updateCategories: { categories in
+      return Provider<CategoryAPI>
+        .init()
+        .request(
+          CategoryAPI.updateCategories(categories: categories),
+          type: VoidResponse.self
+        )
+        .compactMap { $0 }
+        .eraseToEffect()
+    
     }
   )
 }
@@ -44,7 +72,9 @@ extension CategoryService {
 #if DEBUG
 extension CategoryService {
   public static let unimplemented = Self(
-    saveCategory: XCTUnimplemented("\(Self.self).saveCategory")
+    saveCategory: XCTUnimplemented("\(Self.self).saveCategory"),
+    getAllCateogires: XCTUnimplemented("\(Self.self).getAllCateogires"),
+    updateCategories: XCTUnimplemented("\(Self.self).updateCategories")
   )
 }
 #endif
