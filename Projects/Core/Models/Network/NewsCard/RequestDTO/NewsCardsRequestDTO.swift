@@ -9,11 +9,11 @@
 import Foundation
 
 public struct NewsCardsRequestDTO: Encodable {
-  let targetDateTime: Date
+  let targetDateTime: String
   let cursorId: Int
   let size: Int
   
-  public init(targetDateTime: Date, cursorId: Int, size: Int) {
+  public init(targetDateTime: String, cursorId: Int, size: Int) {
     self.targetDateTime = targetDateTime
     self.cursorId = cursorId
     self.size = size

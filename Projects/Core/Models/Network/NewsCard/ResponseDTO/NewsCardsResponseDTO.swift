@@ -6,12 +6,13 @@
 //  Copyright © 2023 mashup.seeYouAgain. All rights reserved.
 //
 
+import Common
 import Foundation
 
 public struct NewsCardsResponseDTO: Decodable {
   let id: Int
   let keywords: String
-  let cateogry: String
+  let category: String
   let crawledDateTime: String
 }
 
@@ -20,7 +21,7 @@ public extension NewsCardsResponseDTO {
     return NewsCard(
       id: id,
       keywords: keywords.components(separatedBy: ","),
-      cateogry: cateogry
+      category: CategoryType(uppercasedName: category)!
     )
   }
 }
