@@ -19,4 +19,22 @@ public enum CategoryType: String, CaseIterable {
   public var uppercasedName: String {
     return String(describing: self).uppercased()
   }
+  
+  public init?(uppercasedName: String) {
+    if uppercasedName == "POLITICS" {
+      self = .politics
+    } else if uppercasedName == "ECONOMIC" {
+      self = .economic
+    } else if uppercasedName == "SOCIETY" {
+      self = .society
+    } else if uppercasedName == "WORLD" {
+      self = .culture
+    } else if uppercasedName == "CULTURE" {
+      self = .culture
+    } else if uppercasedName == "SCIENCE" {
+      self = .science
+    } else {
+      return nil
+    }
+  }
 }
