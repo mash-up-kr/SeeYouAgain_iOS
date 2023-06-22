@@ -28,7 +28,7 @@ public enum CategoryType: String, CaseIterable {
     } else if uppercasedName == "SOCIETY" {
       self = .society
     } else if uppercasedName == "WORLD" {
-      self = .culture
+      self = .world
     } else if uppercasedName == "CULTURE" {
       self = .culture
     } else if uppercasedName == "SCIENCE" {
