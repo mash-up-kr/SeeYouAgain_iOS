@@ -7,9 +7,9 @@
 //
 
 import ComposableArchitecture
+import Foundation
 import Services
 import ShortStorageNewsList
-import SwiftUI
 import TCACoordinators
 
 public struct ShortStorageCoordinatorState: Equatable, IndexedRouterState {
@@ -39,7 +39,13 @@ public enum ShortStorageCoordinatorAction: IndexedRouterAction {
 }
 
 public struct ShortStorageCoordinatorEnvironment {
-  public init() {}
+  let mainQueue: AnySchedulerOf<DispatchQueue>
+  
+  public init(
+    mainQueue: AnySchedulerOf<DispatchQueue>
+  ) {
+    self.mainQueue = mainQueue
+  }
 }
 
 public let shortStorageCoordinatorReducer: Reducer<
@@ -47,8 +53,8 @@ public let shortStorageCoordinatorReducer: Reducer<
   ShortStorageCoordinatorAction,
   ShortStorageCoordinatorEnvironment
 > = shortStorageScreenReducer
-  .forEachIndexedRoute(environment: { _ in
-    ShortStorageScreenEnvironment()
+  .forEachIndexedRoute(environment: {
+    ShortStorageScreenEnvironment(mainQueue: $0.mainQueue)
   })
   .withRouteReducer(
     Reducer { state, action, env in

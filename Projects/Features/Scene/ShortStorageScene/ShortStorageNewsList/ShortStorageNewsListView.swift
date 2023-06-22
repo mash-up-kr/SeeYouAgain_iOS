@@ -87,8 +87,7 @@ public struct ShortStorageNewsListView: View {
                   Text("남은시간")
                     .font(.r16)
                   
-                  // TODO: 오늘 하루 남은 시간 표시
-                  Text("11:06:17")
+                  Text(viewStore.state.remainTimeString)
                     .font(.b16)
                 }
                 .foregroundColor(DesignSystem.Colors.blue200)

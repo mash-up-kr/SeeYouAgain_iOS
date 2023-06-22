@@ -27,6 +27,9 @@ public struct ShortStorageNewsListState: Equatable {
   public var shortslistCount: Int // 저장한 숏스 수
   public var shortsClearCount: Int // 완료한 숏스 수 (리스트에 표시되는 숏스 = 저장 숏스 - 완료 숏스)
   public var shortsNewsItems: IdentifiedArrayOf<TodayShortsItemState> = []
+  public var remainTimeString: String = "00:00:00"
+  var remainTime: Int = 24 * 60 * 60
+  var currentTimeSeconds: Int = 0 // 지금 시간이 몇초를 담고있냐! 17:27:21 => 62841
   
   public init(
     isInEditMode: Bool,
@@ -47,19 +50,29 @@ public enum ShortStorageNewsListAction: Equatable {
   
   // MARK: - Inner Business Action
   case _onAppear
-  case _viewDidLoad
+  case _updateTimer
+  case _decreaseRemainTime
   
   // MARK: - Inner SetState Action
   case _setTodayShortsItemEditMode
   case _setTodayShortsItemList
   case _setTodayShortsItemCount
+  case _setCurrentTimeSeconds
+  case _setRemainTime(Int)
+  case _setRemainTimeString(Int)
   
   // MARK: - Child Action
   case shortsNewsItem(id: TodayShortsItemState.ID, action: TodayShortsItemAction)
 }
 
 public struct ShortStorageNewsListEnvironment {
-  public init() {}
+  let mainQueue: AnySchedulerOf<DispatchQueue>
+
+  public init(
+    mainQueue: AnySchedulerOf<DispatchQueue>
+  ) {
+    self.mainQueue = mainQueue
+  }
 }
 
 public let shortStorageNewsListReducer = Reducer<
@@ -76,6 +89,8 @@ public let shortStorageNewsListReducer = Reducer<
       }
     ),
   Reducer { state, action, env in
+    struct TimerId: Hashable {}
+    
     switch action {
     case .editButtonTapped:
       state.isInEditMode.toggle()
@@ -176,10 +191,20 @@ public let shortStorageNewsListReducer = Reducer<
           )
         )
       ]
-      return .none
+      return Effect(value: ._setCurrentTimeSeconds)
       
-    case ._viewDidLoad:
-      return .none
+    case ._updateTimer:
+      return Effect.timer(
+        id: TimerId(),
+        every: 1,
+        on: env.mainQueue
+      ).map { _ in
+        ._decreaseRemainTime
+      }
+      
+    case ._decreaseRemainTime:
+      state.remainTime -= 1
+      return Effect(value: ._setRemainTimeString(state.remainTime))
       
     case ._setTodayShortsItemEditMode:
       for index in 0..<state.shortsNewsItems.count {
@@ -196,6 +221,32 @@ public let shortStorageNewsListReducer = Reducer<
       state.shortslistCount = state.shortsNewsItems.count
       return .none
       
+    case ._setCurrentTimeSeconds:
+      let date = Date()
+      var calendar = Calendar.current
+
+      if let timeZone = TimeZone(identifier: "KST") {
+        calendar.timeZone = timeZone
+      }
+      
+      let hour = calendar.component(.hour, from: date)
+      let minute = calendar.component(.minute, from: date)
+      let second = calendar.component(.second, from: date)
+      
+      state.currentTimeSeconds = hour * 60 * 60 + minute * 60 + second
+      return Effect(value: ._setRemainTime(state.currentTimeSeconds))
+      
+    case let ._setRemainTime(currentTimeSeconds):
+      state.remainTime = 24 * 60 * 60 - currentTimeSeconds
+      return Effect(value: ._updateTimer)
+
+    case let ._setRemainTimeString(time):
+      let hour = Int(time) / 3600
+      let minute = Int(time) / 60 % 60
+      let second = Int(time) % 60
+      state.remainTimeString = String(format: "%02i:%02i:%02i", hour, minute, second)
+      return .none
+      
     case let .shortsNewsItem(id: tappedId, action: .itemTapped):
       return .none
       
@@ -206,3 +257,11 @@ public let shortStorageNewsListReducer = Reducer<
     }
   }
 )
+
+// TODO: 코드 위치 변경 필요
+let dateComponentsFormatter: DateComponentsFormatter = {
+  let formatter = DateComponentsFormatter()
+  formatter.allowedUnits = [.hour, .minute, .second]
+  formatter.zeroFormattingBehavior = .pad
+  return formatter
+}()
