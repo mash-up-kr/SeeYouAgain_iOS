@@ -24,6 +24,7 @@ public struct ShortsNews: Equatable, Identifiable {
 
 public struct ShortStorageNewsListState: Equatable {
   public var isInEditMode: Bool
+  public var today: String
   public var shortslistCount: Int // 저장한 숏스 수
   public var shortsClearCount: Int // 완료한 숏스 수 (리스트에 표시되는 숏스 = 저장 숏스 - 완료 숏스)
   public var shortsNewsItems: IdentifiedArrayOf<TodayShortsItemState> = []
@@ -39,6 +40,7 @@ public struct ShortStorageNewsListState: Equatable {
     self.isInEditMode = isInEditMode
     self.shortslistCount = shortslistCount
     self.shortsClearCount = shortsClearCount
+    self.today = Date().fullDateToString()
     self.remainTimeString = initializeRemainTimeString()
   }
 }
@@ -53,6 +55,7 @@ public enum ShortStorageNewsListAction: Equatable {
   case _onAppear
   case _updateTimer
   case _decreaseRemainTime
+  case _checkZeroTime
   
   // MARK: - Inner SetState Action
   case _setTodayShortsItemEditMode
@@ -61,6 +64,7 @@ public enum ShortStorageNewsListAction: Equatable {
   case _setCurrentTimeSeconds
   case _setRemainTime(Int)
   case _setRemainTimeString(Int)
+  case _initializeShortStorageNewsList
   
   // MARK: - Child Action
   case shortsNewsItem(id: TodayShortsItemState.ID, action: TodayShortsItemAction)
@@ -205,7 +209,14 @@ public let shortStorageNewsListReducer = Reducer<
       
     case ._decreaseRemainTime:
       state.remainTime -= 1
-      return Effect(value: ._setRemainTimeString(state.remainTime))
+      return state.remainTime != 0 ?
+      Effect(value: ._setRemainTimeString(state.remainTime)) : Effect(value: ._checkZeroTime)
+      
+    case ._checkZeroTime:
+      return Effect.concatenate([
+        Effect(value: ._setCurrentTimeSeconds),
+        Effect(value: ._initializeShortStorageNewsList)
+      ])
       
     case ._setTodayShortsItemEditMode:
       for index in 0..<state.shortsNewsItems.count {
@@ -234,6 +245,14 @@ public let shortStorageNewsListReducer = Reducer<
       state.remainTimeString = remainTimeToString(time: time)
       return .none
       
+    case ._initializeShortStorageNewsList:
+      // TODO: 실데이터 반영 필요
+      state.shortsNewsItems.removeAll()
+      state.shortslistCount = 0
+      state.shortsClearCount = 0
+      state.today = Date().fullDateToString()
+      return .none
+      
     case let .shortsNewsItem(id: tappedId, action: .itemTapped):
       return .none
       
@@ -244,14 +263,6 @@ public let shortStorageNewsListReducer = Reducer<
     }
   }
 )
-
-// TODO: 코드 위치 변경 필요
-let dateComponentsFormatter: DateComponentsFormatter = {
-  let formatter = DateComponentsFormatter()
-  formatter.allowedUnits = [.hour, .minute, .second]
-  formatter.zeroFormattingBehavior = .pad
-  return formatter
-}()
 
 fileprivate func initializeRemainTimeString() -> String {
   let currentTimeSeconds = calculateCurrentTimeSeconds()
@@ -279,4 +290,32 @@ fileprivate func remainTimeToString(time: Int) -> String {
   let minute = Int(time) / 60 % 60
   let second = Int(time) % 60
   return String(format: "%02i:%02i:%02i", hour, minute, second)
+}
+
+// TODO: 코드 위치 변경 필요
+let dateComponentsFormatter: DateComponentsFormatter = {
+  let formatter = DateComponentsFormatter()
+  formatter.allowedUnits = [.hour, .minute, .second]
+  formatter.zeroFormattingBehavior = .pad
+  return formatter
+}()
+
+
+// TODO: 코드 위치 변경 필요
+extension Date {
+  func fullDateToString() -> String {
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = "yyyy년 M월 dd일"
+    dateFormatter.locale = Locale(identifier: "ko_KR")
+    dateFormatter.timeZone = TimeZone(identifier: "KST")
+    return dateFormatter.string(from: self)
+  }
+  
+  func yearMonthToString() -> String {
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = "yyyy년 M월"
+    dateFormatter.locale = Locale(identifier: "ko_KR")
+    dateFormatter.timeZone = TimeZone(identifier: "KST")
+    return dateFormatter.string(from: self)
+  }
 }

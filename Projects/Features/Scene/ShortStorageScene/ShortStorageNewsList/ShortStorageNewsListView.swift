@@ -42,7 +42,7 @@ public struct ShortStorageNewsListView: View {
               .frame(height: 40)
             
             // 날짜
-            Text(Date().fullDateToString())
+            Text(viewStore.today)
               .font(.b14)
               .foregroundColor(DesignSystem.Colors.grey90)
               .padding(.horizontal, 105)
@@ -120,7 +120,7 @@ public struct ShortStorageNewsListView: View {
           }
           .frame(maxWidth: .infinity)
         }
-        // TODO: 스크롤뷰 SafeArea 확인 필요
+        .padding(.bottom, 16)
         .ignoresSafeArea()
       }
       .navigationBarHidden(true)
@@ -128,24 +128,5 @@ public struct ShortStorageNewsListView: View {
         viewStore.send(._onAppear)
       }
     }
-  }
-}
-
-// TODO: 코드 위치 변경 필요
-extension Date {
-  func fullDateToString() -> String {
-    let dateFormatter = DateFormatter()
-    dateFormatter.dateFormat = "yyyy년 M월 dd일"
-    dateFormatter.locale = Locale(identifier: "ko_KR")
-    dateFormatter.timeZone = TimeZone(identifier: "KST")
-    return dateFormatter.string(from: self)
-  }
-  
-  func yearMonthToString() -> String {
-    let dateFormatter = DateFormatter()
-    dateFormatter.dateFormat = "yyyy년 M월"
-    dateFormatter.locale = Locale(identifier: "ko_KR")
-    dateFormatter.timeZone = TimeZone(identifier: "KST")
-    return dateFormatter.string(from: self)
   }
 }
