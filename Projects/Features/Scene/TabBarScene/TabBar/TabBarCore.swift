@@ -7,6 +7,7 @@
 //
 
 import ComposableArchitecture
+import Foundation
 import HotKeywordCoordinator
 import Main
 import MainCoordinator
@@ -53,10 +54,18 @@ public enum TabBarAction {
 }
 
 public struct TabBarEnvironment {
+  fileprivate let mainQueue: AnySchedulerOf<DispatchQueue>
   let appVersionService: AppVersionService
+  fileprivate let categoryService: CategoryService
   
-  public init(appVersionService: AppVersionService) {
+  public init(
+    mainQueue: AnySchedulerOf<DispatchQueue>,
+    appVersionService: AppVersionService,
+    categoryService: CategoryService
+  ) {
+    self.mainQueue = mainQueue
     self.appVersionService = appVersionService
+    self.categoryService = categoryService
   }
 }
 
@@ -77,8 +86,8 @@ public let tabBarReducer = Reducer<
     .pullback(
       state: \TabBarState.main,
       action: /TabBarAction.main,
-      environment: { _ in
-        MainCoordinatorEnvironment()
+      environment: { env in
+        MainCoordinatorEnvironment(categoryService: env.categoryService)
       }
     ),
   myPageCoordinatorReducer
@@ -93,8 +102,11 @@ public let tabBarReducer = Reducer<
     .pullback(
       state: \TabBarState.categoryBottomSheet,
       action: /TabBarAction.categoryBottomSheet,
-      environment: { _ in
-        CategoryBottomSheetEnvironment()
+      environment: {
+        CategoryBottomSheetEnvironment(
+          mainQueue: $0.mainQueue,
+          categoryService: $0.categoryService
+        )
       }
     ),
   Reducer { state, action, env in
@@ -105,15 +117,8 @@ public let tabBarReducer = Reducer<
       
     case let .main(.routeAction(_, action: .main(.showCategoryBottomSheet(categories)))):
       return Effect.concatenate(
-        Effect(value: .categoryBottomSheet(._setCategories(categories))),
+        Effect(value: .categoryBottomSheet(._setSelectedCategories(categories))),
         Effect(value: .categoryBottomSheet(._setIsPresented(true)))
-      )
-      
-    case .categoryBottomSheet(.updateButtonTapped):
-      let categories = state.categoryBottomSheet.categories
-      return Effect.concatenate(
-        Effect(value: .categoryBottomSheet(._setIsPresented(false))),
-        Effect(value: .main(.routeAction(0, action: .main(._setCategories(categories)))))
       )
       
     case ._setTabHiddenStatus(let status):
@@ -157,7 +162,10 @@ public let tabBarReducer = Reducer<
       
     case .myPage(.routeAction(_, action: .setting(.routeAction(_, action: .setting(.backButtonTapped))))):
       return Effect(value: ._setTabHiddenStatus(false))
-
+      
+    case .categoryBottomSheet(._categoriesIsUpdated):
+      return Effect(value: .main(.routeAction(0, action: .main(._viewWillAppear))))
+      
     default: return .none
     }
   }

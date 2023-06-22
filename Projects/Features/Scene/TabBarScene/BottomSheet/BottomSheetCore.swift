@@ -7,30 +7,52 @@
 //
 
 import CombineExt
+import Common
 import ComposableArchitecture
+import Foundation
 import Models
-
-public typealias Category = Models.Category
+import Services
 
 public struct CategoryBottomSheetState: Equatable {
-  public var categories: [Category] = []
+  var allCategories: [CategoryType] = CategoryType.allCases
+  var selectedCategories: [CategoryType] = []
   public var isPresented: Bool = false
+  var toastMessage: String?
   
   public init() {}
 }
 
 public enum CategoryBottomSheetAction {
   // MARK: - User Action
+  case categoryTapped(CategoryType)
   case updateButtonTapped
-
+  
+  // MARK: - Inner Business Action
+  case _categoriesIsUpdated
+  case _presentToast(String)
+  case _hideToast
+  
   // MARK: - Inner SetState Action
-  case _toggleCategory(Category)
-  case _setCategories([Category])
+  case _setSelectedCategories([CategoryType])
   case _setIsPresented(Bool)
+  case _setToastMessage(String?)
 }
 
 public struct CategoryBottomSheetEnvironment {
+  fileprivate let mainQueue: AnySchedulerOf<DispatchQueue>
+  fileprivate let categoryService: CategoryService
   
+  public init(
+    mainQueue: AnySchedulerOf<DispatchQueue>,
+    categoryService: CategoryService
+  ) {
+    self.mainQueue = mainQueue
+    self.categoryService = categoryService
+  }
+}
+
+enum CancelID: Hashable {
+  case _setCategoryToast
 }
 
 public let categoryBottomSheetReducer: Reducer<
@@ -39,25 +61,56 @@ public let categoryBottomSheetReducer: Reducer<
   CategoryBottomSheetEnvironment
 > = Reducer { state, action, env in
   switch action {
-  case let ._toggleCategory(targetCategory):
-    let updateCategories = state.categories.map { category in
-      var updateCategory = category
-      if targetCategory == updateCategory {
-        updateCategory.isSelected.toggle()
-      }
-      return updateCategory
+  case let .categoryTapped(category):
+    if state.selectedCategories.contains(category) {
+      return Effect(value: ._setSelectedCategories(state.selectedCategories.filter { $0 != category }))
+    } else {
+      var updatedSelectedCategories = state.selectedCategories
+      updatedSelectedCategories.append(category)
+      return Effect(value: ._setSelectedCategories(updatedSelectedCategories))
     }
-    return Effect(value: ._setCategories(updateCategories))
     
-  case let ._setCategories(categories):
-    state.categories = categories
+  case .updateButtonTapped:
+    let selectedCategories = state.selectedCategories.map { $0.uppercasedName }
+    return env.categoryService.updateCategories(selectedCategories)
+      .catchToEffect()
+      .flatMapLatest { result -> Effect<CategoryBottomSheetAction, Never> in
+        switch result {
+        case .success:
+          return Effect(value: ._categoriesIsUpdated)
+          
+        case .failure:
+          return Effect(value: ._presentToast("인터넷이 불안정해서 변경되지 못했어요."))
+        }
+      }
+      .eraseToEffect()
+      
+  case ._categoriesIsUpdated:
+    return Effect(value: ._setIsPresented(false))
+    
+  case let ._presentToast(toastMessage):
+    return .concatenate(
+      Effect(value: ._setToastMessage(toastMessage)),
+      Effect.cancel(id: CancelID._setCategoryToast),
+      Effect(value: ._hideToast)
+        .delay(for: 2, scheduler: env.mainQueue)
+        .eraseToEffect()
+        .cancellable(id: CancelID._setCategoryToast, cancelInFlight: true)
+    )
+    
+  case ._hideToast:
+    return Effect(value: ._setToastMessage(nil))
+    
+  case let ._setSelectedCategories(categories):
+    state.selectedCategories = categories
     return .none
     
   case let ._setIsPresented(isPresented):
     state.isPresented = isPresented
     return .none
     
-  default:
+  case let ._setToastMessage(message):
+    state.toastMessage = message
     return .none
   }
 }

@@ -51,14 +51,14 @@ public struct MainView: View {
         Spacer()
       }
       .onAppear {
-        viewStore.send(._viewWillAppear(UIScreen.main.bounds.size))
+        viewStore.send(._setScreenSize(UIScreen.main.bounds.size))
+        viewStore.send(._viewWillAppear)
       }
     }
     .shortsBackgroundView()
     .navigationBarHidden(true)
   }
 }
-
 
 private struct SaveTextView: View {
   fileprivate var body: some View {

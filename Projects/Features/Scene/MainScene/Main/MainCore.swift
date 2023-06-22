@@ -7,6 +7,7 @@
 //
 
 import CombineExt
+import Common
 import ComposableArchitecture
 import Foundation
 import Models
@@ -19,31 +20,30 @@ private enum Constant {
   static let iphone13MiniHeight: CGFloat = 812
 }
 
-public typealias Category = Models.Category
 public struct MainState: Equatable {
   var screenSize: CGSize = .zero
   var newsCardSize: CGSize = .zero
   
   var isLoading: Bool = false
-  var categories: [Category] = []
+  var categories: [CategoryType] = []
   var newsCardScrollState: NewsCardScrollState?
   public init() { }
 }
 
 public enum MainAction {
   // MARK: - User Action
-  case showCategoryBottomSheet([Category])
+  case showCategoryBottomSheet([CategoryType])
   
   // MARK: - Inner Business Action
-  case _viewWillAppear(CGSize)
+  case _viewWillAppear
   case _fetchCategories
-  case _updateCategories
   case _fetchNewsCards
   case _calculateNewsCardSize
   
   // MARK: - Inner SetState Action
+  case _setScreenSize(CGSize)
   case _setIsLoading(Bool)
-  case _setCategories([Category])
+  case _setCategories([CategoryType])
   case _setNewsCardScrollState(NewsCardLayout)
   
   // MARK: - Child Action
@@ -51,8 +51,11 @@ public enum MainAction {
 }
 
 public struct MainEnvironment {
-  let newsCardService: NewsCardService = .live
-  public init() {}
+  fileprivate let categoryService: CategoryService
+  
+  public init(categoryService: CategoryService) {
+    self.categoryService = categoryService
+  }
 }
 
 public let mainReducer = Reducer.combine([
@@ -65,8 +68,7 @@ public let mainReducer = Reducer.combine([
     ),
   Reducer<MainState, MainAction, MainEnvironment> { state, action, env in
     switch action {
-    case let ._viewWillAppear(screen):
-      state.screenSize = screen
+    case ._viewWillAppear:
       return Effect.concatenate([
         Effect(value: ._setIsLoading(true)),
         Effect(value: ._fetchCategories),
@@ -75,12 +77,19 @@ public let mainReducer = Reducer.combine([
       ])
       
     case ._fetchCategories:
-      state.categories = Category.stub
-      return .none
-      
-    case ._updateCategories:
-      // TODO: update categories to sever
-      return .none
+      return env.categoryService.getAllCategories()
+        .catchToEffect()
+        .flatMapLatest { result -> Effect<MainAction, Never> in
+          switch result {
+          case let .success(categories):
+            return Effect(value: ._setCategories(categories))
+            
+          case .failure:
+            return .none
+          }
+        }
+        .eraseToEffect()
+    
       
     case ._fetchNewsCards:
       return Effect(value: ._calculateNewsCardSize)
@@ -88,6 +97,10 @@ public let mainReducer = Reducer.combine([
     case ._calculateNewsCardSize:
       let newsCardLayout = buildNewsCardLayout(screenSize: state.screenSize)
       return Effect(value: ._setNewsCardScrollState(newsCardLayout))
+      
+    case let ._setScreenSize(screenSize):
+      state.screenSize = screenSize
+      return .none
       
     case let ._setIsLoading(isLoading):
       state.isLoading = isLoading
