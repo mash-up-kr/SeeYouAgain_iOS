@@ -184,6 +184,7 @@ public let shortStorageNewsListReducer = Reducer<
     case ._setTodayShortsItemEditMode:
       for index in 0..<state.shortsNewsItems.count {
         state.shortsNewsItems[index].isInEditMode = state.isInEditMode
+        state.shortsNewsItems[index].cardState.isCardSelectable = !state.isInEditMode
       }
       return .none
       
