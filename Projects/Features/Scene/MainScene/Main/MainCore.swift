@@ -56,7 +56,7 @@ public struct MainEnvironment {
     newscardService: NewsCardService,
     categoryService: CategoryService
   ) {
-    self.newsCardService = newscardService    
+    self.newsCardService = newscardService
     self.categoryService = categoryService
   }
 }
@@ -92,6 +92,7 @@ public let mainReducer = Reducer.combine([
         .eraseToEffect()
       
     case ._fetchNewsCards:
+      // TODO: Date와 CursorID State로 관리하도록 변경      
       return env.newsCardService.getAllNewsCards(Date(), 0, 10)
         .catchToEffect()
         .flatMapLatest { result -> Effect<MainAction, Never> in
@@ -123,7 +124,12 @@ public let mainReducer = Reducer.combine([
         layout: state.newsCardLayout,
         newsCards: IdentifiedArray(
           uniqueElements: newsCards.enumerated().map{ index, newscard in
-            NewsCardState(index: index, newsCard: newscard, layout: state.newsCardLayout, isFolded: true)
+            NewsCardState(
+              index: index,
+              newsCard: newscard,
+              layout: state.newsCardLayout,
+              isFolded: true
+            )
           }
         )
       )
