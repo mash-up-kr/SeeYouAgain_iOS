@@ -11,7 +11,7 @@ import Foundation
 public struct UpdateCategoryRequestDTO: Encodable {
   let categoryNames: [String]
   
-  init(categoryNames: [String]) {
+  public init(categoryNames: [String]) {
     self.categoryNames = categoryNames
   }
 }

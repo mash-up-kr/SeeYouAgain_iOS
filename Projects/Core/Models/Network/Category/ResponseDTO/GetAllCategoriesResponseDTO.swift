@@ -13,7 +13,7 @@ public struct GetAllCategoriesResponseDTO: Decodable {
   let categories: [String]
 }
 
-extension GetAllCategoriesResponseDTO {
+public extension GetAllCategoriesResponseDTO {
   var toDomain: [CategoryType] {
     return categories.compactMap { CategoryType(uppercasedName: $0) }
   }
