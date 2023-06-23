@@ -55,7 +55,7 @@ public enum ShortStorageNewsListAction: Equatable {
   case _onAppear
   case _updateTimer
   case _decreaseRemainTime
-  case _checkZeroTime
+  case _updateZeroTime
   
   // MARK: - Inner SetState Action
   case _setTodayShortsItemEditMode
@@ -209,10 +209,9 @@ public let shortStorageNewsListReducer = Reducer<
       
     case ._decreaseRemainTime:
       state.remainTime -= 1
-      return state.remainTime != 0 ?
-      Effect(value: ._setRemainTimeString(state.remainTime)) : Effect(value: ._checkZeroTime)
+      return Effect(value: ._setRemainTimeString(state.remainTime))
       
-    case ._checkZeroTime:
+    case ._updateZeroTime:
       return Effect.concatenate([
         Effect(value: ._setCurrentTimeSeconds),
         Effect(value: ._initializeShortStorageNewsList)
@@ -243,6 +242,10 @@ public let shortStorageNewsListReducer = Reducer<
 
     case let ._setRemainTimeString(time):
       state.remainTimeString = remainTimeToString(time: time)
+      
+      if time == 0 {
+        return Effect(value: ._updateZeroTime)
+      }
       return .none
       
     case ._initializeShortStorageNewsList:
