@@ -21,7 +21,7 @@ struct TodayShortsItemView: View {
     WithViewStore(store) { viewStore in
       HStack(spacing: 0) {
         if viewStore.state.isInEditMode {
-          Toggle("", isOn: viewStore.binding(get: \.isSelected, send: .shortsItemSelectionChanged))
+          Toggle("", isOn: viewStore.binding(get: \.isSelected, send: ._shortsItemSelectionChanged))
             .labelsHidden()
             .toggleStyle(ShortsToggleStyle())
             .frame(width: 24, height: 24)

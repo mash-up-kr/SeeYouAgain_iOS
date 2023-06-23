@@ -33,7 +33,7 @@ public enum TodayShortsItemAction: Equatable {
   case itemTapped // 뉴스 카드 선택
   
   // MARK: - Inner Business Action
-  case shortsItemSelectionChanged
+  case _shortsItemSelectionChanged
   
   // MARK: - Inner SetState Action
   
@@ -56,7 +56,7 @@ let todayShortsItemReducer = Reducer.combine([
     ),
   Reducer<TodayShortsItemState, TodayShortsItemAction, TodayShortsItemEnvironment> { state, action, env in
     switch action {
-    case .shortsItemSelectionChanged:
+    case ._shortsItemSelectionChanged:
       state.isSelected.toggle()
       return .none
       
