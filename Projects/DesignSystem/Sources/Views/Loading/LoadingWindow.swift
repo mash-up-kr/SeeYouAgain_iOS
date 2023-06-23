@@ -42,9 +42,7 @@ public class LoadingWindow: UIWindow {
 }
 
 public extension View {
-  func loading(
-    _ isLoading: Bool
-  ) -> Self {
+  func loading(_ isLoading: Bool) -> Self {
     if isLoading {
       LoadingWindow.shared.show()
     } else {
