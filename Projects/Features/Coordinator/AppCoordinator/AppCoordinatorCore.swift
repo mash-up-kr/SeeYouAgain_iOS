@@ -63,7 +63,7 @@ public let appCoordinatorReducer: Reducer<
   .withRouteReducer(
     Reducer { state, action, env in
       switch action {
-      case .routeAction(_, action: .splash(.viewDidLoad)):
+      case .routeAction(_, action: .splash(._moveToHome)):
         state.routes = [
           .root(
             .tabBar(
@@ -80,7 +80,7 @@ public let appCoordinatorReducer: Reducer<
         ]
         return .none
         
-      case .routeAction(_, action: .splash(._setCategoryViewLoad)):
+      case .routeAction(_, action: .splash(._moveToSetCategory)):
         state.routes = [
           .root(
             .setCategory(.init()),

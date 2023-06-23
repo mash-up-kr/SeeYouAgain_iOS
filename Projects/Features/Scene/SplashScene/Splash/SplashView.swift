@@ -19,13 +19,13 @@ public struct SplashView: View {
   
   public var body: some View {
     WithViewStore(store) { viewStore in
-      // TODO: - 추후 로딩 화면 스플래쉬 이미지와 동일하게 변경 예정
       VStack {
-        Button("스플래시") {
-          viewStore.send(._checkConnectHistory)
-        }
+        // TODO: - 추후 로딩 화면 스플래쉬 이미지와 동일하게 변경 예정
+        Text("로고")
       }
-      .shortsBackgroundView()
+      .frame(maxWidth: .infinity, maxHeight: .infinity)
+      .background(DesignSystem.Colors.lightBlue)
+      .onAppear { viewStore.send(._onAppear) }
     }
     .navigationBarHidden(true)
   }
