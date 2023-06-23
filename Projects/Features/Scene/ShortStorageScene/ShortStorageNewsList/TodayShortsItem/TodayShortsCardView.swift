@@ -44,7 +44,9 @@ struct TodayShortsCardView: View {
       .background(DesignSystem.Colors.grey20)
       .cornerRadius(16)
       .onTapGesture {
-        viewStore.send(.cardTapped)
+        if viewStore.isCardSelectable {
+          viewStore.send(.cardTapped)
+        }
       }
     }
   }
