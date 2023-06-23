@@ -38,26 +38,10 @@ public struct ShortStorageNewsListView: View {
         
         ScrollView {
           VStack(spacing: 0) {
-            Spacer()
-              .frame(height: 40)
-            
-            // 날짜
-            Text(viewStore.today)
-              .font(.b14)
-              .foregroundColor(DesignSystem.Colors.grey90)
-              .padding(.horizontal, 105)
-            
-            Spacer()
-              .frame(height: 8)
-            
-            // 숏스 수
-            Text("\(viewStore.shortsClearCount)숏스")
-              .font(.b24)
-              .foregroundColor(
-                viewStore.shortsClearCount == 0 ?
-                DesignSystem.Colors.grey60 : DesignSystem.Colors.grey100
-              )
-              .padding(.horizontal, 24)
+            TodayInfoView(
+              today: viewStore.today,
+              shortsClearCount: viewStore.shortsClearCount
+            )
             
             if viewStore.shortslistCount == 0 {
               // 오늘 저장한 숏스 없는 경우
@@ -124,6 +108,41 @@ public struct ShortStorageNewsListView: View {
       }
       .onAppear {
         viewStore.send(._onAppear)
+      }
+    }
+  }
+  
+  private struct TodayInfoView: View {
+    private var today: String
+    private var shortsClearCount: Int
+    
+    fileprivate init(
+      today: String,
+      shortsClearCount: Int
+    ) {
+      self.today = today
+      self.shortsClearCount = shortsClearCount
+    }
+    
+    var body: some View {
+      VStack(spacing: 0) {
+        Spacer()
+          .frame(height: 40)
+        
+        Text(today)
+          .font(.b14)
+          .foregroundColor(DesignSystem.Colors.grey90)
+          .padding(.horizontal, 105)
+        
+        Spacer()
+          .frame(height: 8)
+        
+        Text("\(shortsClearCount)숏스")
+          .font(.b24)
+          .foregroundColor(
+            shortsClearCount == 0 ? DesignSystem.Colors.grey60 : DesignSystem.Colors.grey100
+          )
+          .padding(.horizontal, 24)
       }
     }
   }
