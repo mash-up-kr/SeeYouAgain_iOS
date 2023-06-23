@@ -27,6 +27,7 @@ public struct TodayShortsCardState: Equatable {
 public enum TodayShortsCardAction: Equatable {
   // MARK: - User Action
   case rightButtonTapped
+  case cardTapped
   
   // MARK: - Inner Business Action
   
@@ -42,9 +43,6 @@ public struct TodayShortsCardEnvironment {
 let todayShortsCardReducer = Reducer.combine([
   Reducer<TodayShortsCardState, TodayShortsCardAction, TodayShortsCardEnvironment> { state, action, env in
     switch action {
-    case .rightButtonTapped:
-      return .none
-      
     default: return .none
     }
   }

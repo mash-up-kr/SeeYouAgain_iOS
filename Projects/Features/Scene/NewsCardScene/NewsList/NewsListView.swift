@@ -7,6 +7,7 @@
 //
 
 import ComposableArchitecture
+import DesignSystem
 import SwiftUI
 
 public struct NewsListView: View {
@@ -18,8 +19,18 @@ public struct NewsListView: View {
   
   public var body: some View {
     WithViewStore(store) { viewStore in
-      Text("뉴스 리스트 화면")
+      VStack(spacing: 0) {
+        TopNavigationBar(
+          leftIcon: DesignSystem.Icons.iconNavigationLeft,
+          leftIconButtonAction: {
+            viewStore.send(.backButtonTapped)
+          }
+        )
+        
+        Spacer()
+        
+        Text("뉴스 리스트 화면 \(viewStore.id)")
+      }
     }
-    .navigationBarHidden(true)
   }
 }

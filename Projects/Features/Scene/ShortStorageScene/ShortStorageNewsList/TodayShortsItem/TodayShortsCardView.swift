@@ -29,7 +29,6 @@ struct TodayShortsCardView: View {
           .foregroundColor(DesignSystem.Colors.grey90)
           .frame(width: 187, height: 74, alignment: .topLeading)
         
-        // TODO: 오른쪽 화살표 버튼 추가 필요
         if viewStore.isCardSelectable {
           // 선택할 수 있을 때만 화살표 있음
           Button {
@@ -44,6 +43,9 @@ struct TodayShortsCardView: View {
       .padding(.vertical, 20)
       .background(DesignSystem.Colors.grey20)
       .cornerRadius(16)
+      .onTapGesture {
+        viewStore.send(.cardTapped)
+      }
     }
   }
 }

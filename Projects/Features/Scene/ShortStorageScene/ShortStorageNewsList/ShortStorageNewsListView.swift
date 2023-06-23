@@ -103,7 +103,6 @@ public struct ShortStorageNewsListView: View {
               Spacer()
                 .frame(height: 48)
               
-              // TODO: 리스트 표시
               VStack(spacing: 0) {
                 ForEachStore(
                   self.store.scope(
@@ -123,7 +122,6 @@ public struct ShortStorageNewsListView: View {
         .padding(.bottom, 16)
         .ignoresSafeArea()
       }
-      .navigationBarHidden(true)
       .onAppear {
         viewStore.send(._onAppear)
       }

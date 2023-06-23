@@ -293,13 +293,12 @@ fileprivate func remainTimeToString(time: Int) -> String {
 }
 
 // TODO: 코드 위치 변경 필요
-let dateComponentsFormatter: DateComponentsFormatter = {
+fileprivate let dateComponentsFormatter: DateComponentsFormatter = {
   let formatter = DateComponentsFormatter()
   formatter.allowedUnits = [.hour, .minute, .second]
   formatter.zeroFormattingBehavior = .pad
   return formatter
 }()
-
 
 // TODO: 코드 위치 변경 필요
 extension Date {
