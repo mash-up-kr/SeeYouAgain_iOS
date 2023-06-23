@@ -6,6 +6,7 @@
 //  Copyright © 2023 mashup.seeYouAgain. All rights reserved.
 //
 
+import DesignSystem
 import Foundation
 import SwiftUI
 import UIKit
@@ -29,7 +30,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     window?.rootViewController = UIHostingController(rootView: appView)
     window?.makeKeyAndVisible()
+    setupLoadingWindow()
     
     return true
+  }
+  
+  func setupLoadingWindow() {
+    _ = LoadingWindow.shared
   }
 }
