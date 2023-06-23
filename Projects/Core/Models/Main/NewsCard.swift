@@ -16,6 +16,7 @@ public struct NewsCard: Equatable, Identifiable {
 }
 
 public extension NewsCard {
+#if DEBUG
   static let stub = [
     NewsCard(id: 1, keywords: ["자위대 호위함", "사키이 료", "이스턴 엔데버23", "부산항"], category: .politics),
     NewsCard(id: 2, keywords: ["자위대 호위함", "사키이 료", "이스턴 엔데버23", "부산항"], category: .world),
@@ -24,4 +25,5 @@ public extension NewsCard {
     NewsCard(id: 5, keywords: ["자위대 호위함", "사키이 료", "이스턴 엔데버23", "부산항"], category: .culture),
     NewsCard(id: 6, keywords: ["자위대 호위함", "사키이 료", "이스턴 엔데버23", "부산항"], category: .economic),
   ]
+#endif
 }
