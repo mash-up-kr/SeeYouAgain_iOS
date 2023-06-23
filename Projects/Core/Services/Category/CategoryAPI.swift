@@ -60,19 +60,14 @@ extension CategoryAPI: TargetType {
   
   public var headers: [String: String]? {
     switch self {
-    case .saveCategory:
-      return ["Content-Type": "application/json"]
-      
-    case .getAllCategories, .updateCategories:
+    default:
       return .none
     }
   }
   
   public var sampleData: Data {
     switch self {
-    case .saveCategory,
-      .getAllCategories,
-      .updateCategories:
+    default:
       return Data()
     }
   }
