@@ -13,9 +13,7 @@ import Foundation
 public struct NewsListState: Equatable {
   public var id: Int
   
-  public init(
-    id: Int
-  ) {
+  public init(id: Int) {
     self.id = id
   }
 }

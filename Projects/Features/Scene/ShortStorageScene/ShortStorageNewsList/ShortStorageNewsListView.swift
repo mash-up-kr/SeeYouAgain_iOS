@@ -26,7 +26,7 @@ public struct ShortStorageNewsListView: View {
           leftIconButtonAction: {
             viewStore.send(.backButtonTapped)
           },
-          rightText: viewStore.shortslistCount == 0 ? nil : (viewStore.state.isInEditMode ? "삭제" : "편집"),
+          rightText: viewStore.shortsListCount == 0 ? nil : (viewStore.state.isInEditMode ? "삭제" : "편집"),
           rightIconButtonAction: {
             if !viewStore.state.isInEditMode {
               viewStore.send(.editButtonTapped)
@@ -43,7 +43,7 @@ public struct ShortStorageNewsListView: View {
               shortsClearCount: viewStore.shortsClearCount
             )
             
-            if viewStore.shortslistCount == 0 {
+            if viewStore.shortsListCount == 0 {
               // 오늘 저장한 숏스 없는 경우
               Spacer()
                 .frame(height: 128)
@@ -53,7 +53,7 @@ public struct ShortStorageNewsListView: View {
                 .font(.b14)
                 .foregroundColor(DesignSystem.Colors.grey70)
                 .padding(.horizontal, 24)
-            } else if viewStore.shortsClearCount == viewStore.shortslistCount {
+            } else if viewStore.shortsClearCount == viewStore.shortsListCount {
               // 오늘 저장한 숏스 다 읽은 경우
               Spacer()
                 .frame(height: 128)
