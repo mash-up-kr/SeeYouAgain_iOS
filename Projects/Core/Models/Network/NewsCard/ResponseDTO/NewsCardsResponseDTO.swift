@@ -17,10 +17,15 @@ public struct NewsCardsResponseDTO: Decodable {
 }
 
 public extension NewsCardsResponseDTO {
+  /**
+   * - Parameters:
+   *   - keywords: NewsCardsResponseDTO의 String가 NewsCard의 [String]으로 변환된 형태.
+   *   예시) "시장, 의회, 역사, 결의"를 ["시장", "의회", "역사", "결의"]로 변환된다.
+   */
   var toDomain: NewsCard {
     return NewsCard(
       id: id,
-      keywords: keywords.components(separatedBy: ","),
+      keywords: keywords.replacingOccurrences(of: " ", with: "").components(separatedBy: ","),
       category: CategoryType(uppercasedName: category)!
     )
   }
