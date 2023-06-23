@@ -27,7 +27,7 @@ struct NewsCardView: View {
             .opacity(viewStore.isFolded ? 0 : 1)
             .animation(.easeInOut.delay(0.3), value: viewStore.isFolded)
           
-          if let newsCardType = NewsCardType(rawValue: viewStore.newsCard.category.uppercasedName) {
+          if let newsCardType = NewsCardType(rawValue: viewStore.newsCard.category) {
             if viewStore.isFolded {
               newsCardType.background
                 .resizable()

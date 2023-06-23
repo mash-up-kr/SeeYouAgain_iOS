@@ -6,6 +6,7 @@
 //  Copyright © 2023 mashup.seeYouAgain. All rights reserved.
 //
 
+import Common
 import ComposableArchitecture
 import DesignSystem
 import SwiftUI
@@ -52,8 +53,10 @@ private struct NewsCardContent: View {
         Spacer()
           .frame(height: 66 * viewStore.layout.ratio.height)
         
-        Category(name: viewStore.newsCard.category.rawValue)
-
+        if let categoryType = CategoryType(uppercasedName: viewStore.newsCard.category) {
+          Category(name: categoryType.rawValue)
+        }
+        
         Spacer()
           .frame(height: 16)
 

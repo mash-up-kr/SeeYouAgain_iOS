@@ -51,8 +51,8 @@ extension CategoryService {
           CategoryAPI.getAllCategories,
           type: GetAllCategoriesResponseDTO.self
         )
-        .compactMap { $0 }
-        .map { $0.toDomain }
+        .compactMap{ $0 }
+        .map { $0.categories.compactMap { CategoryType(uppercasedName: $0) }}
         .eraseToEffect()
     },
     updateCategories: { categories in
@@ -63,7 +63,6 @@ extension CategoryService {
           type: VoidResponse.self
         )
         .eraseToEffect()
-    
     }
   )
 }

@@ -6,7 +6,6 @@
 //  Copyright © 2023 mashup.seeYouAgain. All rights reserved.
 //
 
-import Common
 import Foundation
 
 public struct NewsCardsResponseDTO: Decodable {
@@ -26,7 +25,7 @@ public extension NewsCardsResponseDTO {
     return NewsCard(
       id: id,
       keywords: keywords.replacingOccurrences(of: " ", with: "").components(separatedBy: ","),
-      category: CategoryType(uppercasedName: category)!
+      category: category
     )
   }
 }
