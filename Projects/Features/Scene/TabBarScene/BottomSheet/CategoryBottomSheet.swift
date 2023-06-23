@@ -115,34 +115,34 @@ fileprivate extension CategoryType {
   var defaultIcon: Image {
     switch self {
     case .politics:
-      return DesignSystem.Icons.politics
+      return DesignSystem.Icons.politicsSmall
     case .economic:
-      return DesignSystem.Icons.economics
+      return DesignSystem.Icons.economicSmall
     case .society:
-      return DesignSystem.Icons.society
+      return DesignSystem.Icons.societySmall
     case .world:
-      return DesignSystem.Icons.world
+      return DesignSystem.Icons.worldSmall
     case .culture:
-      return DesignSystem.Icons.culture
+      return DesignSystem.Icons.cultureSmall
     case .science:
-      return DesignSystem.Icons.science
+      return DesignSystem.Icons.scienceSmall
     }
   }
   
   var selectedIcon: Image {
     switch self {
     case .politics:
-      return DesignSystem.Icons.selectedPolitics
+      return DesignSystem.Icons.selectPoliticsSmall
     case .economic:
-      return DesignSystem.Icons.selectedEconomics
+      return DesignSystem.Icons.selectEconomicSmall
     case .society:
-      return DesignSystem.Icons.selectedSociety
+      return DesignSystem.Icons.selectSocietySmall
     case .world:
-      return DesignSystem.Icons.selectedWorld
+      return DesignSystem.Icons.selectWorldSmall
     case .culture:
-      return DesignSystem.Icons.selectedCulture
+      return DesignSystem.Icons.selectCultureSmall
     case .science:
-      return DesignSystem.Icons.selectedScience
+      return DesignSystem.Icons.selectScienceSmall
     }
   }
 }
