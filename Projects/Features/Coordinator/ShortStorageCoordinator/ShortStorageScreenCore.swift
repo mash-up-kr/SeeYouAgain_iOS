@@ -7,6 +7,7 @@
 //
 
 import ComposableArchitecture
+import Foundation
 import Services
 import ShortStorageNewsList
 import TCACoordinators
@@ -20,8 +21,12 @@ public enum ShortStorageScreenAction: Equatable {
 }
 
 internal struct ShortStorageScreenEnvironment {
-  internal init() {
-    
+  let mainQueue: AnySchedulerOf<DispatchQueue>
+  
+  internal init(
+    mainQueue: AnySchedulerOf<DispatchQueue>
+  ) {
+    self.mainQueue = mainQueue
   }
 }
 
@@ -34,8 +39,8 @@ internal let shortStorageScreenReducer = Reducer<
     .pullback(
       state: /ShortStorageScreenState.shortStorageNewsList,
       action: /ShortStorageScreenAction.shortStorageNewsList,
-      environment: { _ in
-        ShortStorageNewsListEnvironment()
+      environment: {
+        ShortStorageNewsListEnvironment(mainQueue: $0.mainQueue)
       }
-    ),
+    )
 ])

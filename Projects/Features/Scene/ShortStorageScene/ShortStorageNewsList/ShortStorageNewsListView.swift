@@ -21,17 +21,153 @@ public struct ShortStorageNewsListView: View {
     WithViewStore(store) { viewStore in
       VStack(spacing: 0) {
         TopNavigationBar(
+          title: "오늘의 숏스",
           leftIcon: DesignSystem.Icons.iconNavigationLeft,
           leftIconButtonAction: {
             viewStore.send(.backButtonTapped)
+          },
+          rightText: viewStore.shortsNewsItemsCount == 0 ? nil : (viewStore.state.isInEditMode ? "삭제" : "편집"),
+          rightIconButtonAction: {
+            if !viewStore.state.isInEditMode {
+              viewStore.send(.editButtonTapped)
+            } else {
+              viewStore.send(.deleteButtonTapped)
+            }
           }
         )
         
-        Text("단기저장 카드에 대한 뉴스 기사 리스트 화면")
-        
-        Spacer()
+        ScrollView {
+          VStack(spacing: 0) {
+            TodayInfoView(
+              today: viewStore.today,
+              shortsClearCount: viewStore.shortsClearCount
+            )
+            
+            if viewStore.shortsNewsItemsCount == 0 {
+              // 오늘 저장한 숏스 없는 경우
+              EmptyNewsContentView(
+                shortsNewsItemsCount: viewStore.shortsNewsItemsCount,
+                shortsClearCount: viewStore.shortsClearCount,
+                message: "오늘은 아직 저장한 뉴스가 없어요\n뉴스를 보고 마음에 드면 저장해보세요"
+              )
+            } else if viewStore.shortsClearCount == viewStore.shortsNewsItemsCount {
+              // 오늘 저장한 숏스 다 읽은 경우
+              EmptyNewsContentView(
+                shortsNewsItemsCount: viewStore.shortsNewsItemsCount,
+                shortsClearCount: viewStore.shortsClearCount,
+                message: "오늘 저장한 뉴스를 다 읽었어요!"
+              )
+            } else {
+              Spacer()
+                .frame(height: 16)
+              
+              HStack(spacing: 4) {
+                Group {
+                  Text("남은시간")
+                    .font(.r16)
+                  
+                  Text(viewStore.state.remainTimeString)
+                    .font(.b16)
+                }
+                .foregroundColor(DesignSystem.Colors.blue200)
+                
+                Button {
+                  // TODO: 안내 사항 표시
+                } label: {
+                  DesignSystem.Icons.iconSuggestedCircle
+                    .frame(width: 16, height: 16)
+                }
+              }
+              
+              Spacer()
+                .frame(height: 48)
+              
+              VStack(spacing: 0) {
+                ForEachStore(
+                  self.store.scope(
+                    state: \.shortsNewsItems,
+                    action: { .shortsNewsItem(id: $0, action: $1) }
+                  )
+                ) {
+                  TodayShortsItemView(store: $0)
+                    .padding(.horizontal, 24)
+                }
+                .padding(.bottom, 16)
+              }
+            }
+          }
+          .frame(maxWidth: .infinity)
+        }
+        .padding(.bottom, 16)
+        .ignoresSafeArea()
+      }
+      .onAppear {
+        viewStore.send(._onAppear)
       }
     }
-    .navigationBarHidden(true)
+  }
+}
+
+private struct TodayInfoView: View {
+  private var today: String
+  private var shortsClearCount: Int
+  
+  fileprivate init(
+    today: String,
+    shortsClearCount: Int
+  ) {
+    self.today = today
+    self.shortsClearCount = shortsClearCount
+  }
+  
+  var body: some View {
+    VStack(spacing: 0) {
+      Spacer()
+        .frame(height: 40)
+      
+      Text(today)
+        .font(.b14)
+        .foregroundColor(DesignSystem.Colors.grey90)
+        .padding(.horizontal, 105)
+      
+      Spacer()
+        .frame(height: 8)
+      
+      Text("\(shortsClearCount)숏스")
+        .font(.b24)
+        .foregroundColor(
+          shortsClearCount == 0 ? DesignSystem.Colors.grey60 : DesignSystem.Colors.grey100
+        )
+        .padding(.horizontal, 24)
+    }
+  }
+}
+
+private struct EmptyNewsContentView: View {
+  private var shortsNewsItemsCount: Int
+  private var shortsClearCount: Int
+  private var message: String
+  
+  fileprivate init(
+    shortsNewsItemsCount: Int,
+    shortsClearCount: Int,
+    message: String
+  ) {
+    self.shortsNewsItemsCount = shortsNewsItemsCount
+    self.shortsClearCount = shortsClearCount
+    self.message = message
+  }
+  
+  var body: some View {
+    VStack(spacing: 0) {
+      Spacer()
+        .frame(height: 128)
+      
+      Text(message)
+        .multilineTextAlignment(.center)
+        .font(.b14)
+        .foregroundColor(DesignSystem.Colors.grey70)
+        .padding(.horizontal, 24)
+    }
   }
 }

@@ -82,7 +82,10 @@ internal let appScreenReducer = Reducer<
       state: /AppScreenState.tabBar,
       action: /AppScreenAction.tabBar,
       environment: {
-        TabBarEnvironment(appVersionService: $0.appVersionService)
+        TabBarEnvironment(
+          mainQueue: $0.mainQueue,
+          appVersionService: $0.appVersionService
+        )
       }
     ),
   newsCardCoordinatorReducer

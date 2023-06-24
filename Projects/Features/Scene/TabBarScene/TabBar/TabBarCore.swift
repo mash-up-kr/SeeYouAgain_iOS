@@ -7,6 +7,7 @@
 //
 
 import ComposableArchitecture
+import Foundation
 import HotKeywordCoordinator
 import Main
 import MainCoordinator
@@ -53,9 +54,14 @@ public enum TabBarAction {
 }
 
 public struct TabBarEnvironment {
+  let mainQueue: AnySchedulerOf<DispatchQueue>
   let appVersionService: AppVersionService
   
-  public init(appVersionService: AppVersionService) {
+  public init(
+    mainQueue: AnySchedulerOf<DispatchQueue>,
+    appVersionService: AppVersionService
+  ) {
+    self.mainQueue = mainQueue
     self.appVersionService = appVersionService
   }
 }
@@ -86,7 +92,10 @@ public let tabBarReducer = Reducer<
       state: \TabBarState.myPage,
       action: /TabBarAction.myPage,
       environment: {
-        MyPageCoordinatorEnvironment(appVersionService: $0.appVersionService)
+        MyPageCoordinatorEnvironment(
+          mainQueue: $0.mainQueue,
+          appVersionService: $0.appVersionService
+        )
       }
     ),
   categoryBottomSheetReducer
