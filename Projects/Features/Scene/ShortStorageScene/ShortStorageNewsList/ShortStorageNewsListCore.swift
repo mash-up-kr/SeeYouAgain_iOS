@@ -23,12 +23,12 @@ public struct ShortsNews: Equatable, Identifiable {
 }
 
 public struct ShortStorageNewsListState: Equatable {
-  public var isInEditMode: Bool
-  public var today: String
-  public var shortsNewsItemsCount: Int // 저장한 숏스 수
-  public var shortsClearCount: Int // 완료한 숏스 수 (리스트에 표시되는 숏스 = 저장 숏스 - 완료 숏스)
-  public var shortsNewsItems: IdentifiedArrayOf<TodayShortsItemState> = []
-  public var remainTimeString: String
+  var isInEditMode: Bool
+  var today: String
+  var shortsNewsItemsCount: Int // 저장한 숏스 수
+  var shortsClearCount: Int // 완료한 숏스 수 (리스트에 표시되는 숏스 = 저장 숏스 - 완료 숏스)
+  var shortsNewsItems: IdentifiedArrayOf<TodayShortsItemState> = []
+  var remainTimeString: String
   var remainTime: Int = 24 * 60 * 60
   var currentTimeSeconds: Int = 0 // 지금 시간이 몇초를 담고있냐! 17:27:21 => 62841
   
@@ -56,6 +56,7 @@ public enum ShortStorageNewsListAction: Equatable {
   case _updateTimer
   case _decreaseRemainTime
   case _updateZeroTime
+  case _toggleEditMode
   
   // MARK: - Inner SetState Action
   case _setTodayShortsItemEditMode
@@ -98,12 +99,14 @@ public let shortStorageNewsListReducer = Reducer<
     
     switch action {
     case .editButtonTapped:
-      state.isInEditMode.toggle()
-      return Effect(value: ._setTodayShortsItemEditMode)
+      return Effect.concatenate([
+        Effect(value: ._toggleEditMode),
+        Effect(value: ._setTodayShortsItemEditMode)
+      ])
       
     case .deleteButtonTapped:
-      state.isInEditMode.toggle()
       return Effect.concatenate([
+        Effect(value: ._toggleEditMode),
         Effect(value: ._setTodayShortsItemList),
         Effect(value: ._setTodayShortsItemEditMode)
       ])
@@ -216,6 +219,10 @@ public let shortStorageNewsListReducer = Reducer<
         Effect(value: ._setCurrentTimeSeconds),
         Effect(value: ._initializeShortStorageNewsList)
       ])
+      
+    case ._toggleEditMode:
+      state.isInEditMode.toggle()
+      return .none
       
     case ._setTodayShortsItemEditMode:
       for index in 0..<state.shortsNewsItems.count {
