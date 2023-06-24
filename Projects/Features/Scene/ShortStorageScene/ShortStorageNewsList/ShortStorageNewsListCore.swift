@@ -56,9 +56,9 @@ public enum ShortStorageNewsListAction: Equatable {
   case _updateTimer
   case _decreaseRemainTime
   case _updateZeroTime
-  case _toggleEditMode
   
   // MARK: - Inner SetState Action
+  case _setEditMode
   case _setTodayShortsItemEditMode
   case _setTodayShortsItemList
   case _setTodayShortsItemCount
@@ -100,13 +100,13 @@ public let shortStorageNewsListReducer = Reducer<
     switch action {
     case .editButtonTapped:
       return Effect.concatenate([
-        Effect(value: ._toggleEditMode),
+        Effect(value: ._setEditMode),
         Effect(value: ._setTodayShortsItemEditMode)
       ])
       
     case .deleteButtonTapped:
       return Effect.concatenate([
-        Effect(value: ._toggleEditMode),
+        Effect(value: ._setEditMode),
         Effect(value: ._setTodayShortsItemList),
         Effect(value: ._setTodayShortsItemEditMode)
       ])
@@ -220,7 +220,7 @@ public let shortStorageNewsListReducer = Reducer<
         Effect(value: ._initializeShortStorageNewsList)
       ])
       
-    case ._toggleEditMode:
+    case ._setEditMode:
       state.isInEditMode.toggle()
       return .none
       
