@@ -16,6 +16,7 @@ public struct TopNavigationBar: View {
   public let rightIcon: Image?
   public let rightText: String?
   public var rightIconButtonAction: () -> Void = {}
+  @Binding public var isRightButtonActive: Bool
   
   public init(
     title: String? = nil,
@@ -24,7 +25,8 @@ public struct TopNavigationBar: View {
     leftIconButtonAction: @escaping () -> Void = {},
     rightIcon: Image? = nil,
     rightText: String? = nil,
-    rightIconButtonAction: @escaping () -> Void = {}
+    rightIconButtonAction: @escaping () -> Void = {},
+    isRightButtonActive: Binding<Bool> = .constant(false)
   ) {
     self.title = title
     self.leftIcon = leftIcon
@@ -33,6 +35,7 @@ public struct TopNavigationBar: View {
     self.rightIcon = rightIcon
     self.rightText = rightText
     self.rightIconButtonAction = rightIconButtonAction
+    self._isRightButtonActive = isRightButtonActive
   }
   
   public var body: some View {
@@ -51,7 +54,8 @@ public struct TopNavigationBar: View {
           type: .right,
           icon: rightIcon,
           text: rightText,
-          action: rightIconButtonAction
+          action: rightIconButtonAction,
+          disabled: $isRightButtonActive
         )
       }
       
@@ -77,6 +81,7 @@ fileprivate struct BarButton: View {
   private var icon: Image?
   private var text: String?
   private var action: () -> Void = {}
+  @Binding private var disabled: Bool
   
   fileprivate enum `Type` {
     case left
@@ -87,12 +92,14 @@ fileprivate struct BarButton: View {
     type: `Type` = .left,
     icon: Image? = nil,
     text: String? = nil,
-    action: @escaping () -> Void = {}
+    action: @escaping () -> Void = {},
+    disabled: Binding<Bool> = .constant(false)
   ) {
     self.type = type
     self.icon = icon
     self.text = text
     self.action = action
+    self._disabled = disabled
   }
   
   fileprivate var body: some View {
@@ -107,10 +114,11 @@ fileprivate struct BarButton: View {
         if let text = text {
           Text(text)
             .font(.r16)
-            .foregroundColor(DesignSystem.Colors.grey100)
+            .foregroundColor(disabled ? DesignSystem.Colors.grey40 : DesignSystem.Colors.grey100)
             .padding(type == .left ? .leading : .trailing, 16)
         }
       }
     }
+    .disabled(disabled)
   }
 }

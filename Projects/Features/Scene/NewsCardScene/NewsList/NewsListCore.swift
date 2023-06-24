@@ -11,11 +11,16 @@ import ComposableArchitecture
 import Foundation
 
 public struct NewsListState: Equatable {
-  public init() { }
+  public var id: Int
+  
+  public init(id: Int) {
+    self.id = id
+  }
 }
 
 public enum NewsListAction: Equatable {
   // MARK: - User Action
+  case backButtonTapped
   
   // MARK: - Inner Business Action
   

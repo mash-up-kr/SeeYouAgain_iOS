@@ -133,5 +133,16 @@ let project = Project.make(
         .externalsrt("NukeUI"),
       ]
     ),
+    .make(
+      name: "Web",
+      product: .staticLibrary,
+      bundleId: "com.mashup.seeYouAgain.web.web",
+      sources: ["WebScene/Web/**"],
+      dependencies: [
+        .project(target: "CoreKit", path: .relativeToRoot("Projects/Core")),
+        .project(target: "DesignSystem", path: .relativeToRoot("Projects/DesignSystem")),
+        .externalsrt("TCA"),
+      ]
+    ),
   ]
 )

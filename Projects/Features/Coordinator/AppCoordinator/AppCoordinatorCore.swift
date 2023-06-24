@@ -67,7 +67,7 @@ public let appCoordinatorReducer: Reducer<
   .withRouteReducer(
     Reducer { state, action, env in
       switch action {
-      case .routeAction(_, action: .splash(.viewDidLoad)):
+      case .routeAction(_, action: .splash(._moveToHome)):
         state.routes = [
           .root(
             .tabBar(
@@ -84,7 +84,7 @@ public let appCoordinatorReducer: Reducer<
         ]
         return .none
         
-      case .routeAction(_, action: .splash(._setCategoryViewLoad)):
+      case .routeAction(_, action: .splash(._moveToSetCategory)):
         state.routes = [
           .root(
             .setCategory(.init()),
@@ -108,6 +108,58 @@ public let appCoordinatorReducer: Reducer<
             embedInNavigationView: true
           )
         ]
+        return .none
+        
+      case let .routeAction(
+        _,
+        action: .tabBar(
+          .myPage(
+            .routeAction(
+              _,
+              action: .shortStorage(
+                .routeAction(
+                  _,
+                  action: .shortStorageNewsList(
+                    .shortsNewsItem(
+                      id: id,
+                      action: .cardAction(.rightButtonTapped)
+                    )
+                  )
+                )
+              )
+            )
+          )
+        )
+      ):
+        state.routes.push(.newsCard(.init()))
+        return .none
+        
+      case let .routeAction(
+        _,
+        action: .tabBar(
+          .myPage(
+            .routeAction(
+              _,
+              action: .shortStorage(
+                .routeAction(
+                  _,
+                  action: .shortStorageNewsList(
+                    .shortsNewsItem(
+                      id: id,
+                      action: .cardAction(.cardTapped)
+                    )
+                  )
+                )
+              )
+            )
+          )
+        )
+      ):
+        state.routes.push(.newsCard(.init()))
+        return .none
+        
+      case .routeAction(_, action: .newsCard(.routeAction(_, action: .newsList(.backButtonTapped)))):
+        state.routes.pop()
         return .none
         
       default: return .none

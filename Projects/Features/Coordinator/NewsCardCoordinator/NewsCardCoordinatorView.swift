@@ -28,5 +28,6 @@ public struct NewsCardCoordinatorView: View {
         )
       }
     }
+    .navigationBarHidden(true)
   }
 }

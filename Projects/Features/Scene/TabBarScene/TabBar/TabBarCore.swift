@@ -101,7 +101,10 @@ public let tabBarReducer = Reducer<
       state: \TabBarState.myPage,
       action: /TabBarAction.myPage,
       environment: {
-        MyPageCoordinatorEnvironment(appVersionService: $0.appVersionService)
+        MyPageCoordinatorEnvironment(
+          mainQueue: $0.mainQueue,
+          appVersionService: $0.appVersionService
+        )
       }
     ),
   categoryBottomSheetReducer

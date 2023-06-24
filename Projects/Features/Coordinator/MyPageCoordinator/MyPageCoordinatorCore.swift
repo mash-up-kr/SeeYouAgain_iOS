@@ -8,6 +8,7 @@
 
 import Combine
 import ComposableArchitecture
+import Foundation
 import MyPage
 import Services
 import TCACoordinators
@@ -49,9 +50,13 @@ public enum MyPageCoordinatorAction: IndexedRouterAction {
 }
 
 public struct MyPageCoordinatorEnvironment {
+  let mainQueue: AnySchedulerOf<DispatchQueue>
   let appVersionService: AppVersionService
   
-  public init(appVersionService: AppVersionService) {
+  public init(
+    mainQueue: AnySchedulerOf<DispatchQueue>,
+    appVersionService: AppVersionService) {
+    self.mainQueue = mainQueue
     self.appVersionService = appVersionService
   }
 }
@@ -63,7 +68,10 @@ public let myPageCoordinatorReducer: Reducer<
 > = myPageScreenReducer
   .forEachIndexedRoute(
     environment: {
-      MyPageScreenEnvironment(appVersionService: $0.appVersionService)
+      MyPageScreenEnvironment(
+        mainQueue: $0.mainQueue,
+        appVersionService: $0.appVersionService
+      )
     }
   )
   .withRouteReducer(
