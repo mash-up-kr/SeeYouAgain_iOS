@@ -45,23 +45,18 @@ public struct ShortStorageNewsListView: View {
             
             if viewStore.shortsNewsItemsCount == 0 {
               // 오늘 저장한 숏스 없는 경우
-              Spacer()
-                .frame(height: 128)
-              
-              Text("오늘은 아직 저장한 뉴스가 없어요\n뉴스를 보고 마음에 드면 저장해보세요")
-                .multilineTextAlignment(.center)
-                .font(.b14)
-                .foregroundColor(DesignSystem.Colors.grey70)
-                .padding(.horizontal, 24)
+              EmptyNewsContentView(
+                shortsNewsItemsCount: viewStore.shortsNewsItemsCount,
+                shortsClearCount: viewStore.shortsClearCount,
+                message: "오늘은 아직 저장한 뉴스가 없어요\n뉴스를 보고 마음에 드면 저장해보세요"
+              )
             } else if viewStore.shortsClearCount == viewStore.shortsNewsItemsCount {
               // 오늘 저장한 숏스 다 읽은 경우
-              Spacer()
-                .frame(height: 128)
-              
-              Text("오늘 저장한 뉴스를 다 읽었어요!")
-                .font(.b14)
-                .foregroundColor(DesignSystem.Colors.grey70)
-                .padding(.horizontal, 24)
+              EmptyNewsContentView(
+                shortsNewsItemsCount: viewStore.shortsNewsItemsCount,
+                shortsClearCount: viewStore.shortsClearCount,
+                message: "오늘 저장한 뉴스를 다 읽었어요!"
+              )
             } else {
               Spacer()
                 .frame(height: 16)
@@ -111,39 +106,68 @@ public struct ShortStorageNewsListView: View {
       }
     }
   }
+}
+
+private struct TodayInfoView: View {
+  private var today: String
+  private var shortsClearCount: Int
   
-  private struct TodayInfoView: View {
-    private var today: String
-    private var shortsClearCount: Int
-    
-    fileprivate init(
-      today: String,
-      shortsClearCount: Int
-    ) {
-      self.today = today
-      self.shortsClearCount = shortsClearCount
+  fileprivate init(
+    today: String,
+    shortsClearCount: Int
+  ) {
+    self.today = today
+    self.shortsClearCount = shortsClearCount
+  }
+  
+  var body: some View {
+    VStack(spacing: 0) {
+      Spacer()
+        .frame(height: 40)
+      
+      Text(today)
+        .font(.b14)
+        .foregroundColor(DesignSystem.Colors.grey90)
+        .padding(.horizontal, 105)
+      
+      Spacer()
+        .frame(height: 8)
+      
+      Text("\(shortsClearCount)숏스")
+        .font(.b24)
+        .foregroundColor(
+          shortsClearCount == 0 ? DesignSystem.Colors.grey60 : DesignSystem.Colors.grey100
+        )
+        .padding(.horizontal, 24)
     }
-    
-    var body: some View {
-      VStack(spacing: 0) {
-        Spacer()
-          .frame(height: 40)
-        
-        Text(today)
-          .font(.b14)
-          .foregroundColor(DesignSystem.Colors.grey90)
-          .padding(.horizontal, 105)
-        
-        Spacer()
-          .frame(height: 8)
-        
-        Text("\(shortsClearCount)숏스")
-          .font(.b24)
-          .foregroundColor(
-            shortsClearCount == 0 ? DesignSystem.Colors.grey60 : DesignSystem.Colors.grey100
-          )
-          .padding(.horizontal, 24)
-      }
+  }
+}
+
+private struct EmptyNewsContentView: View {
+  private var shortsNewsItemsCount: Int
+  private var shortsClearCount: Int
+  private var message: String
+  
+  fileprivate init(
+    shortsNewsItemsCount: Int,
+    shortsClearCount: Int,
+    message: String
+  ) {
+    self.shortsNewsItemsCount = shortsNewsItemsCount
+    self.shortsClearCount = shortsClearCount
+    self.message = message
+  }
+  
+  var body: some View {
+    VStack(spacing: 0) {
+      Spacer()
+        .frame(height: 128)
+      
+      Text(message)
+        .multilineTextAlignment(.center)
+        .font(.b14)
+        .foregroundColor(DesignSystem.Colors.grey70)
+        .padding(.horizontal, 24)
     }
   }
 }
