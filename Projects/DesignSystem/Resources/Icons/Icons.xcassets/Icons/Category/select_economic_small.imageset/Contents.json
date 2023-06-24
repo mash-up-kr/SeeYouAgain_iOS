@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "select_economic_small.svg",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

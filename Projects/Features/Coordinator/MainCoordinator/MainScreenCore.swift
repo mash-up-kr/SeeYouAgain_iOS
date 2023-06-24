@@ -9,6 +9,7 @@
 import Combine
 import ComposableArchitecture
 import Main
+import Services
 import TCACoordinators
 
 public enum MainScreenState: Equatable {
@@ -20,7 +21,16 @@ public enum MainScreenAction {
 }
 
 internal struct MainScreenEnvironment {
-  internal init() {}
+  fileprivate let newsCardService: NewsCardService
+  fileprivate let categoryService: CategoryService
+  
+  internal init(
+    newsCardService: NewsCardService,
+    categoryService: CategoryService
+  ) {
+    self.newsCardService = newsCardService
+    self.categoryService = categoryService
+  }
 }
 
 internal let mainScreenReducer = Reducer<
@@ -32,8 +42,11 @@ internal let mainScreenReducer = Reducer<
     .pullback(
       state: /MainScreenState.main,
       action: /MainScreenAction.main,
-      environment: { _ in
-        MainEnvironment()
+      environment: {
+        MainEnvironment(
+          newscardService: $0.newsCardService,
+          categoryService: $0.categoryService
+        )
       }
     )
 ])

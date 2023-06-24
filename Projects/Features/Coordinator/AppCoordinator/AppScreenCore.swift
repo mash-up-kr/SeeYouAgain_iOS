@@ -37,17 +37,20 @@ internal struct AppScreenEnvironment {
   let mainQueue: AnySchedulerOf<DispatchQueue>
   let userDefaultsService: UserDefaultsService
   let appVersionService: AppVersionService
+  let newsCardService: NewsCardService
   let categoryService: CategoryService
   
   internal init(
     mainQueue: AnySchedulerOf<DispatchQueue>,
     userDefaultsService: UserDefaultsService,
     appVersionService: AppVersionService,
+    newsCardService: NewsCardService,
     categoryService: CategoryService
   ) {
     self.mainQueue = mainQueue
     self.userDefaultsService = userDefaultsService
     self.appVersionService = appVersionService
+    self.newsCardService = newsCardService
     self.categoryService = categoryService
   }
 }
@@ -84,7 +87,9 @@ internal let appScreenReducer = Reducer<
       environment: {
         TabBarEnvironment(
           mainQueue: $0.mainQueue,
-          appVersionService: $0.appVersionService
+          appVersionService: $0.appVersionService,
+          newsCardService: $0.newsCardService,
+          categoryService: $0.categoryService
         )
       }
     ),

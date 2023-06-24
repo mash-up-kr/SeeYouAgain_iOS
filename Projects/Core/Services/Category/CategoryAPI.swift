@@ -12,6 +12,8 @@ import Models
 
 public enum CategoryAPI {
   case saveCategory(categories: [String])
+  case getAllCategories
+  case updateCategories(categories: [String])
 }
 
 extension CategoryAPI: TargetType {
@@ -21,7 +23,9 @@ extension CategoryAPI: TargetType {
   
   public var path: String {
     switch self {
-    case .saveCategory:
+    case .saveCategory,
+      .getAllCategories,
+      .updateCategories:
       return "/member/category"
     }
   }
@@ -30,6 +34,12 @@ extension CategoryAPI: TargetType {
     switch self {
     case .saveCategory:
       return .post
+      
+    case .getAllCategories:
+      return .get
+    
+    case .updateCategories:
+      return .put
     }
   }
   
@@ -38,19 +48,26 @@ extension CategoryAPI: TargetType {
     case let .saveCategory(categories):
       let requestBody = SaveCategoryRequestDTO(categoryNames: categories)
       return .requestJSONEncodable(requestBody)
+      
+    case .getAllCategories:
+      return .requestPlain
+      
+    case let .updateCategories(categories):
+      let requestBody = UpdateCategoryRequestDTO(categoryNames: categories)
+      return .requestJSONEncodable(requestBody)
     }
   }
   
   public var headers: [String: String]? {
     switch self {
-    case .saveCategory:
-      return ["Content-Type": "application/json"]
+    default:
+      return .none
     }
   }
   
   public var sampleData: Data {
     switch self {
-    case .saveCategory:
+    default:
       return Data()
     }
   }

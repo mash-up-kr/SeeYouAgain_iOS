@@ -6,6 +6,7 @@
 //  Copyright © 2023 mashup.seeYouAgain. All rights reserved.
 //
 
+import Common
 import ComposableArchitecture
 import DesignSystem
 import SwiftUI
@@ -39,77 +40,109 @@ struct CategoryBottomSheet: View {
     WithViewStore(store) { viewStore in
       ScrollView {
         LazyVGrid(columns: columns, spacing: 12) {
-          ForEach(viewStore.state.categories, id: \.id) { category in
-            // TODO: 머지 후 CategoryType로 사용해 체크하는 것으로 수정
-            if category.name == "연애" || category.name == "스포츠" {
-              InactiveCategory(category: category)
-            } else {
-              ActiveCategory(category: category)
-                .onTapGesture {
-                  viewStore.send(._toggleCategory(category))
-                }
-            }
+          ForEach(viewStore.allCategories, id: \.self) { category in
+            CategoryItemView(
+              store: store.stateless,
+              category: category,
+              isSelected: viewStore.selectedCategories.contains(category)
+            )
           }
         }
       }
       .scrollDisabled(true)
-      .frame(height: 172)
+      .frame(height: 218)
     }
   }
 }
 
-private struct ActiveCategory: View {
-  private let category: Category
+// MARK: - 카테고리 아이템 뷰
+private struct CategoryItemView: View {
+  private let store: Store<Void, CategoryBottomSheetAction>
+  private var category: CategoryType
+  @State private var isSelected: Bool
   
-  fileprivate init(category: Category) {
+  private var iconImage: Image {
+    if isSelected {
+      return category.selectedIcon
+    } else {
+      return category.defaultIcon
+    }
+  }
+  
+  fileprivate init(
+    store: Store<Void, CategoryBottomSheetAction>,
+    category: CategoryType,
+    isSelected: Bool
+  ) {
+    self.store = store
     self.category = category
+    self.isSelected = isSelected
   }
   
   fileprivate var body: some View {
-    HStack {
-      Spacer()
-      
-      VStack(spacing: 2) {
-        Circle()
-          .frame(width: 28, height: 28)
-        Text(category.name)
-          .font(.b14)
+    WithViewStore(store) { viewStore in
+      VStack(spacing: 8) {
+        iconImage
+          .frame(width: 76, height: 76)
+          .background(
+            RoundedRectangle(cornerRadius: 16)
+              .fill(
+                LinearGradient(
+                  colors: [
+                    DesignSystem.Colors.white.opacity(0.6),
+                    DesignSystem.Colors.white.opacity(0.3)
+                  ],
+                  startPoint: .topLeading,
+                  endPoint: .bottomTrailing
+                )
+              )
+          )
+          .onTapGesture {
+            isSelected.toggle()
+            viewStore.send(.categoryTapped(category))
+          }
+        
+        Text(category.rawValue)
+          .font(.r14)
           .foregroundColor(DesignSystem.Colors.grey100)
       }
-      
-      Spacer()
     }
-    .frame(height: 80)
-    .background(category.isSelected ? DesignSystem.Colors.grey50 : DesignSystem.Colors.white)
-    .cornerRadius(8)
   }
 }
 
-private struct InactiveCategory: View {
-  private let category: Category
-  
-  fileprivate init(category: Category) {
-    self.category = category
+// MARK: - 카테고리 타입 Extension
+fileprivate extension CategoryType {
+  var defaultIcon: Image {
+    switch self {
+    case .politics:
+      return DesignSystem.Icons.politicsSmall
+    case .economic:
+      return DesignSystem.Icons.economicSmall
+    case .society:
+      return DesignSystem.Icons.societySmall
+    case .world:
+      return DesignSystem.Icons.worldSmall
+    case .culture:
+      return DesignSystem.Icons.cultureSmall
+    case .science:
+      return DesignSystem.Icons.scienceSmall
+    }
   }
   
-  fileprivate var body: some View {
-    HStack {
-      Spacer()
-      
-      VStack(spacing: 2) {
-        Text(category.name)
-          .font(.b14)
-          .foregroundColor(DesignSystem.Colors.grey60)
-        Text("Coming\nsoon!")
-          .font(.b14)
-          .foregroundColor(DesignSystem.Colors.grey60)
-          .multilineTextAlignment(.center)
-      }
-      
-      Spacer()
+  var selectedIcon: Image {
+    switch self {
+    case .politics:
+      return DesignSystem.Icons.selectPoliticsSmall
+    case .economic:
+      return DesignSystem.Icons.selectEconomicSmall
+    case .society:
+      return DesignSystem.Icons.selectSocietySmall
+    case .world:
+      return DesignSystem.Icons.selectWorldSmall
+    case .culture:
+      return DesignSystem.Icons.selectCultureSmall
+    case .science:
+      return DesignSystem.Icons.selectScienceSmall
     }
-    .frame(height: 80)
-    .background(DesignSystem.Colors.white)
-    .cornerRadius(8)
   }
 }

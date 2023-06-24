@@ -2,7 +2,7 @@
 //  MainView.swift
 //  Main
 //
-//  Created by GREEN on 2023/04/05.
+//  Created by 김영균 on 2023/06/21.
 //  Copyright © 2023 mashup.seeYouAgain. All rights reserved.
 //
 
@@ -35,12 +35,12 @@ public struct MainView: View {
         
         IfLetStore(
           store.scope(
-            state: \.letterScrollState,
-            action: MainAction.letterScrollAction
+            state: \.newsCardScrollState,
+            action: MainAction.newsCardScroll
           )
         ) { store in
-          LetterScrollView(store: store)
-            .frame(height: viewStore.letterSize.height)
+          NewsCardScrollView(store: store)
+            .frame(height: viewStore.newsCardLayout.size.height)
         }
         
         Spacer()
@@ -51,14 +51,14 @@ public struct MainView: View {
         Spacer()
       }
       .onAppear {
-        viewStore.send(._viewWillAppear(UIScreen.main.bounds.size))
+        viewStore.send(._setNewsCardSize(UIScreen.main.bounds.size))
+        viewStore.send(._viewWillAppear)
       }
     }
     .shortsBackgroundView()
     .navigationBarHidden(true)
   }
 }
-
 
 private struct SaveTextView: View {
   fileprivate var body: some View {

@@ -12,9 +12,9 @@ import DesignSystem
 import SwiftUI
 
 struct CategoriesView: View {
-  private let store: Store<[Category], MainAction>
+  private let store: Store<[CategoryType], MainAction>
   
-  init(store: Store<[Category], MainAction>) {
+  init(store: Store<[CategoryType], MainAction>) {
     self.store = store
   }
   
@@ -23,10 +23,8 @@ struct CategoriesView: View {
       HStack(spacing: 0) {
         ScrollView(.horizontal, showsIndicators: false) {
           HStack(spacing: 8) {
-            ForEach(viewStore.state, id: \.id) { category in
-              if category.isSelected, let category = CategoryType(rawValue: category.name) {
-                CategoryBadge(name: category.rawValue)
-              }
+            ForEach(viewStore.indices, id: \.self) { index in
+              CategoryBadge(name: viewStore[index].rawValue)
             }
           }
           .animation(.easeInOut, value: viewStore.state)

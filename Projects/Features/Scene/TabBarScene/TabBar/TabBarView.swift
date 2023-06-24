@@ -86,6 +86,7 @@ public struct TabBarView: View {
         bottomArea: {
           BottomButton(
             title: "변경",
+            disabled: viewStore.categoryBottomSheet.selectedCategories.isEmpty,
             action: {
               viewStore.send(.categoryBottomSheet(.updateButtonTapped))
             }
