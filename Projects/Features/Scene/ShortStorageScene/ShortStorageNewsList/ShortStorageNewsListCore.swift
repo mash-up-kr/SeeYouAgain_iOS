@@ -147,7 +147,7 @@ public let shortStorageNewsListReducer = Reducer<
             shortsNews: ShortsNews(
               id: 0,
               category: "#세계",
-              keywords: "#뽕뽕 호위함 #사카이 료 (Sakai Ryo) #이스턴 엔데버23 #부산항"
+              keywords: "#뽕뽕 호위함 #사카이 료료료료료룔료료료 #이스턴휴이이이엥 #부산항"
             ),
             isCardSelectable: !state.isInEditMode,
             isSelected: false

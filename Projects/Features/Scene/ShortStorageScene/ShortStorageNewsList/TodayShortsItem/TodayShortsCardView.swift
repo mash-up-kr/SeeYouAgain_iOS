@@ -19,18 +19,25 @@ struct TodayShortsCardView: View {
   
   var body: some View {
     WithViewStore(store) { viewStore in
-      HStack(alignment: .top, spacing: 16) {
+      HStack(alignment: .top, spacing: 0) {
         // TODO: 디자인 확정시 카드 이미지 변경 필요
         DesignSystem.Images.earthCard
-          .frame(width: 60, height: 74)
         
-        Text(viewStore.state.shortsNews.keywords)
-          .font(.b16)
-          .foregroundColor(DesignSystem.Colors.grey90)
-          .frame(width: 187, height: 74, alignment: .topLeading)
+        Spacer()
+          .frame(width: 16)
+        
+        HStack {
+          Text(viewStore.state.shortsNews.keywords)
+            .font(.b16)
+            .foregroundColor(DesignSystem.Colors.grey90)
+          Spacer()
+        }
         
         if viewStore.isCardSelectable {
           // 선택할 수 있을 때만 화살표 있음
+          Spacer()
+            .frame(width: 16)
+          
           Button {
             viewStore.send(.rightButtonTapped)
           } label: {
@@ -39,6 +46,7 @@ struct TodayShortsCardView: View {
           }
         }
       }
+      .frame(maxWidth: .infinity)
       .padding(.horizontal, 16)
       .padding(.vertical, 20)
       .background(DesignSystem.Colors.grey20)
