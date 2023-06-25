@@ -24,6 +24,7 @@ public struct NewsListState: Equatable {
 public enum NewsListAction: Equatable {
   // MARK: - User Action
   case backButtonTapped
+  case completeButtonTapped
   
   // MARK: - Inner Business Action
   case _onAppear
@@ -49,6 +50,12 @@ public let newsListReducer = Reducer.combine([
     ),
   Reducer<NewsListState, NewsListAction, NewsListEnvironment> { state, action, env in
     switch action {
+    case .backButtonTapped:
+      return .none
+      
+    case .completeButtonTapped:
+      return .none
+      
     case ._onAppear:
       state.newsItems = [
         NewsCardState(
