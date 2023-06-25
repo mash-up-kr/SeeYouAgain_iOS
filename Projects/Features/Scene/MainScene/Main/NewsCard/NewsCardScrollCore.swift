@@ -46,7 +46,6 @@ public enum NewsCardScrollAction {
   // MARK: - User Action
   case dragOnChanged(CGSize)
   case dragOnEnded
-  case newsCardsChanged
   
   // MARK: - Inner Business Action
   case _onAppear
@@ -95,14 +94,6 @@ public let newsCardScrollReducer = Reducer<
     case .dragOnEnded:
       return Effect.concatenate(
         Effect(value: ._setGestureDragOffset(.zero)),
-        Effect(value: ._countCurrentScrollOffset),
-        Effect(value: ._updateIsFolds),
-        Effect(value: ._calculateDegrees),
-        Effect(value: ._calculateOffsets)
-      )
-      
-    case .newsCardsChanged:
-      return Effect.concatenate(
         Effect(value: ._countCurrentScrollOffset),
         Effect(value: ._updateIsFolds),
         Effect(value: ._calculateDegrees),
