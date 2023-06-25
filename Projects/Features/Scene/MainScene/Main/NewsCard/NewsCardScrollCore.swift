@@ -246,13 +246,13 @@ private func concatenateNewsCards(
   _ state: inout NewsCardScrollState,
   source newsCards: [NewsCard]
 ) {
-  let size = state.newsCards.count
+  let offset = state.newsCards.count
   newsCards.enumerated().forEach { index, card in
     state.degrees.append(0)
     state.offsets.append(.zero)
     state.newsCards.append(
       NewsCardState(
-        index: size + index - 1,
+        index: offset + index - 1,
         newsCard: card,
         layout: state.layout,
         isFolded: true
