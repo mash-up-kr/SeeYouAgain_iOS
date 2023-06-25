@@ -22,7 +22,7 @@ public struct ShortStorageCoordinatorState: Equatable, IndexedRouterState {
           .init(
             isInEditMode: false,
             shortslistCount: 6,
-            shortsClearCount: 0
+            shortsCompleteCount: 0
           )
         ),
         embedInNavigationView: true

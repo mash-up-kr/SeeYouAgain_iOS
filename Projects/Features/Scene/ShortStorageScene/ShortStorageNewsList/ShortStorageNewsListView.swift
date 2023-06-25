@@ -40,21 +40,21 @@ public struct ShortStorageNewsListView: View {
           VStack(spacing: 0) {
             TodayInfoView(
               today: viewStore.today,
-              shortsClearCount: viewStore.shortsClearCount
+              shortsCompleteCount: viewStore.shortsCompleteCount
             )
             
             if viewStore.shortsNewsItemsCount == 0 {
               // 오늘 저장한 숏스 없는 경우
               EmptyNewsContentView(
                 shortsNewsItemsCount: viewStore.shortsNewsItemsCount,
-                shortsClearCount: viewStore.shortsClearCount,
+                shortsCompleteCount: viewStore.shortsCompleteCount,
                 message: "오늘은 아직 저장한 뉴스가 없어요\n뉴스를 보고 마음에 드면 저장해보세요"
               )
-            } else if viewStore.shortsClearCount == viewStore.shortsNewsItemsCount {
+            } else if viewStore.shortsCompleteCount == viewStore.shortsNewsItemsCount {
               // 오늘 저장한 숏스 다 읽은 경우
               EmptyNewsContentView(
                 shortsNewsItemsCount: viewStore.shortsNewsItemsCount,
-                shortsClearCount: viewStore.shortsClearCount,
+                shortsCompleteCount: viewStore.shortsCompleteCount,
                 message: "오늘 저장한 뉴스를 다 읽었어요!"
               )
             } else {
@@ -110,14 +110,14 @@ public struct ShortStorageNewsListView: View {
 
 private struct TodayInfoView: View {
   private var today: String
-  private var shortsClearCount: Int
+  private var shortsCompleteCount: Int
   
   fileprivate init(
     today: String,
-    shortsClearCount: Int
+    shortsCompleteCount: Int
   ) {
     self.today = today
-    self.shortsClearCount = shortsClearCount
+    self.shortsCompleteCount = shortsCompleteCount
   }
   
   var body: some View {
@@ -133,10 +133,10 @@ private struct TodayInfoView: View {
       Spacer()
         .frame(height: 8)
       
-      Text("\(shortsClearCount)숏스")
+      Text("\(shortsCompleteCount)숏스")
         .font(.b24)
         .foregroundColor(
-          shortsClearCount == 0 ? DesignSystem.Colors.grey60 : DesignSystem.Colors.grey100
+          shortsCompleteCount == 0 ? DesignSystem.Colors.grey60 : DesignSystem.Colors.grey100
         )
         .padding(.horizontal, 24)
     }
@@ -145,16 +145,16 @@ private struct TodayInfoView: View {
 
 private struct EmptyNewsContentView: View {
   private var shortsNewsItemsCount: Int
-  private var shortsClearCount: Int
+  private var shortsCompleteCount: Int
   private var message: String
   
   fileprivate init(
     shortsNewsItemsCount: Int,
-    shortsClearCount: Int,
+    shortsCompleteCount: Int,
     message: String
   ) {
     self.shortsNewsItemsCount = shortsNewsItemsCount
-    self.shortsClearCount = shortsClearCount
+    self.shortsCompleteCount = shortsCompleteCount
     self.message = message
   }
   
