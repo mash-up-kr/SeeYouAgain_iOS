@@ -38,6 +38,7 @@ public enum MainAction {
   
   // MARK: - Inner Business Action
   case _viewWillAppear
+  case _categoriesIsUpdated
   case _fetchCategories
   case _fetchNewsCards
   case _handleNewsCardsResponse([NewsCard])
@@ -86,6 +87,15 @@ public let mainReducer = Reducer.combine([
     switch action {
     case ._viewWillAppear:
       return Effect.concatenate(
+        Effect(value: ._fetchCategories),
+        Effect(value: ._fetchNewsCards)
+      )
+      
+    case ._categoriesIsUpdated:
+      state.newsCardScrollState = nil
+      state.cursorPage = 0
+      state.cursorDate = .now
+      return Effect.merge(
         Effect(value: ._fetchCategories),
         Effect(value: ._fetchNewsCards)
       )

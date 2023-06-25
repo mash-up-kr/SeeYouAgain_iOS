@@ -174,7 +174,7 @@ public let tabBarReducer = Reducer<
       return Effect(value: ._setTabHiddenStatus(false))
       
     case .categoryBottomSheet(._categoriesIsUpdated):
-      return Effect(value: .main(.routeAction(0, action: .main(._viewWillAppear))))
+      return Effect(value: .main(.routeAction(0, action: .main(._categoriesIsUpdated))))
       
     default: return .none
     }
