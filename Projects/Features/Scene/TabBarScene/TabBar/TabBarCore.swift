@@ -18,7 +18,7 @@ public struct TabBarState: Equatable {
   public var hotKeyword: HotKeywordCoordinatorState
   public var main: MainCoordinatorState
   public var myPage: MyPageCoordinatorState
-  public var categoryBottomSheet: CategoryBottomSheetState
+  public var categoryBottomSheet: BottomSheetState
   public var selectedTab: TabBarItem = .house
   public var isTabHidden: Bool = false
   
@@ -26,7 +26,7 @@ public struct TabBarState: Equatable {
     hotKeyword: HotKeywordCoordinatorState,
     main: MainCoordinatorState,
     myPage: MyPageCoordinatorState,
-    categoryBottomSheet: CategoryBottomSheetState,
+    categoryBottomSheet: BottomSheetState,
     isTabHidden: Bool
   ) {
     self.hotKeyword = hotKeyword
@@ -50,7 +50,7 @@ public enum TabBarAction {
   case hotKeyword(HotKeywordCoordinatorAction)
   case main(MainCoordinatorAction)
   case myPage(MyPageCoordinatorAction)
-  case categoryBottomSheet(CategoryBottomSheetAction)
+  case categoryBottomSheet(BottomSheetAction)
 }
 
 public struct TabBarEnvironment {
@@ -107,12 +107,12 @@ public let tabBarReducer = Reducer<
         )
       }
     ),
-  categoryBottomSheetReducer
+  bottomSheetReducer
     .pullback(
       state: \TabBarState.categoryBottomSheet,
       action: /TabBarAction.categoryBottomSheet,
       environment: {
-        CategoryBottomSheetEnvironment(
+        BottomSheetEnvironment(
           mainQueue: $0.mainQueue,
           categoryService: $0.categoryService
         )

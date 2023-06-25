@@ -30,9 +30,9 @@ struct CategoryBottomSheet: View {
     GridItem(.flexible()),
     GridItem(.flexible())
   ]
-  private let store: Store<CategoryBottomSheetState, CategoryBottomSheetAction>
+  private let store: Store<BottomSheetState, BottomSheetAction>
   
-  init(store: Store<CategoryBottomSheetState, CategoryBottomSheetAction>) {
+  init(store: Store<BottomSheetState, BottomSheetAction>) {
     self.store = store
   }
   
@@ -57,7 +57,7 @@ struct CategoryBottomSheet: View {
 
 // MARK: - 카테고리 아이템 뷰
 private struct CategoryItemView: View {
-  private let store: Store<Void, CategoryBottomSheetAction>
+  private let store: Store<Void, BottomSheetAction>
   private var category: CategoryType
   @State private var isSelected: Bool
   
@@ -70,7 +70,7 @@ private struct CategoryItemView: View {
   }
   
   fileprivate init(
-    store: Store<Void, CategoryBottomSheetAction>,
+    store: Store<Void, BottomSheetAction>,
     category: CategoryType,
     isSelected: Bool
   ) {
