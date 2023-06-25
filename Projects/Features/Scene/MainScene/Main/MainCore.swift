@@ -22,6 +22,12 @@ private enum Constant {
   static let pagingCriticalPoint: Int = 5
 }
 
+public enum FetchType {
+  case initial
+  case continuousPaging
+  case newPaging
+}
+
 public struct MainState: Equatable {
   var newsCardLayout: NewsCardLayout = .init()
   var isLoading: Bool = false
@@ -40,8 +46,8 @@ public enum MainAction {
   case _viewWillAppear
   case _categoriesIsUpdated
   case _fetchCategories
-  case _fetchNewsCards
-  case _handleNewsCardsResponse([NewsCard])
+  case _fetchNewsCards(FetchType)
+  case _handleNewsCardsResponse([NewsCard], FetchType)
   case _cancelAllActions
   
   // MARK: - Inner SetState Action
@@ -88,7 +94,7 @@ public let mainReducer = Reducer.combine([
     case ._viewWillAppear:
       return Effect.concatenate(
         Effect(value: ._fetchCategories),
-        Effect(value: ._fetchNewsCards)
+        Effect(value: ._fetchNewsCards(.initial))
       )
       
     case ._categoriesIsUpdated:
@@ -97,7 +103,7 @@ public let mainReducer = Reducer.combine([
       state.cursorDate = .now
       return Effect.merge(
         Effect(value: ._fetchCategories),
-        Effect(value: ._fetchNewsCards)
+        Effect(value: ._fetchNewsCards(.initial))
       )
       
     case ._fetchCategories:
@@ -114,7 +120,7 @@ public let mainReducer = Reducer.combine([
         }
         .eraseToEffect()
       
-    case ._fetchNewsCards:
+    case let ._fetchNewsCards(fetchType):
       return env.newsCardService.getAllNewsCards(
         state.cursorDate,
         state.cursorPage,
@@ -124,7 +130,7 @@ public let mainReducer = Reducer.combine([
       .flatMapLatest { result -> Effect<MainAction, Never> in
         switch result {
         case let .success(newsCards):
-          return Effect(value: ._handleNewsCardsResponse(newsCards))
+          return Effect(value: ._handleNewsCardsResponse(newsCards, fetchType))
           
         case .failure:
           return .none
@@ -132,8 +138,8 @@ public let mainReducer = Reducer.combine([
       }
       .eraseToEffect()
       
-    case let ._handleNewsCardsResponse(newsCards):
-      return handleNewsCardsResponse(&state, source: newsCards)
+    case let ._handleNewsCardsResponse(newsCards, fetchType):
+      return handleNewsCardsResponse(&state, source: newsCards, fetchType: fetchType)
       
     case ._cancelAllActions:
       return .cancel(ids: CancelID.allCases)
@@ -169,7 +175,7 @@ public let mainReducer = Reducer.combine([
     case let .newsCardScroll(._fetchNewsCardsIfNeeded(currentScrollIndex, newsCardsCount)):
       if newsCardsCount - currentScrollIndex > Constant.pagingCriticalPoint { return .none }
       state.cursorPage += 1
-      return Effect(value: ._fetchNewsCards)
+      return Effect(value: ._fetchNewsCards(.continuousPaging))
       
     default:
       return .none
@@ -199,19 +205,34 @@ private func buildNewsCardLayout(screenSize: CGSize) -> NewsCardLayout {
 
 private func handleNewsCardsResponse(
   _ state: inout MainState,
-  source newsCards: [NewsCard]
+  source newsCards: [NewsCard],
+  fetchType: FetchType
 ) -> Effect<MainAction, Never> {
-  if newsCards.isEmpty {
-    state.cursorDate = subtractOneDay(from: state.cursorDate)
-    state.cursorPage = 0
-    return Effect(value: ._fetchNewsCards)
+  switch fetchType {
+  case .initial:
+    if newsCards.isEmpty {
+      return .none
+    }
+    if state.newsCardScrollState == nil {
+      return Effect(value: ._setNewsCardScrollState(newsCards))
+    }
+    
+  case .continuousPaging:
+    if newsCards.isEmpty {
+      state.cursorDate = subtractOneDay(from: state.cursorDate)
+      state.cursorPage = 0
+      return Effect(value: ._fetchNewsCards(.newPaging))
+    } else {
+      return Effect(value: .newsCardScroll(._concatenateNewsCards(newsCards)))
+    }
+    
+  case .newPaging:
+    if !newsCards.isEmpty {
+      return Effect(value: .newsCardScroll(._concatenateNewsCards(newsCards)))
+    }
   }
   
-  if state.newsCardScrollState == nil {
-    return Effect(value: ._setNewsCardScrollState(newsCards))
-  }
-  
-  return Effect(value: .newsCardScroll(._concatenateNewsCards(newsCards)))
+  return .none
 }
 
 private func subtractOneDay(from date: Date) -> Date {
