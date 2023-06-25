@@ -40,7 +40,7 @@ struct NewsCardScrollView: View {
             viewStore.send(.dragOnChanged(value.translation))
           }
           .onEnded { _ in
-            viewStore.send(._countPageIndex)
+            viewStore.send(._countScrollIndex)
             viewStore.send(.dragOnEnded)
           }
       )

@@ -18,11 +18,10 @@ public struct NewsCardLayout: Equatable {
 }
 
 public struct NewsCardScrollState: Equatable {
-  var gestureDragOffset: CGFloat = 0
-  var currentScrollOffset: CGFloat = 0
-  var previousPageIndex: Int = 0
-  var currentPageIndex: Int = 0
-  
+  var gestureDragOffset: CGFloat
+  var currentScrollOffset: CGFloat
+  var previousScrollIndex: Int
+  var currentScrollIndex: Int
   var layout: NewsCardLayout
   var newsCards: IdentifiedArrayOf<NewsCardState>
   var degrees: [Double]
@@ -32,6 +31,10 @@ public struct NewsCardScrollState: Equatable {
     layout: NewsCardLayout,
     newsCards: IdentifiedArrayOf<NewsCardState>
   ) {
+    self.gestureDragOffset = 0
+    self.currentScrollOffset = 0
+    self.previousScrollIndex = 0
+    self.currentScrollIndex = 0
     self.layout = layout
     self.newsCards = newsCards
     self.degrees = Array(repeating: 0, count: newsCards.count)
@@ -47,7 +50,7 @@ public enum NewsCardScrollAction {
   
   // MARK: - Inner Business Action
   case _onAppear
-  case _countPageIndex
+  case _countScrollIndex
   case _countCurrentScrollOffset
   case _updateIsFolds
   case _calculateDegrees
@@ -58,7 +61,7 @@ public enum NewsCardScrollAction {
   case _setOffsets([CGSize])
   case _setGestureDragOffset(CGFloat)
   case _setCurrentScrollOffset(CGFloat)
-  case _setPageIndex(Int)
+  case _setScrollIndex(Int)
   
   // MARK: - Child Action
   case newsCard(id: Int, action: NewsCardAction)
@@ -115,25 +118,25 @@ public let newsCardScrollReducer = Reducer<
         Effect(value: ._calculateOffsets)
       )
       
-    case ._countPageIndex:
+    case ._countScrollIndex:
       guard !state.newsCards.isEmpty else { return .none }
       let logicalOffset = (state.currentScrollOffset - state.layout.leadingOffset) * -1.0
       let contentWidth = state.layout.size.width + state.layout.spacing
       let floatIndex = (logicalOffset) / contentWidth
       let intIndex = Int(round(floatIndex))
       let newPageIndex = min(max(intIndex, 0), state.newsCards.count - 1)
-      return Effect(value: ._setPageIndex(newPageIndex))
+      return Effect(value: ._setPageIndex(newPageIndex)
       
     case ._countCurrentScrollOffset:
       let contentWidth = state.layout.size.width + state.layout.spacing
-      let activePageOffset = CGFloat(state.currentPageIndex) * contentWidth
+      let activePageOffset = CGFloat(state.currentScrollIndex) * contentWidth
       let scrollOffset = state.layout.leadingOffset - activePageOffset + state.gestureDragOffset
       return Effect(value: ._setCurrentScrollOffset(scrollOffset))
       
     case ._updateIsFolds:
       return Effect.concatenate(
-        Effect(value: .newsCard(id: state.previousPageIndex, action: ._setIsFolded(true))),
-        Effect(value: .newsCard(id: state.currentPageIndex, action: ._setIsFolded(false)))
+        Effect(value: .newsCard(id: state.previousScrollIndex, action: ._setIsFolded(true))),
+        Effect(value: .newsCard(id: state.currentScrollIndex, action: ._setIsFolded(false)))
       )
       
     case ._calculateDegrees:
@@ -160,9 +163,9 @@ public let newsCardScrollReducer = Reducer<
       state.currentScrollOffset = scrollOffset
       return .none
       
-    case let ._setPageIndex(pageIndex):
-      state.previousPageIndex = state.currentPageIndex
-      state.currentPageIndex = pageIndex
+    case let ._setScrollIndex(pageIndex):
+      state.previousScrollIndex = state.currentScrollIndex
+      state.currentScrollIndex = pageIndex
       return .none
       
     case let .newsCard(id, action):
@@ -181,7 +184,7 @@ private func calculateDegrees(
   let yOffset = rotationDegree
   
   return state.degrees.indices.map { index in
-    switch state.currentPageIndex {
+    switch state.currentScrollIndex {
     case let pageIndex where pageIndex > index:
       let weight = min(2.0, Double(pageIndex - index))
       return slope * gestureDragOffset - weight * yOffset
@@ -209,7 +212,7 @@ private func calculateOffsets(
   let yOffset = distance
   
   return state.offsets.indices.map { index in
-    switch state.currentPageIndex {
+    switch state.currentScrollIndex {
     case let pageIndex where pageIndex > index:
       let weight = min(2.0, Double(pageIndex - index))
       return CGSize(
