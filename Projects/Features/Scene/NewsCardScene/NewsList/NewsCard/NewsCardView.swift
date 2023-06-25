@@ -8,6 +8,7 @@
 
 import ComposableArchitecture
 import DesignSystem
+import NukeUI
 import SwiftUI
 
 public struct NewsCardView: View {
@@ -22,15 +23,17 @@ public struct NewsCardView: View {
       HStack(alignment: .top, spacing: 0) {
         if let imageUrl = viewStore.state.news.thumbnailImageUrl {
           // TODO: 서버에서 받아오는 URL 이미지로 변경 필요
-          AsyncImage(url: URL(string: imageUrl)) { phase in
-            phase
-              .resizable()
-              .frame(width: 56, height: 56)
-              .clipShape(Circle())
-          } placeholder: {
-            ProgressView()
+          LazyImage(url: URL(string: imageUrl)) { state in
+            if let image = state.image {
+              image
+                .resizable()
+                .frame(width: 56, height: 56)
+                .clipShape(Circle())
+            } else {
+              ProgressView()
+            }
           }
-          
+
           Spacer()
             .frame(width: 16)
         }
