@@ -28,8 +28,10 @@ public enum NewsListAction: Equatable {
   
   // MARK: - Inner Business Action
   case _onAppear
+  case _willDisappear
   
   // MARK: - Inner SetState Action
+  case _initializeNewsItems
   
   // MARK: - Child Action
   case newsItem(id: NewsCardState.ID, action: NewsCardAction)
@@ -54,7 +56,10 @@ public let newsListReducer = Reducer.combine([
       return .none
       
     case .completeButtonTapped:
-      return .none
+      return Effect.concatenate([
+        Effect(value: ._initializeNewsItems),
+        Effect(value: ._willDisappear)
+      ])
       
     case ._onAppear:
       state.newsItems = [
@@ -131,6 +136,13 @@ public let newsListReducer = Reducer.combine([
           )
         )
       ]
+      return .none
+      
+    case ._willDisappear:
+      return .none
+      
+    case ._initializeNewsItems:
+      state.newsItems.removeAll()
       return .none
       
     default: return .none

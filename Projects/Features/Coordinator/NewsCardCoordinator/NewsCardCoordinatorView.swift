@@ -32,6 +32,11 @@ public struct NewsCardCoordinatorView: View {
           action: NewsCardScreenAction.web,
           then: WebView.init
         )
+        CaseLet(
+          state: /NewsCardScreenState.shortsComplete,
+          action: NewsCardScreenAction.shortsComplete,
+          then: ShortsCompleteView.init
+        )
       }
     }
     .navigationBarHidden(true)

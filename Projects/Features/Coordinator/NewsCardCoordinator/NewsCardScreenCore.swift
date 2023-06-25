@@ -15,11 +15,13 @@ import Web
 public enum NewsCardScreenState: Equatable {
   case newsList(NewsListState)
   case web(WebState)
+  case shortsComplete(ShortsCompleteState)
 }
 
 public enum NewsCardScreenAction: Equatable {
   case newsList(NewsListAction)
   case web(WebAction)
+  case shortsComplete(ShortsCompleteAction)
 }
 
 internal struct NewsCardScreenEnvironment {
@@ -28,8 +30,16 @@ internal struct NewsCardScreenEnvironment {
 internal let newsCardScreenReducer = Reducer<
   NewsCardScreenState,
   NewsCardScreenAction,
-NewsCardScreenEnvironment
+  NewsCardScreenEnvironment
 >.combine([
+  shortsCompleteReducer
+    .pullback(
+      state: /NewsCardScreenState.shortsComplete,
+      action: /NewsCardScreenAction.shortsComplete,
+      environment: { _ in
+        ShortsCompleteEnvironment()
+      }
+    ),
   webReducer
     .pullback(
       state: /NewsCardScreenState.web,

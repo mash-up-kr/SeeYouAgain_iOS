@@ -57,10 +57,14 @@ public let newsCardCoordinatorReducer: Reducer<
         state.routes.push(.web(.init(webAddress: "https://naver.com")))
         return .none
         
+      case .routeAction(_, action: .newsList(._willDisappear)):
+        state.routes.push(.shortsComplete(.init()))
+        return .none
+        
       case .routeAction(_, action: .web(.backButtonTapped)):
         state.routes.pop()
         return .none
-        
+
       default: return .none
       }
     }
