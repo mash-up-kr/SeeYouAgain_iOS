@@ -68,8 +68,7 @@ public struct NewsListView: View {
               .padding(.bottom, 16)
             }
           }
-          .padding(.bottom, 16)
-          .ignoresSafeArea()
+          .padding(.bottom, 48)
         }
         .onAppear {
           viewStore.send(._onAppear)
