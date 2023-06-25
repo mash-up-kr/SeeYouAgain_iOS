@@ -36,6 +36,7 @@ public struct NewsListView: View {
               .font(.b24)
               .foregroundColor(DesignSystem.Colors.grey100)
               .padding(.horizontal, 24)
+              .lineLimit(3)
             
             Spacer()
               .frame(height: 48)

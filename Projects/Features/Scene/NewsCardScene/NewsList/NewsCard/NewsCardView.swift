@@ -45,8 +45,7 @@ public struct NewsCardView: View {
         }
       }
       .frame(maxWidth: .infinity)
-      .padding(.horizontal, 16)
-      .padding(.vertical, 20)
+      .padding(20)
       .background(DesignSystem.Colors.grey20)
       .cornerRadius(16)
       .onTapGesture {

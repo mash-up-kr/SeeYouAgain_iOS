@@ -17,7 +17,7 @@ public struct NewsListState: Equatable {
   public init(
     keywordTitle: String
   ) {
-    self.keywordTitle = "#자위대 호위함 #사카이 료 (Sakai Ryo) #이스턴 엔데버23 #부산항"
+    self.keywordTitle = "#자위대 호위함 #사카이 료 (Sakai Ryo) #이스턴 엔데버23 #부산항 #자위대 호위함 #사카이 료 (Sakai Ryo) #이스턴 엔데버23 #부산항"
   }
 }
 
