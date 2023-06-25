@@ -202,7 +202,7 @@ private func handleNewsCardsResponse(
   source newsCards: [NewsCard]
 ) -> Effect<MainAction, Never> {
   if newsCards.isEmpty {
-    state.cursorDate = subtractOneHour(from: state.cursorDate)
+    state.cursorDate = subtractOneDay(from: state.cursorDate)
     state.cursorPage = 0
     return Effect(value: ._fetchNewsCards)
   }
@@ -214,8 +214,8 @@ private func handleNewsCardsResponse(
   return Effect(value: .newsCardScroll(._concatenateNewsCards(newsCards)))
 }
 
-private func subtractOneHour(from date: Date) -> Date {
+private func subtractOneDay(from date: Date) -> Date {
   let calendar = Calendar.current
-  let modifiedDate = calendar.date(byAdding: .hour, value: -1, to: date)
+  let modifiedDate = calendar.date(byAdding: .day, value: -1, to: date)
   return modifiedDate ?? date
 }
