@@ -49,8 +49,8 @@ public enum NewsCardScrollAction {
   
   // MARK: - Inner Business Action
   case _onAppear
-  case _countScrollIndex
-  case _countCurrentScrollOffset
+  case _calculateScrollIndex
+  case _calculateCurrentScrollOffset
   case _updateIsFolds
   case _calculateDegrees
   case _calculateOffsets
@@ -86,7 +86,7 @@ public let newsCardScrollReducer = Reducer<
     case let .dragOnChanged(translation):
       return Effect.concatenate(
         Effect(value: ._setGestureDragOffset(translation.width)),
-        Effect(value: ._countCurrentScrollOffset),
+        Effect(value: ._calculateCurrentScrollOffset),
         Effect(value: ._calculateDegrees),
         Effect(value: ._calculateOffsets)
       )
@@ -94,7 +94,7 @@ public let newsCardScrollReducer = Reducer<
     case .dragOnEnded:
       return Effect.concatenate(
         Effect(value: ._setGestureDragOffset(.zero)),
-        Effect(value: ._countCurrentScrollOffset),
+        Effect(value: ._calculateCurrentScrollOffset),
         Effect(value: ._updateIsFolds),
         Effect(value: ._calculateDegrees),
         Effect(value: ._calculateOffsets)
@@ -105,13 +105,13 @@ public let newsCardScrollReducer = Reducer<
         return .none
       }
       return Effect.concatenate(
-        Effect(value: ._countCurrentScrollOffset),
+        Effect(value: ._calculateCurrentScrollOffset),
         Effect(value: .newsCard(id: 0, action: ._setIsFolded(false))),
         Effect(value: ._calculateDegrees),
         Effect(value: ._calculateOffsets)
       )
       
-    case ._countScrollIndex:
+    case ._calculateScrollIndex:
       guard !state.newsCards.isEmpty else { return .none }
       let logicalOffset = (state.currentScrollOffset - state.layout.leadingOffset) * -1.0
       let contentWidth = state.layout.size.width + state.layout.spacing
@@ -119,11 +119,10 @@ public let newsCardScrollReducer = Reducer<
       let intIndex = Int(round(floatIndex))
       let newPageIndex = min(max(intIndex, 0), state.newsCards.count - 1)
       return Effect.concatenate(
-        Effect(value: ._setScrollIndex(newPageIndex)),
-        Effect(value: ._fetchNewsCardsIfNeeded(newPageIndex, state.newsCards.count))
+        Effect(value: ._setScrollIndex(newPageIndex))        
       )
       
-    case ._countCurrentScrollOffset:
+    case ._calculateCurrentScrollOffset:
       let contentWidth = state.layout.size.width + state.layout.spacing
       let activePageOffset = CGFloat(state.currentScrollIndex) * contentWidth
       let scrollOffset = state.layout.leadingOffset - activePageOffset + state.gestureDragOffset
