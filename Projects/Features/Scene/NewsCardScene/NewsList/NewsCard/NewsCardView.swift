@@ -68,6 +68,7 @@ private struct NewsDataView: View {
         Text(news.title)
           .font(.b16)
           .foregroundColor(DesignSystem.Colors.grey90)
+          .lineLimit(2)
         
         Spacer()
       }

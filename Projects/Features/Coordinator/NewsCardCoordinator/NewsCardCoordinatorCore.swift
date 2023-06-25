@@ -49,6 +49,18 @@ public let newsCardCoordinatorReducer: Reducer<
   .withRouteReducer(
     Reducer { state, action, env in
       switch action {
+      case .routeAction(_, action: .newsList(.newsItem(id: _, action: .rightButtonTapped))):
+        state.routes.push(.web(.init(webAddress: "https://naver.com")))
+        return .none
+        
+      case .routeAction(_, action: .newsList(.newsItem(id: _, action: .cardTapped))):
+        state.routes.push(.web(.init(webAddress: "https://naver.com")))
+        return .none
+        
+      case .routeAction(_, action: .web(.backButtonTapped)):
+        state.routes.pop()
+        return .none
+        
       default: return .none
       }
     }

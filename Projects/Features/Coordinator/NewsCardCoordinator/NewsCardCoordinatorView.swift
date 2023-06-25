@@ -10,6 +10,7 @@ import ComposableArchitecture
 import NewsList
 import SwiftUI
 import TCACoordinators
+import Web
 
 public struct NewsCardCoordinatorView: View {
   private let store: Store<NewsCardCoordinatorState, NewsCardCoordinatorAction>
@@ -25,6 +26,11 @@ public struct NewsCardCoordinatorView: View {
           state: /NewsCardScreenState.newsList,
           action: NewsCardScreenAction.newsList,
           then: NewsListView.init
+        )
+        CaseLet(
+          state: /NewsCardScreenState.web,
+          action: NewsCardScreenAction.web,
+          then: WebView.init
         )
       }
     }

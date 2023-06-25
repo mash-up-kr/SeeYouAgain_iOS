@@ -10,13 +10,16 @@ import ComposableArchitecture
 import NewsList
 import Services
 import TCACoordinators
+import Web
 
 public enum NewsCardScreenState: Equatable {
   case newsList(NewsListState)
+  case web(WebState)
 }
 
 public enum NewsCardScreenAction: Equatable {
   case newsList(NewsListAction)
+  case web(WebAction)
 }
 
 internal struct NewsCardScreenEnvironment {
@@ -27,6 +30,14 @@ internal let newsCardScreenReducer = Reducer<
   NewsCardScreenAction,
 NewsCardScreenEnvironment
 >.combine([
+  webReducer
+    .pullback(
+      state: /NewsCardScreenState.web,
+      action: /NewsCardScreenAction.web,
+      environment: { _ in
+        WebEnvironment()
+      }
+    ),
   newsListReducer
     .pullback(
       state: /NewsCardScreenState.newsList,
@@ -34,5 +45,5 @@ NewsCardScreenEnvironment
       environment: { _ in
         NewsListEnvironment()
       }
-    ),
+    )
 ])
