@@ -18,7 +18,9 @@ public struct NewsCardCoordinatorState: Equatable, IndexedRouterState {
   public init(
     routes: [Route<NewsCardScreenState>] = [
       .root(
-        .newsList(.init(id: 0)),
+        .newsList(
+          .init(keywordTitle: "하하호호 키워드 이름")
+        ),
         embedInNavigationView: true
       )
     ]
