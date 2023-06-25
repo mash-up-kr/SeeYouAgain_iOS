@@ -65,7 +65,7 @@ private struct NewsDataView: View {
     self.news = news
   }
   
-  var body: some View {
+  fileprivate var body: some View {
     VStack(spacing: 0) {
       HStack(spacing: 0) {
         Text(news.title)

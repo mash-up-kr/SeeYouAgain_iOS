@@ -108,5 +108,5 @@ internal let appScreenReducer = Reducer<
       environment: {
         SettingCoordinatorEnvironment(appVersionService: $0.appVersionService)
       }
-    ),
+    )
 ])

@@ -32,12 +32,12 @@ internal let newsCardScreenReducer = Reducer<
   NewsCardScreenAction,
   NewsCardScreenEnvironment
 >.combine([
-  shortsCompleteReducer
+  newsListReducer
     .pullback(
-      state: /NewsCardScreenState.shortsComplete,
-      action: /NewsCardScreenAction.shortsComplete,
+      state: /NewsCardScreenState.newsList,
+      action: /NewsCardScreenAction.newsList,
       environment: { _ in
-        ShortsCompleteEnvironment()
+        NewsListEnvironment()
       }
     ),
   webReducer
@@ -48,12 +48,12 @@ internal let newsCardScreenReducer = Reducer<
         WebEnvironment()
       }
     ),
-  newsListReducer
+  shortsCompleteReducer
     .pullback(
-      state: /NewsCardScreenState.newsList,
-      action: /NewsCardScreenAction.newsList,
+      state: /NewsCardScreenState.shortsComplete,
+      action: /NewsCardScreenAction.shortsComplete,
       environment: { _ in
-        NewsListEnvironment()
+        ShortsCompleteEnvironment()
       }
     )
 ])
