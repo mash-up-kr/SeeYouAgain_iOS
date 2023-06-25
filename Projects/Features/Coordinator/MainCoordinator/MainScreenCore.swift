@@ -8,6 +8,7 @@
 
 import Combine
 import ComposableArchitecture
+import Foundation
 import Main
 import Services
 import TCACoordinators
@@ -21,13 +22,16 @@ public enum MainScreenAction {
 }
 
 internal struct MainScreenEnvironment {
+  fileprivate let mainQueue: AnySchedulerOf<DispatchQueue>
   fileprivate let newsCardService: NewsCardService
   fileprivate let categoryService: CategoryService
   
   internal init(
+    mainQueue: AnySchedulerOf<DispatchQueue>,
     newsCardService: NewsCardService,
     categoryService: CategoryService
   ) {
+    self.mainQueue = mainQueue
     self.newsCardService = newsCardService
     self.categoryService = categoryService
   }
@@ -44,6 +48,7 @@ internal let mainScreenReducer = Reducer<
       action: /MainScreenAction.main,
       environment: {
         MainEnvironment(
+          mainQueue: $0.mainQueue,
           newscardService: $0.newsCardService,
           categoryService: $0.categoryService
         )

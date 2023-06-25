@@ -91,6 +91,7 @@ public let tabBarReducer = Reducer<
       action: /TabBarAction.main,
       environment: {
         MainCoordinatorEnvironment(
+          mainQueue: $0.mainQueue,
           newsCardService: $0.newsCardService,
           categoryService: $0.categoryService
         )
