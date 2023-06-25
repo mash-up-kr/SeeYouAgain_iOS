@@ -55,6 +55,8 @@ public enum NewsCardScrollAction {
   case _updateIsFolds
   case _calculateDegrees
   case _calculateOffsets
+  case _fetchNewsCardsIfNeeded(Int, Int)
+  case _concatenateNewsCards([NewsCard])
   
   // MARK: - Inner SetState Action
   case _setDegrees([Double])
@@ -125,7 +127,10 @@ public let newsCardScrollReducer = Reducer<
       let floatIndex = (logicalOffset) / contentWidth
       let intIndex = Int(round(floatIndex))
       let newPageIndex = min(max(intIndex, 0), state.newsCards.count - 1)
-      return Effect(value: ._setPageIndex(newPageIndex)
+      return Effect.concatenate(
+        Effect(value: ._setScrollIndex(newPageIndex)),
+        Effect(value: ._fetchNewsCardsIfNeeded(newPageIndex, state.newsCards.count))
+      )
       
     case ._countCurrentScrollOffset:
       let contentWidth = state.layout.size.width + state.layout.spacing
@@ -166,6 +171,13 @@ public let newsCardScrollReducer = Reducer<
     case let ._setScrollIndex(pageIndex):
       state.previousScrollIndex = state.currentScrollIndex
       state.currentScrollIndex = pageIndex
+      return .none
+      
+    case ._fetchNewsCardsIfNeeded:
+      return .none
+      
+    case let ._concatenateNewsCards(newsCards):
+      concatenateNewsCards(&state, source: newsCards)
       return .none
       
     case let .newsCard(id, action):
@@ -237,5 +249,24 @@ private func calculateOffsets(
     default:
       return CGSize(width: 0, height: 0)
     }
+  }
+}
+
+private func concatenateNewsCards(
+  _ state: inout NewsCardScrollState,
+  source newsCards: [NewsCard]
+) {
+  let size = state.newsCards.count
+  newsCards.enumerated().forEach { index, card in
+    state.degrees.append(0)
+    state.offsets.append(.zero)
+    state.newsCards.append(
+      NewsCardState(
+        index: size + index - 1,
+        newsCard: card,
+        layout: state.layout,
+        isFolded: true
+      )
+    )
   }
 }

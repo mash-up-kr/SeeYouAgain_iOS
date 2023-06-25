@@ -18,6 +18,8 @@ private enum Constant {
   static let defaultNewsCardHeight: CGFloat = 378
   static let iphone13MiniWidth: CGFloat = 375
   static let iphone13MiniHeight: CGFloat = 812
+  static let pagingSize: Int = 10
+  static let pagingCriticalPoint: Int = 5
 }
 
 public struct MainState: Equatable {
@@ -25,7 +27,8 @@ public struct MainState: Equatable {
   var isLoading: Bool = false
   var categories: [CategoryType] = []
   var newsCardScrollState: NewsCardScrollState?
-  
+  var cursorPage: Int = 0
+  var cursorDate: Date = .now
   public init() { }
 }
 
@@ -37,6 +40,8 @@ public enum MainAction {
   case _viewWillAppear
   case _fetchCategories
   case _fetchNewsCards
+  case _handleNewsCardsResponse([NewsCard])
+  case _cancelAllActions
   
   // MARK: - Inner SetState Action
   case _setNewsCardSize(CGSize)
@@ -49,16 +54,24 @@ public enum MainAction {
 }
 
 public struct MainEnvironment {
+  fileprivate let mainQueue: AnySchedulerOf<DispatchQueue>
   fileprivate let newsCardService: NewsCardService
   fileprivate let categoryService: CategoryService
   
   public init(
+    mainQueue: AnySchedulerOf<DispatchQueue>,
     newscardService: NewsCardService,
     categoryService: CategoryService
   ) {
+    self.mainQueue = mainQueue
     self.newsCardService = newscardService
     self.categoryService = categoryService
   }
+}
+
+fileprivate enum CancelID: Hashable, CaseIterable {
+  case _fetchCategories
+  case _fetchNewsCards
 }
 
 public let mainReducer = Reducer.combine([
@@ -92,20 +105,28 @@ public let mainReducer = Reducer.combine([
         .eraseToEffect()
       
     case ._fetchNewsCards:
-      // TODO: Date와 CursorID State로 관리하도록 변경      
-      return env.newsCardService.getAllNewsCards(Date(), 0, 10)
-        .catchToEffect()
-        .flatMapLatest { result -> Effect<MainAction, Never> in
-          switch result {
-          case let .success(newsCards):
-            return Effect(value: ._setNewsCardScrollState(newsCards))
-            
-          case .failure:
-            return .none
-          }
+      return env.newsCardService.getAllNewsCards(
+        state.cursorDate,
+        state.cursorPage,
+        Constant.pagingSize
+      )
+      .catchToEffect()
+      .flatMapLatest { result -> Effect<MainAction, Never> in
+        switch result {
+        case let .success(newsCards):
+          return Effect(value: ._handleNewsCardsResponse(newsCards))
+          
+        case .failure:
+          return .none
         }
-        .eraseToEffect()
+      }
+      .eraseToEffect()
       
+    case let ._handleNewsCardsResponse(newsCards):
+      return handleNewsCardsResponse(&state, source: newsCards)
+      
+    case ._cancelAllActions:
+      return .cancel(ids: CancelID.allCases)
       
     case let ._setNewsCardSize(screenSize):
       state.newsCardLayout = buildNewsCardLayout(screenSize: screenSize)
@@ -135,6 +156,11 @@ public let mainReducer = Reducer.combine([
       )
       return .none
       
+    case let .newsCardScroll(._fetchNewsCardsIfNeeded(currentScrollIndex, newsCardsCount)):
+      if newsCardsCount - currentScrollIndex > Constant.pagingCriticalPoint { return .none }
+      state.cursorPage += 1
+      return Effect(value: ._fetchNewsCards)
+      
     default:
       return .none
     }
@@ -159,4 +185,27 @@ private func buildNewsCardLayout(screenSize: CGSize) -> NewsCardLayout {
     spacing: newsCardSpacing,
     leadingOffset: leadingOffset
   )
+}
+
+private func handleNewsCardsResponse(
+  _ state: inout MainState,
+  source newsCards: [NewsCard]
+) -> Effect<MainAction, Never> {
+  if newsCards.isEmpty {
+    state.cursorDate = subtractOneHour(from: state.cursorDate)
+    state.cursorPage = 0
+    return Effect(value: ._fetchNewsCards)
+  }
+  
+  if state.newsCardScrollState == nil {
+    return Effect(value: ._setNewsCardScrollState(newsCards))
+  }
+  
+  return Effect(value: .newsCardScroll(._concatenateNewsCards(newsCards)))
+}
+
+private func subtractOneHour(from date: Date) -> Date {
+  let calendar = Calendar.current
+  let modifiedDate = calendar.date(byAdding: .hour, value: -1, to: date)
+  return modifiedDate ?? date
 }
