@@ -35,7 +35,7 @@ public struct NewsCardView: View {
             .frame(width: 16)
         }
         
-        NewsDataView(news: viewStore.news)
+        NewsDataView(news: viewStore.state.news)
         
         Button {
           viewStore.send(.rightButtonTapped)
@@ -81,13 +81,10 @@ private struct NewsDataView: View {
           .font(.r14)
           .foregroundColor(DesignSystem.Colors.grey50)
         
-        Text(news.type)
-          .font(.r12)
-          .foregroundColor(DesignSystem.Colors.grey20)
-          .padding(.horizontal, 6)
-          .padding(.vertical, 2)
-          .background(DesignSystem.Colors.economic)
-          .cornerRadius(26)
+        CategoryView(
+          category: "경제",
+          color: DesignSystem.Colors.economic
+        )
         
         Spacer()
       }
