@@ -93,6 +93,15 @@ public struct TabBarView: View {
           )
         }
       )
+      .apply(content: { view in
+        WithViewStore(store.scope(state: \.categoryBottomSheet.toastMessage)) { toastMessageViewStore in
+          view.toast(
+            text: toastMessageViewStore.state,
+            toastType: .warning,
+            toastOffset: -396
+          )
+        }
+      })
     }
   }
 }
