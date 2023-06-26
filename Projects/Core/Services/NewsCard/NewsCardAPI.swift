@@ -12,17 +12,21 @@ import Models
 
 public enum NewsCardAPI {
   case getAllNewsCards(Date, Int, Int)
+  case saveNewsCard(Int)
 }
 
 extension NewsCardAPI: TargetType {
   public var baseURL: URL {
-    return URL(string: "http://3.38.65.72:8080")!
+    return URL(string: "http://3.38.65.72:8080/v1")!
   }
   
   public var path: String {
     switch self {
     case .getAllNewsCards:
-      return "/v1/member-news-card"
+      return "/member-news-card"
+    
+    case .saveNewsCard:
+      return "/member/news-card"
     }
   }
   
@@ -30,6 +34,9 @@ extension NewsCardAPI: TargetType {
     switch self {
     case .getAllNewsCards:
       return .get
+      
+    case .saveNewsCard:
+      return .post
     }
   }
   
@@ -45,16 +52,20 @@ extension NewsCardAPI: TargetType {
         parameters: requestDTO.toDictionary,
         encoding: .queryString
       )
+      
+    case let .saveNewsCard(newsCardId):
+      let requestDTO = SaveNewsCardRequestDTO(newsCardId: newsCardId)
+      return .requestJSONEncodable(requestDTO)
     }
   }
   
   public var headers: [String: String]? {
-    return ["Content-Type": "application/json"]
+    return .none
   }
   
   public var sampleData: Data {
     switch self {
-    case .getAllNewsCards:
+    default:
       return Data()
     }
   }
