@@ -62,6 +62,7 @@ struct MyShortsView: View {
             )
           }
         }
+        .frame(maxWidth: .infinity)
         .padding(.horizontal, 24)
         .padding(.vertical, 12)
         .background(Color.white)
@@ -118,7 +119,7 @@ fileprivate struct ShortsInfoView: View {
         .font(.b18)
         .foregroundColor(fontColor)
     }
-    .frame(width: 103, height: 47)
+    .frame(maxWidth: .infinity)
     .background(Color.white)
   }
 }
