@@ -53,7 +53,7 @@ public let saveGuideReducer = Reducer<
         if !hasLaunched {
           return Effect.merge(
             Effect(value: ._updateLaunchStatus),
-            Effect(value: ._startAnimation)
+            Effect(value: ._firstLaunchAnimation)
           )
         } else {
           return .none
@@ -62,7 +62,6 @@ public let saveGuideReducer = Reducer<
       .eraseToEffect()
     
   case ._updateLaunchStatus:
-    print("isFirstLaunced")
     return env.userDefaultsService.save(.hasLanched, true)
       .fireAndForget()
     
