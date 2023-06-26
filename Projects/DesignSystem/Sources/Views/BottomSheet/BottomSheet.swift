@@ -45,7 +45,7 @@ public struct BottomSheet<
         .padding(.top, 32)
       
       bottomArea
-        .padding(.top, 24)
+        .padding(.top, 32)
       
       Spacer()
         .frame(height: keyWindow?.safeAreaInsets.bottom)

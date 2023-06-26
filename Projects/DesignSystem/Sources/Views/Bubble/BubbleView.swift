@@ -30,7 +30,7 @@ public struct BubbleView: View {
     geometryHeight: CGFloat,
     pointX: CGFloat,
     offset: Binding<CGFloat>,
-    action: @escaping () -> Void
+    action: @escaping () -> Void = {}
   ) {
     self.keyword = hotKeywordPoint.keyword
     self.bubbleSize = hotKeywordPoint.size
@@ -38,7 +38,7 @@ public struct BubbleView: View {
     self.geometryHeight = geometryHeight
     self.pointX = pointX
     self._offset = offset
-    self.action = keyword.isEmpty == false ? action : {}
+    self.action = action
   }
   
   public var body: some View {

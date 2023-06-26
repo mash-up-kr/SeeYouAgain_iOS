@@ -17,7 +17,7 @@ public struct HotKeywordView: View {
     self.store = store
   }
   
-  // lina-TODO: 코드 정리(여기 값들 스토어로 이동 할지)
+  // lina-TODO: 코드 정리(여기 값들 스토어로 이동 할지) 후 기기 사이즈 골고루 더블 체크
   @Namespace var leadingID
   @State private var offset: CGFloat = UIScreen.main.bounds.width
   private let keyWindow = UIApplication.shared.connectedScenes
@@ -81,7 +81,7 @@ public struct HotKeywordView: View {
         .frame(height: 32)
         
         HStack {
-          Text("\(viewStore.subTitleText) 기준")
+          Text(viewStore.subTitleText)
             .font(.r13)
             .foregroundColor(DesignSystem.Colors.grey70)
             .frame(height: 16)

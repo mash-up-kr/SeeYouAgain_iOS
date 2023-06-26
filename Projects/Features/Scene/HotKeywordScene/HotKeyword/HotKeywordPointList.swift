@@ -12,17 +12,19 @@ import Foundation
 
 public struct HotKeywordPointList: Equatable {
   let pointList: [HotKeywordPoint]
-  let pattern: HotKeywordPattern
+  let pattern: HotKeywordPattern?
   
   /// 인덱스 숫자가 작을수록 큰 원에 배정됨
-  init(hotkeywordList: [String], hotKeywordPattern: HotKeywordPattern) {
+  init(hotkeywordList: [String], hotKeywordPattern: HotKeywordPattern? = nil) {
     var pointList: [HotKeywordPoint] = []
     
-    for (index, cicleData) in hotKeywordPattern.circleDataList.enumerated() {
-      pointList.append(HotKeywordPoint(
-        keyword: hotkeywordList[safe: index] ?? "",
-        circleData: cicleData
-      ))
+    if let hotKeywordPattern {
+      for (index, cicleData) in hotKeywordPattern.circleDataList.enumerated() {
+        pointList.append(HotKeywordPoint(
+          keyword: hotkeywordList[safe: index] ?? "",
+          circleData: cicleData
+        ))
+      }
     }
     self.pattern = hotKeywordPattern
     self.pointList = pointList

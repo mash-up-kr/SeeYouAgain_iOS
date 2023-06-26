@@ -16,10 +16,7 @@ import Services
 public struct HotKeywordState: Equatable {
   var hotKeywordList: [String] = []
   var subTitleText: String = ""
-  var hotKeywordPointList = HotKeywordPointList(
-    hotkeywordList: [],
-    hotKeywordPattern: HotKeywordPatternSpace.generatePattern()
-  )
+  var hotKeywordPointList = HotKeywordPointList(hotkeywordList: [])
   var isRefresh: Bool = false
   var toastMessage: String?
 
@@ -82,10 +79,6 @@ public let hotKeywordReducer = Reducer.combine([
             return Effect(value: ._reloadData(hotKeywordDTO))
             
           case .failure:
-            let hotKeywordDTO = HotKeywordDTO(createdAt: "시간", ranking: [
-              "뱀", "환경", "공연", "인공지능", "백신", "스포츠", "로봇", "기후변화", "인플레이션", "스타트업"
-            ])
-            return Effect(value: ._reloadData(hotKeywordDTO))
             // lina-TODO: 아무것도 없는 경우 화면처리, subtitle 텍스트 변경, 로딩 중에 재시도 못하게 변경
             return Effect(value: ._presentToast("인터넷 연결 상태가 불안정합니다."))
           }
@@ -93,7 +86,7 @@ public let hotKeywordReducer = Reducer.combine([
         .eraseToEffect()
 
     case let ._reloadData(hotKeywordDTO):
-      state.subTitleText = hotKeywordDTO.createdAt
+      state.subTitleText = "\(hotKeywordDTO.createdAt) 기준"
       state.hotKeywordList = hotKeywordDTO.ranking
       
       let currentPattern = state.hotKeywordPointList.pattern
