@@ -61,7 +61,7 @@ fileprivate struct MyPageBackgroundView: View {
   
   fileprivate var body: some View {
     ZStack {
-      Color(red: 255, green: 255, blue: 255)
+      Color.white
         .opacity(1)
         .edgesIgnoringSafeArea(.all)
       
