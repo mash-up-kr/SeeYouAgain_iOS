@@ -62,6 +62,7 @@ struct MyShortsView: View {
             )
           }
         }
+        .frame(maxWidth: .infinity)
         .padding(.horizontal, 24)
         .padding(.vertical, 12)
         .background(Color.white)
@@ -69,7 +70,6 @@ struct MyShortsView: View {
       }
       .padding(.horizontal, 20)
       .padding(.vertical, 16)
-      // TODO: 블러 배경 수정 필요
       .background(Material.regularMaterial)
       .overlay(
         RoundedRectangle(cornerRadius: 8)
@@ -77,9 +77,8 @@ struct MyShortsView: View {
             LinearGradient(
               gradient: Gradient(
                 colors: [
-                  // TODO: 디자인시스템에 정의되지 않은 색상으로 수정 필요
-                  Color(hex: 0x556272).opacity(0.4),
-                  Color(hex: 0x3C414F).opacity(0.08)
+                  DesignSystem.Colors.mypageBorder.opacity(0.3),
+                  DesignSystem.Colors.mypageBorder.opacity(0.08)
                 ]
               ),
               startPoint: .topLeading,
@@ -118,7 +117,7 @@ fileprivate struct ShortsInfoView: View {
         .font(.b18)
         .foregroundColor(fontColor)
     }
-    .frame(width: 103, height: 47)
+    .frame(maxWidth: .infinity)
     .background(Color.white)
   }
 }
