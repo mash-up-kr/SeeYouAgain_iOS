@@ -41,11 +41,17 @@ public struct MainView: View {
         ) { store in
           NewsCardScrollView(store: store)
             .frame(height: viewStore.newsCardLayout.size.height)
-          
-          Spacer()
-            .frame(height: 24)
-          
-          SaveTextView()
+        }
+        Spacer()
+          .frame(height: 24)
+        
+        IfLetStore(
+          store.scope(
+            state: \.saveGuideState,
+            action: MainAction.saveGuide
+          )
+        ) { store in
+          SaveGuideView(store: store)          
         }
         
         Spacer()
@@ -57,16 +63,5 @@ public struct MainView: View {
     }
     .shortsBackgroundView()
     .navigationBarHidden(true)
-  }
-}
-
-private struct SaveTextView: View {
-  fileprivate var body: some View {
-    VStack(spacing: 8) {
-      DesignSystem.Icons.caretDown
-      Text("아래로 내려서 저장하기")
-        .font(.b14)
-        .foregroundColor(DesignSystem.Colors.grey70)
-    }
   }
 }

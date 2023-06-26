@@ -35,6 +35,7 @@ public struct MainState: Equatable {
   var newsCardScrollState: NewsCardScrollState?
   var cursorPage: Int = 0
   var cursorDate: Date = .now
+  var saveGuideState: SaveGuideState?
   public init() { }
 }
 
@@ -55,22 +56,27 @@ public enum MainAction {
   case _setIsLoading(Bool)
   case _setCategories([CategoryType])
   case _setNewsCardScrollState([NewsCard])
+  case _setSaveGuideState(SaveGuideState?)
   
   // MARK: - Child Action
   case newsCardScroll(NewsCardScrollAction)
+  case saveGuide(SaveGuideAction)
 }
 
 public struct MainEnvironment {
   fileprivate let mainQueue: AnySchedulerOf<DispatchQueue>
+  fileprivate let userDefaultsService: UserDefaultsService
   fileprivate let newsCardService: NewsCardService
   fileprivate let categoryService: CategoryService
   
   public init(
     mainQueue: AnySchedulerOf<DispatchQueue>,
+    userDefaultsService: UserDefaultsService,
     newscardService: NewsCardService,
     categoryService: CategoryService
   ) {
     self.mainQueue = mainQueue
+    self.userDefaultsService = userDefaultsService
     self.newsCardService = newscardService
     self.categoryService = categoryService
   }
@@ -89,6 +95,18 @@ public let mainReducer = Reducer.combine([
       action: /MainAction.newsCardScroll,
       environment: { _ in NewsCardScrollEnvironmnet() }
     ),
+  saveGuideReducer
+    .optional()
+    .pullback(
+      state: \.saveGuideState,
+      action: /MainAction.saveGuide,
+      environment: {
+        SaveGuideEnvironment(
+          mainQueue: $0.mainQueue,
+          userDefaultsService: $0.userDefaultsService
+        )
+      }
+    ),
   Reducer<MainState, MainAction, MainEnvironment> { state, action, env in
     switch action {
     case ._viewWillAppear:
@@ -99,6 +117,7 @@ public let mainReducer = Reducer.combine([
       
     case ._categoriesIsUpdated:
       state.newsCardScrollState = nil
+      state.saveGuideState = nil
       state.cursorPage = 0
       state.cursorDate = .now
       return Effect.merge(
@@ -172,6 +191,10 @@ public let mainReducer = Reducer.combine([
       )
       return .none
       
+    case let ._setSaveGuideState(saveGuideState):
+      state.saveGuideState = saveGuideState
+      return .none
+      
     case let .newsCardScroll(._fetchNewsCardsIfNeeded(currentScrollIndex, newsCardsCount)):
       if newsCardsCount - currentScrollIndex > Constant.pagingCriticalPoint { return .none }
       state.cursorPage += 1
@@ -214,7 +237,10 @@ private func handleNewsCardsResponse(
       return .none
     }
     if state.newsCardScrollState == nil {
-      return Effect(value: ._setNewsCardScrollState(newsCards))
+      return Effect.merge(
+        Effect(value: ._setNewsCardScrollState(newsCards)),
+        Effect(value: ._setSaveGuideState(.init()))
+      )
     }
     
   case .continuousPaging:
