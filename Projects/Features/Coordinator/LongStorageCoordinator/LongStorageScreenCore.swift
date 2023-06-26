@@ -10,13 +10,16 @@ import ComposableArchitecture
 import LongStorageNewsList
 import Services
 import TCACoordinators
+import Web
 
 public enum LongStorageScreenState: Equatable {
   case longStorageNewsList(LongStorageNewsListState)
+  case web(WebState)
 }
 
 public enum LongStorageScreenAction: Equatable {
   case longStorageNewsList(LongStorageNewsListAction)
+  case web(WebAction)
 }
 
 internal struct LongStorageScreenEnvironment {
@@ -27,6 +30,14 @@ internal let longStorageScreenReducer = Reducer<
   LongStorageScreenAction,
   LongStorageScreenEnvironment
 >.combine([
+  webReducer
+    .pullback(
+      state: /LongStorageScreenState.web,
+      action: /LongStorageScreenAction.web,
+      environment: { _ in
+        WebEnvironment()
+      }
+    ),
   longStorageNewsListReducer
     .pullback(
       state: /LongStorageScreenState.longStorageNewsList,
@@ -34,5 +45,5 @@ internal let longStorageScreenReducer = Reducer<
       environment: { _ in
         LongStorageNewsListEnvironment()
       }
-    ),
+    )
 ])
