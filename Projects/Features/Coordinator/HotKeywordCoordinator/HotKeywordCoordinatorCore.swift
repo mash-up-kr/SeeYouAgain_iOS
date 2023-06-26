@@ -33,7 +33,16 @@ public enum HotKeywordCoordinatorAction: IndexedRouterAction {
 }
 
 public struct HotKeywordCoordinatorEnvironment {
-  public init() {}
+  let mainQueue: AnySchedulerOf<DispatchQueue>
+  let hotKeywordService: HotKeywordService
+  
+  public init(
+    mainQueue: AnySchedulerOf<DispatchQueue>,
+    hotKeywordService: HotKeywordService
+  ) {
+    self.mainQueue = mainQueue
+    self.hotKeywordService = hotKeywordService
+  }
 }
 
 public let hotKeywordCoordinatorReducer: Reducer<
@@ -41,8 +50,11 @@ public let hotKeywordCoordinatorReducer: Reducer<
   HotKeywordCoordinatorAction,
   HotKeywordCoordinatorEnvironment
 > = hotKeywordScreenReducer
-  .forEachIndexedRoute(environment: { _ in
-    HotKeywordScreenEnvironment()
+  .forEachIndexedRoute(environment: {
+    HotKeywordScreenEnvironment(
+      mainQueue: $0.mainQueue,
+      hotKeywordService: $0.hotKeywordService
+    )
   })
   .withRouteReducer(
     Reducer { state, action, env in

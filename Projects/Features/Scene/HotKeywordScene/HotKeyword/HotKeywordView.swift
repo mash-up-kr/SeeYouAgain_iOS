@@ -11,7 +11,6 @@ import DesignSystem
 import SwiftUI
 
 // TODO: 1.API 연동 작업, 2.써클 tap, 3. 써클 블러, 4. 디자인 검수(써클 패턴 묘하게 안맞는거 확인 해야할듯, 쪼꼬미 원 추가)
-// 5. 패턴 추가, 6. 진입했을때 애니메이션 시작하기, 7. 리프레시 컨트롤 및, 시작시 데이터 받아오기(패턴 랜덤화), 8. 클릭시 액션
 public struct HotKeywordView: View {
   private let store: Store<HotKeywordState, HotKeywordAction>
   
@@ -19,12 +18,9 @@ public struct HotKeywordView: View {
     self.store = store
   }
   
+  // TODO: 여기 값들 스토어로?
   @Namespace var leadingID
-
-  // TODO: 여기 값들 전부 스토어로 넘길 수 있을까?
   @State private var offset: CGFloat = UIScreen.main.bounds.width
-  @State private var isRefresh: Bool = false // 사용안함
-  
   private let keyWindow = UIApplication.shared.connectedScenes
     .compactMap { $0 as? UIWindowScene }
     .flatMap { $0.windows }
@@ -39,7 +35,10 @@ public struct HotKeywordView: View {
     let tabberHeight: CGFloat = 82
     return UIScreen.main.bounds.height - (topSafearea + bottomSafearea + titleViewHeight + tabberHeight)
   }
-  
+  public var basicOffset: CGFloat {
+    return screenWidth - screenWidth / 4
+  }
+
   public var body: some View {
     WithViewStore(store) { viewStore in
       ScrollView(.vertical, showsIndicators: false) {
@@ -53,11 +52,21 @@ public struct HotKeywordView: View {
       }
       .background(DesignSystem.Colors.blue50)
       .refreshable {
-        offset = screenWidth - screenWidth / 4
-        isRefresh = true
-
-        viewStore.send(._pullToRefresh)
+        offset = basicOffset
+        viewStore.send(.pullToRefresh)
       }
+      .onAppear {
+        offset = basicOffset
+        viewStore.send(._fetchData)
+      }
+      .apply(content: { view in
+        WithViewStore(store.scope(state: \.toastMessage)) { toastMessage in
+          view.toast(
+            text: toastMessage.state,
+            toastType: .warning
+          )
+        }
+      })
     }
     .navigationBarHidden(true)
   }
@@ -114,12 +123,13 @@ public struct HotKeywordView: View {
           idealWidth: screenWidth,
           idealHeight: bubbleViewIdealHeight
         )
-        .onChange(of: isRefresh) { isRefresh in
+        .onChange(of: viewStore.isRefresh) { isRefresh in
           if isRefresh == true {
-            withAnimation { // TODO: 애니메이션 여부 체크
+            offset = basicOffset
+            viewStore.send(._setIsRefreshFalse)
+            withAnimation {
               proxy.scrollTo(leadingID, anchor: .topLeading)
             }
-            self.isRefresh.toggle()
           }
         }
       }
@@ -128,11 +138,7 @@ public struct HotKeywordView: View {
   
   struct BubbleChartView: View {
     var hotKeyword: HotKeywordPointList
-    @Binding var offset: CGFloat {
-      didSet {
-        print(offset)
-      }
-    }
+    @Binding var offset: CGFloat
     
     var body: some View {
       GeometryReader { geometry in

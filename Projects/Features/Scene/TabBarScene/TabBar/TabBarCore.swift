@@ -58,17 +58,20 @@ public struct TabBarEnvironment {
   let appVersionService: AppVersionService
   fileprivate let newsCardService: NewsCardService
   fileprivate let categoryService: CategoryService
-  
+  fileprivate let hotKeywordService: HotKeywordService
+
   public init(
     mainQueue: AnySchedulerOf<DispatchQueue>,
     appVersionService: AppVersionService,
     newsCardService: NewsCardService,
-    categoryService: CategoryService
+    categoryService: CategoryService,
+    hotKeywordService: HotKeywordService
   ) {
     self.mainQueue = mainQueue
     self.appVersionService = appVersionService
     self.newsCardService = newsCardService
     self.categoryService = categoryService
+    self.hotKeywordService = hotKeywordService
   }
 }
 
@@ -81,8 +84,11 @@ public let tabBarReducer = Reducer<
     .pullback(
       state: \TabBarState.hotKeyword,
       action: /TabBarAction.hotKeyword,
-      environment: { _ in
-        HotKeywordCoordinatorEnvironment()
+      environment: {
+        HotKeywordCoordinatorEnvironment(
+          mainQueue: $0.mainQueue,
+          hotKeywordService: $0.hotKeywordService
+        )
       }
     ),
   mainCoordinatorReducer
@@ -123,6 +129,9 @@ public let tabBarReducer = Reducer<
     switch action {
     case let .tabSelected(tab):
       state.selectedTab = tab
+      if tab == .hotKeyword {
+        return Effect(value: .hotKeyword(.routeAction(0, action: .hotKeyword(._viewWillAppear))))
+      }
       return .none
       
     case let .main(.routeAction(_, action: .main(.showCategoryBottomSheet(categories)))):

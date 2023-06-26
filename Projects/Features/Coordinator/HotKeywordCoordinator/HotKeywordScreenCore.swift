@@ -7,6 +7,7 @@
 //
 
 import ComposableArchitecture
+import Dispatch
 import HotKeyword
 import Services
 import TCACoordinators
@@ -20,8 +21,15 @@ public enum HotKeywordScreenAction: Equatable {
 }
 
 internal struct HotKeywordScreenEnvironment {
-  internal init() {
-    
+  let mainQueue: AnySchedulerOf<DispatchQueue>
+  let hotKeywordService: HotKeywordService
+  
+  internal init(
+    mainQueue: AnySchedulerOf<DispatchQueue>,
+    hotKeywordService: HotKeywordService
+  ) {
+    self.mainQueue = mainQueue
+    self.hotKeywordService = hotKeywordService
   }
 }
 
@@ -34,8 +42,11 @@ internal let hotKeywordScreenReducer = Reducer<
     .pullback(
       state: /HotKeywordScreenState.hotKeyword,
       action: /HotKeywordScreenAction.hotKeyword,
-      environment: { _ in
-        HotKeywordEnvironment()
+      environment: {
+        HotKeywordEnvironment(
+          mainQueue: $0.mainQueue,
+          hotKeywordService: $0.hotKeywordService
+        )
       }
     )
 ])

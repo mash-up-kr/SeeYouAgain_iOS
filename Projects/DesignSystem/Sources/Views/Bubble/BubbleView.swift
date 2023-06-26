@@ -57,7 +57,7 @@ public struct BubbleView: View {
             .font(bubbleSize.font)
             .lineLimit(1)
         }
-        .scaleEffect(isAnimated ? 1 : 0)
+        .scaleEffect(isAnimated ? 1 : 0.001) // ignoring singular matrix에러로 인해 0 대신 0.001로 설정
         .animation(.spring(), value: isAnimated)
         .onAppear {
           isAnimated = offset > pointX
