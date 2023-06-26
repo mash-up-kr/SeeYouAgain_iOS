@@ -10,7 +10,7 @@ import ComposableArchitecture
 import DesignSystem
 import SwiftUI
 
-// TODO: 1.API 연동 작업, 2.써클 tap, 3. 써클 블러, 4. 디자인 검수(써클 패턴 묘하게 안맞는거 확인 해야할듯, 쪼꼬미 원 추가)
+// lina-TODO: 1. 써클 tap API 연동 작업, 2. 디자인 검수: 써클 블러, 쪼꼬미 원 추가
 public struct HotKeywordView: View {
   private let store: Store<HotKeywordState, HotKeywordAction>
   
@@ -18,7 +18,7 @@ public struct HotKeywordView: View {
     self.store = store
   }
   
-  // TODO: 여기 값들 스토어로?
+  // lina-TODO: 여기 값들 스토어로?
   @Namespace var leadingID
   @State private var offset: CGFloat = UIScreen.main.bounds.width
   private let keyWindow = UIApplication.shared.connectedScenes
@@ -31,7 +31,7 @@ public struct HotKeywordView: View {
   private var bubbleViewIdealHeight: CGFloat {
     let topSafearea = keyWindow?.safeAreaInsets.top ?? 0
     let bottomSafearea = keyWindow?.safeAreaInsets.bottom ?? 0
-    let titleViewHeight: CGFloat = 98
+    let titleViewHeight: CGFloat = 100
     let tabberHeight: CGFloat = 82
     return UIScreen.main.bounds.height - (topSafearea + bottomSafearea + titleViewHeight + tabberHeight)
   }
@@ -44,7 +44,7 @@ public struct HotKeywordView: View {
       ScrollView(.vertical, showsIndicators: false) {
         titleView
         
-        bubbleChartView
+        bubbleChartScrollView
         
         // 하단 탭바 높이만큼 여백
         Spacer()
@@ -75,12 +75,10 @@ public struct HotKeywordView: View {
     WithViewStore(store) { viewStore in
       VStack(spacing: 4) {
         HStack(spacing: 10) {
-          // TODO: title 이미지 변경, 불꽃 이미지 교체
           DesignSystem.Icons.hotkeywordTitle
-          DesignSystem.Icons.hotkeywordFire
           Spacer()
         }
-        .frame(height: 30)
+        .frame(height: 32)
         
         HStack {
           Text("\(viewStore.subTitleText) 기준")
@@ -96,7 +94,7 @@ public struct HotKeywordView: View {
   }
   
   // MARK: - Buuble Chart
-  private var bubbleChartView: some View {
+  private var bubbleChartScrollView: some View {
     WithViewStore(store) { viewStore in
       ScrollViewReader { proxy in
         GeometryReader { geometry in
@@ -135,8 +133,11 @@ public struct HotKeywordView: View {
       }
     }
   }
-  
-  struct BubbleChartView: View {
+}
+
+// MARK: - BubbleChartView
+extension HotKeywordView {
+  private struct BubbleChartView: View {
     var hotKeyword: HotKeywordPointList
     @Binding var offset: CGFloat
     
@@ -159,8 +160,10 @@ public struct HotKeywordView: View {
       }
     }
   }
-  
-  // MARK: - 스크롤 관련
+}
+
+// MARK: - 스크롤 관련
+extension HotKeywordView {
   private var scrollObservableView: some View {
     GeometryReader { geometry in
       let offsetX = -geometry.frame(in: .global).origin.x
@@ -173,7 +176,7 @@ public struct HotKeywordView: View {
     .frame(width: 0)
   }
   
-  struct ScrollOffsetKey: PreferenceKey {
+  private struct ScrollOffsetKey: PreferenceKey {
     static var defaultValue: CGFloat = .zero
     static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
       value += nextValue()

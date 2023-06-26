@@ -8,6 +8,7 @@
 
 import ComposableArchitecture
 import HotKeyword
+import LongStorageCoordinator
 import SwiftUI
 import TCACoordinators
 
@@ -25,6 +26,11 @@ public struct HotKeywordCoordinatorView: View {
           state: /HotKeywordScreenState.hotKeyword,
           action: HotKeywordScreenAction.hotKeyword,
           then: HotKeywordView.init
+        )
+        CaseLet(
+          state: /HotKeywordScreenState.longStorage,
+          action: HotKeywordScreenAction.longStorage,
+          then: LongStorageCoordinatorView.init
         )
       }
     }

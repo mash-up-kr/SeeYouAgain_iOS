@@ -44,7 +44,6 @@ extension HotKeywordAPI: TargetType {
     }
   }
   
-  // TODO: authorization
   public var headers: [String: String]? {
     return ["Content-Type": "application/json;charset=UTF-8"]
   }

@@ -17,7 +17,7 @@ public struct HotKeywordPointList: Equatable {
   init(hotkeywordList: [String], hotKeywordPattern: HotKeywordPattern) {
     var pointList: [HotKeywordPoint] = []
     
-    // TODO: index 접근방식 safe하게 변경
+    // lina-TODO: index 접근방식 safe하게 변경
     for (index, keyword) in hotkeywordList.enumerated() {
       pointList.append(HotKeywordPoint(
         keyword: keyword,

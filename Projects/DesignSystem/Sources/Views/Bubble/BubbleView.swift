@@ -8,6 +8,7 @@
 
 import SwiftUI
 
+// lina-TODO: 여기 매게변수 좀 정리하자
 public struct BubbleView: View {
   let keyword: String
   let bubbleSize: BubbleSize
