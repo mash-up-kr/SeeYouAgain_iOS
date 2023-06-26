@@ -93,7 +93,7 @@ public let mainReducer = Reducer.combine([
     .pullback(
       state: \.newsCardScrollState,
       action: /MainAction.newsCardScroll,
-      environment: { _ in NewsCardScrollEnvironmnet() }
+      environment: { NewsCardScrollEnvironmnet(newsCardService: $0.newsCardService) }
     ),
   saveGuideReducer
     .optional()
@@ -199,6 +199,9 @@ public let mainReducer = Reducer.combine([
       if newsCardsCount - currentScrollIndex > Constant.pagingCriticalPoint { return .none }
       state.cursorPage += 1
       return Effect(value: ._fetchNewsCards(.continuousPaging))
+      
+    case .newsCardScroll(.newsCard(id: _, action: ._saveNewsCard)):
+      return Effect(value: .saveGuide(._startAnimation))
       
     default:
       return .none
