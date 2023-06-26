@@ -82,18 +82,16 @@ public struct ShortStorageNewsListView: View {
               Spacer()
                 .frame(height: 48)
               
-              VStack(spacing: 0) {
-                ForEachStore(
-                  self.store.scope(
-                    state: \.shortsNewsItems,
-                    action: { .shortsNewsItem(id: $0, action: $1) }
-                  )
-                ) {
-                  TodayShortsItemView(store: $0)
-                    .padding(.horizontal, 24)
-                }
-                .padding(.bottom, 16)
+              ForEachStore(
+                self.store.scope(
+                  state: \.shortsNewsItems,
+                  action: { .shortsNewsItem(id: $0, action: $1) }
+                )
+              ) {
+                TodayShortsItemView(store: $0)
               }
+              .padding(.horizontal, 24)
+              .padding(.bottom, 16)
             }
           }
           .frame(maxWidth: .infinity)
