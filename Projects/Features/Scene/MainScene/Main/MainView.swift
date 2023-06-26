@@ -42,6 +42,7 @@ public struct MainView: View {
           NewsCardScrollView(store: store)
             .frame(height: viewStore.newsCardLayout.size.height)
         }
+        
         Spacer()
           .frame(height: 24)
         
