@@ -70,7 +70,7 @@ public struct TabBarView: View {
           get: \.categoryBottomSheet.isPresented,
           send: {
             TabBarAction.categoryBottomSheet(
-              CategoryBottomSheetAction._setIsPresented($0)
+              BottomSheetAction._setIsPresented($0)
             )
           }
         ),

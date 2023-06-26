@@ -158,6 +158,52 @@ public let appCoordinatorReducer: Reducer<
         state.routes.push(.newsCard(.init()))
         return .none
         
+      case .routeAction(_, action: .newsCard(.routeAction(_, action: .shortsComplete(.backButtonTapped)))):
+        state.routes.pop()
+        return Effect(
+          value: .routeAction(
+            0,
+            action: .tabBar(
+              .myPage(
+                .routeAction(
+                  0,
+                  action: .shortStorage(
+                    .routeAction(
+                      0,
+                      action: .shortStorageNewsList(
+                        .backButtonTapped
+                      )
+                    )
+                  )
+                )
+              )
+            )
+          )
+        )
+        
+      case .routeAction(_, action: .newsCard(.routeAction(_, action: .shortsComplete(.completeButtonTapped)))):
+        state.routes.pop()
+        return Effect(
+          value: .routeAction(
+            0,
+            action: .tabBar(
+              .myPage(
+                .routeAction(
+                  0,
+                  action: .shortStorage(
+                    .routeAction(
+                      0,
+                      action: .shortStorageNewsList(
+                        .backButtonTapped
+                      )
+                    )
+                  )
+                )
+              )
+            )
+          )
+        )
+        
       case .routeAction(_, action: .newsCard(.routeAction(_, action: .newsList(.backButtonTapped)))):
         state.routes.pop()
         return .none

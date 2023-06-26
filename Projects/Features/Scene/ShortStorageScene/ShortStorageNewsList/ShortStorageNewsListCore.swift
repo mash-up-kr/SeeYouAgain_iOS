@@ -26,7 +26,7 @@ public struct ShortStorageNewsListState: Equatable {
   var isInEditMode: Bool
   var today: String
   var shortsNewsItemsCount: Int // 저장한 숏스 수
-  var shortsClearCount: Int // 완료한 숏스 수 (리스트에 표시되는 숏스 = 저장 숏스 - 완료 숏스)
+  var shortsCompleteCount: Int // 완료한 숏스 수 (리스트에 표시되는 숏스 = 저장 숏스 - 완료 숏스)
   var shortsNewsItems: IdentifiedArrayOf<TodayShortsItemState> = []
   var remainTimeString: String
   var remainTime: Int = 24 * 60 * 60
@@ -35,11 +35,11 @@ public struct ShortStorageNewsListState: Equatable {
   public init(
     isInEditMode: Bool,
     shortslistCount: Int,
-    shortsClearCount: Int
+    shortsCompleteCount: Int
   ) {
     self.isInEditMode = isInEditMode
     self.shortsNewsItemsCount = shortslistCount
-    self.shortsClearCount = shortsClearCount
+    self.shortsCompleteCount = shortsCompleteCount
     self.today = Date().fullDateToString()
     self.remainTimeString = initializeRemainTimeString()
   }
@@ -259,7 +259,7 @@ public let shortStorageNewsListReducer = Reducer<
       // TODO: 실데이터 반영 필요
       state.shortsNewsItems.removeAll()
       state.shortsNewsItemsCount = 0
-      state.shortsClearCount = 0
+      state.shortsCompleteCount = 0
       state.today = Date().fullDateToString()
       return .none
       

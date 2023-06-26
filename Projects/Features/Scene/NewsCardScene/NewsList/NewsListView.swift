@@ -19,17 +19,68 @@ public struct NewsListView: View {
   
   public var body: some View {
     WithViewStore(store) { viewStore in
-      VStack(spacing: 0) {
-        TopNavigationBar(
-          leftIcon: DesignSystem.Icons.iconNavigationLeft,
-          leftIconButtonAction: {
-            viewStore.send(.backButtonTapped)
+      ZStack {
+        VStack(spacing: 0) {
+          TopNavigationBar(
+            leftIcon: DesignSystem.Icons.iconNavigationLeft,
+            leftIconButtonAction: {
+              viewStore.send(.backButtonTapped)
+            }
+          )
+          
+          ScrollView {
+            VStack(spacing: 0) {
+              Spacer()
+                .frame(height: 30)
+              
+              Text(viewStore.keywordTitle)
+                .font(.b24)
+                .foregroundColor(DesignSystem.Colors.grey100)
+                .padding(.horizontal, 24)
+                .lineLimit(3)
+              
+              Spacer()
+                .frame(height: 48)
+              
+              HStack(spacing: 0) {
+                Text("최신순")
+                  .font(.r14)
+                  .foregroundColor(DesignSystem.Colors.grey70)
+                
+                DesignSystem.Icons.iconChevronDown
+                
+                Spacer()
+              }
+              .padding(.horizontal, 24)
+              
+              Spacer()
+                .frame(height: 16)
+              
+              ForEachStore(
+                self.store.scope(
+                  state: \.newsItems,
+                  action: { .newsItem(id: $0, action: $1) }
+                )
+              ) {
+                NewsCardView(store: $0)
+              }
+              .padding(.horizontal, 24)
+              .padding(.bottom, 16)
+            }
           }
-        )
+          .padding(.bottom, 48)
+        }
+        .onAppear {
+          viewStore.send(._onAppear)
+        }
         
-        Spacer()
-        
-        Text("뉴스 리스트 화면 \(viewStore.id)")
+        VStack(spacing: 0) {
+          Spacer()
+          
+          BottomButton(title: "다 읽었어요") {
+            viewStore.send(.completeButtonTapped)
+          }
+        }
       }
     }
   }

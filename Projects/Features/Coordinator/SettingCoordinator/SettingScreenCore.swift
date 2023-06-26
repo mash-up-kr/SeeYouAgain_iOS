@@ -39,5 +39,5 @@ internal let settingScreenReducer = Reducer<
       environment: {
         SettingEnvironment(appVersionService: $0.appVersionService)
       }
-    ),
+    )
 ])

@@ -13,7 +13,7 @@ import Foundation
 import Models
 import Services
 
-public struct CategoryBottomSheetState: Equatable {
+public struct BottomSheetState: Equatable {
   var allCategories: [CategoryType] = CategoryType.allCases
   var selectedCategories: [CategoryType] = []
   public var isPresented: Bool = false
@@ -22,7 +22,7 @@ public struct CategoryBottomSheetState: Equatable {
   public init() {}
 }
 
-public enum CategoryBottomSheetAction {
+public enum BottomSheetAction {
   // MARK: - User Action
   case categoryTapped(CategoryType)
   case updateButtonTapped
@@ -39,7 +39,7 @@ public enum CategoryBottomSheetAction {
   case _setToastMessage(String?)
 }
 
-public struct CategoryBottomSheetEnvironment {
+public struct BottomSheetEnvironment {
   fileprivate let mainQueue: AnySchedulerOf<DispatchQueue>
   fileprivate let categoryService: CategoryService
   
@@ -57,10 +57,10 @@ enum CategoryBottomSheetID: Hashable {
   case _setCategoryToast
 }
 
-public let categoryBottomSheetReducer: Reducer<
-  CategoryBottomSheetState,
-  CategoryBottomSheetAction,
-  CategoryBottomSheetEnvironment
+public let bottomSheetReducer: Reducer<
+  BottomSheetState,
+  BottomSheetAction,
+  BottomSheetEnvironment
 > = Reducer { state, action, env in
   switch action {
   case let .categoryTapped(category):
@@ -79,7 +79,7 @@ public let categoryBottomSheetReducer: Reducer<
   case let ._updateCategoires(categories):
     return env.categoryService.updateCategories(categories)
       .catchToEffect()
-      .flatMapLatest { result -> Effect<CategoryBottomSheetAction, Never> in
+      .flatMapLatest { result -> Effect<BottomSheetAction, Never> in
         switch result {
         case .success:
           return Effect(value: ._categoriesIsUpdated)

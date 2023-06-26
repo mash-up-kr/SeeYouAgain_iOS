@@ -25,6 +25,7 @@ let project = Project.make(
       sources: ["NewsCardCoordinator/**"],
       dependencies: [
         .project(target: "NewsList", path: .relativeToRoot("Projects/Features/Scene")),
+        .project(target: "Web", path: .relativeToRoot("Projects/Features/Scene")),
         .externalsrt("TCA"),
         .externalsrt("TCACoordinators"),
       ]
