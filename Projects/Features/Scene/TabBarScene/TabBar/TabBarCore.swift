@@ -55,17 +55,20 @@ public enum TabBarAction {
 
 public struct TabBarEnvironment {
   fileprivate let mainQueue: AnySchedulerOf<DispatchQueue>
+  fileprivate let userDefaultsService: UserDefaultsService
   let appVersionService: AppVersionService
   fileprivate let newsCardService: NewsCardService
   fileprivate let categoryService: CategoryService
   
   public init(
     mainQueue: AnySchedulerOf<DispatchQueue>,
+    userDefaultsService: UserDefaultsService,
     appVersionService: AppVersionService,
     newsCardService: NewsCardService,
     categoryService: CategoryService
   ) {
     self.mainQueue = mainQueue
+    self.userDefaultsService = userDefaultsService
     self.appVersionService = appVersionService
     self.newsCardService = newsCardService
     self.categoryService = categoryService
@@ -92,6 +95,7 @@ public let tabBarReducer = Reducer<
       environment: {
         MainCoordinatorEnvironment(
           mainQueue: $0.mainQueue,
+          userDefaultsService: $0.userDefaultsService,
           newsCardService: $0.newsCardService,
           categoryService: $0.categoryService
         )
