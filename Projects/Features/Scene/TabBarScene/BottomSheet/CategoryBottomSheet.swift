@@ -51,6 +51,14 @@ struct CategoryBottomSheet: View {
       }
       .scrollDisabled(true)
       .frame(height: 218)
+      .apply(content: { view in
+        WithViewStore(store.scope(state: \.toastMessage)) { toastMessageViewStore in
+          view.toast(
+            text: toastMessageViewStore.state,
+            toastType: .warning
+          )
+        }
+      })
     }
   }
 }
