@@ -75,7 +75,7 @@ public let setCategoryReducer = Reducer.combine([
       return Effect(value: ._saveConnectHistory)
       
     case ._saveConnectHistory:
-      return env.userDefaultsService.save(true)
+      return env.userDefaultsService.save(.registered, true)
         .map({ _ -> SetCategoryAction in
           return ._sendSelectedCategory
         })

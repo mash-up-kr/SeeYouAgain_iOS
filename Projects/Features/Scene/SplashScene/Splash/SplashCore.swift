@@ -39,7 +39,7 @@ public let splashReducer = Reducer.combine([
       return Effect(value: ._checkConnectHistory)
       
     case ._checkConnectHistory:
-      return env.userDefaultsService.load()
+      return env.userDefaultsService.load(.registered)
         .map({ status -> SplashAction in
           if status {
             return ._moveToHome
