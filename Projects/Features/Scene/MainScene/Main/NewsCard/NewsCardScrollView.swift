@@ -27,12 +27,6 @@ struct NewsCardScrollView: View {
       .onAppear {
         viewStore.send(._onAppear)
       }
-      .onChange(
-        of: viewStore.newsCards,
-        perform: { newValue in
-          viewStore.send(.newsCardsChanged)
-        }
-      )
       .offset(x: viewStore.currentScrollOffset, y: 0)
       .simultaneousGesture(
         DragGesture()
@@ -40,7 +34,8 @@ struct NewsCardScrollView: View {
             viewStore.send(.dragOnChanged(value.translation))
           }
           .onEnded { _ in
-            viewStore.send(._countPageIndex)
+            viewStore.send(._calculateScrollIndex)
+            viewStore.send(._fetchNewsCardsIfNeeded(viewStore.currentScrollIndex, viewStore.newsCards.count))
             viewStore.send(.dragOnEnded)
           }
       )

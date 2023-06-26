@@ -8,6 +8,7 @@
 
 import Combine
 import ComposableArchitecture
+import Foundation
 import Main
 import Services
 import TCACoordinators
@@ -33,13 +34,16 @@ public enum MainCoordinatorAction: IndexedRouterAction {
 }
 
 public struct MainCoordinatorEnvironment {
+  fileprivate let mainQueue: AnySchedulerOf<DispatchQueue>
   fileprivate let newsCardService: NewsCardService
   fileprivate let categoryService: CategoryService
   
   public init(
+    mainQueue: AnySchedulerOf<DispatchQueue>,
     newsCardService: NewsCardService,
     categoryService: CategoryService
   ) {
+    self.mainQueue = mainQueue
     self.newsCardService = newsCardService
     self.categoryService = categoryService
   }
@@ -53,6 +57,7 @@ public let mainCoordinatorReducer: Reducer<
   .forEachIndexedRoute(
     environment: {
       MainScreenEnvironment(
+        mainQueue: $0.mainQueue,
         newsCardService: $0.newsCardService,
         categoryService: $0.categoryService
       )

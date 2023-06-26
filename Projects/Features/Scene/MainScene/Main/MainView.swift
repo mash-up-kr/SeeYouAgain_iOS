@@ -41,12 +41,12 @@ public struct MainView: View {
         ) { store in
           NewsCardScrollView(store: store)
             .frame(height: viewStore.newsCardLayout.size.height)
+          
+          Spacer()
+            .frame(height: 24)
+          
+          SaveTextView()
         }
-        
-        Spacer()
-          .frame(height: 24)
-        
-        SaveTextView()
         
         Spacer()
       }
