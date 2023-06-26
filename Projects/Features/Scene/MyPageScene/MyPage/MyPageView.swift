@@ -28,7 +28,6 @@ public struct MyPageView: View {
         )
         
         ZStack(alignment: .topTrailing) {
-          // TODO: 지구본 이미지 확정 시 수정 필요
           DesignSystem.Images.earth
             .frame(width: 106, height: 106)
             .padding(.trailing, 24)
@@ -48,11 +47,42 @@ public struct MyPageView: View {
         Spacer()
           .frame(height: 39)
         
-        // TODO: 디자인시스템 색상 정의되지 않은 부분으로 수정 필요
-        DesignSystem.Colors.blue100
+        DesignSystem.Colors.lightBlue
       }
     }
     .navigationBarHidden(true)
     .edgesIgnoringSafeArea(.bottom)
+    .myPageBackgroundView()
+  }
+}
+
+fileprivate struct MyPageBackgroundView: View {
+  fileprivate init() { }
+  
+  fileprivate var body: some View {
+    ZStack {
+      Color(red: 255, green: 255, blue: 255)
+        .opacity(1)
+        .edgesIgnoringSafeArea(.all)
+      
+      GeometryReader { geometry in
+        Circle()
+          .fill(
+            Color(red: 45/255, green: 205/255, blue: 255/255, opacity: 0.5)
+          )
+          .frame(width: 188, height: 188)
+          .blur(radius: 96)
+          .offset(x: -43, y: 178)
+      }
+    }
+  }
+}
+
+extension View {
+  fileprivate func myPageBackgroundView() -> some View {
+    ZStack {
+      MyPageBackgroundView()
+      self
+    }
   }
 }
