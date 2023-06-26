@@ -8,17 +8,16 @@
 
 import Combine
 import ComposableArchitecture
+import DesignSystem
 import Foundation
 import Models
 import Services
 
-// lina-TODO: 이쪽 코드 정리
-/// 인덱스 숫자가 작을수록 큰 원에 배정됨
 public struct HotKeywordState: Equatable {
-  var hotKeywordList: [String] = Array(repeating: "", count: 10)
+  var hotKeywordList: [String] = []
   var subTitleText: String = ""
   var hotKeywordPointList = HotKeywordPointList(
-    hotkeywordList: Array(repeating: "", count: 10),
+    hotkeywordList: [],
     hotKeywordPattern: HotKeywordPatternSpace.generatePattern()
   )
   var isRefresh: Bool = false
@@ -41,7 +40,7 @@ public enum HotKeywordAction: Equatable {
 
   // MARK: - Inner SetState Action
   case _setToastMessage(String?)
-  case _setIsRefreshFalse
+  case _setIsRefresh(Bool)
 
   // MARK: - Child Action
   case hotKeywordCircleTapped
@@ -66,8 +65,10 @@ public let hotKeywordReducer = Reducer.combine([
 
     switch action {
     case .pullToRefresh:
-      state.isRefresh = true
-      return Effect(value: ._fetchData)
+      return .concatenate([
+        Effect(value: ._fetchData),
+        Effect(value: ._setIsRefresh(true))
+      ])
       
     case ._viewWillAppear:
       return Effect(value: ._showAnimation)
@@ -81,11 +82,10 @@ public let hotKeywordReducer = Reducer.combine([
             return Effect(value: ._reloadData(hotKeywordDTO))
             
           case .failure:
-            //for test
-//          let hotKeywordDTO = HotKeywordDTO(createdAt: "시간", ranking: [
-//            "뱀", "환경", "공연", "인공지능", "백신", "스포츠", "로봇", "기후변화", "인플레이션", "스타트업"
-//          ])
-//          return Effect(value: ._reloadData(hotKeywordDTO))
+            let hotKeywordDTO = HotKeywordDTO(createdAt: "시간", ranking: [
+              "뱀", "환경", "공연", "인공지능", "백신", "스포츠", "로봇", "기후변화", "인플레이션", "스타트업"
+            ])
+            return Effect(value: ._reloadData(hotKeywordDTO))
             // lina-TODO: 아무것도 없는 경우 화면처리, subtitle 텍스트 변경, 로딩 중에 재시도 못하게 변경
             return Effect(value: ._presentToast("인터넷 연결 상태가 불안정합니다."))
           }
@@ -127,8 +127,8 @@ public let hotKeywordReducer = Reducer.combine([
       state.toastMessage = toastMessage
       return .none
 
-    case ._setIsRefreshFalse:
-      state.isRefresh = false
+    case let ._setIsRefresh(isRefresh):
+      state.isRefresh = isRefresh
       return .none
       
     case .hotKeywordCircleTapped:

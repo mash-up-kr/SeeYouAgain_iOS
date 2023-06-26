@@ -10,7 +10,6 @@ import ComposableArchitecture
 import DesignSystem
 import SwiftUI
 
-// lina-TODO: 1. 써클 tap API 연동 작업(값 넘기기), 2. 디자인 검수: 써클 블러, 쪼꼬미 원 추가
 public struct HotKeywordView: View {
   private let store: Store<HotKeywordState, HotKeywordAction>
   
@@ -18,7 +17,7 @@ public struct HotKeywordView: View {
     self.store = store
   }
   
-  // lina-TODO: 여기 값들 스토어로?
+  // lina-TODO: 코드 정리(여기 값들 스토어로 이동 할지)
   @Namespace var leadingID
   @State private var offset: CGFloat = UIScreen.main.bounds.width
   private let keyWindow = UIApplication.shared.connectedScenes
@@ -126,7 +125,7 @@ public struct HotKeywordView: View {
         .onChange(of: viewStore.isRefresh) { isRefresh in
           if isRefresh == true {
             offset = basicOffset
-            viewStore.send(._setIsRefreshFalse)
+            viewStore.send(._setIsRefresh(false))
             withAnimation {
               proxy.scrollTo(leadingID, anchor: .topLeading)
             }
@@ -146,19 +145,17 @@ extension HotKeywordView {
 
     var body: some View {
       GeometryReader { geometry in
-        ForEach(hotKeywordPointList.pointList, id: \.self) { point in
+        ForEach(hotKeywordPointList.pointList, id: \.self) { hotKeywordPoint in
           BubbleView(
-            keyword: point.keyword,
-            bubbleSize: point.size,
-            bubbleColor: point.color,
+            hotKeywordPoint: hotKeywordPoint,
             geometryHeight: geometry.size.height,
-            pointX: point.x * geometry.size.width,
+            pointX: hotKeywordPoint.x * geometry.size.width,
             offset: $offset,
             action: action
           )
           .offset(
-            x: point.x * geometry.size.width,
-            y: point.y * geometry.size.height
+            x: hotKeywordPoint.x * geometry.size.width,
+            y: hotKeywordPoint.y * geometry.size.height
           )
         }
       }

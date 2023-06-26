@@ -8,42 +8,37 @@
 
 import SwiftUI
 
-// lina-TODO: 여기 매게변수 좀 정리하자
 public struct BubbleView: View {
   let keyword: String
   let bubbleSize: BubbleSize
   let bubbleColor: BubbleColor
   let geometryHeight: CGFloat
-  var pointX: CGFloat
-  var action: () -> Void
+  let pointX: CGFloat
+  let action: () -> Void
   
   @Binding private var offset: CGFloat
   @State private var isAnimated: Bool = false
-
-  private var screenWidth: CGFloat {
-    UIScreen.main.bounds.width
-  }
+  
   // 써클의 중앙이 보일때 애니메이션을 시작해야하는데, 스크롤 할 때 offset이 크게 잡히는 경향이 있어서 여유 공간을 뺀 너비를 사용함
-  private var spaceWidth: CGFloat {
-    screenWidth - screenWidth / 4
-  }
-
+  private let spaceWidth: CGFloat = {
+    let screenWidth = UIScreen.main.bounds.width
+    return screenWidth - screenWidth / 4
+  }()
+  
   public init(
-    keyword: String,
-    bubbleSize: BubbleSize,
-    bubbleColor: BubbleColor,
+    hotKeywordPoint: HotKeywordPoint,
     geometryHeight: CGFloat,
     pointX: CGFloat,
     offset: Binding<CGFloat>,
     action: @escaping () -> Void
   ) {
-    self.keyword = keyword
-    self.bubbleSize = bubbleSize
-    self.bubbleColor = bubbleColor
+    self.keyword = hotKeywordPoint.keyword
+    self.bubbleSize = hotKeywordPoint.size
+    self.bubbleColor = hotKeywordPoint.color
     self.geometryHeight = geometryHeight
     self.pointX = pointX
     self._offset = offset
-    self.action = action
+    self.action = keyword.isEmpty == false ? action : {}
   }
   
   public var body: some View {
@@ -72,6 +67,7 @@ public struct BubbleView: View {
     )
   }
   
+  // lina-TODO: circle 블러
   private var circle: some View {
     Circle()
       .fill(
@@ -114,6 +110,8 @@ public enum BubbleSize: CGFloat {
   case _120
   case _100
   case _80
+  case _40 // 단순 데코용
+  case _30 // 단순 데코용
   
   public var sizeRatio: CGFloat {
     switch self {
@@ -129,6 +127,10 @@ public enum BubbleSize: CGFloat {
       return 100 / 500
     case ._80:
       return 80 / 500
+    case ._40:
+      return 40 / 500
+    case ._30:
+      return 30 / 500
     }
   }
   
@@ -146,6 +148,8 @@ public enum BubbleSize: CGFloat {
       return .b14
     case ._80:
       return .b12
+    default:
+      return .b12 // 최소 사이즈로 임의 설정
     }
   }
 }

@@ -129,7 +129,7 @@ public let tabBarReducer = Reducer<
     switch action {
     case let .tabSelected(tab):
       state.selectedTab = tab
-      // lina-TODO: 이게 최선인가?
+      // lina-TODO: 코드 정리(이게 최선인지)
       if tab == .hotKeyword {
         return Effect(value: .hotKeyword(.routeAction(0, action: .hotKeyword(._viewWillAppear))))
       }
