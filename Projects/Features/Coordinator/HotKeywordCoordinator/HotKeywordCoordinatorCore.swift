@@ -59,6 +59,14 @@ public let hotKeywordCoordinatorReducer: Reducer<
   .withRouteReducer(
     Reducer { state, action, env in
       switch action {
+      case .routeAction(_, action: .hotKeyword(.hotKeywordCircleTapped)):
+        state.routes.push(.longStorage(.init()))
+        return .none
+        
+      case .routeAction(_, action: .longStorage(.routeAction(_, action: .longStorageNewsList(.backButtonTapped)))):
+        state.routes.pop()
+        return .none
+        
       default: return .none
       }
     }

@@ -15,7 +15,7 @@ public struct BubbleView: View {
   let bubbleColor: BubbleColor
   let geometryHeight: CGFloat
   var pointX: CGFloat
-  var action: () -> Void = {}
+  var action: () -> Void
   
   @Binding private var offset: CGFloat
   @State private var isAnimated: Bool = false
@@ -35,7 +35,7 @@ public struct BubbleView: View {
     geometryHeight: CGFloat,
     pointX: CGFloat,
     offset: Binding<CGFloat>,
-    action: @escaping () -> Void = {}
+    action: @escaping () -> Void
   ) {
     self.keyword = keyword
     self.bubbleSize = bubbleSize

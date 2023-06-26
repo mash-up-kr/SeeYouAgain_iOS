@@ -10,7 +10,7 @@ import ComposableArchitecture
 import DesignSystem
 import SwiftUI
 
-// lina-TODO: 1. 써클 tap API 연동 작업, 2. 디자인 검수: 써클 블러, 쪼꼬미 원 추가
+// lina-TODO: 1. 써클 tap API 연동 작업(값 넘기기), 2. 디자인 검수: 써클 블러, 쪼꼬미 원 추가
 public struct HotKeywordView: View {
   private let store: Store<HotKeywordState, HotKeywordAction>
   
@@ -59,16 +59,17 @@ public struct HotKeywordView: View {
         offset = basicOffset
         viewStore.send(._fetchData)
       }
-      .apply(content: { view in
-        WithViewStore(store.scope(state: \.toastMessage)) { toastMessage in
-          view.toast(
-            text: toastMessage.state,
-            toastType: .warning
-          )
-        }
-      })
     }
     .navigationBarHidden(true)
+    .apply(content: { view in
+      WithViewStore(store.scope(state: \.toastMessage)) { toastMessage in
+        view.toast(
+          text: toastMessage.state,
+          toastType: .warning,
+          toastOffset: -100
+        )
+      }
+    })
   }
   
   private var titleView: some View {
@@ -104,8 +105,9 @@ public struct HotKeywordView: View {
                 .id(leadingID)
               
               BubbleChartView(
-                hotKeyword: viewStore.hotKeywordPointList,
-                offset: $offset
+                offset: $offset,
+                hotKeywordPointList: viewStore.hotKeywordPointList,
+                action: { viewStore.send(.hotKeywordCircleTapped) }
               )
               .frame(
                 width: geometry.size.height * 1.5,
@@ -138,19 +140,21 @@ public struct HotKeywordView: View {
 // MARK: - BubbleChartView
 extension HotKeywordView {
   private struct BubbleChartView: View {
-    var hotKeyword: HotKeywordPointList
     @Binding var offset: CGFloat
-    
+    var hotKeywordPointList: HotKeywordPointList
+    var action: () -> Void
+
     var body: some View {
       GeometryReader { geometry in
-        ForEach(hotKeyword.pointList, id: \.self) { point in
+        ForEach(hotKeywordPointList.pointList, id: \.self) { point in
           BubbleView(
             keyword: point.keyword,
             bubbleSize: point.size,
             bubbleColor: point.color,
             geometryHeight: geometry.size.height,
             pointX: point.x * geometry.size.width,
-            offset: $offset
+            offset: $offset,
+            action: action
           )
           .offset(
             x: point.x * geometry.size.width,

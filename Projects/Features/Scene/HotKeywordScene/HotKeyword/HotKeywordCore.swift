@@ -44,6 +44,7 @@ public enum HotKeywordAction: Equatable {
   case _setIsRefreshFalse
 
   // MARK: - Child Action
+  case hotKeywordCircleTapped
 }
 
 public struct HotKeywordEnvironment {
@@ -128,6 +129,9 @@ public let hotKeywordReducer = Reducer.combine([
 
     case ._setIsRefreshFalse:
       state.isRefresh = false
+      return .none
+      
+    case .hotKeywordCircleTapped:
       return .none
     }
   }
