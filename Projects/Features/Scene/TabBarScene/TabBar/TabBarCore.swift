@@ -21,6 +21,7 @@ public struct TabBarState: Equatable {
   public var categoryBottomSheet: BottomSheetState
   public var selectedTab: TabBarItem = .house
   public var isTabHidden: Bool = false
+  public var toastMessage: String?
   
   public init(
     hotKeyword: HotKeywordCoordinatorState,
@@ -42,9 +43,12 @@ public enum TabBarAction {
   case tabSelected(TabBarItem)
   
   // MARK: - Inner Business Action
+  case _presentToast(String)
+  case _hideToast
   
   // MARK: - Inner SetState Action
   case _setTabHiddenStatus(Bool)
+  case _setToastMessage(String?)
   
   // MARK: - Child Action
   case hotKeyword(HotKeywordCoordinatorAction)
@@ -73,6 +77,10 @@ public struct TabBarEnvironment {
     self.newsCardService = newsCardService
     self.categoryService = categoryService
   }
+}
+
+enum TabBarID: Hashable {
+  case _presentToast
 }
 
 public let tabBarReducer = Reducer<
@@ -129,15 +137,52 @@ public let tabBarReducer = Reducer<
       state.selectedTab = tab
       return .none
       
+    case let ._presentToast(toastMessage):
+      return .concatenate(
+        Effect(value: ._setToastMessage(toastMessage)),
+        Effect.cancel(id: TabBarID._presentToast),
+        Effect(value: ._hideToast)
+          .delay(for: 2, scheduler: env.mainQueue)
+          .eraseToEffect()
+          .cancellable(id: TabBarID._presentToast, cancelInFlight: true)
+      )
+      
+    case ._hideToast:
+      return Effect(value: ._setToastMessage(nil))
+    
+    case ._setTabHiddenStatus(let status):
+      state.isTabHidden = status
+      return .none
+      
+    case let ._setToastMessage(message):
+      state.toastMessage = message
+      return .none
+      
     case let .main(.routeAction(_, action: .main(.showCategoryBottomSheet(categories)))):
       return Effect.concatenate(
         Effect(value: .categoryBottomSheet(._setSelectedCategories(categories))),
         Effect(value: .categoryBottomSheet(._setIsPresented(true)))
       )
       
-    case ._setTabHiddenStatus(let status):
-      state.isTabHidden = status
-      return .none
+    case let .main(
+      .routeAction(
+        _, action: .main(
+          .newsCardScroll(
+            .newsCard(
+              id: _,
+              action: ._handleSaveNewsCardResponse(response)
+            )
+          )
+        )
+      )
+    ):
+      switch response {
+      case .success:
+        return Effect(value: ._presentToast("오늘 읽을 숏스에 저장됐어요:)"))
+        
+      case .failure:
+        return Effect(value: ._presentToast("인터넷이 불안정해서 저장되지 못했어요."))
+      }
       
     case .myPage(.routeAction(_, action: .myPage(.settingButtonTapped))):
       return Effect(value: ._setTabHiddenStatus(true))
