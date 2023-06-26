@@ -18,6 +18,7 @@ public struct HotKeywordState: Equatable {
   var subTitleText: String = ""
   var hotKeywordPointList = HotKeywordPointList(hotkeywordList: [])
   var isRefresh: Bool = false
+  var isFirstLoading: Bool = true
   var toastMessage: String?
 
   public init() { }
@@ -68,6 +69,7 @@ public let hotKeywordReducer = Reducer.combine([
       ])
       
     case ._viewWillAppear:
+      state.isFirstLoading = false
       return Effect(value: ._showAnimation)
       
     case ._fetchData:

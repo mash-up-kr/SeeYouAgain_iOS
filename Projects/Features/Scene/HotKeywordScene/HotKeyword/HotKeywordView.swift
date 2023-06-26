@@ -19,7 +19,7 @@ public struct HotKeywordView: View {
   
   // lina-TODO: 코드 정리(여기 값들 스토어로 이동 할지) 후 기기 사이즈 골고루 더블 체크
   @Namespace var leadingID
-  @State private var offset: CGFloat = UIScreen.main.bounds.width
+  @State private var offset: CGFloat = 0
   private let keyWindow = UIApplication.shared.connectedScenes
     .compactMap { $0 as? UIWindowScene }
     .flatMap { $0.windows }
@@ -55,8 +55,12 @@ public struct HotKeywordView: View {
         viewStore.send(.pullToRefresh)
       }
       .onAppear {
-        offset = basicOffset
         viewStore.send(._fetchData)
+      }
+      .onChange(of: viewStore.isFirstLoading) { isFirstLoading in
+        if isFirstLoading == false {
+          offset = basicOffset
+        }
       }
     }
     .navigationBarHidden(true)
@@ -123,7 +127,7 @@ public struct HotKeywordView: View {
           idealHeight: bubbleViewIdealHeight
         )
         .onChange(of: viewStore.isRefresh) { isRefresh in
-          if isRefresh == true {
+          if isRefresh {
             offset = basicOffset
             viewStore.send(._setIsRefresh(false))
             withAnimation {
