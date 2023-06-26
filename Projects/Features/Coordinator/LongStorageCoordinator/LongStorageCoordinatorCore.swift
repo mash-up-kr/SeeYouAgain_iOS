@@ -18,7 +18,13 @@ public struct LongStorageCoordinatorState: Equatable, IndexedRouterState {
   public init(
     routes: [Route<LongStorageScreenState>] = [
       .root(
-        .longStorageNewsList(.init()),
+        .longStorageNewsList(
+          .init(
+            isInEditMode: false,
+            shortslistCount: 6,
+            shortsClearCount: 3
+          )
+        ),
         embedInNavigationView: true
       )
     ]
@@ -47,6 +53,28 @@ public let longStorageCoordinatorReducer: Reducer<
   .withRouteReducer(
     Reducer { state, action, env in
       switch action {
+      case .routeAction(
+        _,
+        action: .longStorageNewsList(
+          .shortsNewsItem(
+            id: _,
+            action: .cardAction(
+              .rightButtonTapped
+            )
+          )
+        )
+      ):
+        state.routes.push(.web(.init(webAddress: "https://naver.com")))
+        return .none
+        
+      case .routeAction(_, action: .longStorageNewsList(.shortsNewsItem(id: _, action: .cardAction(.cardTapped)))):
+        state.routes.push(.web(.init(webAddress: "https://naver.com")))
+        return .none
+
+      case .routeAction(_, action: .web(.backButtonTapped)):
+        state.routes.pop()
+        return .none
+        
       default: return .none
       }
     }

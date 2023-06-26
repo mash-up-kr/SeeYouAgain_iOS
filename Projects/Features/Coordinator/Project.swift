@@ -48,6 +48,7 @@ let project = Project.make(
       sources: ["LongStorageCoordinator/**"],
       dependencies: [
         .project(target: "LongStorageNewsList", path: .relativeToRoot("Projects/Features/Scene")),
+        .project(target: "Web", path: .relativeToRoot("Projects/Features/Scene")),
         .externalsrt("TCA"),
         .externalsrt("TCACoordinators"),
       ]
