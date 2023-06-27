@@ -10,17 +10,17 @@ import ComposableArchitecture
 
 public struct MyShorts: Equatable {
   var totalShortsCount: Int
-  var shortShortsCount: Int
-  var longShortsCount: Int
+  var todayShortsCount: Int
+  var savedShortsCount: Int
   
   public init(
     totalShortsCount: Int,
-    shortShortsCount: Int,
-    longShortsCount: Int
+    todayShortsCount: Int,
+    savedShortsCount: Int
   ) {
     self.totalShortsCount = totalShortsCount
-    self.shortShortsCount = shortShortsCount
-    self.longShortsCount = longShortsCount
+    self.todayShortsCount = todayShortsCount
+    self.savedShortsCount = savedShortsCount
   }
 }
 

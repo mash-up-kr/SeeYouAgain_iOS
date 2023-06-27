@@ -7,30 +7,24 @@
 //
 
 import ComposableArchitecture
-
-public struct MyInfo: Equatable {
-  var nickname: String
-  var day: Int
-  
-  public init(
-    nickname: String,
-    day: Int
-  ) {
-    self.nickname = nickname
-    self.day = day
-  }
-}
+import Models
+import Services
 
 public struct MyInfoState: Equatable {
-  public var info: MyInfo
-  public var shorts: MyShortsState
+  var user: User
+  var shorts: MyShortsState
   
   public init(
-    info: MyInfo,
-    shorts: MyShortsState
+    user: User
   ) {
-    self.info = info
-    self.shorts = shorts
+    self.user = user
+    self.shorts = MyShortsState(
+      shorts: MyShorts(
+        totalShortsCount: user.totalShortsThisMonth,
+        todayShortsCount: user.todayShorts,
+        savedShortsCount: user.savedShorts
+      )
+    )
   }
 }
 
@@ -39,7 +33,11 @@ public enum MyInfoAction {
 }
 
 public struct MyInfoEnvironment {
-  public init() {}
+  let myPageService: MyPageService
+  
+  public init(myPageService: MyPageService) {
+    self.myPageService = myPageService
+  }
 }
 
 public let myInfoReducer = Reducer<

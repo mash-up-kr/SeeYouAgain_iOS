@@ -9,6 +9,7 @@
 import Combine
 import ComposableArchitecture
 import Foundation
+import Models
 import MyPage
 import Services
 import TCACoordinators
@@ -19,23 +20,7 @@ public struct MyPageCoordinatorState: Equatable, IndexedRouterState {
   public init(
     routes: [Route<MyPageScreenState>] = [
       .root(
-        .myPage(
-          .init(
-            info: .init(
-              info: .init(
-                nickname: "똑똑한여행가",
-                day: 1004
-              ),
-              shorts: .init(
-                shorts: MyShorts(
-                  totalShortsCount: 56,
-                  shortShortsCount: 5,
-                  longShortsCount: 56
-                )
-              )
-            )
-          )
-        ),
+        .myPage(.init()),
         embedInNavigationView: true
       )
     ]
@@ -52,12 +37,16 @@ public enum MyPageCoordinatorAction: IndexedRouterAction {
 public struct MyPageCoordinatorEnvironment {
   let mainQueue: AnySchedulerOf<DispatchQueue>
   let appVersionService: AppVersionService
+  let myPageService: MyPageService
   
   public init(
     mainQueue: AnySchedulerOf<DispatchQueue>,
-    appVersionService: AppVersionService) {
+    appVersionService: AppVersionService,
+    myPageService: MyPageService
+  ) {
     self.mainQueue = mainQueue
     self.appVersionService = appVersionService
+    self.myPageService = myPageService
   }
 }
 
@@ -70,7 +59,8 @@ public let myPageCoordinatorReducer: Reducer<
     environment: {
       MyPageScreenEnvironment(
         mainQueue: $0.mainQueue,
-        appVersionService: $0.appVersionService
+        appVersionService: $0.appVersionService,
+        myPageService: $0.myPageService
       )
     }
   )

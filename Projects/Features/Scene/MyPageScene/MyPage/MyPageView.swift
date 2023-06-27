@@ -49,6 +49,9 @@ public struct MyPageView: View {
         
         DesignSystem.Colors.lightBlue
       }
+      .onAppear {
+        viewStore.send(._viewWillAppear)
+      }
     }
     .navigationBarHidden(true)
     .edgesIgnoringSafeArea(.bottom)

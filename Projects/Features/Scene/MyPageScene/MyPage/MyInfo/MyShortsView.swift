@@ -26,7 +26,7 @@ struct MyShortsView: View {
             
             Text("이번 달 ")
               .font(.r14)
-            Text("\(viewStore.shorts.totalShortsCount)숏스 ")
+            Text("\(viewStore.state.shorts.totalShortsCount)숏스 ")
               .font(.b14)
             Text("중")
               .font(.r14)
@@ -42,7 +42,7 @@ struct MyShortsView: View {
           } label: {
             ShortsInfoView(
               title: "오늘의 숏스",
-              count: 5,
+              count: viewStore.state.shorts.todayShortsCount,
               fontColor: DesignSystem.Colors.blue200
             )
           }
@@ -57,7 +57,7 @@ struct MyShortsView: View {
           } label: {
             ShortsInfoView(
               title: "오래 간직할 숏스",
-              count: 56,
+              count: viewStore.state.shorts.savedShortsCount,
               fontColor: DesignSystem.Colors.grey80
             )
           }
