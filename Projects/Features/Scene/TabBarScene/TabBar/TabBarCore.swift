@@ -58,17 +58,20 @@ public struct TabBarEnvironment {
   let appVersionService: AppVersionService
   fileprivate let newsCardService: NewsCardService
   fileprivate let categoryService: CategoryService
+  fileprivate let myPageService: MyPageService
   
   public init(
     mainQueue: AnySchedulerOf<DispatchQueue>,
     appVersionService: AppVersionService,
     newsCardService: NewsCardService,
-    categoryService: CategoryService
+    categoryService: CategoryService,
+    myPageService: MyPageService
   ) {
     self.mainQueue = mainQueue
     self.appVersionService = appVersionService
     self.newsCardService = newsCardService
     self.categoryService = categoryService
+    self.myPageService = myPageService
   }
 }
 
@@ -104,7 +107,8 @@ public let tabBarReducer = Reducer<
       environment: {
         MyPageCoordinatorEnvironment(
           mainQueue: $0.mainQueue,
-          appVersionService: $0.appVersionService
+          appVersionService: $0.appVersionService,
+          myPageService: $0.myPageService
         )
       }
     ),

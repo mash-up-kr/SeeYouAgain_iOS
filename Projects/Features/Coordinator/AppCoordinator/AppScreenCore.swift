@@ -39,19 +39,22 @@ internal struct AppScreenEnvironment {
   let appVersionService: AppVersionService
   let newsCardService: NewsCardService
   let categoryService: CategoryService
+  let myPageService: MyPageService
   
   internal init(
     mainQueue: AnySchedulerOf<DispatchQueue>,
     userDefaultsService: UserDefaultsService,
     appVersionService: AppVersionService,
     newsCardService: NewsCardService,
-    categoryService: CategoryService
+    categoryService: CategoryService,
+    myPageService: MyPageService
   ) {
     self.mainQueue = mainQueue
     self.userDefaultsService = userDefaultsService
     self.appVersionService = appVersionService
     self.newsCardService = newsCardService
     self.categoryService = categoryService
+    self.myPageService = myPageService
   }
 }
 
@@ -89,7 +92,8 @@ internal let appScreenReducer = Reducer<
           mainQueue: $0.mainQueue,
           appVersionService: $0.appVersionService,
           newsCardService: $0.newsCardService,
-          categoryService: $0.categoryService
+          categoryService: $0.categoryService,
+          myPageService: $0.myPageService
         )
       }
     ),

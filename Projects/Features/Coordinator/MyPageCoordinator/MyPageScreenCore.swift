@@ -32,14 +32,16 @@ public enum MyPageScreenAction {
 internal struct MyPageScreenEnvironment {
   let mainQueue: AnySchedulerOf<DispatchQueue>
   let appVersionService: AppVersionService
+  let myPageService: MyPageService
   
   internal init(
     mainQueue: AnySchedulerOf<DispatchQueue>,
-    appVersionService: AppVersionService
+    appVersionService: AppVersionService,
+    myPageService: MyPageService
   ) {
     self.mainQueue = mainQueue
     self.appVersionService = appVersionService
-    
+    self.myPageService = myPageService
   }
 }
 
@@ -52,8 +54,11 @@ internal let myPageScreenReducer = Reducer<
     .pullback(
       state: /MyPageScreenState.myPage,
       action: /MyPageScreenAction.myPage,
-      environment: { _ in
-        MyPageEnvironment()
+      environment: {
+        MyPageEnvironment(
+          mainQueue: $0.mainQueue,
+          myPageService: $0.myPageService
+        )
       }
     ),
   shortStorageCoordinatorReducer
