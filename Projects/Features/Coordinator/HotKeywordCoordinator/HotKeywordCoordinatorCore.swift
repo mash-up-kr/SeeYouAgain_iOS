@@ -64,7 +64,7 @@ public let hotKeywordCoordinatorReducer: Reducer<
         state.routes.push(.newCard(.init()))
         return .none
 
-      case .routeAction(_, action: .newCard(.routeActions(_, action: .newList(.backButtonTapped)))):
+      case .routeAction(_, action: .newCard(.routeAction(_, action: .newsList(.backButtonTapped)))):
         state.routes.pop()
         return .none
         
