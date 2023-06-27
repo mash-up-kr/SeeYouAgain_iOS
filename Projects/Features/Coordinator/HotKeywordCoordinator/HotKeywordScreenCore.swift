@@ -9,18 +9,18 @@
 import ComposableArchitecture
 import Dispatch
 import HotKeyword
-import LongStorageCoordinator
+import NewsCardCoordinator
 import Services
 import TCACoordinators
 
 public enum HotKeywordScreenState: Equatable {
   case hotKeyword(HotKeywordState)
-  case longStorage(LongStorageCoordinatorState)
+  case newCard(NewsCardCoordinatorState)
 }
 
 public enum HotKeywordScreenAction: Equatable {
   case hotKeyword(HotKeywordAction)
-  case longStorage(LongStorageCoordinatorAction)
+  case newCard(NewsCardCoordinatorAction)
 }
 
 internal struct HotKeywordScreenEnvironment {
@@ -52,12 +52,12 @@ internal let hotKeywordScreenReducer = Reducer<
         )
       }
     ),
-  longStorageCoordinatorReducer
+  newsCardCoordinatorReducer
     .pullback(
-      state: /HotKeywordScreenState.longStorage,
-      action: /HotKeywordScreenAction.longStorage,
+      state: /HotKeywordScreenState.newCard,
+      action: /HotKeywordScreenAction.newCard,
       environment: { _ in
-        LongStorageCoordinatorEnvironment()
+        NewsCardCoordinatorEnvironment()
       }
     ),
 ])

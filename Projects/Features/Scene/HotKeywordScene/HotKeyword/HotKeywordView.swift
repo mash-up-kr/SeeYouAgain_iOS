@@ -92,8 +92,7 @@ public struct HotKeywordView: View {
           Spacer()
         }
       }
-      .padding(.vertical, 24)
-      .padding(.horizontal, 24)
+      .padding(24)
     }
   }
   

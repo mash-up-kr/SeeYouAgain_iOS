@@ -59,12 +59,12 @@ public let hotKeywordCoordinatorReducer: Reducer<
   .withRouteReducer(
     Reducer { state, action, env in
       switch action {
-        // lina-TODO: 값 넘겨서 연결 후 연결 동작 확인 필요(longStorage는 맞는지, 어떻게 넘겨줄지도 확인 필요)
+        // lina-TODO: 값 넘겨서 연결 후 연결 동작 확인 필요(어떻게 넘겨줄지 확인 필요)
       case .routeAction(_, action: .hotKeyword(.hotKeywordCircleTapped)):
-        state.routes.push(.longStorage(.init()))
+        state.routes.push(.newCard(.init()))
         return .none
-        
-      case .routeAction(_, action: .longStorage(.routeAction(_, action: .longStorageNewsList(.backButtonTapped)))):
+
+      case .routeAction(_, action: .newCard(.routeActions(_, action: .newList(.backButtonTapped)))):
         state.routes.pop()
         return .none
         

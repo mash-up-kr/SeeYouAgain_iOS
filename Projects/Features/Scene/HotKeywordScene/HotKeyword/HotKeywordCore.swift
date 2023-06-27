@@ -27,7 +27,8 @@ public struct HotKeywordState: Equatable {
 public enum HotKeywordAction: Equatable {
   // MARK: - User Action
   case pullToRefresh
-  
+  case hotKeywordCircleTapped
+
   // MARK: - Inner Business Action
   case _viewWillAppear
   case _fetchData
@@ -38,10 +39,12 @@ public enum HotKeywordAction: Equatable {
 
   // MARK: - Inner SetState Action
   case _setToastMessage(String?)
+  case _setSubTitleText(String?)
+  case _setHotKeywordList([String])
+  case _setHotKeywordPointList
+  
   case _setIsRefresh(Bool)
-
-  // MARK: - Child Action
-  case hotKeywordCircleTapped
+  case _setIsFirstLoading(Bool)
 }
 
 public struct HotKeywordEnvironment {
@@ -69,9 +72,11 @@ public let hotKeywordReducer = Reducer.combine([
       ])
       
     case ._viewWillAppear:
-      state.isFirstLoading = false
-      return Effect(value: ._showAnimation)
-      
+      return .concatenate([
+        Effect(value: ._setIsFirstLoading(false)),
+        Effect(value: ._showAnimation)
+      ])
+
     case ._fetchData:
       return env.hotKeywordService.fetchHotKeyword()
         .catchToEffect()
@@ -88,9 +93,26 @@ public let hotKeywordReducer = Reducer.combine([
         .eraseToEffect()
 
     case let ._reloadData(hotKeywordDTO):
-      state.subTitleText = "\(hotKeywordDTO.createdAt) 기준"
-      state.hotKeywordList = hotKeywordDTO.ranking
+            
+      return .concatenate([
+        Effect(value: ._setSubTitleText(hotKeywordDTO.createdAt)),
+        Effect(value: ._setHotKeywordList(hotKeywordDTO.ranking)),
+        Effect(value: ._setHotKeywordPointList)
+      ])
       
+    case let ._setSubTitleText(subTitle):
+      if let subTitle {
+        state.subTitleText = "\(subTitle) 기준"
+      } else {
+        state.subTitleText = "인터넷 연결 상태가 불안정합니다."
+      }
+      return .none
+      
+    case let ._setHotKeywordList(ranking):
+      state.hotKeywordList = ranking
+      return .none
+      
+    case ._setHotKeywordPointList:
       let currentPattern = state.hotKeywordPointList.pattern
       state.hotKeywordPointList = HotKeywordPointList(
         hotkeywordList: state.hotKeywordList,
@@ -124,6 +146,10 @@ public let hotKeywordReducer = Reducer.combine([
 
     case let ._setIsRefresh(isRefresh):
       state.isRefresh = isRefresh
+      return .none
+      
+    case let ._setIsFirstLoading(isFirstLoading):
+      state.isFirstLoading = isFirstLoading
       return .none
       
     case .hotKeywordCircleTapped:
