@@ -63,19 +63,22 @@ public struct TabBarEnvironment {
   let appVersionService: AppVersionService
   fileprivate let newsCardService: NewsCardService
   fileprivate let categoryService: CategoryService
-  
+  fileprivate let hotKeywordService: HotKeywordService
+
   public init(
     mainQueue: AnySchedulerOf<DispatchQueue>,
     userDefaultsService: UserDefaultsService,
     appVersionService: AppVersionService,
     newsCardService: NewsCardService,
-    categoryService: CategoryService
+    categoryService: CategoryService,
+    hotKeywordService: HotKeywordService
   ) {
     self.mainQueue = mainQueue
     self.userDefaultsService = userDefaultsService
     self.appVersionService = appVersionService
     self.newsCardService = newsCardService
     self.categoryService = categoryService
+    self.hotKeywordService = hotKeywordService
   }
 }
 
@@ -92,8 +95,11 @@ public let tabBarReducer = Reducer<
     .pullback(
       state: \TabBarState.hotKeyword,
       action: /TabBarAction.hotKeyword,
-      environment: { _ in
-        HotKeywordCoordinatorEnvironment()
+      environment: {
+        HotKeywordCoordinatorEnvironment(
+          mainQueue: $0.mainQueue,
+          hotKeywordService: $0.hotKeywordService
+        )
       }
     ),
   mainCoordinatorReducer
@@ -135,6 +141,10 @@ public let tabBarReducer = Reducer<
     switch action {
     case let .tabSelected(tab):
       state.selectedTab = tab
+      // lina-TODO: 코드 정리(이게 최선인지)
+      if tab == .hotKeyword {
+        return Effect(value: .hotKeyword(.routeAction(0, action: .hotKeyword(._viewWillAppear))))
+      }
       return .none
       
     case let ._presentToast(toastMessage):

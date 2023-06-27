@@ -28,7 +28,8 @@ struct AppView: View {
             userDefaultsService: .live,
             appVersionService: .live,
             newsCardService: .live,
-            categoryService: .live
+            categoryService: .live,
+            hotKeywordService: .live
           )
         )
       )
