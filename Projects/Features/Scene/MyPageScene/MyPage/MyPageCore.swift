@@ -70,7 +70,8 @@ public let myPageReducer = Reducer<
       return Effect(value: ._fetchUserInfo)
       
     case ._fetchUserInfo:
-      return env.myPageService.getMemberInfo().catchToEffect()
+      return env.myPageService.getMemberInfo()
+        .catchToEffect()
         .flatMap { result -> Effect<MyPageAction, Never> in
           switch result {
           case let .success(user):
