@@ -47,7 +47,7 @@ public let saveGuideReducer = Reducer<
 > { state, action, env in
   switch action {
   case ._onAppear:
-    return env.userDefaultsService.load(.hasLanched)
+    return env.userDefaultsService.load(.hasLaunched)
       .flatMapLatest { hasLaunched -> Effect<SaveGuideAction, Never> in
         if !hasLaunched {
           return Effect.merge(
@@ -61,7 +61,7 @@ public let saveGuideReducer = Reducer<
       .eraseToEffect()
     
   case ._updateLaunchStatus:
-    return env.userDefaultsService.save(.hasLanched, true)
+    return env.userDefaultsService.save(.hasLaunched, true)
       .fireAndForget()
     
   case ._firstLaunchAnimation:

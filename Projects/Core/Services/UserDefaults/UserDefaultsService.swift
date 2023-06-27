@@ -13,7 +13,7 @@ import Foundation
 
 public enum UserDefaultsKey: String {
   case registered
-  case hasLanched
+  case hasLaunched
   case userID
 }
 
