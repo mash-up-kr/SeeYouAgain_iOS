@@ -33,7 +33,16 @@ public enum HotKeywordCoordinatorAction: IndexedRouterAction {
 }
 
 public struct HotKeywordCoordinatorEnvironment {
-  public init() {}
+  let mainQueue: AnySchedulerOf<DispatchQueue>
+  let hotKeywordService: HotKeywordService
+  
+  public init(
+    mainQueue: AnySchedulerOf<DispatchQueue>,
+    hotKeywordService: HotKeywordService
+  ) {
+    self.mainQueue = mainQueue
+    self.hotKeywordService = hotKeywordService
+  }
 }
 
 public let hotKeywordCoordinatorReducer: Reducer<
@@ -41,12 +50,24 @@ public let hotKeywordCoordinatorReducer: Reducer<
   HotKeywordCoordinatorAction,
   HotKeywordCoordinatorEnvironment
 > = hotKeywordScreenReducer
-  .forEachIndexedRoute(environment: { _ in
-    HotKeywordScreenEnvironment()
+  .forEachIndexedRoute(environment: {
+    HotKeywordScreenEnvironment(
+      mainQueue: $0.mainQueue,
+      hotKeywordService: $0.hotKeywordService
+    )
   })
   .withRouteReducer(
     Reducer { state, action, env in
       switch action {
+        // lina-TODO: 값 넘겨서 연결 후 연결 동작 확인 필요(어떻게 넘겨줄지 확인 필요)
+      case .routeAction(_, action: .hotKeyword(.hotKeywordCircleTapped)):
+        state.routes.push(.newCard(.init()))
+        return .none
+
+      case .routeAction(_, action: .newCard(.routeAction(_, action: .newsList(.backButtonTapped)))):
+        state.routes.pop()
+        return .none
+        
       default: return .none
       }
     }

@@ -9,6 +9,7 @@
 import ComposableArchitecture
 import Foundation
 import Models
+import Services
 
 public struct NewsCardLayout: Equatable {
   var ratio: CGSize = .zero
@@ -68,7 +69,13 @@ public enum NewsCardScrollAction {
   case newsCard(id: Int, action: NewsCardAction)
 }
 
-public struct NewsCardScrollEnvironmnet {}
+public struct NewsCardScrollEnvironmnet {
+  fileprivate let newsCardService: NewsCardService
+  
+  public init(newsCardService: NewsCardService) {
+    self.newsCardService = newsCardService
+  }
+}
 
 public let newsCardScrollReducer = Reducer<
   NewsCardScrollState,
@@ -79,7 +86,7 @@ public let newsCardScrollReducer = Reducer<
     .forEach(
       state: \.newsCards,
       action: /NewsCardScrollAction.newsCard(id:action:),
-      environment: { _ in NewsCardEnvironment() }
+      environment: { NewsCardEnvironment(newsCardService: $0.newsCardService) }
     ),
   Reducer { state, action, environment in
     switch action {

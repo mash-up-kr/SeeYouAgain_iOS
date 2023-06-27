@@ -12,17 +12,32 @@ public struct BubbleView: View {
   let keyword: String
   let bubbleSize: BubbleSize
   let bubbleColor: BubbleColor
-  var action: () -> Void = {}
+  let geometryHeight: CGFloat
+  let pointX: CGFloat
+  let action: () -> Void
+  
+  @Binding private var offset: CGFloat
+  @State private var isAnimated: Bool = false
+  
+  // 써클의 중앙이 보일때 애니메이션을 시작해야하는데, 스크롤 할 때 offset이 크게 잡히는 경향이 있어서 여유 공간을 뺀 너비를 사용함
+  private let spaceWidth: CGFloat = {
+    let screenWidth = UIScreen.main.bounds.width
+    return screenWidth - screenWidth / 4
+  }()
   
   public init(
-    keyword: String,
-    bubbleSize: BubbleSize,
-    bubbleColor: BubbleColor,
+    hotKeywordPoint: HotKeywordPoint,
+    geometryHeight: CGFloat,
+    pointX: CGFloat,
+    offset: Binding<CGFloat>,
     action: @escaping () -> Void = {}
   ) {
-    self.keyword = keyword
-    self.bubbleSize = bubbleSize
-    self.bubbleColor = bubbleColor
+    self.keyword = hotKeywordPoint.keyword
+    self.bubbleSize = hotKeywordPoint.size
+    self.bubbleColor = hotKeywordPoint.color
+    self.geometryHeight = geometryHeight
+    self.pointX = pointX
+    self._offset = offset
     self.action = action
   }
   
@@ -31,40 +46,59 @@ public struct BubbleView: View {
       action: action,
       label: {
         ZStack {
-          Circle()
-            .fill(
-              LinearGradient(
-                gradient: Gradient(
-                  colors: [
-                    bubbleColor.backgroundFirstColor,
-                    bubbleColor.backgroundSecondColor
-                  ]
-                ),
-                startPoint: .top,
-                endPoint: .bottom
-              )
-            )
-            .frame(width: bubbleSize.circleSize, height: bubbleSize.circleSize)
-            .optionalShadow(
-              color: bubbleColor.dropShadowColor,
-              radius: 24,
-              x: 0,
-              y: 24
-            )
-            .modifier(
-              InnerShadow(
-                color: bubbleColor.innerShadowColor,
-                radius: 4,
-                offset: CGSize(width: 2, height: 2)
-              )
-            )
+          circle
           
           Text(keyword)
             .foregroundColor(bubbleColor.fontColor)
             .font(bubbleSize.font)
+            .lineLimit(1)
+        }
+        .scaleEffect(isAnimated ? 1 : 0.001) // ignoring singular matrix에러로 인해 0 대신 0.001로 설정
+        .animation(.spring(), value: isAnimated)
+        .onAppear {
+          isAnimated = offset > pointX
+        }
+        .onChange(of: offset) { currentOffset in
+          if isAnimated == false {
+            isAnimated = currentOffset > (pointX - spaceWidth)
+          }
         }
       }
     )
+  }
+  
+  // lina-TODO: circle 블러
+  private var circle: some View {
+    Circle()
+      .fill(
+        LinearGradient(
+          gradient: Gradient(
+            colors: [
+              bubbleColor.backgroundFirstColor,
+              bubbleColor.backgroundSecondColor
+            ]
+          ),
+          startPoint: .top,
+          endPoint: .bottom
+        )
+      )
+      .frame(
+        width: bubbleSize.sizeRatio * geometryHeight,
+        height: bubbleSize.sizeRatio * geometryHeight
+      )
+      .optionalShadow(
+        color: bubbleColor.dropShadowColor,
+        radius: 24,
+        x: 0,
+        y: 24
+      )
+      .modifier(
+        InnerShadow(
+          color: bubbleColor.innerShadowColor,
+          radius: 4,
+          offset: CGSize(width: 2, height: 2)
+        )
+      )
   }
 }
 
@@ -76,25 +110,31 @@ public enum BubbleSize: CGFloat {
   case _120
   case _100
   case _80
+  case _40 // 단순 데코용
+  case _30 // 단순 데코용
   
-  var circleSize: CGFloat {
+  public var sizeRatio: CGFloat {
     switch self {
     case ._240:
-      return 240
+      return 240 / 500
     case ._180:
-      return 180
+      return 180 / 500
     case ._140:
-      return 140
+      return 140 / 500
     case ._120:
-      return 120
+      return 120 / 500
     case ._100:
-      return 100
+      return 100 / 500
     case ._80:
-      return 80
+      return 80 / 500
+    case ._40:
+      return 40 / 500
+    case ._30:
+      return 30 / 500
     }
   }
   
-  var font: Font {
+  public var font: Font {
     switch self {
     case ._240:
       return .b24
@@ -108,6 +148,8 @@ public enum BubbleSize: CGFloat {
       return .b14
     case ._80:
       return .b12
+    default:
+      return .b12 // 최소 사이즈로 임의 설정
     }
   }
 }

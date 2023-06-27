@@ -21,6 +21,7 @@ public struct TabBarState: Equatable {
   public var categoryBottomSheet: BottomSheetState
   public var selectedTab: TabBarItem = .house
   public var isTabHidden: Bool = false
+  public var toastMessage: String?
   
   public init(
     hotKeyword: HotKeywordCoordinatorState,
@@ -42,9 +43,12 @@ public enum TabBarAction {
   case tabSelected(TabBarItem)
   
   // MARK: - Inner Business Action
+  case _presentToast(String)
+  case _hideToast
   
   // MARK: - Inner SetState Action
   case _setTabHiddenStatus(Bool)
+  case _setToastMessage(String?)
   
   // MARK: - Child Action
   case hotKeyword(HotKeywordCoordinatorAction)
@@ -55,24 +59,33 @@ public enum TabBarAction {
 
 public struct TabBarEnvironment {
   fileprivate let mainQueue: AnySchedulerOf<DispatchQueue>
+  fileprivate let userDefaultsService: UserDefaultsService
   let appVersionService: AppVersionService
   fileprivate let newsCardService: NewsCardService
   fileprivate let categoryService: CategoryService
+  fileprivate let hotKeywordService: HotKeywordService
   fileprivate let myPageService: MyPageService
-  
   public init(
     mainQueue: AnySchedulerOf<DispatchQueue>,
+    userDefaultsService: UserDefaultsService,
     appVersionService: AppVersionService,
     newsCardService: NewsCardService,
     categoryService: CategoryService,
+    hotKeywordService: HotKeywordService,
     myPageService: MyPageService
   ) {
     self.mainQueue = mainQueue
+    self.userDefaultsService = userDefaultsService
     self.appVersionService = appVersionService
     self.newsCardService = newsCardService
     self.categoryService = categoryService
+    self.hotKeywordService = hotKeywordService
     self.myPageService = myPageService
   }
+}
+
+enum TabBarID: Hashable {
+  case _presentToast
 }
 
 public let tabBarReducer = Reducer<
@@ -84,8 +97,11 @@ public let tabBarReducer = Reducer<
     .pullback(
       state: \TabBarState.hotKeyword,
       action: /TabBarAction.hotKeyword,
-      environment: { _ in
-        HotKeywordCoordinatorEnvironment()
+      environment: {
+        HotKeywordCoordinatorEnvironment(
+          mainQueue: $0.mainQueue,
+          hotKeywordService: $0.hotKeywordService
+        )
       }
     ),
   mainCoordinatorReducer
@@ -95,6 +111,7 @@ public let tabBarReducer = Reducer<
       environment: {
         MainCoordinatorEnvironment(
           mainQueue: $0.mainQueue,
+          userDefaultsService: $0.userDefaultsService,
           newsCardService: $0.newsCardService,
           categoryService: $0.categoryService
         )
@@ -127,6 +144,31 @@ public let tabBarReducer = Reducer<
     switch action {
     case let .tabSelected(tab):
       state.selectedTab = tab
+      // lina-TODO: 코드 정리(이게 최선인지)
+      if tab == .hotKeyword {
+        return Effect(value: .hotKeyword(.routeAction(0, action: .hotKeyword(._viewWillAppear))))
+      }
+      return .none
+      
+    case let ._presentToast(toastMessage):
+      return .concatenate(
+        Effect(value: ._setToastMessage(toastMessage)),
+        Effect.cancel(id: TabBarID._presentToast),
+        Effect(value: ._hideToast)
+          .delay(for: 2, scheduler: env.mainQueue)
+          .eraseToEffect()
+          .cancellable(id: TabBarID._presentToast, cancelInFlight: true)
+      )
+      
+    case ._hideToast:
+      return Effect(value: ._setToastMessage(nil))
+    
+    case ._setTabHiddenStatus(let status):
+      state.isTabHidden = status
+      return .none
+      
+    case let ._setToastMessage(message):
+      state.toastMessage = message
       return .none
       
     case let .main(.routeAction(_, action: .main(.showCategoryBottomSheet(categories)))):
@@ -135,9 +177,25 @@ public let tabBarReducer = Reducer<
         Effect(value: .categoryBottomSheet(._setIsPresented(true)))
       )
       
-    case ._setTabHiddenStatus(let status):
-      state.isTabHidden = status
-      return .none
+    case let .main(
+      .routeAction(
+        _, action: .main(
+          .newsCardScroll(
+            .newsCard(
+              id: _,
+              action: ._handleSaveNewsCardResponse(response)
+            )
+          )
+        )
+      )
+    ):
+      switch response {
+      case .success:
+        return Effect(value: ._presentToast("오늘 읽을 숏스에 저장됐어요:)"))
+        
+      case .failure:
+        return Effect(value: ._presentToast("인터넷이 불안정해서 저장되지 못했어요."))
+      }
       
     case .myPage(.routeAction(_, action: .myPage(.settingButtonTapped))):
       return Effect(value: ._setTabHiddenStatus(true))

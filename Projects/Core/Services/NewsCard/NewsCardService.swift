@@ -22,6 +22,8 @@ public struct NewsCardService {
     _ cursorId: Int,
     _ pagingSize: Int
   ) -> Effect<[NewsCard], Error>
+  
+  public var saveNewsCard: (_ newsCardId: Int) -> Effect<VoidResponse?, Error>
 }
 
 extension NewsCardService {
@@ -35,6 +37,15 @@ extension NewsCardService {
         )
         .compactMap { $0 }
         .map { $0.map { $0.toDomain }}
+        .eraseToEffect()
+    },
+    saveNewsCard: { newsCardId in
+      return Provider<NewsCardAPI>
+        .init()
+        .request(
+          NewsCardAPI.saveNewsCard(newsCardId),
+          type: VoidResponse.self
+        )
         .eraseToEffect()
     }
   )

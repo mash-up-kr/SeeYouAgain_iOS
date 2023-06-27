@@ -39,6 +39,7 @@ internal struct AppScreenEnvironment {
   let appVersionService: AppVersionService
   let newsCardService: NewsCardService
   let categoryService: CategoryService
+  let hotKeywordService: HotKeywordService
   let myPageService: MyPageService
   
   internal init(
@@ -47,6 +48,7 @@ internal struct AppScreenEnvironment {
     appVersionService: AppVersionService,
     newsCardService: NewsCardService,
     categoryService: CategoryService,
+    hotKeywordService: HotKeywordService,
     myPageService: MyPageService
   ) {
     self.mainQueue = mainQueue
@@ -54,6 +56,7 @@ internal struct AppScreenEnvironment {
     self.appVersionService = appVersionService
     self.newsCardService = newsCardService
     self.categoryService = categoryService
+    self.hotKeywordService = hotKeywordService
     self.myPageService = myPageService
   }
 }
@@ -90,9 +93,11 @@ internal let appScreenReducer = Reducer<
       environment: {
         TabBarEnvironment(
           mainQueue: $0.mainQueue,
+          userDefaultsService: $0.userDefaultsService,
           appVersionService: $0.appVersionService,
           newsCardService: $0.newsCardService,
           categoryService: $0.categoryService,
+          hotKeywordService: $0.hotKeywordService,
           myPageService: $0.myPageService
         )
       }

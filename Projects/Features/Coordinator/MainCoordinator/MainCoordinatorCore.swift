@@ -35,15 +35,18 @@ public enum MainCoordinatorAction: IndexedRouterAction {
 
 public struct MainCoordinatorEnvironment {
   fileprivate let mainQueue: AnySchedulerOf<DispatchQueue>
+  fileprivate let userDefaultsService: UserDefaultsService
   fileprivate let newsCardService: NewsCardService
   fileprivate let categoryService: CategoryService
   
   public init(
     mainQueue: AnySchedulerOf<DispatchQueue>,
+    userDefaultsService: UserDefaultsService,
     newsCardService: NewsCardService,
     categoryService: CategoryService
   ) {
     self.mainQueue = mainQueue
+    self.userDefaultsService = userDefaultsService
     self.newsCardService = newsCardService
     self.categoryService = categoryService
   }
@@ -58,6 +61,7 @@ public let mainCoordinatorReducer: Reducer<
     environment: {
       MainScreenEnvironment(
         mainQueue: $0.mainQueue,
+        userDefaultsService: $0.userDefaultsService,
         newsCardService: $0.newsCardService,
         categoryService: $0.categoryService
       )
