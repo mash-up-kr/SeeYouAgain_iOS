@@ -19,19 +19,27 @@ public struct SplashView: View {
   
   public var body: some View {
     WithViewStore(store) { viewStore in
-      VStack(alignment: .center) {
+      VStack(alignment: .center, spacing: 16) {
         Spacer()
-          .frame(height: 285)
+          .frame(height: 264)
         
-        DesignSystem.Icons.logo
+        DesignSystem.Images.shorts
           .resizable()
-          .aspectRatio(contentMode: .fit)
-          .frame(height: 128)
+          .frame(width: 130, height: 34)
+        
+        HStack(spacing: 0) {
+          Text("키워드로 보는 ")
+            .font(.r16)
+            .foregroundColor(DesignSystem.Colors.grey90)
+          Text("짧은 뉴스")
+            .font(.b16)
+            .foregroundColor(DesignSystem.Colors.grey90)
+        }
         
         Spacer()
       }
       .frame(maxWidth: .infinity, maxHeight: .infinity)
-      .background(DesignSystem.Colors.lightBlue)
+      .shortsBackgroundView()
       .onAppear { viewStore.send(._onAppear) }
     }
     .navigationBarHidden(true)
