@@ -75,8 +75,9 @@ public let saveGuideReducer = Reducer<
   case ._startAnimation:
     return .run { send in
       await send(._setCaretDownOffset(.init(width: 0, height: 10)))
-      try await env.mainQueue.sleep(for: 1)
-      await send(._setCaretDownOffset(.zero))
+      DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+        send(._setCaretDownOffset(.init(width: 0, height: 0)))
+      }
     }
     
   case let ._setCaretDownOffset(offset):
