@@ -14,12 +14,7 @@ import Models
 
 public struct HotKeywordService {
   public var fetchHotKeyword: () -> Effect<HotKeywordDTO, Error>
-  
-  private init(
-    fetchHotKeyword: @escaping () -> Effect<HotKeywordDTO, Error>
-  ) {
-    self.fetchHotKeyword = fetchHotKeyword
-  }
+  public var fetchKeywordShorts: (_ keyword: String) -> Effect<[NewsCardsResponseDTO], Error>
 }
 
 extension HotKeywordService {
@@ -30,6 +25,16 @@ extension HotKeywordService {
         .request(
           HotKeywordAPI.fetchHotKeyword,
           type: HotKeywordDTO.self
+        )
+        .compactMap { $0 }
+        .eraseToEffect()
+    },
+    fetchKeywordShorts: { keyword in
+      return Provider<HotKeywordAPI>
+        .init()
+        .request(
+          HotKeywordAPI.fetchKeywordShorts(keyword: keyword),
+          type: [NewsCardsResponseDTO].self
         )
         .compactMap { $0 }
         .eraseToEffect()
