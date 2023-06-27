@@ -65,6 +65,15 @@ public struct TabBarView: View {
           selection: viewStore.binding(get: { $0.selectedTab }, send: TabBarAction.tabSelected)
         )
       }
+      .apply(content: { view in
+        WithViewStore(store.scope(state: \.toastMessage)) { toastMessageViewStore in
+          view.toast(
+            text: toastMessageViewStore.state,
+            toastType: buildToastType(message: toastMessageViewStore.state),
+            toastOffset: -38
+          )
+        }
+      })
       .bottomSheet(
         isPresented: viewStore.binding(
           get: \.categoryBottomSheet.isPresented,
@@ -104,4 +113,15 @@ public struct TabBarView: View {
       })
     }
   }
+}
+
+private func buildToastType(message: String?) -> ToastType {
+  guard let message = message else { return .basic }
+  if message == "오늘 읽을 숏스에 저장됐어요:)" {
+    return .info
+  }
+  if message == "인터넷이 불안정해서 저장되지 못했어요." {
+    return .warning
+  }
+  return .basic
 }

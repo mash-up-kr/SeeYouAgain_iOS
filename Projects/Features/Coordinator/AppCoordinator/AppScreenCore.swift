@@ -87,6 +87,7 @@ internal let appScreenReducer = Reducer<
       environment: {
         TabBarEnvironment(
           mainQueue: $0.mainQueue,
+          userDefaultsService: $0.userDefaultsService,
           appVersionService: $0.appVersionService,
           newsCardService: $0.newsCardService,
           categoryService: $0.categoryService

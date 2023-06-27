@@ -23,15 +23,18 @@ public enum MainScreenAction {
 
 internal struct MainScreenEnvironment {
   fileprivate let mainQueue: AnySchedulerOf<DispatchQueue>
+  fileprivate let userDefaultsService: UserDefaultsService
   fileprivate let newsCardService: NewsCardService
   fileprivate let categoryService: CategoryService
   
   internal init(
     mainQueue: AnySchedulerOf<DispatchQueue>,
+    userDefaultsService: UserDefaultsService,
     newsCardService: NewsCardService,
     categoryService: CategoryService
   ) {
     self.mainQueue = mainQueue
+    self.userDefaultsService = userDefaultsService
     self.newsCardService = newsCardService
     self.categoryService = categoryService
   }
@@ -49,6 +52,7 @@ internal let mainScreenReducer = Reducer<
       environment: {
         MainEnvironment(
           mainQueue: $0.mainQueue,
+          userDefaultsService: $0.userDefaultsService,
           newscardService: $0.newsCardService,
           categoryService: $0.categoryService
         )
