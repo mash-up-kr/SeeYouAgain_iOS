@@ -25,7 +25,6 @@ public enum SaveGuideAction: Equatable {
   
   // MARK: - Inner SetState Action  
   case _setCaretDownOffset(CGSize)
-  
 }
 
 public struct SaveGuideEnvironment {
