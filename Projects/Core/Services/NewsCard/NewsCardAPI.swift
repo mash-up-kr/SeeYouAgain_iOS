@@ -59,10 +59,6 @@ extension NewsCardAPI: TargetType {
     }
   }
   
-  public var headers: [String: String]? {
-    return .none
-  }
-  
   public var sampleData: Data {
     switch self {
     default:
