@@ -60,7 +60,6 @@ public let hotKeywordCoordinatorReducer: Reducer<
   .withRouteReducer(
     Reducer { state, action, env in
       switch action {
-        // lina-TODO: 값 넘겨서 연결 후 연결 동작 확인 필요(어떻게 넘겨줄지 확인 필요)
       case let .routeAction(_, action: .hotKeyword(.showKeywordNewsList(keyword, newsItems))):
         state.routes.push(.newCard(.init(routes: [
           .root(

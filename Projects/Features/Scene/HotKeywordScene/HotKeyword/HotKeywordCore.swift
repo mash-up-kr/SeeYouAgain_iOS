@@ -10,8 +10,8 @@ import Combine
 import ComposableArchitecture
 import DesignSystem
 import Foundation
-import NewsList
 import Models
+import NewsList
 import Services
 
 public struct HotKeywordState: Equatable {
@@ -20,6 +20,7 @@ public struct HotKeywordState: Equatable {
   var hotKeywordPointList = HotKeywordPointList(hotkeywordList: [])
   var isRefresh: Bool = false
   var isFirstLoading: Bool = true
+  var currentOffset: CGFloat = 0
   var toastMessage: String?
   
   public init() { }
@@ -28,7 +29,7 @@ public struct HotKeywordState: Equatable {
 public enum HotKeywordAction: Equatable {
   // MARK: - User Action
   case pullToRefresh
-  case hotKeywordCircleTapped(String)
+  case hotKeywordCircleTapped(String, currentOffset: CGFloat)
   
   // MARK: - Inner Business Action
   case _viewWillAppear
@@ -46,6 +47,7 @@ public enum HotKeywordAction: Equatable {
   case _setHotKeywordPointList
   case _setIsRefresh(Bool)
   case _setIsFirstLoading(Bool)
+  case _setCurrentOffset(CGFloat)
   case _convertNewsItemsFromNewsCardsDTO([NewsCardsResponseDTO], String)
   
   // MARK: - Child Action
@@ -76,11 +78,14 @@ public let hotKeywordReducer = Reducer.combine([
         Effect(value: ._setIsRefresh(true))
       ])
       
-    case let .hotKeywordCircleTapped(keyword):
+    case let .hotKeywordCircleTapped(keyword, offset):
       guard keyword.isEmpty == false else {
         return .none
       }
-      return Effect(value: ._fetchKeywordShorts(keyword))
+      return .concatenate([
+        Effect(value: ._fetchKeywordShorts(keyword)),
+        Effect(value: ._setCurrentOffset(offset))
+      ])
       
     case ._viewWillAppear:
       return .concatenate([
@@ -104,7 +109,6 @@ public let hotKeywordReducer = Reducer.combine([
         .eraseToEffect()
       
     case let ._reloadData(hotKeywordDTO):
-      
       return .concatenate([
         Effect(value: ._setSubTitleText(hotKeywordDTO.createdAt)),
         Effect(value: ._setHotKeywordList(hotKeywordDTO.ranking)),
@@ -175,6 +179,10 @@ public let hotKeywordReducer = Reducer.combine([
       
     case let ._setIsFirstLoading(isFirstLoading):
       state.isFirstLoading = isFirstLoading
+      return .none
+      
+    case let ._setCurrentOffset(offset):
+      state.currentOffset = offset
       return .none
       
     case let ._convertNewsItemsFromNewsCardsDTO(responseDTO, keyword):

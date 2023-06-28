@@ -55,7 +55,11 @@ public struct HotKeywordView: View {
         viewStore.send(.pullToRefresh)
       }
       .onAppear {
-        viewStore.send(._fetchData)
+        if viewStore.isFirstLoading {
+          viewStore.send(._fetchData)
+        } else {
+          offset = viewStore.currentOffset
+        }
       }
       .onChange(of: viewStore.isFirstLoading) { isFirstLoading in
         if isFirstLoading == false {
@@ -113,7 +117,14 @@ public struct HotKeywordView: View {
                     geometryHeight: geometry.size.height,
                     pointX: hotKeywordPoint.x * geometry.size.width,
                     offset: $offset,
-                    action: { viewStore.send(.hotKeywordCircleTapped(hotKeywordPoint.keyword)) }
+                    action: { viewStore
+                      .send(
+                        .hotKeywordCircleTapped(
+                          hotKeywordPoint.keyword,
+                          currentOffset: offset + screenWidth/4
+                        )
+                      )
+                    }
                   )
                   .offset(
                     x: hotKeywordPoint.x * geometry.size.width,

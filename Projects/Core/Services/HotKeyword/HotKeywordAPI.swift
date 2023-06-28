@@ -42,7 +42,6 @@ extension HotKeywordAPI: TargetType {
       return .requestPlain
     case .fetchKeywordShorts:
       return .requestParameters(
-        // lina-TODO: parameter 고정으로 가는건지 확인필요
         parameters: ["cursorId": 0, "size": 10],
         encoding: .queryString
       )
