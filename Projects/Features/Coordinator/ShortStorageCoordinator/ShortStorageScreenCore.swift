@@ -22,11 +22,14 @@ public enum ShortStorageScreenAction: Equatable {
 
 internal struct ShortStorageScreenEnvironment {
   let mainQueue: AnySchedulerOf<DispatchQueue>
+  let myPageService: MyPageService
   
   internal init(
-    mainQueue: AnySchedulerOf<DispatchQueue>
+    mainQueue: AnySchedulerOf<DispatchQueue>,
+    myPageService: MyPageService
   ) {
     self.mainQueue = mainQueue
+    self.myPageService = myPageService
   }
 }
 
@@ -40,7 +43,10 @@ internal let shortStorageScreenReducer = Reducer<
       state: /ShortStorageScreenState.shortStorageNewsList,
       action: /ShortStorageScreenAction.shortStorageNewsList,
       environment: {
-        ShortStorageNewsListEnvironment(mainQueue: $0.mainQueue)
+        ShortStorageNewsListEnvironment(
+          mainQueue: $0.mainQueue,
+          myPageService: $0.myPageService
+        )
       }
     )
 ])

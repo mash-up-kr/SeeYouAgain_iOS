@@ -73,11 +73,14 @@ public enum ShortStorageNewsListAction: Equatable {
 
 public struct ShortStorageNewsListEnvironment {
   let mainQueue: AnySchedulerOf<DispatchQueue>
+  let myPageService: MyPageService
 
   public init(
-    mainQueue: AnySchedulerOf<DispatchQueue>
+    mainQueue: AnySchedulerOf<DispatchQueue>,
+    myPageService: MyPageService
   ) {
     self.mainQueue = mainQueue
+    self.myPageService = myPageService
   }
 }
 
