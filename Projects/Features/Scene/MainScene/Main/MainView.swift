@@ -57,6 +57,7 @@ public struct MainView: View {
         
         Spacer()
       }
+      .loading(!viewStore.fetchIds.isEmpty)
       .onAppear {
         viewStore.send(._setNewsCardSize(UIScreen.main.bounds.size))
         viewStore.send(._viewWillAppear)
