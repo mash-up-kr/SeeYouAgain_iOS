@@ -4,6 +4,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21678"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -16,20 +17,16 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="background" translatesAutoresizingMaskIntoConstraints="NO" id="0DX-Dy-6vL">
-                                <rect key="frame" x="-177" y="-180" width="817" height="1369"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            </imageView>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="launchLogo" translatesAutoresizingMaskIntoConstraints="NO" id="BwU-3e-lK6">
-                                <rect key="frame" x="142" y="324" width="130" height="34"/>
+                                <rect key="frame" x="125.66666666666669" y="324" width="163" height="64"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="130" id="WdY-hu-Jou"/>
-                                    <constraint firstAttribute="height" constant="34" id="vQ7-wt-6U4"/>
+                                    <constraint firstAttribute="width" constant="163" id="gfB-eL-0Gy"/>
+                                    <constraint firstAttribute="height" constant="64" id="yOF-dO-Ojh"/>
                                 </constraints>
                                 <preferredSymbolConfiguration key="preferredSymbolConfiguration" scale="default"/>
                             </imageView>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="shortsDescription" translatesAutoresizingMaskIntoConstraints="NO" id="w3m-jT-UbW">
-                                <rect key="frame" x="132" y="374" width="150" height="19"/>
+                                <rect key="frame" x="132" y="388" width="150" height="19"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="150" id="V0R-Ry-LNM"/>
                                     <constraint firstAttribute="height" constant="19" id="vS0-iv-OFs"/>
@@ -37,11 +34,12 @@
                             </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="Bcu-3y-fUS"/>
+                        <color key="backgroundColor" name="light_blue"/>
                         <constraints>
                             <constraint firstItem="BwU-3e-lK6" firstAttribute="top" secondItem="Bcu-3y-fUS" secondAttribute="top" constant="280" id="DZq-M3-xA5"/>
                             <constraint firstItem="w3m-jT-UbW" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="RWO-ys-MOa"/>
                             <constraint firstItem="BwU-3e-lK6" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="bfQ-Oc-Ss6"/>
-                            <constraint firstItem="w3m-jT-UbW" firstAttribute="top" secondItem="BwU-3e-lK6" secondAttribute="bottom" constant="16" id="vNf-hM-1Cl"/>
+                            <constraint firstItem="w3m-jT-UbW" firstAttribute="top" secondItem="BwU-3e-lK6" secondAttribute="bottom" id="hAg-UN-Rzd"/>
                         </constraints>
                     </view>
                 </viewController>
@@ -51,8 +49,10 @@
         </scene>
     </scenes>
     <resources>
-        <image name="background" width="705" height="1080"/>
-        <image name="launchLogo" width="134" height="34"/>
-        <image name="shortsDescription" width="150" height="15"/>
+        <image name="launchLogo" width="163" height="64"/>
+        <image name="shortsDescription" width="149" height="15"/>
+        <namedColor name="light_blue">
+            <color red="0.87058823529411766" green="0.91764705882352937" blue="0.95294117647058818" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
     </resources>
 </document>
