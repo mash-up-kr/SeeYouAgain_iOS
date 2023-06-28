@@ -14,8 +14,9 @@ public struct NewsListState: Equatable {
   var keywordTitle: String
   var newsItems: IdentifiedArrayOf<NewsCardState> = []
   
-  public init(keywordTitle: String) {
-    self.keywordTitle = "#자위대 호위함 #사카이 료 (Sakai Ryo) #이스턴 엔데버23 #부산항 #자위대 호위함 #사카이 료 (Sakai Ryo) #이스턴 엔데버23 #부산항"
+  public init(keywordTitle: String, newsItems: IdentifiedArrayOf<NewsCardState>) {
+    self.keywordTitle = keywordTitle
+    self.newsItems = newsItems
   }
 }
 
@@ -60,6 +61,7 @@ public let newsListReducer = Reducer.combine([
       ])
       
     case ._onAppear:
+      /* 임시 데이터 안들어가게 잠시 주석해놨습니다
       state.newsItems = [
         NewsCardState(
           id: 0,
@@ -134,6 +136,7 @@ public let newsListReducer = Reducer.combine([
           )
         )
       ]
+       */
       return .none
       
     case ._willDisappear:

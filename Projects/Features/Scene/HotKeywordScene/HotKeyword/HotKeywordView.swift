@@ -55,7 +55,11 @@ public struct HotKeywordView: View {
         viewStore.send(.pullToRefresh)
       }
       .onAppear {
-        viewStore.send(._fetchData)
+        if viewStore.isFirstLoading {
+          viewStore.send(._fetchData)
+        } else {
+          offset = viewStore.currentOffset
+        }
       }
       .onChange(of: viewStore.isFirstLoading) { isFirstLoading in
         if isFirstLoading == false {
@@ -105,12 +109,29 @@ public struct HotKeywordView: View {
             HStack {
               scrollObservableView
                 .id(leadingID)
-              
-              BubbleChartView(
-                offset: $offset,
-                hotKeywordPointList: viewStore.hotKeywordPointList,
-                action: { viewStore.send(.hotKeywordCircleTapped) }
-              )
+          
+              GeometryReader { geometry in
+                ForEach(viewStore.hotKeywordPointList.pointList, id: \.self) { hotKeywordPoint in
+                  BubbleView(
+                    hotKeywordPoint: hotKeywordPoint,
+                    geometryHeight: geometry.size.height,
+                    pointX: hotKeywordPoint.x * geometry.size.width,
+                    offset: $offset,
+                    action: { viewStore
+                      .send(
+                        .hotKeywordCircleTapped(
+                          hotKeywordPoint.keyword,
+                          currentOffset: offset + screenWidth/4
+                        )
+                      )
+                    }
+                  )
+                  .offset(
+                    x: hotKeywordPoint.x * geometry.size.width,
+                    y: hotKeywordPoint.y * geometry.size.height
+                  )
+                }
+              }
               .frame(
                 width: geometry.size.height * 1.5,
                 height: geometry.size.height
@@ -133,33 +154,6 @@ public struct HotKeywordView: View {
               proxy.scrollTo(leadingID, anchor: .topLeading)
             }
           }
-        }
-      }
-    }
-  }
-}
-
-// MARK: - BubbleChartView
-extension HotKeywordView {
-  private struct BubbleChartView: View {
-    @Binding var offset: CGFloat
-    var hotKeywordPointList: HotKeywordPointList
-    var action: () -> Void
-
-    var body: some View {
-      GeometryReader { geometry in
-        ForEach(hotKeywordPointList.pointList, id: \.self) { hotKeywordPoint in
-          BubbleView(
-            hotKeywordPoint: hotKeywordPoint,
-            geometryHeight: geometry.size.height,
-            pointX: hotKeywordPoint.x * geometry.size.width,
-            offset: $offset,
-            action: action
-          )
-          .offset(
-            x: hotKeywordPoint.x * geometry.size.width,
-            y: hotKeywordPoint.y * geometry.size.height
-          )
         }
       }
     }

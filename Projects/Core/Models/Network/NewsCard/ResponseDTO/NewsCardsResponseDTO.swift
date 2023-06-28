@@ -8,11 +8,11 @@
 
 import Foundation
 
-public struct NewsCardsResponseDTO: Decodable {
-  let id: Int
-  let keywords: String
-  let category: String
-  let crawledDateTime: String
+public struct NewsCardsResponseDTO: Decodable, Equatable {
+  public let id: Int
+  public let keywords: String
+  public let category: String
+  public let crawledDateTime: String
 }
 
 public extension NewsCardsResponseDTO {

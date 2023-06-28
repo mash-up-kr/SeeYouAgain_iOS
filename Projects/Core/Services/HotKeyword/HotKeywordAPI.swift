@@ -12,6 +12,7 @@ import Models
 
 public enum HotKeywordAPI {
   case fetchHotKeyword
+  case fetchKeywordShorts(keyword: String)
 }
 
 extension HotKeywordAPI: TargetType {
@@ -23,12 +24,14 @@ extension HotKeywordAPI: TargetType {
     switch self {
     case .fetchHotKeyword:
       return "/hot-keywords"
+    case let .fetchKeywordShorts(keyword):
+      return "/hot-keywords/\(keyword)"
     }
   }
   
   public var method: HTTPMethod {
     switch self {
-    case .fetchHotKeyword:
+    case .fetchHotKeyword, .fetchKeywordShorts:
       return .get
     }
   }
@@ -36,9 +39,10 @@ extension HotKeywordAPI: TargetType {
   public var task: Task {
     switch self {
     case .fetchHotKeyword:
-      let targetTime = DateFormatter.hotKeywordDateFormatter.string(from: Date())
+      return .requestPlain
+    case .fetchKeywordShorts:
       return .requestParameters(
-        parameters: ["targetTime": targetTime],
+        parameters: ["cursorId": 0, "size": 10],
         encoding: .queryString
       )
     }
