@@ -101,6 +101,7 @@ public struct ShortStorageNewsListView: View {
       }
       .onAppear {
         viewStore.send(._onAppear)
+        viewStore.send(._fetchTodayShorts)
       }
     }
   }

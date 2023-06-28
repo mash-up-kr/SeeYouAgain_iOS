@@ -9,6 +9,8 @@
 import Combine
 import ComposableArchitecture
 import Foundation
+import Models
+import Services
 
 public struct ShortsNews: Equatable, Identifiable {
   public let id: Int
@@ -31,6 +33,9 @@ public struct ShortStorageNewsListState: Equatable {
   var remainTimeString: String
   var remainTime: Int = 24 * 60 * 60
   var currentTimeSeconds: Int = 0 // 지금 시간이 몇초를 담고있냐! 17:27:21 => 62841
+  var cursorId: Int = 0
+  var cursorDate: Date = .now
+  let pagingSize = 10
   
   public init(
     isInEditMode: Bool,
@@ -56,8 +61,10 @@ public enum ShortStorageNewsListAction: Equatable {
   case _updateTimer
   case _decreaseRemainTime
   case _updateZeroTime
+  case _fetchTodayShorts
   
   // MARK: - Inner SetState Action
+  case _setTodayShortsItem(TodayShorts)
   case _setEditMode
   case _setTodayShortsItemEditMode
   case _setTodayShortsItemList
@@ -115,93 +122,6 @@ public let shortStorageNewsListReducer = Reducer<
       ])
       
     case ._onAppear:
-      // TODO: API 연결 시, 실데이터로 반영 필요
-      state.shortsNewsItems = [
-        TodayShortsItemState(
-          id: 0,
-          isInEditMode: state.isInEditMode,
-          isSelected: false,
-          cardState: TodayShortsCardState(
-            shortsNews: ShortsNews(
-              id: 0,
-              category: "#세계",
-              keywords: "#자위대 호위함 #사카이 료 (Sakai Ryo) #이스턴 엔데버23 #부산항"
-            ),
-            isCardSelectable: !state.isInEditMode,
-            isSelected: false
-          )
-        ),
-        TodayShortsItemState(
-          id: 1,
-          isInEditMode: state.isInEditMode,
-          isSelected: false,
-          cardState: TodayShortsCardState(
-            shortsNews: ShortsNews(
-              id: 0,
-              category: "#세계",
-              keywords: "#뿡뿡 호위함 #사카이 료 (Sakai Ryo) #이스턴 엔데버23 #부산항"
-            ),
-            isCardSelectable: !state.isInEditMode,
-            isSelected: false
-          )
-        ),
-        TodayShortsItemState(
-          id: 2,
-          isInEditMode: state.isInEditMode,
-          isSelected: false,
-          cardState: TodayShortsCardState(
-            shortsNews: ShortsNews(
-              id: 0,
-              category: "#세계",
-              keywords: "#뽕뽕 호위함 #사카이 료료료료료룔료료료 #이스턴휴이이이엥 #부산항"
-            ),
-            isCardSelectable: !state.isInEditMode,
-            isSelected: false
-          )
-        ),
-        TodayShortsItemState(
-          id: 3,
-          isInEditMode: state.isInEditMode,
-          isSelected: false,
-          cardState: TodayShortsCardState(
-            shortsNews: ShortsNews(
-              id: 0,
-              category: "#세계",
-              keywords: "#빵빵 호위함 #사카이 료 (Sakai Ryo) #이스턴 엔데버23 #부산항"
-            ),
-            isCardSelectable: !state.isInEditMode,
-            isSelected: false
-          )
-        ),
-        TodayShortsItemState(
-          id: 4,
-          isInEditMode: state.isInEditMode,
-          isSelected: false,
-          cardState: TodayShortsCardState(
-            shortsNews: ShortsNews(
-              id: 0,
-              category: "#세계",
-              keywords: "#쿵쿵 호위함 #사카이 료 (Sakai Ryo) #이스턴 엔데버23 #부산항"
-            ),
-            isCardSelectable: !state.isInEditMode,
-            isSelected: false
-          )
-        ),
-        TodayShortsItemState(
-          id: 5,
-          isInEditMode: state.isInEditMode,
-          isSelected: false,
-          cardState: TodayShortsCardState(
-            shortsNews: ShortsNews(
-              id: 0,
-              category: "#세계",
-              keywords: "#쿙쿙 호위함 #사카이 료 (Sakai Ryo) #이스턴 엔데버23 #부산항"
-            ),
-            isCardSelectable: !state.isInEditMode,
-            isSelected: false
-          )
-        )
-      ]
       return Effect(value: ._setCurrentTimeSeconds)
       
     case ._updateTimer:
@@ -222,6 +142,41 @@ public let shortStorageNewsListReducer = Reducer<
         Effect(value: ._setCurrentTimeSeconds),
         Effect(value: ._initializeShortStorageNewsList)
       ])
+      
+    case ._fetchTodayShorts:
+      return env.myPageService.getTodayShorts(
+        state.cursorId,
+        state.pagingSize
+      )
+      .catchToEffect()
+      .flatMap { result -> Effect<ShortStorageNewsListAction, Never> in
+        switch result {
+        case let .success(todayShorts):
+          return Effect(value: ._setTodayShortsItem(todayShorts))
+          
+        default: return .none
+        }
+      }
+      .eraseToEffect()
+ 
+    case let ._setTodayShortsItem(todayShorts):
+      state.shortsNewsItems = IdentifiedArrayOf(uniqueElements: todayShorts.memberShorts.map {
+        TodayShortsItemState(
+          id: $0.id,
+          isInEditMode: false,
+          isSelected: false,
+          cardState: TodayShortsCardState(
+            shortsNews: ShortsNews(
+              id: $0.id,
+              category: $0.category,
+              keywords: $0.keywords
+            ),
+            isCardSelectable: true,
+            isSelected: false
+          )
+        )
+      })
+      return .none
       
     case ._setEditMode:
       state.isInEditMode.toggle()
