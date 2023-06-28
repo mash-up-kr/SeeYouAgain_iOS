@@ -29,8 +29,9 @@ public enum FetchType {
 }
 
 public struct MainState: Equatable {
+  var fetchIds: Set<FetchID> = []
   var newsCardLayout: NewsCardLayout = .init()
-  var isLoading: Bool = false
+  
   var categories: [CategoryType] = []
   var newsCardScrollState: NewsCardScrollState?
   var cursorPage: Int = 0
@@ -48,13 +49,11 @@ public enum MainAction {
   case _categoriesIsUpdated
   case _fetchCategories
   case _fetchNewsCards(FetchType)
-  case _handleNewsCardsResponse([NewsCard], FetchType)
-  case _cancelAllActions
   
   // MARK: - Inner SetState Action
   case _setNewsCardSize(CGSize)
-  case _setIsLoading(Bool)
-  case _setCategories([CategoryType])
+  case _setCategories(Result<[CategoryType], Error>)
+  case _setNewsCards(Result<[NewsCard], Error>, FetchType)
   case _setNewsCardScrollState([NewsCard])
   case _setSaveGuideState(SaveGuideState?)
   
@@ -82,7 +81,7 @@ public struct MainEnvironment {
   }
 }
 
-fileprivate enum CancelID: Hashable, CaseIterable {
+enum FetchID: Hashable, CaseIterable {
   case _fetchCategories
   case _fetchNewsCards
 }
@@ -110,7 +109,8 @@ public let mainReducer = Reducer.combine([
   Reducer<MainState, MainAction, MainEnvironment> { state, action, env in
     switch action {
     case ._viewWillAppear:
-      return Effect.concatenate(
+      FetchID.allCases.forEach { state.fetchIds.insert($0) }
+      return Effect.merge(
         Effect(value: ._fetchCategories),
         Effect(value: ._fetchNewsCards(.initial))
       )
@@ -120,23 +120,12 @@ public let mainReducer = Reducer.combine([
       state.saveGuideState = nil
       state.cursorPage = 0
       state.cursorDate = .now
-      return Effect.merge(
-        Effect(value: ._fetchCategories),
-        Effect(value: ._fetchNewsCards(.initial))
-      )
+      return Effect(value: ._viewWillAppear)
       
     case ._fetchCategories:
       return env.categoryService.getAllCategories()
         .catchToEffect()
-        .flatMapLatest { result -> Effect<MainAction, Never> in
-          switch result {
-          case let .success(categories):
-            return Effect(value: ._setCategories(categories))
-            
-          case .failure:
-            return .none
-          }
-        }
+        .map(MainAction._setCategories)
         .eraseToEffect()
       
     case let ._fetchNewsCards(fetchType):
@@ -146,35 +135,34 @@ public let mainReducer = Reducer.combine([
         Constant.pagingSize
       )
       .catchToEffect()
-      .flatMapLatest { result -> Effect<MainAction, Never> in
-        switch result {
-        case let .success(newsCards):
-          return Effect(value: ._handleNewsCardsResponse(newsCards, fetchType))
-          
-        case .failure:
-          return .none
-        }
-      }
+      .map { MainAction._setNewsCards($0, fetchType) }
       .eraseToEffect()
-      
-    case let ._handleNewsCardsResponse(newsCards, fetchType):
-      return handleNewsCardsResponse(&state, source: newsCards, fetchType: fetchType)
-      
-    case ._cancelAllActions:
-      return .cancel(ids: CancelID.allCases)
       
     case let ._setNewsCardSize(screenSize):
       state.newsCardLayout = buildNewsCardLayout(screenSize: screenSize)
       return .none
       
-    case let ._setIsLoading(isLoading):
-      state.isLoading = isLoading
-      return .none
+    case let ._setCategories(result):
+      state.fetchIds.remove(FetchID._fetchCategories)
+      switch result {
+      case let .success(categories):
+        state.categories = categories
+        return .none
+        
+      case .failure:
+        return .none
+      }
       
-    case let ._setCategories(categories):
-      state.categories = categories
-      return .none
+    case let ._setNewsCards(result, fetchType):
+      state.fetchIds.remove(FetchID._fetchNewsCards)
+      switch result {
+      case let .success(newsCards):
+        return handleNewsCardsResponse(&state, source: newsCards, fetchType: fetchType)
       
+      case .failure:
+        return .none
+      }
+    
     case let ._setNewsCardScrollState(newsCards):
       state.newsCardScrollState = NewsCardScrollState(
         layout: state.newsCardLayout,
