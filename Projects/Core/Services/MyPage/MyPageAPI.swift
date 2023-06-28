@@ -8,9 +8,11 @@
 
 import Alamofire
 import Foundation
+import Models
 
 public enum MyPageAPI {
   case getMemberInfo
+  case getTodayShorts(Int, Int)
 }
 
 extension MyPageAPI: TargetType {
@@ -22,12 +24,17 @@ extension MyPageAPI: TargetType {
     switch self {
     case .getMemberInfo:
       return "/member/info"
+    case .getTodayShorts:
+      return "/member-news-card/"
     }
   }
   
   public var method: HTTPMethod {
     switch self {
     case .getMemberInfo:
+      return .get
+      
+    case .getTodayShorts:
       return .get
     }
   }
@@ -36,12 +43,22 @@ extension MyPageAPI: TargetType {
     switch self {
     case .getMemberInfo:
       return .requestPlain
+      
+    case let .getTodayShorts(cursorId, size):
+      let requestDTO = TodayShortsRequestDTO(
+        cursorId: cursorId,
+        size: size
+      )
+      return .requestParameters(
+        parameters: requestDTO.toDictionary,
+        encoding: .queryString
+      )
     }
   }
   
   public var sampleData: Data {
     switch self {
-    case .getMemberInfo:
+    default:
       return Data()
     }
   }

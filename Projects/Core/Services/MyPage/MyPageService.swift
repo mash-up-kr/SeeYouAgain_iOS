@@ -16,6 +16,10 @@ import XCTestDynamicOverlay
 
 public struct MyPageService {
   public var getMemberInfo: () -> Effect<User, Error>
+  public var getTodayShorts: (
+    _ cursorId: Int,
+    _ pagingSize: Int
+  ) -> Effect<TodayShorts, Error>
 }
 
 extension MyPageService {
@@ -26,6 +30,17 @@ extension MyPageService {
         .request(
           MyPageAPI.getMemberInfo,
           type: MemberInfoResponseDTO.self
+        )
+        .compactMap { $0 }
+        .map { $0.toDomain }
+        .eraseToEffect()
+    },
+    getTodayShorts: { cursorId, pagingSize in
+      return Provider<MyPageAPI>
+        .init()
+        .request(
+          MyPageAPI.getTodayShorts(cursorId, pagingSize),
+          type: TodayShortsResponseDTO.self
         )
         .compactMap { $0 }
         .map { $0.toDomain }
