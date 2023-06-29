@@ -56,6 +56,9 @@ struct NewsCardView: View {
             deviceRatio: viewStore.layout.ratio
           )
         }
+        .onTapGesture {
+          viewStore.send(.newsCardTapped)
+        }
         .gesture(
           DragGesture()
             .onEnded { viewStore.send(.dragGestureEnded($0.translation)) }

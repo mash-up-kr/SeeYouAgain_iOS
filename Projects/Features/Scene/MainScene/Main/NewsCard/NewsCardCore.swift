@@ -23,8 +23,10 @@ public struct NewsCardState: Equatable, Identifiable {
 public enum NewsCardAction {
   // MARK: User Action
   case dragGestureEnded(CGSize)
+  case newsCardTapped
   
   // MARK: - Inner Business Action
+  case _navigateNewsList(Int)
   case _saveNewsCard
   case _handleSaveNewsCardResponse(Result<VoidResponse?, Error>)
   
@@ -51,6 +53,9 @@ public let newsCardReducer = Reducer<
       return Effect(value: ._saveNewsCard)
     }
     return .none
+    
+  case .newsCardTapped:
+    return Effect(value: ._navigateNewsList(state.newsCard.id))
     
   case ._saveNewsCard:
     return env.newsCardService.saveNewsCard(state.newsCard.id)
