@@ -7,6 +7,7 @@
 //
 
 import ComposableArchitecture
+import Models
 
 public struct TodayShortsCardState: Equatable {
   public var shortsNews: ShortsNews

@@ -22,12 +22,6 @@ private enum Constant {
   static let pagingCriticalPoint: Int = 5
 }
 
-public enum FetchType {
-  case initial
-  case continuousPaging
-  case newPaging
-}
-
 public struct MainState: Equatable {
   var fetchIds: Set<FetchID> = []
   var newsCardLayout: NewsCardLayout = .init()
