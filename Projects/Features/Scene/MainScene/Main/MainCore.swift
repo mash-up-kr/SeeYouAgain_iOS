@@ -109,6 +109,7 @@ public let mainReducer = Reducer.combine([
   Reducer<MainState, MainAction, MainEnvironment> { state, action, env in
     switch action {
     case ._viewWillAppear:
+      guard state.newsCardScrollState == nil, state.saveGuideState == nil else { return .none }
       FetchID.allCases.forEach { state.fetchIds.insert($0) }
       return Effect.merge(
         Effect(value: ._fetchCategories),
