@@ -70,11 +70,15 @@ public enum NewsCardScrollAction {
 }
 
 public struct NewsCardScrollEnvironmnet {
+  fileprivate let mainQueue: AnySchedulerOf<DispatchQueue>
   fileprivate let newsCardService: NewsCardService
   
-  public init(newsCardService: NewsCardService) {
-    self.newsCardService = newsCardService
-  }
+  public init(
+    mainQueue: AnySchedulerOf<DispatchQueue>,
+    newsCardService: NewsCardService) {
+      self.mainQueue = mainQueue
+      self.newsCardService = newsCardService
+    }
 }
 
 public let newsCardScrollReducer = Reducer<
@@ -125,9 +129,7 @@ public let newsCardScrollReducer = Reducer<
       let floatIndex = (logicalOffset) / contentWidth
       let intIndex = Int(round(floatIndex))
       let newPageIndex = min(max(intIndex, 0), state.newsCards.count - 1)
-      return Effect.concatenate(
-        Effect(value: ._setScrollIndex(newPageIndex))        
-      )
+      return Effect(value: ._setScrollIndex(newPageIndex))
       
     case ._calculateCurrentScrollOffset:
       let contentWidth = state.layout.size.width + state.layout.spacing
@@ -176,6 +178,21 @@ public let newsCardScrollReducer = Reducer<
     case let ._concatenateNewsCards(newsCards):
       concatenateNewsCards(&state, source: newsCards)
       return .none
+      
+    case .newsCard(id: _, action: ._saveNewsCard):
+      let nextScrollIndex = state.currentScrollIndex + 1
+      let newsCardCount = state.newsCards.count
+      // 다음 카드가 없으면 자동으로 넘어가지 않는다.
+      if nextScrollIndex >= newsCardCount { return .none }
+      return .run { send in
+        // 자연스럽게 스크롤이 넘어가는 것 처럼 보이기위한 드래그 이벤트 발생
+        for width in stride(from: 0, to: -200, by: -20) {
+          await send(.dragOnChanged(CGSize(width: width, height: 0)))
+        }
+        await send(._calculateScrollIndex)
+        await send(._fetchNewsCardsIfNeeded(nextScrollIndex, newsCardCount))
+        await send(.dragOnEnded)
+      }
       
     case let .newsCard(id, action):
       return .none

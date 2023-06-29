@@ -93,7 +93,12 @@ public let mainReducer = Reducer.combine([
     .pullback(
       state: \.newsCardScrollState,
       action: /MainAction.newsCardScroll,
-      environment: { NewsCardScrollEnvironmnet(newsCardService: $0.newsCardService) }
+      environment: {
+        NewsCardScrollEnvironmnet(
+          mainQueue: $0.mainQueue,
+          newsCardService: $0.newsCardService
+        )
+      }
     ),
   saveGuideReducer
     .optional()
@@ -124,7 +129,6 @@ public let mainReducer = Reducer.combine([
           .delay(for: .milliseconds(500), scheduler: env.mainQueue)
           .eraseToEffect()
       )
-      
       
     case ._fetchCategories:
       return env.categoryService.getAllCategories()
