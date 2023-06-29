@@ -89,7 +89,7 @@ private struct Keywords: View {
   
   fileprivate var body: some View {
     VStack(spacing: 12) {
-      ForEach(keywords.indices, id: \.self) { index in
+      ForEach(0..<4, id: \.self) { index in
         HStack {
           Text("#\(keywords[index])")
             .font(.b20)
