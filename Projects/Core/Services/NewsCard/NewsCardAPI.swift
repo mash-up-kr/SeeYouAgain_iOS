@@ -13,6 +13,7 @@ import Models
 public enum NewsCardAPI {
   case getAllNewsCards(Date, Int, Int)
   case saveNewsCard(Int)
+  case getNewsCard(Int)
 }
 
 extension NewsCardAPI: TargetType {
@@ -27,6 +28,9 @@ extension NewsCardAPI: TargetType {
     
     case .saveNewsCard:
       return "/member/news-card"
+      
+    case let .getNewsCard(newsId):
+      return "/news-card/\(newsId)"
     }
   }
   
@@ -37,6 +41,9 @@ extension NewsCardAPI: TargetType {
       
     case .saveNewsCard:
       return .post
+      
+    case .getNewsCard:
+      return .get
     }
   }
   
@@ -56,6 +63,12 @@ extension NewsCardAPI: TargetType {
     case let .saveNewsCard(newsCardId):
       let requestDTO = SaveNewsCardRequestDTO(newsCardId: newsCardId)
       return .requestJSONEncodable(requestDTO)
+      
+    case .getNewsCard:
+      return .requestParameters(
+        parameters: NewsRequestDTO.init().toDictionary,
+        encoding: .queryString
+      )
     }
   }
   
