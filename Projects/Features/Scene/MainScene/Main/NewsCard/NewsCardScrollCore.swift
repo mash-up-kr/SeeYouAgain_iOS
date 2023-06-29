@@ -179,7 +179,7 @@ public let newsCardScrollReducer = Reducer<
       concatenateNewsCards(&state, source: newsCards)
       return .none
       
-    case .newsCard(id: _, action: ._saveNewsCard):
+    case .newsCard(id: _, action: ._handleSaveNewsCardResponse(.success)):
       let nextScrollIndex = state.currentScrollIndex + 1
       let newsCardCount = state.newsCards.count
       // 다음 카드가 없으면 자동으로 넘어가지 않는다.
