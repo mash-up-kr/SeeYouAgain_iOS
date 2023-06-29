@@ -10,15 +10,18 @@ import Combine
 import ComposableArchitecture
 import Foundation
 import Main
+import NewsCardCoordinator
 import Services
 import TCACoordinators
 
 public enum MainScreenState: Equatable {
   case main(MainState)
+  case newsCard(NewsCardCoordinatorState)
 }
 
 public enum MainScreenAction {
   case main(MainAction)
+  case newsCard(NewsCardCoordinatorAction)
 }
 
 internal struct MainScreenEnvironment {
@@ -56,6 +59,14 @@ internal let mainScreenReducer = Reducer<
           newscardService: $0.newsCardService,
           categoryService: $0.categoryService
         )
+      }
+    ),
+  newsCardCoordinatorReducer
+    .pullback(
+      state: /MainScreenState.newsCard,
+      action: /MainScreenAction.newsCard,
+      environment: { _ in
+        NewsCardCoordinatorEnvironment()
       }
     )
 ])
