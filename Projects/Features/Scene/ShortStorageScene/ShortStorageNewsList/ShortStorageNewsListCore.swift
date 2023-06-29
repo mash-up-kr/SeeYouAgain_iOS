@@ -12,18 +12,6 @@ import Foundation
 import Models
 import Services
 
-public struct ShortsNews: Equatable, Identifiable {
-  public let id: Int
-  public let category: String
-  public let keywords: String
-  
-  public init(id: Int, category: String, keywords: String) {
-    self.id = id
-    self.category = category
-    self.keywords = keywords
-  }
-}
-
 public struct ShortStorageNewsListState: Equatable {
   var isInEditMode: Bool
   var today: String
@@ -34,7 +22,6 @@ public struct ShortStorageNewsListState: Equatable {
   var remainTime: Int = 24 * 60 * 60
   var currentTimeSeconds: Int = 0 // 지금 시간이 몇초를 담고있냐! 17:27:21 => 62841
   var cursorId: Int = 0
-  var cursorDate: Date = .now
   let pagingSize = 10
   
   public init(
@@ -57,11 +44,12 @@ public enum ShortStorageNewsListAction: Equatable {
   case deleteButtonTapped
   
   // MARK: - Inner Business Action
-  case _onAppear
+  case _viewWillAppear
   case _updateTimer
   case _decreaseRemainTime
   case _updateZeroTime
-  case _fetchTodayShorts
+  case _fetchTodayShorts(FetchType)
+  case _handleTodayShortsResponse(TodayShorts, FetchType)
   
   // MARK: - Inner SetState Action
   case _setTodayShortsItem(TodayShorts)
@@ -121,8 +109,11 @@ public let shortStorageNewsListReducer = Reducer<
         Effect(value: ._setTodayShortsItemEditMode)
       ])
       
-    case ._onAppear:
-      return Effect(value: ._setCurrentTimeSeconds)
+    case ._viewWillAppear:
+      return Effect.concatenate([
+        Effect(value: ._setCurrentTimeSeconds),
+        Effect(value: ._fetchTodayShorts(.initial))
+      ])
       
     case ._updateTimer:
       return Effect.timer(
@@ -143,7 +134,7 @@ public let shortStorageNewsListReducer = Reducer<
         Effect(value: ._initializeShortStorageNewsList)
       ])
       
-    case ._fetchTodayShorts:
+    case let ._fetchTodayShorts(fetchType):
       return env.myPageService.getTodayShorts(
         state.cursorId,
         state.pagingSize
@@ -152,12 +143,16 @@ public let shortStorageNewsListReducer = Reducer<
       .flatMap { result -> Effect<ShortStorageNewsListAction, Never> in
         switch result {
         case let .success(todayShorts):
-          return Effect(value: ._setTodayShortsItem(todayShorts))
+          return Effect(value: ._handleTodayShortsResponse(todayShorts, fetchType))
           
-        default: return .none
+        case .failure:
+          return .none
         }
       }
       .eraseToEffect()
+      
+    case let ._handleTodayShortsResponse(todayShorts, fetchType):
+      return handleTodayShortsResponse(&state, source: todayShorts, fetchType: fetchType)
  
     case let ._setTodayShortsItem(todayShorts):
       state.shortsNewsItems = IdentifiedArrayOf(uniqueElements: todayShorts.memberShorts.map {
@@ -168,8 +163,8 @@ public let shortStorageNewsListReducer = Reducer<
           cardState: TodayShortsCardState(
             shortsNews: ShortsNews(
               id: $0.id,
-              category: $0.category,
-              keywords: $0.keywords
+              keywords: $0.keywords,
+              category: $0.category
             ),
             isCardSelectable: true,
             isSelected: false
@@ -231,6 +226,26 @@ public let shortStorageNewsListReducer = Reducer<
     }
   }
 )
+
+private func handleTodayShortsResponse(
+  _ state: inout ShortStorageNewsListState,
+  source todayShorts: TodayShorts,
+  fetchType: FetchType
+) -> Effect<ShortStorageNewsListAction, Never> {
+  switch fetchType {
+  case .initial:
+    return Effect(value: ._setTodayShortsItem(todayShorts))
+    
+    // TODO: 페이징 기능 구현 필요
+  case .continuousPaging:
+    return .none
+    
+  case .newPaging:
+    return .none
+  }
+  
+  return .none
+}
 
 fileprivate func initializeRemainTimeString() -> String {
   let currentTimeSeconds = calculateCurrentTimeSeconds()

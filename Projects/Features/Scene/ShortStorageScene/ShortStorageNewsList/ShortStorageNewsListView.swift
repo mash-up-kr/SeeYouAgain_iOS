@@ -100,8 +100,7 @@ public struct ShortStorageNewsListView: View {
         .ignoresSafeArea()
       }
       .onAppear {
-        viewStore.send(._onAppear)
-        viewStore.send(._fetchTodayShorts)
+        viewStore.send(._viewWillAppear)
       }
     }
   }
