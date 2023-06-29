@@ -9,7 +9,6 @@
 import ComposableArchitecture
 import Foundation
 import HotKeywordCoordinator
-import Main
 import MainCoordinator
 import MyPageCoordinator
 import Services
@@ -196,6 +195,12 @@ public let tabBarReducer = Reducer<
       case .failure:
         return Effect(value: ._presentToast("인터넷이 불안정해서 저장되지 못했어요."))
       }
+      
+    case .main(.routeAction(_, action: .main(.newsCardScroll(.newsCard(id: _, action: ._navigateNewsList))))):
+      return Effect(value: ._setTabHiddenStatus(true))
+    
+    case .main(.routeAction(_, action: .newsCard(.routeAction(_, action: .newsList(.backButtonTapped))))):
+      return Effect(value: ._setTabHiddenStatus(false))
       
     case .myPage(.routeAction(_, action: .myPage(.settingButtonTapped))):
       return Effect(value: ._setTabHiddenStatus(true))
