@@ -50,8 +50,23 @@ struct LetterBottom: View {
         Spacer()
         
         OpaqueShape(
-          color: DesignSystem.Colors.white.opacity(0.55),
-          strokeOpacity: 0.5,
+          color: LinearGradient(
+            colors: [
+              DesignSystem.Colors.white.opacity(0.5),
+              DesignSystem.Colors.white
+          ],
+            startPoint: .top,
+            endPoint: .bottom
+          ),
+          strokeColor: LinearGradient(
+            colors: [
+              DesignSystem.Colors.white,
+              DesignSystem.Colors.white.opacity(0)
+          ],
+            startPoint: .top,
+            endPoint: .bottom
+          ),
+          strokeOpacity: 0.6,
           shape: { LetterBottomTriangle(heightRatio: deviceRatio.height) }
         )
         .frame(height: Constant.bottomTriangleHeight * deviceRatio.height)

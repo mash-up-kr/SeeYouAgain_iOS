@@ -57,8 +57,23 @@ struct LetterTop: View {
         Spacer()
         
         OpaqueShape(
-          color: DesignSystem.Colors.white.opacity(0.5),
-          strokeOpacity: 0.4,
+          color: LinearGradient(
+            colors: [
+              DesignSystem.Colors.white,
+              DesignSystem.Colors.white.opacity(0.5)
+          ],
+            startPoint: .top,
+            endPoint: .bottom
+          ),
+          strokeColor: LinearGradient(
+            colors: [
+              DesignSystem.Colors.white,
+              DesignSystem.Colors.white.opacity(0)
+          ],
+            startPoint: .top,
+            endPoint: .bottom
+          ),
+          strokeOpacity: 0.6,
           shape: { LetterTopTriangle(deviceRatio: deviceRatio) }
         )
         .frame(height: geometry.size.height / 2)
