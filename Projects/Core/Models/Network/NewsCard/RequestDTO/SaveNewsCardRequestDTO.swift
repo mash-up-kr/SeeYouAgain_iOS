@@ -9,9 +9,13 @@
 import Foundation
 
 public struct SaveNewsCardRequestDTO: Encodable {
-  public var newsCardId: Int
+  public var newsCardID: Int
   
-  public init(newsCardId: Int) {
-    self.newsCardId = newsCardId
+  public init(newsCardID: Int) {
+    self.newsCardID = newsCardID
+  }
+  
+  enum CodingKeys: String, CodingKey {
+    case newsCardID = "newsCardId"
   }
 }

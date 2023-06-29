@@ -60,8 +60,8 @@ extension NewsCardAPI: TargetType {
         encoding: .queryString
       )
       
-    case let .saveNewsCard(newsCardId):
-      let requestDTO = SaveNewsCardRequestDTO(newsCardId: newsCardId)
+    case let .saveNewsCard(newsCardID):
+      let requestDTO = SaveNewsCardRequestDTO(newsCardID: newsCardID)
       return .requestJSONEncodable(requestDTO)
       
     case .getNewsCard:
