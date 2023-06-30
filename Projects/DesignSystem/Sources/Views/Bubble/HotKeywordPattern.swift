@@ -50,7 +50,7 @@ public enum HotKeywordPatternSpace {
     ]
   )
 
-  public static let pattern2 = HotKeywordPattern(
+  static let pattern2 = HotKeywordPattern(
     circleDataList: [
       CircleData(x: 137 / 1500, y: 40 / 1100, size: ._240, color: .orange),
       CircleData(x: 580 / 1500, y: 391 / 1100, size: ._240, color: .lime),
