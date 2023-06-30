@@ -242,7 +242,6 @@ private func scrollToNextCard(_ state: NewsCardScrollState) -> Effect<NewsCardSc
     await send(._calculateScrollIndex)
     await send(._fetchNewsCardsIfNeeded(nextScrollIndex, newsCardsCount))
     await send(.dragOnEnded(CGSize(width: 200, height: 0)))
-    // 아래로 사라졌던 이전 뷰는 원래 위치로 복귀시킨다.
   }
 }
 

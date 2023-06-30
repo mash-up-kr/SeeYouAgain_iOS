@@ -16,16 +16,38 @@ private enum Constant {
   static let saveScrollYOffset: CGFloat = 160
 }
 
+public enum ViewState: Equatable {
+  case appear
+  case disappear
+}
+
 public struct NewsCardState: Equatable, Identifiable {
-  public var index: Int
+  var index: Int
   var newsCard: NewsCard
   var layout: NewsCardLayout
   var isFolded: Bool
-  var yOffset: CGFloat = 0
-  var opacity: CGFloat {
-    return calculateOpacity(by: yOffset)
-  }
+  var viewState: ViewState
+  var yOffset: CGFloat
+  var opacity: CGFloat
   public var id: Int { self.index }
+  
+  public init(
+    index: Int,
+    newsCard: NewsCard,
+    layout: NewsCardLayout,
+    isFolded: Bool,
+    viewState: ViewState = .appear,
+    yOffset: CGFloat = 0.0,
+    opacity: CGFloat = 1.0
+  ) {
+    self.index = index
+    self.newsCard = newsCard
+    self.layout = layout
+    self.isFolded = isFolded
+    self.viewState = viewState
+    self.yOffset = yOffset
+    self.opacity = opacity
+  }
 }
 
 public enum NewsCardAction {
@@ -42,9 +64,13 @@ public enum NewsCardAction {
   // MARK: Inner SetState Action
   case _setIsFolded(Bool)
   case _setyOffset(CGFloat)
+  case _setOpacity(CGFloat)
+  case _setyOffsetWithOpacity(CGFloat)
+  case _setViewState(ViewState)
 }
 
 public struct NewsCardEnvironment {
+  fileprivate let mainQueue: AnySchedulerOf<DispatchQueue> = .main
   fileprivate let newsCardService: NewsCardService
   
   public init(newsCardService: NewsCardService) {
@@ -60,22 +86,39 @@ public let newsCardReducer = Reducer<
   switch action {
   case let .dragOnChanged(translation):
     if translation.height < .zero { return .none }
-    return Effect(value: ._setyOffset(translation.height))
+    return Effect(value: ._setyOffsetWithOpacity(translation.height))
     
   case let .dragOnEnded(translation):
-    if translation.height < Constant.saveScrollThreshold { return Effect(value: ._setyOffset(.zero)) }
-    return Effect.merge(
-      Effect(value: ._setIsFolded(true)),
-      Effect(value: ._setyOffset(Constant.saveScrollYOffset)),
-      Effect(value: ._saveNewsCard)
-    )
+    if translation.height < Constant.saveScrollThreshold { return Effect(value: ._setyOffsetWithOpacity(.zero)) }
+    return Effect(value: ._saveNewsCard)
 
   case .newsCardTapped:
     return Effect(value: ._navigateNewsList(state.newsCard.id))
     
+  case ._navigateNewsList:
+    return .none
+    
   case ._saveNewsCard:
     return env.newsCardService.saveNewsCard(state.newsCard.id)
       .catchToEffect(NewsCardAction._handleSaveNewsCardResponse)
+    
+  case ._handleSaveNewsCardResponse(.success):
+    return Effect.concatenate(
+      // 아래로 사라지는 애니메이션
+      Effect(value: ._setyOffsetWithOpacity(Constant.saveScrollYOffset)),
+      // 사라진 상태로 설정한다.
+      Effect(value: ._setViewState(.disappear)),
+      // 사라진 상태에서 다시 원위치로 올린다.
+      Effect(value: ._setIsFolded(true)),
+      Effect(value: ._setyOffset(.zero)),
+      // 보여진 상태로 설정한다.
+      Effect(value: ._setViewState(.appear)),
+      // 투명도를 1로하여 다시 보여준다.
+      Effect(value: ._setOpacity(1)).delay(for: 0.6, scheduler: env.mainQueue).eraseToEffect()
+    )
+    
+  case ._handleSaveNewsCardResponse(.failure):
+    return Effect(value: ._setyOffsetWithOpacity(.zero))
     
   case let ._setIsFolded(folded):
     state.isFolded = folded
@@ -85,7 +128,23 @@ public let newsCardReducer = Reducer<
     state.yOffset = yOffset
     return .none
     
-  default:
+  case let ._setOpacity(opacity):
+    state.opacity = opacity
+    return .none
+    
+  case let ._setyOffsetWithOpacity(value):
+    state.yOffset = value
+    switch state.viewState {
+    case .appear:
+      state.opacity = calculateOpacity(by: value)
+      
+    case .disappear:
+      state.opacity = 0
+    }
+    return .none
+    
+  case let ._setViewState(viewState):
+    state.viewState = viewState
     return .none
   }
 }
