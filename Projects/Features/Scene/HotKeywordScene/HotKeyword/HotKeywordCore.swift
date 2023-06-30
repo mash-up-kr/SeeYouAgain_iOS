@@ -11,7 +11,6 @@ import ComposableArchitecture
 import DesignSystem
 import Foundation
 import Models
-import NewsList
 import Services
 
 public struct HotKeywordState: Equatable {
@@ -36,7 +35,6 @@ public enum HotKeywordAction: Equatable {
   case _fetchData
   case _reloadData(HotKeywordDTO)
   case _showAnimation
-  case _fetchKeywordShorts(String)
   case _presentToast(String)
   case _hideToast
   
@@ -48,10 +46,9 @@ public enum HotKeywordAction: Equatable {
   case _setIsRefresh(Bool)
   case _setIsFirstLoading(Bool)
   case _setCurrentOffset(CGFloat)
-  case _convertNewsItemsFromNewsCardsDTO([NewsCardsResponseDTO], String)
   
   // MARK: - Child Action
-  case showKeywordNewsList(String, IdentifiedArrayOf<NewsCardState>)
+  case showKeywordNewsList(String)
 }
 
 public struct HotKeywordEnvironment {
@@ -83,7 +80,7 @@ public let hotKeywordReducer = Reducer.combine([
         return .none
       }
       return .concatenate([
-        Effect(value: ._fetchKeywordShorts(keyword)),
+        Effect(value: .showKeywordNewsList(keyword)),
         Effect(value: ._setCurrentOffset(offset))
       ])
       
@@ -110,14 +107,14 @@ public let hotKeywordReducer = Reducer.combine([
       
     case let ._reloadData(hotKeywordDTO):
       return .concatenate([
-        Effect(value: ._setSubTitleText(hotKeywordDTO.createdAt)),
+        Effect(value: ._setSubTitleText(hotKeywordDTO.standardTimeString)),
         Effect(value: ._setHotKeywordList(hotKeywordDTO.ranking)),
         Effect(value: ._setHotKeywordPointList)
       ])
       
     case let ._setSubTitleText(subTitle):
       if let subTitle {
-        state.subTitleText = "\(subTitle) 기준"
+        state.subTitleText = subTitle
       } else {
         state.subTitleText = "인터넷 연결 상태가 불안정합니다."
       }
@@ -141,20 +138,6 @@ public let hotKeywordReducer = Reducer.combine([
         hotKeywordPattern: state.hotKeywordPointList.pattern
       )
       return .none
-      
-    case let ._fetchKeywordShorts(keyword):
-      return env.hotKeywordService.fetchKeywordShorts(keyword)
-        .catchToEffect()
-        .flatMapLatest { result -> Effect<HotKeywordAction, Never> in
-          switch result {
-          case let .success(newsCardsResponseDTO):
-            return Effect(value: ._convertNewsItemsFromNewsCardsDTO(newsCardsResponseDTO, keyword))
-            
-          case .failure:
-            return Effect(value: ._presentToast("인터넷 연결 상태가 불안정합니다."))
-          }
-        }
-        .eraseToEffect()
       
     case let ._presentToast(toastMessage):
       return .concatenate([
@@ -185,15 +168,7 @@ public let hotKeywordReducer = Reducer.combine([
       state.currentOffset = offset
       return .none
       
-    case let ._convertNewsItemsFromNewsCardsDTO(responseDTO, keyword):
-      let keyword = "#\(keyword)"
-      var newsItems: IdentifiedArrayOf<NewsCardState> = []
-      responseDTO.forEach { response in
-        newsItems.append(NewsCardState(newsCardsResponseDTO: response))
-      }
-      return Effect(value: .showKeywordNewsList(keyword, newsItems))
-      
-    case let .showKeywordNewsList(keyword, newsItems):
+    case let .showKeywordNewsList(keyword):
       return .none
     }
   }
