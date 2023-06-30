@@ -195,11 +195,9 @@ public let tabBarReducer = Reducer<
         return Effect(value: ._presentToast("인터넷이 불안정해서 저장되지 못했어요."))
       }
       
+    // 메인: 뉴스 카드를 선택하여 뉴스 리스트로 이동할 때 
     case .main(.routeAction(_, action: .main(.newsCardScroll(.newsCard(id: _, action: ._navigateNewsList))))):
       return Effect(value: ._setTabHiddenStatus(true))
-    
-    case .main(.routeAction(_, action: .newsCard(.routeAction(_, action: .newsList(.backButtonTapped))))):
-      return Effect(value: ._setTabHiddenStatus(false))
       
     case .hotKeyword(.routeAction(_, action: .hotKeyword(.showKeywordNewsList))):
       return Effect(value: ._setTabHiddenStatus(true))

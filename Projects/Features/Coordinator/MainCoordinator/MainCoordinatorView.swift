@@ -8,7 +8,6 @@
 
 import ComposableArchitecture
 import Main
-import NewsCardCoordinator
 import SwiftUI
 import TCACoordinators
 
@@ -26,11 +25,6 @@ public struct MainCoordinatorView: View {
           state: /MainScreenState.main,
           action: MainScreenAction.main,
           then: MainView.init
-        )
-        CaseLet(
-          state: /MainScreenState.newsCard,
-          action: MainScreenAction.newsCard,
-          then: NewsCardCoordinatorView.init
         )
       }
     }

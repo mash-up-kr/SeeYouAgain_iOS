@@ -41,6 +41,7 @@ public struct MainView: View {
         ) { store in
           NewsCardScrollView(store: store)
             .frame(height: viewStore.newsCardLayout.size.height)
+            .zIndex(2)
         }
         
         Spacer()
@@ -52,7 +53,8 @@ public struct MainView: View {
             action: MainAction.saveGuide
           )
         ) { store in
-          SaveGuideView(store: store)          
+          SaveGuideView(store: store)
+            .zIndex(1)
         }
         
         Spacer()

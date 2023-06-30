@@ -59,7 +59,6 @@ let project = Project.make(
       bundleId: "com.mashup.seeYouAgain.mainCoordinator",
       sources: ["MainCoordinator/**"],
       dependencies: [
-				.target(name: "NewsCardCoordinator"),
         .project(target: "Main", path: .relativeToRoot("Projects/Features/Scene")),
         .externalsrt("TCA"),
         .externalsrt("TCACoordinators"),

@@ -119,6 +119,23 @@ public let appCoordinatorReducer: Reducer<
         return .none
         
       case let .routeAction(
+        _, action: .tabBar(
+          .main(
+            .routeAction(
+              _, action: .main(
+                .newsCardScroll(
+                  .newsCard(id: _, action: ._navigateNewsList(id))
+                )
+              )
+            )
+          )
+        )
+      ):
+        // TODO: 상희누나 id로 코디네이터 초기화해서 야무지게 사용하면 돼여
+        state.routes.push(.newsCard(.init()))
+        return .none
+        
+      case let .routeAction(
         _,
         action: .tabBar(
           .myPage(
@@ -214,7 +231,7 @@ public let appCoordinatorReducer: Reducer<
         
       case .routeAction(_, action: .newsCard(.routeAction(_, action: .newsList(.backButtonTapped)))):
         state.routes.pop()
-        return .none
+        return Effect(value: .routeAction(0, action: .tabBar(._setTabHiddenStatus(false))))
         
       default: return .none
       }
