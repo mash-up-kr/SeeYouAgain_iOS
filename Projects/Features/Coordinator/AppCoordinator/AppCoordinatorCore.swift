@@ -183,6 +183,58 @@ public let appCoordinatorReducer: Reducer<
         state.routes.push(.newsCard(.init()))
         return .none
         
+      case let .routeAction(
+        _,
+        action: .tabBar(
+          .myPage(
+            .routeAction(
+              _,
+              action: .longStorage(
+                .routeAction(
+                  _,
+                  action: .longStorageNewsList(
+                    .shortsNewsItem(
+                      id: id,
+                      action: .cardAction(.cardTapped)
+                    )
+                  )
+                )
+              )
+            )
+          )
+        )
+      ):
+        state.routes.push(.newsCard(.init(routes: [.root(.web(.init(webAddress: "https://naver.com")))])))
+        return .none
+        
+      case let .routeAction(
+        _,
+        action: .tabBar(
+          .myPage(
+            .routeAction(
+              _,
+              action: .longStorage(
+                .routeAction(
+                  _,
+                  action: .longStorageNewsList(
+                    .shortsNewsItem(
+                      id: id,
+                      action: .cardAction(.rightButtonTapped)
+                    )
+                  )
+                )
+              )
+            )
+          )
+        )
+      ):
+        state.routes.push(.newsCard(.init(routes: [.root(.web(.init(webAddress: "https://naver.com")))])))
+        return .none
+        
+      case .routeAction(_, action: .newsCard(.routeAction(_, action: .web(.backButtonTapped)))):
+        state.routes.pop()
+        return .none
+
       case .routeAction(_, action: .newsCard(.routeAction(_, action: .shortsComplete(.backButtonTapped)))):
         state.routes.pop()
         return Effect(
