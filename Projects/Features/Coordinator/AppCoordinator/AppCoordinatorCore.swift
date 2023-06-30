@@ -231,7 +231,7 @@ public let appCoordinatorReducer: Reducer<
         
       case .routeAction(_, action: .newsCard(.routeAction(_, action: .newsList(.backButtonTapped)))):
         state.routes.pop()
-        return Effect(value: .routeAction(0, action: .tabBar(._setTabHiddenStatus(true))))
+        return Effect(value: .routeAction(0, action: .tabBar(._setTabHiddenStatus(false))))
         
       default: return .none
       }
