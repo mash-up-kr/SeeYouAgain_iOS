@@ -33,8 +33,8 @@ public struct BubbleView: View {
     action: @escaping () -> Void = {}
   ) {
     self.keyword = hotKeywordPoint.keyword
-    self.bubbleSize = hotKeywordPoint.size
-    self.bubbleColor = hotKeywordPoint.color
+    self.bubbleSize = hotKeywordPoint.bubbleSize
+    self.bubbleColor = hotKeywordPoint.bubbleColor
     self.geometryHeight = geometryHeight
     self.pointX = pointX
     self._offset = offset
@@ -46,12 +46,14 @@ public struct BubbleView: View {
       action: action,
       label: {
         ZStack {
-          circle
+          blurView
+          
+          colorView
           
           Text(keyword)
-            .foregroundColor(bubbleColor.fontColor)
             .font(bubbleSize.font)
-            .lineLimit(1)
+            .multilineTextAlignment(.center)
+            .foregroundColor(bubbleColor.fontColor)
         }
         .scaleEffect(isAnimated ? 1 : 0.001) // ignoring singular matrix에러로 인해 0 대신 0.001로 설정
         .animation(.spring(), value: isAnimated)
@@ -63,42 +65,31 @@ public struct BubbleView: View {
             isAnimated = currentOffset > (pointX - spaceWidth)
           }
         }
+        .frame(
+          width: bubbleSize.sizeRatio * geometryHeight,
+          height: bubbleSize.sizeRatio * geometryHeight
+        )
       }
     )
   }
   
-  // lina-TODO: circle 블러
-  private var circle: some View {
-    Circle()
-      .fill(
-        LinearGradient(
-          gradient: Gradient(
-            colors: [
-              bubbleColor.backgroundFirstColor,
-              bubbleColor.backgroundSecondColor
-            ]
-          ),
-          startPoint: .top,
-          endPoint: .bottom
-        )
-      )
-      .frame(
-        width: bubbleSize.sizeRatio * geometryHeight,
-        height: bubbleSize.sizeRatio * geometryHeight
-      )
-      .optionalShadow(
-        color: bubbleColor.dropShadowColor,
-        radius: 24,
-        x: 0,
-        y: 24
-      )
-      .modifier(
-        InnerShadow(
-          color: bubbleColor.innerShadowColor,
-          radius: 4,
-          offset: CGSize(width: 2, height: 2)
-        )
-      )
+  private var blurView: some View {
+    ZStack { }
+      .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+      .blurEffect()
+      .background(bubbleColor.linearGradient)
+      .cornerRadius(ceil(bubbleSize.sizeRatio * geometryHeight / 2))
+      .opacity(0.9)
+      .shadow(color: bubbleColor.shadowColor, radius: 12, x: 0, y: 24)
+  }
+  
+  private var colorView: some View {
+    ZStack { }
+      .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+      .background(bubbleColor.linearGradient)
+      .cornerRadius(ceil(bubbleSize.sizeRatio * geometryHeight / 2))
+      .shadow(color: bubbleColor.shadowColor, radius: 12, x: 0, y: 24)
+      .opacity(0.6)
   }
 }
 
@@ -116,21 +107,21 @@ public enum BubbleSize: CGFloat {
   public var sizeRatio: CGFloat {
     switch self {
     case ._240:
-      return 240 / 500
+      return 240 / 550
     case ._180:
-      return 180 / 500
+      return 180 / 550
     case ._140:
-      return 140 / 500
+      return 140 / 550
     case ._120:
-      return 120 / 500
+      return 120 / 550
     case ._100:
-      return 100 / 500
+      return 100 / 550
     case ._80:
-      return 80 / 500
+      return 80 / 550
     case ._40:
-      return 40 / 500
+      return 40 / 550
     case ._30:
-      return 30 / 500
+      return 30 / 550
     }
   }
   
@@ -164,103 +155,93 @@ public enum BubbleColor {
   case lime
   case white
   
-  /// Inner Shadow 컬러
-  var innerShadowColor: Color {
+  /// 버블 그레디언트 색상 값
+  private var gradientList: [Gradient.Stop] {
     switch self {
     case .orange:
-      return Color(red: 255 / 255, green: 255 / 255, blue: 255 / 255, opacity: 0.24)
+      return [
+        Gradient.Stop(color: Color(red: 0.99, green: 0.69, blue: 0.1).opacity(0.8), location: 0.00),
+        Gradient.Stop(color: Color(red: 1, green: 0.63, blue: 0.12).opacity(0.8), location: 1.00),
+      ]
     case .green:
-      return Color(red: 255 / 255, green: 255 / 255, blue: 255 / 255, opacity: 0.24)
+      return [
+        Gradient.Stop(color: Color(red: 0.24, green: 0.79, blue: 0.45).opacity(0.7), location: 0.00),
+        Gradient.Stop(color: Color(red: 0.18, green: 0.75, blue: 0.41).opacity(0.7), location: 1.00),
+      ]
     case .violet:
-      return Color(red: 255 / 255, green: 255 / 255, blue: 255 / 255, opacity: 0.24)
+      return [
+        Gradient.Stop(color: Color(red: 0.2, green: 0.62, blue: 1).opacity(0.7), location: 0.00),
+        Gradient.Stop(color: Color(red: 0.66, green: 0.41, blue: 0.92).opacity(0.7), location: 0.00),
+        Gradient.Stop(color: Color(red: 0.62, green: 0.35, blue: 0.92).opacity(0.7), location: 1.00),
+      ]
     case .blue:
-      return Color(red: 255 / 255, green: 255 / 255, blue: 255 / 255, opacity: 0.24)
+      return [
+        Gradient.Stop(color: Color(red: 0.27, green: 0.7, blue: 1).opacity(0.7), location: 0.00),
+        Gradient.Stop(color: Color(red: 0.27, green: 0.73, blue: 1).opacity(0.7), location: 1.00),
+      ]
     case .red:
-      return Color(red: 255 / 255, green: 255 / 255, blue: 255 / 255, opacity: 0.24)
+      return [
+        Gradient.Stop(color: Color(red: 0.99, green: 0.43, blue: 0.23).opacity(0.7), location: 0.00),
+        Gradient.Stop(color: Color(red: 1, green: 0.5, blue: 0.22).opacity(0.7), location: 1.00),
+      ]
     case .lime:
-      return Color(red: 255 / 255, green: 255 / 255, blue: 255 / 255, opacity: 0.24)
+      return [
+        Gradient.Stop(color: Color(red: 0.69, green: 0.82, blue: 0.15).opacity(0.7), location: 0.00),
+        Gradient.Stop(color: Color(red: 0.62, green: 0.78, blue: 0.15).opacity(0.7), location: 0.96),
+      ]
     case .white:
-      return Color(red: 255 / 255, green: 255 / 255, blue: 255 / 255, opacity: 0.24)
+      return [
+        Gradient.Stop(color: .white.opacity(0.4), location: 0.00),
+        Gradient.Stop(color: .white.opacity(0), location: 1.00),
+      ]
     }
   }
   
-  /// Drop Shadow 컬러
-  var dropShadowColor: Color? {
+  /// 버블 그레디언트 위치 값
+  var linearGradient: LinearGradient {
     switch self {
-    case .orange:
-      return Color(red: 244 / 255, green: 179 / 255, blue: 86 / 255, opacity: 0.3)
-    case .green:
-      return Color(red: 98 / 255, green: 201 / 255, blue: 140 / 255, opacity: 0.3)
-    case .violet:
-      return Color(red: 176 / 255, green: 128 / 255, blue: 230 / 255, opacity: 0.3)
-    case .blue:
-      return Color(red: 114 / 255, green: 196 / 255, blue: 244 / 255, opacity: 0.3)
-    case .red:
-      return Color(red: 244 / 255, green: 154 / 255, blue: 106 / 255, opacity: 0.3)
-    case .lime:
-      return Color(red: 176 / 255, green: 205 / 255, blue: 92 / 255, opacity: 0.3)
     case .white:
-      return nil
+      return LinearGradient(
+        stops: gradientList,
+        startPoint: UnitPoint(x: 0.19, y: 0.13),
+        endPoint: UnitPoint(x: 0.5, y: 1)
+      )
+    default:
+      return LinearGradient(
+        stops: gradientList,
+        startPoint: UnitPoint(x: 0.5, y: 0),
+        endPoint: UnitPoint(x: 0.5, y: 1)
+      )
     }
   }
   
-  /// 버블 배경 첫번째 컬러
-  var backgroundFirstColor: Color {
+  /// 버블 그림자 컬러
+  var shadowColor: Color {
     switch self {
     case .orange:
-      return Color(red: 253 / 255, green: 176 / 255, blue: 26 / 255, opacity: 0.8)
+      return Color(red: 0.96, green: 0.6, blue: 0.42).opacity(0.3)
     case .green:
-      return Color(red: 60 / 255, green: 202 / 255, blue: 116 / 255, opacity: 0.7)
+      return Color(red: 0.38, green: 0.79, blue: 0.55).opacity(0.3)
     case .violet:
-      return Color(red: 168 / 255, green: 105 / 255, blue: 234 / 255, opacity: 0.7)
+      return Color(red: 0.68, green: 0.49, blue: 0.93).opacity(0.3)
     case .blue:
-      return Color(red: 69 / 255, green: 178 / 255, blue: 255 / 255, opacity: 0.7)
+      return Color(red: 0.45, green: 0.77, blue: 0.96).opacity(0.3)
     case .red:
-      return Color(red: 252 / 255, green: 110 / 255, blue: 58 / 255, opacity: 0.7)
+      return Color(red: 0.96, green: 0.6, blue: 0.42).opacity(0.3)
     case .lime:
-      return Color(red: 177 / 255, green: 208 / 255, blue: 38 / 255, opacity: 0.7)
+      return Color(red: 0.69, green: 0.8, blue: 0.36).opacity(0.3)
     case .white:
-      return Color(red: 194 / 255, green: 194 / 255, blue: 194 / 255, opacity: 0.4)
-    }
-  }
-  
-  /// 버블 배경 두번째 컬러
-  var backgroundSecondColor: Color {
-    switch self {
-    case .orange:
-      return Color(red: 255 / 255, green: 161 / 255, blue: 30 / 255, opacity: 0.8)
-    case .green:
-      return Color(red: 46 / 255, green: 192 / 255, blue: 105 / 255, opacity: 0.7)
-    case .violet:
-      return Color(red: 158 / 255, green: 89 / 255, blue: 235 / 255, opacity: 0.7)
-    case .blue:
-      return Color(red: 69 / 255, green: 187 / 255, blue: 255 / 255, opacity: 0.7)
-    case .red:
-      return Color(red: 255 / 255, green: 129 / 255, blue: 57 / 255, opacity: 0.7)
-    case .lime:
-      return Color(red: 158 / 255, green: 199 / 255, blue: 38 / 255, opacity: 0.7)
-    case .white:
-      return Color(red: 194 / 255, green: 194 / 255, blue: 194 / 255, opacity: 0.4)
+      return Color(red: 1.0, green: 1.0, blue: 1.0).opacity(0.3)
     }
   }
   
   /// 버블 키워드 폰트 컬러
   var fontColor: Color {
     switch self {
-    case .orange:
-      return .white
-    case .green:
-      return .white
-    case .violet:
-      return .white
-    case .blue:
-      return .white
-    case .red:
-      return .white
-    case .lime:
-      return .white
     case .white:
       return Color(red: 69 / 255, green: 72 / 255, blue: 73 / 255)
+    default:
+      return .white
     }
   }
 }

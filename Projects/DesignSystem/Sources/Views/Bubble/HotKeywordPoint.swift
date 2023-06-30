@@ -11,15 +11,15 @@ import Foundation
 public struct HotKeywordPoint: Equatable, Hashable {
   public var x: Double
   public var y: Double
-  public var color: BubbleColor
-  public var size: BubbleSize
+  public var bubbleColor: BubbleColor
+  public var bubbleSize: BubbleSize
   public var keyword: String
   
   public init(keyword: String, circleData: CircleData) {
     self.x = circleData.x
     self.y = circleData.y
-    self.color = circleData.color
-    self.size = circleData.size
+    self.bubbleColor = circleData.color
+    self.bubbleSize = circleData.size
     self.keyword = keyword
   }
 }
