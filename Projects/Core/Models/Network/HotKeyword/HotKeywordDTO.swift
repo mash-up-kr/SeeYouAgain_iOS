@@ -19,7 +19,6 @@ public struct HotKeywordDTO: Decodable, Equatable {
       let month = calendar.component(.month, from: date)
       let day = calendar.component(.day, from: date)
       let hour = calendar.component(.hour, from: date)
-      let minute = calendar.component(.minute, from: date)
       
       return "\(year)년 \(month)월 \(day)일 \(hour):01 ~ \(hour + 1):00 기준"
     }
