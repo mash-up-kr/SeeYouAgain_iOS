@@ -10,7 +10,6 @@ import Combine
 import ComposableArchitecture
 import Foundation
 import Models
-import Web
 
 public struct News: Equatable, Identifiable {
   public let id: Int
@@ -51,8 +50,6 @@ public struct NewsCardState: Equatable, Identifiable {
     writtenDateTime: "2023.06.03 04:24",
     type: "경제"
   )
-  
-  var web: WebState = WebState(webAddress: "https://naver.com")
 }
 
 public enum NewsCardAction: Equatable {
@@ -65,7 +62,6 @@ public enum NewsCardAction: Equatable {
   // MARK: - Inner SetState Action
   
   // MARK: - Child Action
-  case web(WebAction)
 }
 
 public struct NewsCardEnvironment {
