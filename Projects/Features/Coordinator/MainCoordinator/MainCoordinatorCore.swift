@@ -10,7 +10,6 @@ import Combine
 import ComposableArchitecture
 import Foundation
 import Main
-import NewsCardCoordinator
 import Services
 import TCACoordinators
 
@@ -71,23 +70,6 @@ public let mainCoordinatorReducer: Reducer<
   .withRouteReducer(
     Reducer { state, action, env in
       switch action {
-      case let .routeAction(
-        _, action: .main(
-          .newsCardScroll(
-            .newsCard(
-              id: _, action: ._navigateNewsList(id)
-            )
-          )
-        )
-      ):
-        // TODO: id를 건네줘야한다.
-        state.routes.push(.newsCard(.init()))
-        return .none
-        
-      case .routeAction(_, action: .newsCard(.routeAction(_, action: .newsList(.backButtonTapped)))):
-        state.routes.pop()
-        return .none
-        
       default: return .none
       }
     }
