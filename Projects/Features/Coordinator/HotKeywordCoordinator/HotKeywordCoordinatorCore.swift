@@ -60,11 +60,11 @@ public let hotKeywordCoordinatorReducer: Reducer<
   .withRouteReducer(
     Reducer { state, action, env in
       switch action {
-      case let .routeAction(_, action: .hotKeyword(.showKeywordNewsList(keyword, newsItems))):
+      case let .routeAction(_, action: .hotKeyword(.showKeywordNewsList(keyword))):
         state.routes.push(.newCard(.init(routes: [
           .root(
             .newsList(
-              .init(keywordTitle: keyword, newsItems: newsItems)
+              .init(keywordTitle: keyword)
             ),
             embedInNavigationView: true
           )

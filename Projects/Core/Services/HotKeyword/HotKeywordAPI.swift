@@ -12,7 +12,6 @@ import Models
 
 public enum HotKeywordAPI {
   case fetchHotKeyword
-  case fetchKeywordShorts(keyword: String)
 }
 
 extension HotKeywordAPI: TargetType {
@@ -24,14 +23,12 @@ extension HotKeywordAPI: TargetType {
     switch self {
     case .fetchHotKeyword:
       return "/hot-keywords"
-    case let .fetchKeywordShorts(keyword):
-      return "/hot-keywords/\(keyword)"
     }
   }
   
   public var method: HTTPMethod {
     switch self {
-    case .fetchHotKeyword, .fetchKeywordShorts:
+    case .fetchHotKeyword:
       return .get
     }
   }
@@ -40,11 +37,6 @@ extension HotKeywordAPI: TargetType {
     switch self {
     case .fetchHotKeyword:
       return .requestPlain
-    case .fetchKeywordShorts:
-      return .requestParameters(
-        parameters: ["cursorId": 0, "size": 10],
-        encoding: .queryString
-      )
     }
   }
   

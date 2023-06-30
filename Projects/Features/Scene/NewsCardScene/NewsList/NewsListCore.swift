@@ -14,7 +14,7 @@ public struct NewsListState: Equatable {
   var keywordTitle: String
   var newsItems: IdentifiedArrayOf<NewsCardState> = []
   
-  public init(keywordTitle: String, newsItems: IdentifiedArrayOf<NewsCardState>) {
+  public init(keywordTitle: String, newsItems: IdentifiedArrayOf<NewsCardState> = []) {
     self.keywordTitle = keywordTitle
     self.newsItems = newsItems
   }

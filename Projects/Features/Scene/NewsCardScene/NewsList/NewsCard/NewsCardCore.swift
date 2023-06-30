@@ -53,27 +53,6 @@ public struct NewsCardState: Equatable, Identifiable {
   )
   
   var web: WebState = WebState(webAddress: "https://naver.com")
-  
-  // FIXME: to.상희 hotKeyword랑 연동하기 위한 중간다리 임시로 만들어두었습니다. 확인 부탁드려요!
-  public init(id: Int, news: News, web: WebState) {
-    self.id = id
-    self.news = news
-    self.web = web
-  }
-  
-  public init(newsCardsResponseDTO: NewsCardsResponseDTO) {
-    self.id = newsCardsResponseDTO.id
-    self.news = News(
-      id: newsCardsResponseDTO.id,
-      title: newsCardsResponseDTO.keywords,
-      thumbnailImageUrl: nil,
-      newsLink: "https://naver.com",
-      press: "매일경제",
-      writtenDateTime: newsCardsResponseDTO.crawledDateTime,
-      type: newsCardsResponseDTO.category
-    )
-    self.web = WebState(webAddress: "https://naver.com")
-  }
 }
 
 public enum NewsCardAction: Equatable {
