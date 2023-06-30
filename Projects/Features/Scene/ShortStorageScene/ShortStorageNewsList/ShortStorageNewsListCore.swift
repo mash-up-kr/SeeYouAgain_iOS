@@ -37,7 +37,7 @@ public struct ShortStorageNewsListState: Equatable {
   }
 }
 
-public enum ShortStorageNewsListAction: Equatable {
+public enum ShortStorageNewsListAction {
   // MARK: - User Action
   case backButtonTapped
   case editButtonTapped
@@ -50,6 +50,8 @@ public enum ShortStorageNewsListAction: Equatable {
   case _updateZeroTime
   case _fetchTodayShorts(FetchType)
   case _handleTodayShortsResponse(TodayShorts, FetchType)
+  case _deleteTodayShorts([Int])
+  case _handleDeleteTodayShortsResponse(Result<VoidResponse?, Error>)
   
   // MARK: - Inner SetState Action
   case _setTodayShortsItem(TodayShorts)
@@ -57,6 +59,7 @@ public enum ShortStorageNewsListAction: Equatable {
   case _setTodayShortsItemEditMode
   case _setTodayShortsItemList
   case _setTodayShortsItemCount
+  case _setSelectedItemIds
   case _setCurrentTimeSeconds
   case _setRemainTime(Int)
   case _setRemainTimeString(Int)
@@ -103,11 +106,12 @@ public let shortStorageNewsListReducer = Reducer<
       ])
       
     case .deleteButtonTapped:
-      return Effect.concatenate([
-        Effect(value: ._setEditMode),
-        Effect(value: ._setTodayShortsItemList),
-        Effect(value: ._setTodayShortsItemEditMode)
-      ])
+      // TODO: API 요청
+      // 1. 선택된 아이템 id 세팅
+      // 2. 선택된 아이템 아이디에 해당하는 숏스 제거 요청 (API)
+      // 3. 요청에 대한 응답 처리 & 아이템 리스트 수정
+      // 4. 응답 잘되면 토스트메시지 띄우기
+      return Effect(value: ._setSelectedItemIds)
       
     case ._viewWillAppear:
       return Effect.concatenate([
@@ -153,7 +157,25 @@ public let shortStorageNewsListReducer = Reducer<
       
     case let ._handleTodayShortsResponse(todayShorts, fetchType):
       return handleTodayShortsResponse(&state, source: todayShorts, fetchType: fetchType)
- 
+
+    case let ._deleteTodayShorts(shortsIds):
+      // 2. 선택된 아이템 아이디에 해당하는 숏스 제거 요청 (API)
+      return env.myPageService.deleteTodayShorts(shortsIds)
+        .catchToEffect(ShortStorageNewsListAction._handleDeleteTodayShortsResponse)
+
+      // 3. 요청에 대한 응답 처리 & 아이템 리스트 수정
+    case let ._handleDeleteTodayShortsResponse(result):
+      switch result {
+      case .success:
+        return Effect.concatenate([
+          Effect(value: ._setEditMode),
+          Effect(value: ._setTodayShortsItemList),
+          Effect(value: ._setTodayShortsItemEditMode)
+        ])
+        
+      default: return .none
+      }
+
     case let ._setTodayShortsItem(todayShorts):
       state.shortsNewsItems = IdentifiedArrayOf(uniqueElements: todayShorts.memberShorts.map {
         TodayShortsItemState(
@@ -191,6 +213,17 @@ public let shortStorageNewsListReducer = Reducer<
     case ._setTodayShortsItemCount:
       state.shortsNewsItemsCount = state.shortsNewsItems.count
       return .none
+      
+    case ._setSelectedItemIds:
+      // 1. 선택된 아이템 id 세팅
+      var selectedItemIds: [Int] = []
+      
+      for item in state.shortsNewsItems {
+        if item.isSelected {
+          selectedItemIds.append(item.id)
+        }
+      }
+      return Effect(value: ._deleteTodayShorts(selectedItemIds)) // 2. 선택된 아이템 아이디에 해당하는 숏스 제거 요청 (API)
       
     case ._setCurrentTimeSeconds:
       state.currentTimeSeconds = calculateCurrentTimeSeconds()
@@ -243,8 +276,6 @@ private func handleTodayShortsResponse(
   case .newPaging:
     return .none
   }
-  
-  return .none
 }
 
 fileprivate func initializeRemainTimeString() -> String {

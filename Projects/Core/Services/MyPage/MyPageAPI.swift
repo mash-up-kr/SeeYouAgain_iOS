@@ -13,6 +13,7 @@ import Models
 public enum MyPageAPI {
   case getMemberInfo
   case getTodayShorts(Int, Int)
+  case deleteTodayShorts([Int])
 }
 
 extension MyPageAPI: TargetType {
@@ -26,6 +27,8 @@ extension MyPageAPI: TargetType {
       return "/member/info"
     case .getTodayShorts:
       return "/member-news-card/"
+    case .deleteTodayShorts:
+      return "/member-news-card"
     }
   }
   
@@ -36,6 +39,9 @@ extension MyPageAPI: TargetType {
       
     case .getTodayShorts:
       return .get
+      
+    case .deleteTodayShorts:
+      return .post
     }
   }
   
@@ -53,6 +59,10 @@ extension MyPageAPI: TargetType {
         parameters: requestDTO.toDictionary,
         encoding: .queryString
       )
+      
+    case let .deleteTodayShorts(shortsIds):
+      let requestDTO = DeleteTodayShortsRequestDTO(shortsIds: shortsIds)
+      return .requestJSONEncodable(requestDTO)
     }
   }
   

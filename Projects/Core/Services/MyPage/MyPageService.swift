@@ -20,6 +20,7 @@ public struct MyPageService {
     _ cursorId: Int,
     _ pagingSize: Int
   ) -> Effect<TodayShorts, Error>
+  public var deleteTodayShorts: (_ shortsIds: [Int]) -> Effect<VoidResponse?, Error>
 }
 
 extension MyPageService {
@@ -44,6 +45,16 @@ extension MyPageService {
         )
         .compactMap { $0 }
         .map { $0.toDomain }
+        .eraseToEffect()
+    },
+    deleteTodayShorts: { shortsIds in
+      return Provider<MyPageAPI>
+        .init()
+        .request(
+          MyPageAPI.deleteTodayShorts(shortsIds),
+          type: VoidResponse.self
+        )
+        .compactMap { $0 }
         .eraseToEffect()
     }
   )

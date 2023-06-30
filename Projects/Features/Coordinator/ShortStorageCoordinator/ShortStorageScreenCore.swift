@@ -16,7 +16,7 @@ public enum ShortStorageScreenState: Equatable {
   case shortStorageNewsList(ShortStorageNewsListState)
 }
 
-public enum ShortStorageScreenAction: Equatable {
+public enum ShortStorageScreenAction {
   case shortStorageNewsList(ShortStorageNewsListAction)
 }
 
