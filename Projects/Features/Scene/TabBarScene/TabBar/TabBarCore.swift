@@ -202,9 +202,6 @@ public let tabBarReducer = Reducer<
     case .hotKeyword(.routeAction(_, action: .hotKeyword(.showKeywordNewsList))):
       return Effect(value: ._setTabHiddenStatus(true))
     
-    case .hotKeyword(.routeAction(_, action: .newCard(.routeAction(_, action: .newsList(.backButtonTapped))))):
-      return Effect(value: ._setTabHiddenStatus(false))
-      
     case .myPage(.routeAction(_, action: .myPage(.settingButtonTapped))):
       return Effect(value: ._setTabHiddenStatus(true))
       

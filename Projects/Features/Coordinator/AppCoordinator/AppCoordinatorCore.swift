@@ -136,6 +136,30 @@ public let appCoordinatorReducer: Reducer<
         return .none
         
       case let .routeAction(
+        _, action: .tabBar(
+          .hotKeyword(
+            .routeAction(
+              _, action: .hotKeyword(
+                .showKeywordNewsList(keyword)
+              )
+            )
+          )
+        )
+      ):
+        // TODO: 상희야 키워드 넣어놓았다
+        state.routes.push(.newsCard(
+          .init(routes: [
+            .root(
+              .newsList(
+                .init(keywordTitle: keyword)
+              ),
+              embedInNavigationView: true
+            )
+          ])
+        ))
+        return .none
+        
+      case let .routeAction(
         _,
         action: .tabBar(
           .myPage(
