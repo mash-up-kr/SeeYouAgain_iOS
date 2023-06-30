@@ -35,66 +35,66 @@ public enum HotKeywordPatternSpace {
    */
   static let pattern1 = HotKeywordPattern(
     circleDataList: [
-      CircleData(x: 242 / 1500, y: 0 / 1100, size: ._240, color: .violet),
-      CircleData(x: 693 / 1500, y: 507 / 1100, size: ._240, color: .lime),
-      CircleData(x: 677 / 1500, y: 124 / 1100, size: ._180, color: .blue),
-      CircleData(x: 290 / 1500, y: 578 / 1100, size: ._180, color: .blue),
-      CircleData(x: 61 / 1500, y: 312 / 1100, size: ._140, color: .white),
-      CircleData(x: 1104 / 1500, y: 422 / 1100, size: ._140, color: .orange),
-      CircleData(x: 505 / 1500, y: 455 / 1100, size: ._120, color: .orange),
-      CircleData(x: 36 / 1500, y: 651 / 1100, size: ._120, color: .green),
-      CircleData(x: 1136 / 1500, y: 133 / 1100, size: ._120, color: .green),
-      CircleData(x: 939 / 1500, y: 42 / 1100, size: ._100, color: .white),
-      CircleData(x: 11 / 1500, y: 214 / 1100, size: ._40, color: .violet),
-      CircleData(x: 127 / 1500, y: 133 / 1100, size: ._30, color: .lime)
+      CircleData(x: 292 / 1500, y: 0 / 1100, size: ._240, color: .violet),
+      CircleData(x: 760 / 1500, y: 507 / 1100, size: ._240, color: .lime),
+      CircleData(x: 705 / 1500, y: 124 / 1100, size: ._180, color: .blue),
+      CircleData(x: 330 / 1500, y: 600 / 1100, size: ._180, color: .blue),
+      CircleData(x: 130 / 1500, y: 312 / 1100, size: ._140, color: .white),
+      CircleData(x: 1100 / 1500, y: 422 / 1100, size: ._140, color: .orange),
+      CircleData(x: 540 / 1500, y: 425 / 1100, size: ._120, color: .red),
+      CircleData(x: 86 / 1500, y: 651 / 1100, size: ._120, color: .green),
+      CircleData(x: 1186 / 1500, y: 133 / 1100, size: ._120, color: .green),
+      CircleData(x: 940 / 1500, y: 45 / 1100, size: ._100, color: .white),
+      CircleData(x: 61 / 1500, y: 214 / 1100, size: ._40, color: .violet),
+      CircleData(x: 177 / 1500, y: 133 / 1100, size: ._30, color: .lime)
     ]
   )
 
   static let pattern2 = HotKeywordPattern(
     circleDataList: [
-      CircleData(x: 57 / 1500, y: 18 / 1100, size: ._240, color: .orange),
-      CircleData(x: 571 / 1500, y: 391 / 1100, size: ._240, color: .lime),
-      CircleData(x: 773 / 1500, y: 59 / 1100, size: ._180, color: .blue),
-      CircleData(x: 356 / 1500, y: 661 / 1100, size: ._140, color: .green),
-      CircleData(x: 207 / 1500, y: 497 / 1100, size: ._120, color: .red),
-      CircleData(x: 1107 / 1500, y: 694 / 1100, size: ._120, color: .orange),
-      CircleData(x: 530 / 1500, y: 196 / 1100, size: ._100, color: .white),
-      CircleData(x: 57 / 1500, y: 771 / 1100, size: ._100, color: .violet),
-      CircleData(x: 6 / 1500, y: 499 / 1100, size: ._80, color: .green),
-      CircleData(x: 1049 / 1500, y: 464 / 1100, size: ._80, color: .red),
-      CircleData(x: 1235 / 1500, y: 350 / 1100, size: ._40, color: .orange)
+      CircleData(x: 137 / 1500, y: 40 / 1100, size: ._240, color: .orange),
+      CircleData(x: 580 / 1500, y: 391 / 1100, size: ._240, color: .lime),
+      CircleData(x: 780 / 1500, y: 80 / 1100, size: ._180, color: .blue),
+      CircleData(x: 410 / 1500, y: 670 / 1100, size: ._140, color: .green),
+      CircleData(x: 277 / 1500, y: 500 / 1100, size: ._120, color: .red),
+      CircleData(x: 1140 / 1500, y: 694 / 1100, size: ._120, color: .orange),
+      CircleData(x: 550 / 1500, y: 196 / 1100, size: ._100, color: .white),
+      CircleData(x: 137 / 1500, y: 771 / 1100, size: ._100, color: .violet),
+      CircleData(x: 86 / 1500, y: 499 / 1100, size: ._80, color: .green),
+      CircleData(x: 985 / 1500, y: 464 / 1100, size: ._80, color: .red),
+      CircleData(x: 1280 / 1500, y: 350 / 1100, size: ._40, color: .orange)
     ]
   )
 
   static let pattern3 = HotKeywordPattern(
     circleDataList: [
-      CircleData(x: 0 / 1500, y: 131 / 1100, size: ._240, color: .violet),
-      CircleData(x: 742 / 1500, y: 504 / 1100, size: ._240, color: .green),
-      CircleData(x: 500 / 1500, y: 256 / 1100, size: ._180, color: .blue),
-      CircleData(x: 452 / 1500, y: 661 / 1100, size: ._140, color: .red),
-      CircleData(x: 1050 / 1500, y: 100 / 1100, size: ._140, color: .orange),
-      CircleData(x: 37 / 1500, y: 656 / 1100, size: ._120, color: .blue),
-      CircleData(x: 289 / 1500, y: 564 / 1100, size: ._100, color: .green),
-      CircleData(x: 333 / 1500, y: 835 / 1100, size: ._100, color: .orange),
-      CircleData(x: 858 / 1500, y: 72 / 1100, size: ._100, color: .red),
-      CircleData(x: 150 / 1500, y: 0 / 1100, size: ._80, color: .white),
-      CircleData(x: 664 / 1500, y: 75 / 1100, size: ._40, color: .green),
+      CircleData(x: 50 / 1500, y: 131 / 1100, size: ._240, color: .violet),
+      CircleData(x: 760 / 1500, y: 504 / 1100, size: ._240, color: .lime),
+      CircleData(x: 570 / 1500, y: 270 / 1100, size: ._180, color: .blue),
+      CircleData(x: 320 / 1500, y: 0 / 1100, size: ._140, color: .white),
+      CircleData(x: 502 / 1500, y: 661 / 1100, size: ._140, color: .red),
+      CircleData(x: 1100 / 1500, y: 100 / 1100, size: ._140, color: .orange),
+      CircleData(x: 87 / 1500, y: 656 / 1100, size: ._120, color: .blue),
+      CircleData(x: 285 / 1500, y: 560 / 1100, size: ._100, color: .green),
+      CircleData(x: 330 / 1500, y: 835 / 1100, size: ._100, color: .orange),
+      CircleData(x: 940 / 1500, y: 80 / 1100, size: ._100, color: .red),
+      CircleData(x: 690 / 1500, y: 75 / 1100, size: ._40, color: .green),
     ]
   )
 
   static let pattern4 = HotKeywordPattern(
     circleDataList: [
-      CircleData(x: 24 / 1500, y: 507 / 1100, size: ._240, color: .green),
-      CircleData(x: 601 / 1500, y: 0 / 1100, size: ._240, color: .lime),
-      CircleData(x: 86 / 1500, y: 88 / 1100, size: ._180, color: .orange),
-      CircleData(x: 821 / 1500, y: 581 / 1100, size: ._180, color: .blue),
-      CircleData(x: 1100 / 1500, y: 405 / 1100, size: ._140, color: .violet),
-      CircleData(x: 619 / 1500, y: 556 / 1100, size: ._100, color: .red),
-      CircleData(x: 1038 / 1500, y: 0 / 1100, size: ._100, color: .red),
-      CircleData(x: 24 / 1500, y: 368 / 1100, size: ._80, color: .violet),
-      CircleData(x: 443 / 1500, y: 302 / 1100, size: ._80, color: .white),
-      CircleData(x: 500 / 1500, y: 836 / 1100, size: ._80, color: .blue),
-      CircleData(x: 1192 / 1500, y: 300 / 1100, size: ._30, color: .orange)
+      CircleData(x: 74 / 1500, y: 507 / 1100, size: ._240, color: .green),
+      CircleData(x: 651 / 1500, y: 0 / 1100, size: ._240, color: .lime),
+      CircleData(x: 136 / 1500, y: 88 / 1100, size: ._180, color: .orange),
+      CircleData(x: 851 / 1500, y: 581 / 1100, size: ._180, color: .blue),
+      CircleData(x: 1130 / 1500, y: 385 / 1100, size: ._140, color: .violet),
+      CircleData(x: 493 / 1500, y: 302 / 1100, size: ._140, color: .white),
+      CircleData(x: 709 / 1500, y: 556 / 1100, size: ._100, color: .red),
+      CircleData(x: 1030 / 1500, y: 0 / 1100, size: ._100, color: .red),
+      CircleData(x: 80 / 1500, y: 330 / 1100, size: ._80, color: .violet),
+      CircleData(x: 550 / 1500, y: 836 / 1100, size: ._80, color: .blue),
+      CircleData(x: 1150 / 1500, y: 330 / 1100, size: ._30, color: .orange)
     ]
   )
   
