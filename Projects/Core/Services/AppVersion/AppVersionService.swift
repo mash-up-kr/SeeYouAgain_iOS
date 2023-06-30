@@ -58,14 +58,14 @@ public extension AppVersionService {
                 if currentAppVersion == appStoreVersion {
                   subscriber.send(("최신버전입니다.", true))
                 } else {
-                  subscriber.send(("최신버전이 아닙니다.", false))
+                  subscriber.send(("최신버전은 v\(appStoreVersion)입니다.", false))
                 }
               } else {
-                subscriber.send(("앱 스토어 정보를 가져오지 못했습니다.", false))
+                subscriber.send(("앱 스토어 정보를 가져오지 못했습니다.", true))
               }
               
             case .failure:
-              subscriber.send(("앱 스토어 정보를 가져오는데 실패했습니다.", false))
+              subscriber.send(("앱 스토어 정보를 가져오는데 실패했습니다.", true))
             }
             subscriber.send(completion: .finished)
           }

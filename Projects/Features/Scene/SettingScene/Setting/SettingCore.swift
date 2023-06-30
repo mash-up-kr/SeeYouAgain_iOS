@@ -10,6 +10,7 @@ import Combine
 import ComposableArchitecture
 import Foundation
 import Services
+import UIKit
 
 public struct SettingState: Equatable {
   var appVersion: String
@@ -37,6 +38,7 @@ public struct SettingState: Equatable {
 public enum SettingAction: Equatable {
   // MARK: - User Action
   case backButtonTapped
+  case updateButtonTapped
   
   // MARK: - Inner Business Action
   case _onAppear
@@ -63,6 +65,14 @@ public let settingReducer = Reducer.combine([
   Reducer<SettingState, SettingAction, SettingEnvironment> { state, action, env in
     switch action {
     case .backButtonTapped:
+      return .none
+      
+    case .updateButtonTapped:
+      guard let url = URL(string: "https://apps.apple.com/app/\(state.appID)") else {
+        return .none
+      }
+      
+      UIApplication.shared.open(url)
       return .none
       
     case ._onAppear:
