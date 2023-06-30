@@ -7,7 +7,6 @@
 //
 
 import ComposableArchitecture
-import Web
 
 public struct News: Equatable, Identifiable {
   public let id: Int
@@ -54,8 +53,6 @@ public struct LongShortsCardState: Equatable, Identifiable {
     self.isCardSelectable = isCardSelectable
     self.isSelected = isSelected
   }
-  
-  var web: WebState = WebState(webAddress: "https://naver.com")
 }
 
 public enum LongShortsCardAction: Equatable {
