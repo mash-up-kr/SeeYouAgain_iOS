@@ -8,7 +8,6 @@
 
 import ComposableArchitecture
 import HotKeyword
-import NewsCardCoordinator
 import Services
 import SwiftUI
 import TCACoordinators
@@ -60,21 +59,6 @@ public let hotKeywordCoordinatorReducer: Reducer<
   .withRouteReducer(
     Reducer { state, action, env in
       switch action {
-      case let .routeAction(_, action: .hotKeyword(.showKeywordNewsList(keyword))):
-        state.routes.push(.newCard(.init(routes: [
-          .root(
-            .newsList(
-              .init(keywordTitle: keyword)
-            ),
-            embedInNavigationView: true
-          )
-        ])))
-        return .none
-
-      case .routeAction(_, action: .newCard(.routeAction(_, action: .newsList(.backButtonTapped)))):
-        state.routes.pop()
-        return .none
-        
       default: return .none
       }
     }

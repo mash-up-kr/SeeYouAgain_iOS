@@ -70,7 +70,6 @@ let project = Project.make(
       bundleId: "com.mashup.seeYouAgain.hotKeyword",
       sources: ["HotKeywordCoordinator/**"],
       dependencies: [
-        .target(name: "NewsCardCoordinator"),
         .project(target: "HotKeyword", path: .relativeToRoot("Projects/Features/Scene")),
         .externalsrt("TCA"),
         .externalsrt("TCACoordinators"),
