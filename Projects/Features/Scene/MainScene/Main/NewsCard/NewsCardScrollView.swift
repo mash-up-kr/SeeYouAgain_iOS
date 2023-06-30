@@ -33,10 +33,10 @@ struct NewsCardScrollView: View {
           .onChanged { value in
             viewStore.send(.dragOnChanged(value.translation))
           }
-          .onEnded { _ in
+          .onEnded { value in
             viewStore.send(._calculateScrollIndex)
             viewStore.send(._fetchNewsCardsIfNeeded(viewStore.currentScrollIndex, viewStore.newsCards.count))
-            viewStore.send(.dragOnEnded)
+            viewStore.send(.dragOnEnded(value.translation))
           }
       )
     }

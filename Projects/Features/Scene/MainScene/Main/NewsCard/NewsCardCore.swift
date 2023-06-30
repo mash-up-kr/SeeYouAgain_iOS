@@ -11,18 +11,27 @@ import Foundation
 import Models
 import Services
 
+private enum Constant {
+  static let saveScrollThreshold: CGFloat = 80
+  static let saveScrollYOffset: CGFloat = 160
+}
+
 public struct NewsCardState: Equatable, Identifiable {
   public var index: Int
   var newsCard: NewsCard
   var layout: NewsCardLayout
   var isFolded: Bool
-  
+  var yOffset: CGFloat = 0
+  var opacity: CGFloat {
+    return calculateOpacity(by: yOffset)
+  }
   public var id: Int { self.index }
 }
 
 public enum NewsCardAction {
   // MARK: User Action
-  case dragGestureEnded(CGSize)
+  case dragOnChanged(CGSize)
+  case dragOnEnded(CGSize)
   case newsCardTapped
   
   // MARK: - Inner Business Action
@@ -32,6 +41,7 @@ public enum NewsCardAction {
   
   // MARK: Inner SetState Action
   case _setIsFolded(Bool)
+  case _setyOffset(CGFloat)
 }
 
 public struct NewsCardEnvironment {
@@ -48,12 +58,18 @@ public let newsCardReducer = Reducer<
   NewsCardEnvironment
 > { state, action, env in
   switch action {
-  case let .dragGestureEnded(translation):
-    if isDraggedVertically(state: state, with: translation) {
-      return Effect(value: ._saveNewsCard)
-    }
-    return .none
+  case let .dragOnChanged(translation):
+    if translation.height < .zero { return .none }
+    return Effect(value: ._setyOffset(translation.height))
     
+  case let .dragOnEnded(translation):
+    if translation.height < Constant.saveScrollThreshold { return Effect(value: ._setyOffset(.zero)) }
+    return Effect.merge(
+      Effect(value: ._setIsFolded(true)),
+      Effect(value: ._setyOffset(Constant.saveScrollYOffset)),
+      Effect(value: ._saveNewsCard)
+    )
+
   case .newsCardTapped:
     return Effect(value: ._navigateNewsList(state.newsCard.id))
     
@@ -65,20 +81,16 @@ public let newsCardReducer = Reducer<
     state.isFolded = folded
     return .none
     
+  case let ._setyOffset(yOffset):
+    state.yOffset = yOffset
+    return .none
+    
   default:
     return .none
   }
 }
 
-private func isDraggedVertically(
-  state: NewsCardState,
-  with translation: CGSize
-) -> Bool {
-  let verticalThreshold: CGFloat = state.layout.size.height * 0.3 // 드래그가 수직으로 인식되는 임계값
-  let horizontalThresholdRange: Range<Int> = 0..<1 // X축으로 인식하지 않을 임계값
-  
-  let verticalMovement = translation.height
-  let horizontalMovement = abs(translation.width)
-  
-  return verticalMovement > verticalThreshold && horizontalThresholdRange ~= Int(horizontalMovement)
+private func calculateOpacity(by yOffset: CGFloat) -> CGFloat {
+  let slope: CGFloat = -1.0 / Constant.saveScrollYOffset
+  return slope * yOffset + 1
 }

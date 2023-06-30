@@ -25,7 +25,7 @@ struct NewsCardView: View {
             .resizable()
             .scaledToFit()
             .opacity(viewStore.isFolded ? 0 : 1)
-            .animation(.easeInOut.delay(0.3), value: viewStore.isFolded)
+            .animation(.easeInOut, value: viewStore.isFolded)
           
           if let newsCardType = NewsCardType(rawValue: viewStore.newsCard.category) {
             if viewStore.isFolded {
@@ -56,13 +56,12 @@ struct NewsCardView: View {
             deviceRatio: viewStore.layout.ratio
           )
         }
+        .opacity(viewStore.opacity)
+        .offset(y: viewStore.yOffset)
+        .animation(.easeInOut, value: viewStore.yOffset)
         .onTapGesture {
           viewStore.send(.newsCardTapped)
         }
-        .gesture(
-          DragGesture()
-            .onEnded { viewStore.send(.dragGestureEnded($0.translation)) }
-        )
       }
     }
   }
