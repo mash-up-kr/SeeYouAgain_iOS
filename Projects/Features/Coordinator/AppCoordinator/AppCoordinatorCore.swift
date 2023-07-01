@@ -119,6 +119,47 @@ public let appCoordinatorReducer: Reducer<
         return .none
         
       case let .routeAction(
+        _, action: .tabBar(
+          .main(
+            .routeAction(
+              _, action: .main(
+                .newsCardScroll(
+                  .newsCard(id: _, action: ._navigateNewsList(id))
+                )
+              )
+            )
+          )
+        )
+      ):
+        // TODO: 상희누나 id로 코디네이터 초기화해서 야무지게 사용하면 돼여
+        state.routes.push(.newsCard(.init()))
+        return .none
+        
+      case let .routeAction(
+        _, action: .tabBar(
+          .hotKeyword(
+            .routeAction(
+              _, action: .hotKeyword(
+                .showKeywordNewsList(keyword)
+              )
+            )
+          )
+        )
+      ):
+        // TODO: 상희야 키워드 넣어놓았다
+        state.routes.push(.newsCard(
+          .init(routes: [
+            .root(
+              .newsList(
+                .init(keywordTitle: keyword)
+              ),
+              embedInNavigationView: true
+            )
+          ])
+        ))
+        return .none
+        
+      case let .routeAction(
         _,
         action: .tabBar(
           .myPage(
@@ -166,6 +207,58 @@ public let appCoordinatorReducer: Reducer<
         state.routes.push(.newsCard(.init()))
         return .none
         
+      case let .routeAction(
+        _,
+        action: .tabBar(
+          .myPage(
+            .routeAction(
+              _,
+              action: .longStorage(
+                .routeAction(
+                  _,
+                  action: .longStorageNewsList(
+                    .shortsNewsItem(
+                      id: id,
+                      action: .cardAction(.cardTapped)
+                    )
+                  )
+                )
+              )
+            )
+          )
+        )
+      ):
+        state.routes.push(.newsCard(.init(routes: [.root(.web(.init(webAddress: "https://naver.com")))])))
+        return .none
+        
+      case let .routeAction(
+        _,
+        action: .tabBar(
+          .myPage(
+            .routeAction(
+              _,
+              action: .longStorage(
+                .routeAction(
+                  _,
+                  action: .longStorageNewsList(
+                    .shortsNewsItem(
+                      id: id,
+                      action: .cardAction(.rightButtonTapped)
+                    )
+                  )
+                )
+              )
+            )
+          )
+        )
+      ):
+        state.routes.push(.newsCard(.init(routes: [.root(.web(.init(webAddress: "https://naver.com")))])))
+        return .none
+        
+      case .routeAction(_, action: .newsCard(.routeAction(_, action: .web(.backButtonTapped)))):
+        state.routes.pop()
+        return .none
+
       case .routeAction(_, action: .newsCard(.routeAction(_, action: .shortsComplete(.backButtonTapped)))):
         state.routes.pop()
         return Effect(
@@ -214,7 +307,7 @@ public let appCoordinatorReducer: Reducer<
         
       case .routeAction(_, action: .newsCard(.routeAction(_, action: .newsList(.backButtonTapped)))):
         state.routes.pop()
-        return .none
+        return Effect(value: .routeAction(0, action: .tabBar(._setTabHiddenStatus(false))))
         
       default: return .none
       }

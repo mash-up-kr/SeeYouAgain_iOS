@@ -36,11 +36,7 @@ extension HotKeywordAPI: TargetType {
   public var task: Task {
     switch self {
     case .fetchHotKeyword:
-      let targetTime = DateFormatter.hotKeywordDateFormatter.string(from: Date())
-      return .requestParameters(
-        parameters: ["targetTime": targetTime],
-        encoding: .queryString
-      )
+      return .requestPlain
     }
   }
   

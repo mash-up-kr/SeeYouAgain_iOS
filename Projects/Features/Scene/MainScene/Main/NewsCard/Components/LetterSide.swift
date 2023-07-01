@@ -63,7 +63,22 @@ struct LetterSide: View {
   
   private var left: some View {
     OpaqueShape(
-      color: DesignSystem.Colors.white.opacity(0.6),
+      color: LinearGradient(
+        colors: [
+          DesignSystem.Colors.white,
+          DesignSystem.Colors.white.opacity(0.6)
+      ],
+        startPoint: .leading,
+        endPoint: .trailing
+      ),
+      strokeColor: LinearGradient(
+        colors: [
+          DesignSystem.Colors.white,
+          DesignSystem.Colors.white.opacity(0)
+      ],
+        startPoint: .topTrailing,
+        endPoint: .bottomLeading
+      ),
       strokeOpacity: 0.7,
       shape: { LetterSideTriangle() }
     )
@@ -75,7 +90,22 @@ struct LetterSide: View {
   
   private var right: some View {
     OpaqueShape(
-      color: DesignSystem.Colors.white.opacity(0.6),
+      color: LinearGradient(
+        colors: [
+          DesignSystem.Colors.white,
+          DesignSystem.Colors.white.opacity(0.6)
+      ],
+        startPoint: .leading,
+        endPoint: .trailing
+      ),
+      strokeColor: LinearGradient(
+        colors: [
+          DesignSystem.Colors.white,
+          DesignSystem.Colors.white.opacity(0)
+      ],
+        startPoint: .topTrailing,
+        endPoint: .bottomLeading
+      ),
       strokeOpacity: 0.7,
       shape: { LetterSideTriangle() }
     )

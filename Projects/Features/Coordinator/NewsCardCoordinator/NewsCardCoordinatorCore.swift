@@ -19,7 +19,7 @@ public struct NewsCardCoordinatorState: Equatable, IndexedRouterState {
     routes: [Route<NewsCardScreenState>] = [
       .root(
         .newsList(
-          .init(keywordTitle: "하하호호 키워드 이름")
+          .init(keywordTitle: "하하호호 키워드 이름", newsItems: [])
         ),
         embedInNavigationView: true
       )
@@ -48,21 +48,9 @@ public let newsCardCoordinatorReducer: Reducer<
   })
   .withRouteReducer(
     Reducer { state, action, env in
-      switch action {
-      case .routeAction(_, action: .newsList(.newsItem(id: _, action: .rightButtonTapped))):
-        state.routes.push(.web(.init(webAddress: "https://naver.com")))
-        return .none
-        
-      case .routeAction(_, action: .newsList(.newsItem(id: _, action: .cardTapped))):
-        state.routes.push(.web(.init(webAddress: "https://naver.com")))
-        return .none
-        
+      switch action {        
       case .routeAction(_, action: .newsList(._willDisappear)):
         state.routes.push(.shortsComplete(.init()))
-        return .none
-        
-      case .routeAction(_, action: .web(.backButtonTapped)):
-        state.routes.pop()
         return .none
 
       default: return .none

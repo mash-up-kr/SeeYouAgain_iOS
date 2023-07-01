@@ -14,12 +14,6 @@ import Models
 
 public struct HotKeywordService {
   public var fetchHotKeyword: () -> Effect<HotKeywordDTO, Error>
-  
-  private init(
-    fetchHotKeyword: @escaping () -> Effect<HotKeywordDTO, Error>
-  ) {
-    self.fetchHotKeyword = fetchHotKeyword
-  }
 }
 
 extension HotKeywordService {

@@ -9,7 +9,6 @@
 import ComposableArchitecture
 import Foundation
 import HotKeywordCoordinator
-import Main
 import MainCoordinator
 import MyPageCoordinator
 import Services
@@ -144,7 +143,6 @@ public let tabBarReducer = Reducer<
     switch action {
     case let .tabSelected(tab):
       state.selectedTab = tab
-      // lina-TODO: 코드 정리(이게 최선인지)
       if tab == .hotKeyword {
         return Effect(value: .hotKeyword(.routeAction(0, action: .hotKeyword(._viewWillAppear))))
       }
@@ -197,6 +195,13 @@ public let tabBarReducer = Reducer<
         return Effect(value: ._presentToast("인터넷이 불안정해서 저장되지 못했어요."))
       }
       
+    // 메인: 뉴스 카드를 선택하여 뉴스 리스트로 이동할 때 
+    case .main(.routeAction(_, action: .main(.newsCardScroll(.newsCard(id: _, action: ._navigateNewsList))))):
+      return Effect(value: ._setTabHiddenStatus(true))
+      
+    case .hotKeyword(.routeAction(_, action: .hotKeyword(.showKeywordNewsList))):
+      return Effect(value: ._setTabHiddenStatus(true))
+    
     case .myPage(.routeAction(_, action: .myPage(.settingButtonTapped))):
       return Effect(value: ._setTabHiddenStatus(true))
       

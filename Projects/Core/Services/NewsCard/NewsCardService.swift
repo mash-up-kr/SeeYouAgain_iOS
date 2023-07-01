@@ -24,6 +24,7 @@ public struct NewsCardService {
   ) -> Effect<[NewsCard], Error>
   
   public var saveNewsCard: (_ newsCardId: Int) -> Effect<VoidResponse?, Error>
+  public var getNewsCard: (_ newsCardId: Int) -> Effect<[NewsResponseDTO], Error>
 }
 
 extension NewsCardService {
@@ -46,6 +47,16 @@ extension NewsCardService {
           NewsCardAPI.saveNewsCard(newsCardId),
           type: VoidResponse.self
         )
+        .eraseToEffect()
+    },
+    getNewsCard: { newsCardId in
+      return Provider<NewsCardAPI>
+        .init()
+        .request(
+          NewsCardAPI.getNewsCard(newsCardId),
+          type: [NewsResponseDTO].self
+        )
+        .compactMap { $0 }
         .eraseToEffect()
     }
   )

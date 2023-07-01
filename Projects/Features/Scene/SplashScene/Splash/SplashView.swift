@@ -19,14 +19,22 @@ public struct SplashView: View {
   
   public var body: some View {
     WithViewStore(store) { viewStore in
-      VStack(alignment: .center) {
+      VStack(alignment: .center, spacing: 0) {
         Spacer()
-          .frame(height: 285)
+          .frame(height: 280)
         
-        DesignSystem.Icons.logo
+        DesignSystem.Images.shorts
           .resizable()
-          .aspectRatio(contentMode: .fit)
-          .frame(height: 128)
+          .frame(width: 163, height: 64)
+        
+        HStack(spacing: 0) {
+          Text("키워드로 보는 ")
+            .font(.r16)
+            .foregroundColor(DesignSystem.Colors.grey90)
+          Text("짧은 뉴스")
+            .font(.b16)
+            .foregroundColor(DesignSystem.Colors.grey90)
+        }
         
         Spacer()
       }

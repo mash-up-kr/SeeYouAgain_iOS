@@ -10,7 +10,6 @@ import ComposableArchitecture
 import LongStorageNewsList
 import SwiftUI
 import TCACoordinators
-import Web
 
 public struct LongStorageCoordinatorView: View {
   private let store: Store<LongStorageCoordinatorState, LongStorageCoordinatorAction>
@@ -26,11 +25,6 @@ public struct LongStorageCoordinatorView: View {
           state: /LongStorageScreenState.longStorageNewsList,
           action: LongStorageScreenAction.longStorageNewsList,
           then: LongStorageNewsListView.init
-        )
-        CaseLet(
-          state: /LongStorageScreenState.web,
-          action: LongStorageScreenAction.web,
-          then: WebView.init
         )
       }
     }

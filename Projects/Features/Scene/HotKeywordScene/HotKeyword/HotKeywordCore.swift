@@ -19,16 +19,17 @@ public struct HotKeywordState: Equatable {
   var hotKeywordPointList = HotKeywordPointList(hotkeywordList: [])
   var isRefresh: Bool = false
   var isFirstLoading: Bool = true
+  var currentOffset: CGFloat = 0
   var toastMessage: String?
-
+  
   public init() { }
 }
 
 public enum HotKeywordAction: Equatable {
   // MARK: - User Action
   case pullToRefresh
-  case hotKeywordCircleTapped
-
+  case hotKeywordCircleTapped(String, currentOffset: CGFloat)
+  
   // MARK: - Inner Business Action
   case _viewWillAppear
   case _fetchData
@@ -36,15 +37,18 @@ public enum HotKeywordAction: Equatable {
   case _showAnimation
   case _presentToast(String)
   case _hideToast
-
+  
   // MARK: - Inner SetState Action
   case _setToastMessage(String?)
   case _setSubTitleText(String?)
   case _setHotKeywordList([String])
   case _setHotKeywordPointList
-  
   case _setIsRefresh(Bool)
   case _setIsFirstLoading(Bool)
+  case _setCurrentOffset(CGFloat)
+  
+  // MARK: - Child Action
+  case showKeywordNewsList(String)
 }
 
 public struct HotKeywordEnvironment {
@@ -63,7 +67,7 @@ public struct HotKeywordEnvironment {
 public let hotKeywordReducer = Reducer.combine([
   Reducer<HotKeywordState, HotKeywordAction, HotKeywordEnvironment> { state, action, env in
     struct SetHotKeywordToastCancelID: Hashable {}
-
+    
     switch action {
     case .pullToRefresh:
       return .concatenate([
@@ -71,12 +75,21 @@ public let hotKeywordReducer = Reducer.combine([
         Effect(value: ._setIsRefresh(true))
       ])
       
+    case let .hotKeywordCircleTapped(keyword, offset):
+      guard keyword.isEmpty == false else {
+        return .none
+      }
+      return .concatenate([
+        Effect(value: .showKeywordNewsList(keyword)),
+        Effect(value: ._setCurrentOffset(offset))
+      ])
+      
     case ._viewWillAppear:
       return .concatenate([
         Effect(value: ._setIsFirstLoading(false)),
         Effect(value: ._showAnimation)
       ])
-
+      
     case ._fetchData:
       return env.hotKeywordService.fetchHotKeyword()
         .catchToEffect()
@@ -91,18 +104,17 @@ public let hotKeywordReducer = Reducer.combine([
           }
         }
         .eraseToEffect()
-
+      
     case let ._reloadData(hotKeywordDTO):
-            
       return .concatenate([
-        Effect(value: ._setSubTitleText(hotKeywordDTO.createdAt)),
+        Effect(value: ._setSubTitleText(hotKeywordDTO.standardTimeString)),
         Effect(value: ._setHotKeywordList(hotKeywordDTO.ranking)),
         Effect(value: ._setHotKeywordPointList)
       ])
       
     case let ._setSubTitleText(subTitle):
       if let subTitle {
-        state.subTitleText = "\(subTitle) 기준"
+        state.subTitleText = subTitle
       } else {
         state.subTitleText = "인터넷 연결 상태가 불안정합니다."
       }
@@ -143,7 +155,7 @@ public let hotKeywordReducer = Reducer.combine([
     case let ._setToastMessage(toastMessage):
       state.toastMessage = toastMessage
       return .none
-
+      
     case let ._setIsRefresh(isRefresh):
       state.isRefresh = isRefresh
       return .none
@@ -152,7 +164,11 @@ public let hotKeywordReducer = Reducer.combine([
       state.isFirstLoading = isFirstLoading
       return .none
       
-    case .hotKeywordCircleTapped:
+    case let ._setCurrentOffset(offset):
+      state.currentOffset = offset
+      return .none
+      
+    case let .showKeywordNewsList(keyword):
       return .none
     }
   }

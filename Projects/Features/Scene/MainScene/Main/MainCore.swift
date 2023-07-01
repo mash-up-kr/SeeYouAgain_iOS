@@ -45,6 +45,7 @@ public enum MainAction {
   case _fetchNewsCards(FetchType)
   
   // MARK: - Inner SetState Action
+  case _initialize
   case _setNewsCardSize(CGSize)
   case _setCategories(Result<[CategoryType], Error>)
   case _setNewsCards(Result<[NewsCard], Error>, FetchType)
@@ -86,7 +87,12 @@ public let mainReducer = Reducer.combine([
     .pullback(
       state: \.newsCardScrollState,
       action: /MainAction.newsCardScroll,
-      environment: { NewsCardScrollEnvironmnet(newsCardService: $0.newsCardService) }
+      environment: {
+        NewsCardScrollEnvironmnet(
+          mainQueue: $0.mainQueue,
+          newsCardService: $0.newsCardService
+        )
+      }
     ),
   saveGuideReducer
     .optional()
@@ -103,6 +109,7 @@ public let mainReducer = Reducer.combine([
   Reducer<MainState, MainAction, MainEnvironment> { state, action, env in
     switch action {
     case ._viewWillAppear:
+      guard state.newsCardScrollState == nil, state.saveGuideState == nil else { return .none }
       FetchID.allCases.forEach { state.fetchIds.insert($0) }
       return Effect.merge(
         Effect(value: ._fetchCategories),
@@ -110,11 +117,12 @@ public let mainReducer = Reducer.combine([
       )
       
     case ._categoriesIsUpdated:
-      state.newsCardScrollState = nil
-      state.saveGuideState = nil
-      state.cursorPage = 0
-      state.cursorDate = .now
-      return Effect(value: ._viewWillAppear)
+      return Effect.concatenate(
+        Effect(value: ._initialize),
+        Effect(value: ._viewWillAppear)
+          .delay(for: .milliseconds(500), scheduler: env.mainQueue)
+          .eraseToEffect()
+      )
       
     case ._fetchCategories:
       return env.categoryService.getAllCategories()
@@ -132,6 +140,15 @@ public let mainReducer = Reducer.combine([
       .map { MainAction._setNewsCards($0, fetchType) }
       .eraseToEffect()
       
+    case ._initialize:
+      state.fetchIds = []
+      state.categories = []
+      state.newsCardScrollState = nil
+      state.cursorPage = 0
+      state.cursorDate = .now
+      state.saveGuideState = nil
+      return .none
+    
     case let ._setNewsCardSize(screenSize):
       state.newsCardLayout = buildNewsCardLayout(screenSize: screenSize)
       return .none
