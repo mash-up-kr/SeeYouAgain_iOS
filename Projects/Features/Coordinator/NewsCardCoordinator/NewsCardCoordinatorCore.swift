@@ -21,7 +21,7 @@ public struct NewsCardCoordinatorState: Equatable, IndexedRouterState {
         .newsList(
           .init(
             shortsId: 0,
-            keywordTitle: "키워드",
+            keywordTitle: "",
             newsItems: []
           )
         ),

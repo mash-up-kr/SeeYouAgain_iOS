@@ -33,11 +33,15 @@ public struct NewsListView: View {
               Spacer()
                 .frame(height: 30)
               
-              Text(viewStore.keywordTitle)
-                .font(.b24)
-                .foregroundColor(DesignSystem.Colors.grey100)
-                .padding(.horizontal, 24)
-                .lineLimit(3)
+              HStack(spacing: 0) {
+                Text(viewStore.keywordTitle)
+                  .font(.b24)
+                  .foregroundColor(DesignSystem.Colors.grey100)
+                  .padding(.horizontal, 24)
+                  .lineLimit(3)
+                
+                Spacer()
+              }
               
               Spacer()
                 .frame(height: 48)
