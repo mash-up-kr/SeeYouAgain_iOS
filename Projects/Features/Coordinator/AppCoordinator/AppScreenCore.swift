@@ -106,8 +106,8 @@ internal let appScreenReducer = Reducer<
     .pullback(
       state: /AppScreenState.newsCard,
       action: /AppScreenAction.newsCard,
-      environment: { _ in
-        NewsCardCoordinatorEnvironment()
+      environment: {
+        NewsCardCoordinatorEnvironment(newsCardService: $0.newsCardService)
       }
     ),
   settingCoordinatorReducer

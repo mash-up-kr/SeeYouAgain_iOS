@@ -132,7 +132,23 @@ public let appCoordinatorReducer: Reducer<
         )
       ):
         // TODO: 상희누나 id로 코디네이터 초기화해서 야무지게 사용하면 돼여
-        state.routes.push(.newsCard(.init()))
+        state.routes.push(
+          .newsCard(
+            .init(
+              routes: [
+                .root(
+                  .newsList(
+                    .init(
+                      shortsId: id,
+                      keywordTitle: ""
+                    )
+                  ),
+                  embedInNavigationView: true
+                )
+              ]
+            )
+          )
+        )
         return .none
         
       case let .routeAction(
@@ -151,7 +167,7 @@ public let appCoordinatorReducer: Reducer<
           .init(routes: [
             .root(
               .newsList(
-                .init(keywordTitle: keyword)
+                .init(shortsId: 0, keywordTitle: keyword)
               ),
               embedInNavigationView: true
             )
@@ -180,9 +196,18 @@ public let appCoordinatorReducer: Reducer<
           )
         )
       ):
-        state.routes.push(.newsCard(.init()))
+        state.routes.push(.newsCard(
+          .init(routes: [
+            .root(
+              .newsList(
+                .init(shortsId: id, keywordTitle: "")
+              ),
+              embedInNavigationView: true
+            )
+          ])
+        ))
         return .none
-        
+
       case let .routeAction(
         _,
         action: .tabBar(
@@ -204,7 +229,16 @@ public let appCoordinatorReducer: Reducer<
           )
         )
       ):
-        state.routes.push(.newsCard(.init()))
+        state.routes.push(.newsCard(
+          .init(routes: [
+            .root(
+              .newsList(
+                .init(shortsId: id, keywordTitle: "")
+              ),
+              embedInNavigationView: true
+            )
+          ])
+        ))
         return .none
         
       case let .routeAction(

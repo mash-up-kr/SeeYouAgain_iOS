@@ -19,7 +19,11 @@ public struct NewsCardCoordinatorState: Equatable, IndexedRouterState {
     routes: [Route<NewsCardScreenState>] = [
       .root(
         .newsList(
-          .init(keywordTitle: "하하호호 키워드 이름", newsItems: [])
+          .init(
+            shortsId: 0,
+            keywordTitle: "키워드",
+            newsItems: []
+          )
         ),
         embedInNavigationView: true
       )
@@ -35,7 +39,11 @@ public enum NewsCardCoordinatorAction: Equatable, IndexedRouterAction {
 }
 
 public struct NewsCardCoordinatorEnvironment {
-  public init() {}
+  fileprivate let newsCardService: NewsCardService
+  
+  public init(newsCardService: NewsCardService) {
+    self.newsCardService = newsCardService
+  }
 }
 
 public let newsCardCoordinatorReducer: Reducer<
@@ -43,8 +51,8 @@ public let newsCardCoordinatorReducer: Reducer<
   NewsCardCoordinatorAction,
   NewsCardCoordinatorEnvironment
 > = newsCardScreenReducer
-  .forEachIndexedRoute(environment: { _ in
-    NewsCardScreenEnvironment()
+  .forEachIndexedRoute(environment: {
+    NewsCardScreenEnvironment(newsCardService: $0.newsCardService)
   })
   .withRouteReducer(
     Reducer { state, action, env in

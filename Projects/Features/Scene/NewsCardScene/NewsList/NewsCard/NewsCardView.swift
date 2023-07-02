@@ -8,6 +8,7 @@
 
 import ComposableArchitecture
 import DesignSystem
+import Models
 import NukeUI
 import SwiftUI
 
@@ -85,7 +86,7 @@ private struct NewsDataView: View {
           .foregroundColor(DesignSystem.Colors.grey50)
         
         CategoryView(
-          category: "경제",
+          category: news.type,
           color: DesignSystem.Colors.economic
         )
         

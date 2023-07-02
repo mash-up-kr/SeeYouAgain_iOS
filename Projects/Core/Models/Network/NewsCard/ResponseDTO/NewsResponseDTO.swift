@@ -27,3 +27,17 @@ public struct NewsResponseDTO: Decodable {
     case type
   }
 }
+
+public extension NewsResponseDTO {
+  var toDomain: News {
+    return News(
+      id: id,
+      title: title,
+      thumbnailImageUrl: thumbnailImageURL,
+      newsLink: newsLink,
+      press: press,
+      writtenDateTime: writtenDateTime,
+      type: type
+    )
+  }
+}

@@ -48,5 +48,5 @@ internal let hotKeywordScreenReducer = Reducer<
           hotKeywordService: $0.hotKeywordService
         )
       }
-    ),
+    )
 ])
