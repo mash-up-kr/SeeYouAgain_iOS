@@ -19,15 +19,8 @@ public struct NewsCard: Equatable, Identifiable {
     self.category = category
   }
   
-  public func hashTagString() -> String {
-    var keywordList: String = ""
-    
-    for keyword in keywords {
-      keywordList.append("#\(keyword) ")
-    }
-    
-    keywordList.removeLast()
-    return keywordList
+  public func hashtagString() -> String {
+    return keywords.map { "#\($0)" }.joined(separator: " ")
   }
 }
 

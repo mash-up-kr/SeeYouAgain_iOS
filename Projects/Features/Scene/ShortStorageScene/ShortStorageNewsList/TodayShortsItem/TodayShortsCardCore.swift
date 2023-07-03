@@ -46,10 +46,10 @@ let todayShortsCardReducer = Reducer.combine([
   Reducer<TodayShortsCardState, TodayShortsCardAction, TodayShortsCardEnvironment> { state, action, env in
     switch action {
     case .rightButtonTapped:
-      return Effect(value: ._navigateNewsList(state.shortsNews.hashTagString()))
+      return Effect(value: ._navigateNewsList(state.shortsNews.hashtagString()))
       
     case .cardTapped:
-      return Effect(value: ._navigateNewsList(state.shortsNews.hashTagString()))
+      return Effect(value: ._navigateNewsList(state.shortsNews.hashtagString()))
       
     default: return .none
     }
