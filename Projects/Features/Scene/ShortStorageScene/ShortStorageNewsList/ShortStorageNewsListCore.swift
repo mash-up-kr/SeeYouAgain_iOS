@@ -26,11 +26,11 @@ public struct ShortStorageNewsListState: Equatable {
   
   public init(
     isInEditMode: Bool,
-    shortslistCount: Int,
+    shortsNewsItemsCount: Int,
     shortsCompleteCount: Int
   ) {
     self.isInEditMode = isInEditMode
-    self.shortsNewsItemsCount = shortslistCount
+    self.shortsNewsItemsCount = shortsNewsItemsCount
     self.shortsCompleteCount = shortsCompleteCount
     self.today = Date().fullDateToString()
     self.remainTimeString = initializeRemainTimeString()
@@ -106,11 +106,6 @@ public let shortStorageNewsListReducer = Reducer<
       ])
       
     case .deleteButtonTapped:
-      // TODO: API 요청
-      // 1. 선택된 아이템 id 세팅
-      // 2. 선택된 아이템 아이디에 해당하는 숏스 제거 요청 (API)
-      // 3. 요청에 대한 응답 처리 & 아이템 리스트 수정
-      // 4. 응답 잘되면 토스트메시지 띄우기
       return Effect(value: ._setSelectedItemIds)
       
     case ._viewWillAppear:
@@ -159,11 +154,9 @@ public let shortStorageNewsListReducer = Reducer<
       return handleTodayShortsResponse(&state, source: todayShorts, fetchType: fetchType)
 
     case let ._deleteTodayShorts(shortsIds):
-      // 2. 선택된 아이템 아이디에 해당하는 숏스 제거 요청 (API)
       return env.myPageService.deleteTodayShorts(shortsIds)
         .catchToEffect(ShortStorageNewsListAction._handleDeleteTodayShortsResponse)
 
-      // 3. 요청에 대한 응답 처리 & 아이템 리스트 수정
     case let ._handleDeleteTodayShortsResponse(result):
       switch result {
       case .success:
@@ -215,7 +208,6 @@ public let shortStorageNewsListReducer = Reducer<
       return .none
       
     case ._setSelectedItemIds:
-      // 1. 선택된 아이템 id 세팅
       var selectedItemIds: [Int] = []
       
       for item in state.shortsNewsItems {
@@ -223,7 +215,7 @@ public let shortStorageNewsListReducer = Reducer<
           selectedItemIds.append(item.id)
         }
       }
-      return Effect(value: ._deleteTodayShorts(selectedItemIds)) // 2. 선택된 아이템 아이디에 해당하는 숏스 제거 요청 (API)
+      return Effect(value: ._deleteTodayShorts(selectedItemIds))
       
     case ._setCurrentTimeSeconds:
       state.currentTimeSeconds = calculateCurrentTimeSeconds()
@@ -267,6 +259,9 @@ private func handleTodayShortsResponse(
 ) -> Effect<ShortStorageNewsListAction, Never> {
   switch fetchType {
   case .initial:
+    state.shortsNewsItemsCount = todayShorts.numberOfShorts
+    // TODO: 오늘 완료한 숏스 수 추가 필요 (10은 더미값)
+    state.shortsCompleteCount = 10
     return Effect(value: ._setTodayShortsItem(todayShorts))
     
     // TODO: 페이징 기능 구현 필요

@@ -21,7 +21,7 @@ public struct ShortStorageCoordinatorState: Equatable, IndexedRouterState {
         .shortStorageNewsList(
           .init(
             isInEditMode: false,
-            shortslistCount: 6,
+            shortsNewsItemsCount: 10,
             shortsCompleteCount: 0
           )
         ),
