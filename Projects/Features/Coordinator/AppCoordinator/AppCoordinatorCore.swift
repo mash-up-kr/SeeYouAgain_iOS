@@ -174,39 +174,6 @@ public let appCoordinatorReducer: Reducer<
           ])
         ))
         return .none
-        
-      case let .routeAction(
-        _,
-        action: .tabBar(
-          .myPage(
-            .routeAction(
-              _,
-              action: .shortStorage(
-                .routeAction(
-                  _,
-                  action: .shortStorageNewsList(
-                    .shortsNewsItem(
-                      id: id,
-                      action: .cardAction(.rightButtonTapped)
-                    )
-                  )
-                )
-              )
-            )
-          )
-        )
-      ):
-        state.routes.push(.newsCard(
-          .init(routes: [
-            .root(
-              .newsList(
-                .init(shortsId: id, keywordTitle: "")
-              ),
-              embedInNavigationView: true
-            )
-          ])
-        ))
-        return .none
 
       case let .routeAction(
         _,
@@ -220,7 +187,7 @@ public let appCoordinatorReducer: Reducer<
                   action: .shortStorageNewsList(
                     .shortsNewsItem(
                       id: id,
-                      action: .cardAction(.cardTapped)
+                      action: .cardAction(._navigateNewsList(keyword))
                     )
                   )
                 )
@@ -233,7 +200,10 @@ public let appCoordinatorReducer: Reducer<
           .init(routes: [
             .root(
               .newsList(
-                .init(shortsId: id, keywordTitle: "")
+                .init(
+                  shortsId: id,
+                  keywordTitle: keyword
+                )
               ),
               embedInNavigationView: true
             )

@@ -31,6 +31,7 @@ public enum TodayShortsCardAction: Equatable {
   case cardTapped
   
   // MARK: - Inner Business Action
+  case _navigateNewsList(String)
   
   // MARK: - Inner SetState Action
   
@@ -44,6 +45,12 @@ public struct TodayShortsCardEnvironment {
 let todayShortsCardReducer = Reducer.combine([
   Reducer<TodayShortsCardState, TodayShortsCardAction, TodayShortsCardEnvironment> { state, action, env in
     switch action {
+    case .rightButtonTapped:
+      return Effect(value: ._navigateNewsList(state.shortsNews.keywords))
+      
+    case .cardTapped:
+      return Effect(value: ._navigateNewsList(state.shortsNews.keywords))
+      
     default: return .none
     }
   }
