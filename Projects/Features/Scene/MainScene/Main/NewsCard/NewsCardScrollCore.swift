@@ -227,21 +227,26 @@ private func scrollToNextCard(_ state: NewsCardScrollState) -> Effect<NewsCardSc
   let currentScrollIndex = state.currentScrollIndex
   let nextScrollIndex = currentScrollIndex + 1
   let newsCardsCount = state.newsCards.count
+  
+  // 0부터 오른쪽 화면의 위치까지 5번에 나눠서 스크롤 액션을 발생시킨다.
+  // 만약 다음 카드가 없으면 저장 후 이전 카드로 돌아가게한다.
+  let scrollWidth = state.layout.size.width
+  let hop = scrollWidth / 5
   let scrollRange = stride(
     from: 0,
-    to: nextScrollIndex >= newsCardsCount ? 200 : -200,
-    by: nextScrollIndex >= newsCardsCount ? 40 : -40
+    to: nextScrollIndex >= newsCardsCount ? scrollWidth : -scrollWidth,
+    by: nextScrollIndex >= newsCardsCount ? hop : -hop
   )
   return .run { send in
     // 좌우 드래그 방향을 세팅한다.
     await send(._setDragDirection(.horizontal))
-    // 자연스럽게 스크롤이 넘어가는 것 처럼 보이기위한 임의로 드래그 이벤트 발생시킨다.
+    // 자연스럽게 스크롤이 넘어가는 것처럼 보이기위해 임의로 드래그 이벤트 발생시킨다.
     for width in scrollRange {
       await send(.dragOnChanged(CGSize(width: width, height: 0)))
     }
     await send(._calculateScrollIndex)
     await send(._fetchNewsCardsIfNeeded(nextScrollIndex, newsCardsCount))
-    await send(.dragOnEnded(CGSize(width: 200, height: 0)))
+    await send(.dragOnEnded(CGSize(width: -scrollWidth, height: 0)))
   }
 }
 
