@@ -15,7 +15,7 @@ public enum LongStorageScreenState: Equatable {
   case longStorageNewsList(LongStorageNewsListState)
 }
 
-public enum LongStorageScreenAction: Equatable {
+public enum LongStorageScreenAction {
   case longStorageNewsList(LongStorageNewsListAction)
 }
 
