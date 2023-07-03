@@ -12,16 +12,25 @@ import Foundation
 import Models
 import Services
 
+public enum SourceType: Equatable {
+  case main
+  case hot
+  case todayShorts
+}
+
 public struct NewsListState: Equatable {
+  var source: SourceType
   var shortsId: Int
   var keywordTitle: String
   var newsItems: IdentifiedArrayOf<NewsCardState> = []
   
   public init(
+    source: SourceType,
     shortsId: Int,
     keywordTitle: String,
     newsItems: IdentifiedArrayOf<NewsCardState> = []
   ) {
+    self.source = source
     self.shortsId = shortsId
     self.keywordTitle = keywordTitle
     self.newsItems = newsItems
@@ -30,7 +39,7 @@ public struct NewsListState: Equatable {
 
 public enum NewsListAction: Equatable {
   // MARK: - User Action
-  case backButtonTapped
+  case backButtonTapped(SourceType)
   case completeButtonTapped
   
   // MARK: - Inner Business Action

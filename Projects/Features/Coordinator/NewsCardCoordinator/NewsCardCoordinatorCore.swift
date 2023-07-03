@@ -20,6 +20,7 @@ public struct NewsCardCoordinatorState: Equatable, IndexedRouterState {
       .root(
         .newsList(
           .init(
+            source: .todayShorts,
             shortsId: 0,
             keywordTitle: "",
             newsItems: []
@@ -30,6 +31,20 @@ public struct NewsCardCoordinatorState: Equatable, IndexedRouterState {
     ]
   ) {
     self.routes = routes
+  }
+  
+  public init(
+    source: SourceType,
+    shortsId: Int,
+    keywordTitle: String,
+    newsItems: IdentifiedArrayOf<NewsCardState> = []
+  ) {
+    self.routes = [
+      .root(
+        .newsList(.init(source: source, shortsId: shortsId, keywordTitle: keywordTitle)),
+        embedInNavigationView: true
+      )
+    ]
   }
 }
 

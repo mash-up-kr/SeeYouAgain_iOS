@@ -132,23 +132,7 @@ public let appCoordinatorReducer: Reducer<
         )
       ):
         // TODO: 상희누나 id로 코디네이터 초기화해서 야무지게 사용하면 돼여
-        state.routes.push(
-          .newsCard(
-            .init(
-              routes: [
-                .root(
-                  .newsList(
-                    .init(
-                      shortsId: id,
-                      keywordTitle: ""
-                    )
-                  ),
-                  embedInNavigationView: true
-                )
-              ]
-            )
-          )
-        )
+        state.routes.push(.newsCard(.init(source: .main, shortsId: id, keywordTitle: "")))
         return .none
         
       case let .routeAction(
@@ -163,16 +147,7 @@ public let appCoordinatorReducer: Reducer<
         )
       ):
         // TODO: 상희야 키워드 넣어놓았다
-        state.routes.push(.newsCard(
-          .init(routes: [
-            .root(
-              .newsList(
-                .init(shortsId: 0, keywordTitle: keyword)
-              ),
-              embedInNavigationView: true
-            )
-          ])
-        ))
+        state.routes.push(.newsCard(.init(source: .hot, shortsId: 0, keywordTitle: keyword)))
         return .none
         
       case let .routeAction(
@@ -196,16 +171,7 @@ public let appCoordinatorReducer: Reducer<
           )
         )
       ):
-        state.routes.push(.newsCard(
-          .init(routes: [
-            .root(
-              .newsList(
-                .init(shortsId: id, keywordTitle: "")
-              ),
-              embedInNavigationView: true
-            )
-          ])
-        ))
+        state.routes.push(.newsCard(.init(source: .todayShorts, shortsId: id, keywordTitle: "")))
         return .none
 
       case let .routeAction(
@@ -229,16 +195,7 @@ public let appCoordinatorReducer: Reducer<
           )
         )
       ):
-        state.routes.push(.newsCard(
-          .init(routes: [
-            .root(
-              .newsList(
-                .init(shortsId: id, keywordTitle: "")
-              ),
-              embedInNavigationView: true
-            )
-          ])
-        ))
+        state.routes.push(.newsCard(.init(source: .todayShorts, shortsId: id, keywordTitle: "")))
         return .none
         
       case let .routeAction(
@@ -339,9 +296,15 @@ public let appCoordinatorReducer: Reducer<
           )
         )
         
-      case .routeAction(_, action: .newsCard(.routeAction(_, action: .newsList(.backButtonTapped)))):
+      case let .routeAction(_, action: .newsCard(.routeAction(_, action: .newsList(.backButtonTapped(source))))):
         state.routes.pop()
-        return Effect(value: .routeAction(0, action: .tabBar(._setTabHiddenStatus(false))))
+        switch source {
+        case .main, .hot:
+          return Effect(value: .routeAction(0, action: .tabBar(._setTabHiddenStatus(false))))
+        
+        case .todayShorts:
+          return .none  
+        }
         
       default: return .none
       }
