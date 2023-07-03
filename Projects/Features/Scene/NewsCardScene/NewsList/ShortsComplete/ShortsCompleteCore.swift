@@ -9,10 +9,10 @@
 import ComposableArchitecture
 
 public struct ShortsCompleteState: Equatable {
-  var totalShorts: Int
+  var totalShortsCount: Int
   
-  public init(totalShorts: Int) {
-    self.totalShorts = totalShorts
+  public init(totalShortsCount: Int) {
+    self.totalShortsCount = totalShortsCount
   }
 }
 

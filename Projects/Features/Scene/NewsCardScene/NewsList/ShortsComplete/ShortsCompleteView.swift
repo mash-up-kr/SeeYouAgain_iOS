@@ -41,7 +41,7 @@ public struct ShortsCompleteView: View {
             .font(.b20)
             .foregroundColor(DesignSystem.Colors.grey100)
           
-          Text("이번 달 총 \(viewStore.state.totalShorts)숏스 달성했어요")
+          Text("이번 달 총 \(viewStore.state.totalShortsCount)숏스 달성했어요")
             .font(.r16)
             .foregroundColor(DesignSystem.Colors.grey80)
         }
