@@ -16,6 +16,7 @@ public struct News: Equatable, Identifiable {
   public let press: String
   public let writtenDateTime: String
   public let type: String
+  public let category: String
   
   public init(
     id: Int,
@@ -24,7 +25,8 @@ public struct News: Equatable, Identifiable {
     newsLink: String,
     press: String,
     writtenDateTime: String,
-    type: String
+    type: String,
+    category: String
   ) {
     self.id = id
     self.title = title
@@ -33,6 +35,7 @@ public struct News: Equatable, Identifiable {
     self.press = press
     self.writtenDateTime = writtenDateTime
     self.type = type
+    self.category = category
   }
 }
 
@@ -46,7 +49,8 @@ public extension News {
       newsLink: "https://n.news.naver.com/mnews/article/029/0002809767?sid=100",
       press: "디지털타임스1",
       writtenDateTime: "2023.06.28. 오전 10:03",
-      type: "NORMAL"
+      type: "NORMAL",
+      category: "POLITICS"
     ),
     News(
       id: 5550,
@@ -55,7 +59,8 @@ public extension News {
       newsLink: "https://n.news.naver.com/mnews/article/029/0002809767?sid=100",
       press: "디지털타임스2",
       writtenDateTime: "2023.06.28. 오전 10:03",
-      type: "NORMAL"
+      type: "NORMAL",
+      category: "POLITICS"
     ),
     News(
       id: 5551,
@@ -64,7 +69,8 @@ public extension News {
       newsLink: "https://n.news.naver.com/mnews/article/029/0002809767?sid=100",
       press: "디지털타임스3",
       writtenDateTime: "2023.06.28. 오전 10:03",
-      type: "NORMAL"
+      type: "NORMAL",
+      category: "POLITICS"
     ),
     News(
       id: 5552,
@@ -73,7 +79,8 @@ public extension News {
       newsLink: "https://n.news.naver.com/mnews/article/029/0002809767?sid=100",
       press: "디지털타임스4",
       writtenDateTime: "2023.06.28. 오전 10:03",
-      type: "NORMAL"
+      type: "NORMAL",
+      category: "POLITICS"
     ),
     News(
       id: 5553,
@@ -82,7 +89,8 @@ public extension News {
       newsLink: "https://n.news.naver.com/mnews/article/029/0002809767?sid=100",
       press: "디지털타임스5",
       writtenDateTime: "2023.06.28. 오전 10:03",
-      type: "NORMAL"
+      type: "NORMAL",
+      category: "POLITICS"
     ),
     News(
       id: 5554,
@@ -91,7 +99,8 @@ public extension News {
       newsLink: "https://n.news.naver.com/mnews/article/029/0002809767?sid=100",
       press: "디지털타임스6",
       writtenDateTime: "2023.06.28. 오전 10:03",
-      type: "NORMAL"
+      type: "NORMAL",
+      category: "POLITICS"
     )
   ]
 #endif

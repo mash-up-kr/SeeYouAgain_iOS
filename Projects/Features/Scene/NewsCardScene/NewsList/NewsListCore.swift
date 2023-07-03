@@ -119,7 +119,8 @@ public let newsListReducer = Reducer.combine([
             newsLink: $0.newsLink,
             press: $0.press,
             writtenDateTime: $0.writtenDateTime,
-            type: $0.type
+            type: $0.type,
+            category: $0.category
           )
         )
       })

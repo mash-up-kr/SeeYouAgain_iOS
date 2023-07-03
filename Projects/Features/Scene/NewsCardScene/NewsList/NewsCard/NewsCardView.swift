@@ -6,6 +6,7 @@
 //  Copyright © 2023 mashup.seeYouAgain. All rights reserved.
 //
 
+import Common
 import ComposableArchitecture
 import DesignSystem
 import Models
@@ -81,10 +82,10 @@ private struct NewsDataView: View {
         Text(news.press)
           .font(.r14)
           .foregroundColor(DesignSystem.Colors.grey50)
-        
+
         CategoryView(
-          category: news.type,
-          color: DesignSystem.Colors.economic
+          category: CategoryType(uppercasedName: news.category)!.rawValue,
+          color: CategoryType(uppercasedName: news.category)!.color
         )
         
         Spacer()
@@ -103,6 +104,25 @@ private struct NewsDataView: View {
         
         Spacer()
       }
+    }
+  }
+}
+
+fileprivate extension CategoryType {
+  var color: Color {
+    switch self {
+    case .politics:
+      return DesignSystem.Colors.politics
+    case .economic:
+      return DesignSystem.Colors.economic
+    case .society:
+      return DesignSystem.Colors.society
+    case .world:
+      return DesignSystem.Colors.world
+    case .culture:
+      return DesignSystem.Colors.culture
+    case .science:
+      return DesignSystem.Colors.science
     }
   }
 }
