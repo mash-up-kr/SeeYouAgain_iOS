@@ -1,8 +1,8 @@
 //
 //  FetchType.swift
-//  Models
+//  Common
 //
-//  Created by 안상희 on 2023/06/29.
+//  Created by 안상희 on 2023/07/03.
 //  Copyright © 2023 mashup.seeYouAgain. All rights reserved.
 //
 

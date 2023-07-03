@@ -61,7 +61,7 @@ extension NewsCardService {
         .eraseToEffect()
     },
     completeTodayShorts: { shortsId in
-      return Provider<MyPageAPI>
+      return Provider<NewsCardAPI>
         .init()
         .request(
           NewsCardAPI.completeTodayShorts(shortsId),
