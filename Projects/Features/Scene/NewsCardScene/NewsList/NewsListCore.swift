@@ -12,16 +12,28 @@ import Foundation
 import Models
 import Services
 
+public enum SourceType: Equatable {
+  case main
+  case hot
+  case mypage
+}
+
 public struct NewsListState: Equatable {
+  var source: SourceType
   var shortsId: Int
   var keywordTitle: String
   var newsItems: IdentifiedArrayOf<NewsCardState> = []
+  var cursorPage: Int = 0
+  var cursorDate: Date = .now
+  var pagingSize = 20
   
   public init(
+    source: SourceType = .mypage,
     shortsId: Int,
     keywordTitle: String,
     newsItems: IdentifiedArrayOf<NewsCardState> = []
   ) {
+    self.source = source
     self.shortsId = shortsId
     self.keywordTitle = keywordTitle
     self.newsItems = newsItems
@@ -72,7 +84,17 @@ public let newsListReducer = Reducer.combine([
       return Effect(value: ._completeTodayShorts(state.shortsId))
 
     case ._onAppear:
-      return env.newsCardService.getNewsCard(state.shortsId)
+      switch state.source {
+      case .hot:
+        var keyword = state.keywordTitle
+        keyword.removeFirst()
+        
+        return env.newsCardService.fetchShorts(
+          keyword,
+          state.cursorDate,
+          state.cursorPage,
+          state.pagingSize
+        )
         .catchToEffect()
         .flatMap { result -> Effect<NewsListAction, Never> in
           switch result {
@@ -84,6 +106,21 @@ public let newsListReducer = Reducer.combine([
           }
         }
         .eraseToEffect()
+        
+      default:
+        return env.newsCardService.getNewsCard(state.shortsId)
+          .catchToEffect()
+          .flatMap { result -> Effect<NewsListAction, Never> in
+            switch result {
+            case let .success(news):
+              let news = news.map { $0.toDomain }
+              return Effect(value: ._setNewsItems(news))
+            case .failure:
+              return .none
+            }
+          }
+          .eraseToEffect()
+      }
       
     case ._willDisappear:
       return .none

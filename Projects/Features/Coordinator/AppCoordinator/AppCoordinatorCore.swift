@@ -161,12 +161,15 @@ public let appCoordinatorReducer: Reducer<
           )
         )
       ):
-        // TODO: 상희야 키워드 넣어놓았다
         state.routes.push(.newsCard(
           .init(routes: [
             .root(
               .newsList(
-                .init(shortsId: 0, keywordTitle: keyword)
+                .init(
+                  source: .hot,
+                  shortsId: 0,
+                  keywordTitle: "#\(keyword)"
+                )
               ),
               embedInNavigationView: true
             )
