@@ -15,6 +15,13 @@ import Services
 public struct SetCategoryState: Equatable {
   var allCategories: [CategoryType] = CategoryType.allCases
   var selectedCategories: [CategoryType]
+  var bottomButtonTitle: String {
+    if selectedCategories.isEmpty {
+      return "선택"
+    } else {
+      return "\(selectedCategories.count)개 선택"
+    }
+  }
   var isSelectButtonEnabled: Bool {
     !selectedCategories.isEmpty
   }

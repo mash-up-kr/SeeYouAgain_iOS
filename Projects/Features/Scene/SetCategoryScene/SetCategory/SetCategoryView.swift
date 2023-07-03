@@ -36,7 +36,7 @@ public struct SetCategoryView: View {
         Spacer()
         
         BottomButton(
-          title: "선택",
+          title: viewStore.bottomButtonTitle,
           disabled: !viewStore.state.isSelectButtonEnabled,
           action: { viewStore.send(.selectButtonTapped) }
         )
