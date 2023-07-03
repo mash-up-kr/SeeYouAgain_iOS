@@ -89,7 +89,7 @@ public let newsListReducer = Reducer.combine([
         var keyword = state.keywordTitle
         keyword.removeFirst()
         
-        return env.newsCardService.fetchShorts(
+        return env.newsCardService.fetchNews(
           keyword,
           state.cursorDate,
           state.cursorPage,
