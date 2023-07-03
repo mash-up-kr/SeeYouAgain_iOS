@@ -10,12 +10,12 @@ import ComposableArchitecture
 import Models
 
 public struct TodayShortsCardState: Equatable {
-  public var shortsNews: ShortsNews
+  public var shortsNews: NewsCard
   public var isCardSelectable: Bool
   public var isSelected: Bool
   
   public init(
-    shortsNews: ShortsNews,
+    shortsNews: NewsCard,
     isCardSelectable: Bool,
     isSelected: Bool
   ) {
@@ -46,10 +46,10 @@ let todayShortsCardReducer = Reducer.combine([
   Reducer<TodayShortsCardState, TodayShortsCardAction, TodayShortsCardEnvironment> { state, action, env in
     switch action {
     case .rightButtonTapped:
-      return Effect(value: ._navigateNewsList(state.shortsNews.keywords))
+      return Effect(value: ._navigateNewsList(state.shortsNews.hashTagString()))
       
     case .cardTapped:
-      return Effect(value: ._navigateNewsList(state.shortsNews.keywords))
+      return Effect(value: ._navigateNewsList(state.shortsNews.hashTagString()))
       
     default: return .none
     }

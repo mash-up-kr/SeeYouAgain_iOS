@@ -93,7 +93,7 @@ public let newsCardReducer = Reducer<
     return Effect(value: ._saveNewsCard)
 
   case .newsCardTapped:
-    return Effect(value: ._navigateNewsList(state.newsCard.id, state.newsCard.keywords.joined(separator: " ")))
+    return Effect(value: ._navigateNewsList(state.newsCard.id, state.newsCard.hashTagString()))
     
   case ._navigateNewsList:
     return .none

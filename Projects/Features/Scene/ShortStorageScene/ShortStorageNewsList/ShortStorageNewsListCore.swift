@@ -177,11 +177,10 @@ public let shortStorageNewsListReducer = Reducer<
           isInEditMode: false,
           isSelected: false,
           cardState: TodayShortsCardState(
-            shortsNews: ShortsNews(
+            shortsNews: NewsCard(
               id: $0.id,
-              keywords: $0.keywords,
-              category: $0.category
-            ),
+              keywords: $0.keywords.replacingOccurrences(of: " ", with: "").components(separatedBy: ","),
+              category: $0.category),
             isCardSelectable: true,
             isSelected: false
           )

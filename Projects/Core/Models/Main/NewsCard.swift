@@ -12,6 +12,23 @@ public struct NewsCard: Equatable, Identifiable {
   public let id: Int
   public let keywords: [String]
   public let category: String
+  
+  public init(id: Int, keywords: [String], category: String) {
+    self.id = id
+    self.keywords = keywords
+    self.category = category
+  }
+  
+  public func hashTagString() -> String {
+    var keywordList: String = ""
+    
+    for keyword in keywords {
+      keywordList.append("#\(keyword) ")
+    }
+    
+    keywordList.removeLast()
+    return keywordList
+  }
 }
 
 public extension NewsCard {

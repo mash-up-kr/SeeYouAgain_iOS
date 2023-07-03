@@ -25,9 +25,9 @@ struct TodayShortsCardView: View {
 
         Spacer()
           .frame(width: 16)
-        
+
         HStack {
-          Text(viewStore.state.shortsNews.keywords)
+          Text(viewStore.state.shortsNews.hashTagString())
             .font(.b16)
             .foregroundColor(DesignSystem.Colors.grey90)
           Spacer()
