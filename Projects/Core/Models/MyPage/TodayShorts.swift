@@ -10,6 +10,7 @@ import Foundation
 
 public struct TodayShorts: Equatable {
   public var numberOfShorts: Int
+  public var numberOfReadShorts: Int
   public var memberShorts: [TodayNewsCard]
 }
 
@@ -17,6 +18,7 @@ public extension TodayShorts {
 #if DEBUG
   static let stub = TodayShorts(
     numberOfShorts: 1,
+    numberOfReadShorts: 10,
     memberShorts: [
       TodayNewsCard(id: 1, keywords: "11자위대 호위함, 사키이 료, 이스턴 엔데버23", category: "POLITICS", crawledDateTime: Date()),
       TodayNewsCard(id: 2, keywords: "22자위대 호위함, 사키이 료, 이스턴 엔데버23", category: "WORLD", crawledDateTime: Date()),

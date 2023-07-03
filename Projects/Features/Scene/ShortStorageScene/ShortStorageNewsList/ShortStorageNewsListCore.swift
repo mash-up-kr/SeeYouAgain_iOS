@@ -234,12 +234,9 @@ public let shortStorageNewsListReducer = Reducer<
       return .none
       
     case ._initializeShortStorageNewsList:
-      // TODO: 실데이터 반영 필요
       state.shortsNewsItems.removeAll()
-      state.shortsNewsItemsCount = 0
-      state.shortsCompleteCount = 0
       state.today = Date().fullDateToString()
-      return .none
+      return Effect(value: ._fetchTodayShorts(.initial))
       
     case let .shortsNewsItem(id: tappedId, action: .itemTapped):
       return .none
@@ -260,8 +257,7 @@ private func handleTodayShortsResponse(
   switch fetchType {
   case .initial:
     state.shortsNewsItemsCount = todayShorts.numberOfShorts
-    // TODO: 오늘 완료한 숏스 수 추가 필요 (10은 더미값)
-    state.shortsCompleteCount = 10
+    state.shortsCompleteCount = todayShorts.numberOfReadShorts
     return Effect(value: ._setTodayShortsItem(todayShorts))
     
     // TODO: 페이징 기능 구현 필요

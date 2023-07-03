@@ -10,6 +10,7 @@ import Foundation
 
 public struct TodayShortsResponseDTO: Decodable {
   let numberOfShorts: Int
+  let numberOfReadShorts: Int
   let memberShorts: [NewsCardsResponseDTO]
 }
 
@@ -17,6 +18,7 @@ public extension TodayShortsResponseDTO {
   var toDomain: TodayShorts {
     return TodayShorts(
       numberOfShorts: numberOfShorts,
+      numberOfReadShorts: numberOfReadShorts,
       memberShorts: memberShorts.map {
         TodayNewsCard(
           id: $0.id,
