@@ -7,33 +7,42 @@
 //
 
 import Combine
+import Common
 import ComposableArchitecture
 import Foundation
 
 public struct NewsListState: Equatable {
   var keywordTitle: String
   var newsItems: IdentifiedArrayOf<NewsCardState> = []
+  var sortType: SortType
+  var sortBottomSheetState: SortBottomSheetState
   
   public init(keywordTitle: String, newsItems: IdentifiedArrayOf<NewsCardState> = []) {
     self.keywordTitle = keywordTitle
     self.newsItems = newsItems
+    self.sortType = .latest
+    self.sortBottomSheetState = SortBottomSheetState(sortType: .latest, isPresented: false)
   }
 }
 
-public enum NewsListAction: Equatable {
+public enum NewsListAction {
   // MARK: - User Action
   case backButtonTapped
   case completeButtonTapped
+  case showSortBottomSheet
   
   // MARK: - Inner Business Action
   case _onAppear
   case _willDisappear
+  case _sortNewsItems(SortType)
   
   // MARK: - Inner SetState Action
   case _initializeNewsItems
+  case _setSortType(SortType)
   
   // MARK: - Child Action
   case newsItem(id: NewsCardState.ID, action: NewsCardAction)
+  case sortBottomSheet(SortBottomSheetAction)
 }
 
 public struct NewsListEnvironment {
@@ -49,6 +58,12 @@ public let newsListReducer = Reducer.combine([
         NewsCardEnvironment()
       }
     ),
+  sortBottomSheetReducer
+    .pullback(
+      state: \.sortBottomSheetState,
+      action: /NewsListAction.sortBottomSheet,
+      environment: { _ in SortBottomSheetEnvironment() }
+    ),
   Reducer<NewsListState, NewsListAction, NewsListEnvironment> { state, action, env in
     switch action {
     case .backButtonTapped:
@@ -59,6 +74,9 @@ public let newsListReducer = Reducer.combine([
         Effect(value: ._initializeNewsItems),
         Effect(value: ._willDisappear)
       ])
+      
+    case .showSortBottomSheet:
+      return Effect(value: .sortBottomSheet(._setIsPresented(true)))
       
     case ._onAppear:
       /* 임시 데이터 안들어가게 잠시 주석해놨습니다
@@ -142,9 +160,34 @@ public let newsListReducer = Reducer.combine([
     case ._willDisappear:
       return .none
       
+    case let ._sortNewsItems(sortType):
+      // TODO: 정렬
+      /*
+      var sortedNewsItems = state.newsItems
+      if sortType == .latest {
+        sortedNewsItems.sort(by: { $0.writtenDateTime > $1.writtenDateTime })
+      } else {
+        sortedNewsItems.sort(by: { $0.writtenDateTime < $1.writtenDateTime })
+      }
+      state.newsItems = sortedNewsItems
+      */
+      return .none
+      
+      
     case ._initializeNewsItems:
       state.newsItems.removeAll()
       return .none
+      
+    case let ._setSortType(sortType):
+      state.sortType = sortType
+      return .none
+      
+    case let .sortBottomSheet(._sort(sortType)):
+      return Effect.concatenate(
+        Effect(value: ._setSortType(sortType)),
+        Effect(value: ._sortNewsItems(sortType)),
+        Effect(value: .sortBottomSheet(._setIsPresented(false)))
+      )
       
     default: return .none
     }

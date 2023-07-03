@@ -6,6 +6,7 @@
 //  Copyright © 2023 mashup.seeYouAgain. All rights reserved.
 //
 
+import Common
 import ComposableArchitecture
 import DesignSystem
 import SwiftUI
@@ -42,15 +43,7 @@ public struct NewsListView: View {
               Spacer()
                 .frame(height: 48)
               
-              HStack(spacing: 0) {
-                Text("최신순")
-                  .font(.r14)
-                  .foregroundColor(DesignSystem.Colors.grey70)
-                
-                DesignSystem.Icons.iconChevronDown
-                
-                Spacer()
-              }
+              FilterView(store: store.scope(state: \.sortType))
               .padding(.horizontal, 24)
               
               Spacer()
@@ -81,6 +74,55 @@ public struct NewsListView: View {
             viewStore.send(.completeButtonTapped)
           }
         }
+      }
+      .bottomSheet(
+        isPresented: viewStore.binding(
+          get: \.sortBottomSheetState.isPresented,
+          send: { .sortBottomSheet(._setIsPresented($0)) }
+        ),
+        headerArea: { NewsListSortBottomSheetHeader() },
+        content: {
+          NewsListSortBottomSheetContent(
+            store: store.scope(
+              state: \.sortBottomSheetState,
+              action: NewsListAction.sortBottomSheet
+            )
+          )
+        },
+        bottomArea: {
+          NewsListSortBottomSheetFooter(
+            store: store.scope(
+              state: \.sortBottomSheetState,
+              action: NewsListAction.sortBottomSheet
+            )
+            .stateless
+          )
+        }
+      )
+    }
+  }
+}
+
+private struct FilterView: View {
+  private let store: Store<SortType, NewsListAction>
+  
+  fileprivate init(store: Store<SortType, NewsListAction>) {
+    self.store = store
+  }
+  
+  fileprivate var body: some View {
+    WithViewStore(store) { viewStore in
+      HStack(spacing: 0) {
+        Text(viewStore.state.rawValue)
+          .font(.r14)
+          .foregroundColor(DesignSystem.Colors.grey70)
+        
+        DesignSystem.Icons.iconChevronDown
+        
+        Spacer()
+      }
+      .onTapGesture {
+        viewStore.send(.showSortBottomSheet)
       }
     }
   }
