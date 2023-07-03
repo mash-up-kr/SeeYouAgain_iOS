@@ -7,9 +7,9 @@
 //
 
 import Combine
+import Common
 import ComposableArchitecture
 import Foundation
-
 
 public struct LongStorageNewsListState: Equatable {
   var isInEditMode: Bool
@@ -18,6 +18,8 @@ public struct LongStorageNewsListState: Equatable {
   var shortsCompleteCount: Int // 완료한 숏스 수
   var shortsNewsItems: IdentifiedArrayOf<LongShortsItemState> = []
   var isLatestMode: Bool = true
+  var sortType: SortType
+  var sortBottomSheetState: SortBottomSheetState
   
   public init(
     isInEditMode: Bool,
@@ -28,10 +30,12 @@ public struct LongStorageNewsListState: Equatable {
     self.month = Date().yearMonthToString()
     self.shortsNewsItemsCount = shortslistCount
     self.shortsCompleteCount = shortsClearCount
+    self.sortType = .latest
+    self.sortBottomSheetState = SortBottomSheetState(sortType: .latest, isPresented: false)
   }
 }
 
-public enum LongStorageNewsListAction: Equatable {
+public enum LongStorageNewsListAction {
   // MARK: - User Action
   case backButtonTapped
   case editButtonTapped
@@ -39,20 +43,22 @@ public enum LongStorageNewsListAction: Equatable {
   case datePickerTapped
   case previousMonthButtonTapped
   case nextMonthButtonTapped
-  case sortByTimeButtonTapped
-  case sortByTypeButtonTapped
+  case showSortBottomSheet
   
   // MARK: - Inner Business Action
   case _onAppear
+  case _sortLongShortsItems(SortType)
   
   // MARK: - Inner SetState Action
   case _setEditMode
   case _setLongShortsItemEditMode
   case _setLongShortsItemList
   case _setLongShortsItemCount
+  case _setSortType(SortType)
   
   // MARK: - Child Action
   case shortsNewsItem(id: LongShortsItemState.ID, action: LongShortsItemAction)
+  case sortBottomSheet(SortBottomSheetAction)
 }
 
 public struct LongStorageNewsListEnvironment {
@@ -72,6 +78,12 @@ public let longStorageNewsListReducer = Reducer<
         LongShortsItemEnvironment()
       }
     ),
+  sortBottomSheetReducer
+    .pullback(
+      state: \.sortBottomSheetState,
+      action: /LongStorageNewsListAction.sortBottomSheet,
+      environment: { _ in SortBottomSheetEnvironment() }
+    ),
   Reducer { state, action, env in
     switch action {
     case .editButtonTapped:
@@ -87,16 +99,25 @@ public let longStorageNewsListReducer = Reducer<
         Effect(value: ._setLongShortsItemEditMode)
       ])
       
-    case .sortByTimeButtonTapped:
-      state.isLatestMode.toggle()
-      return .none
-      
-    case .sortByTypeButtonTapped:
-      // TODO: 타입에 따른 정렬 구현 필요
-      return .none
+    case .showSortBottomSheet:
+      return Effect(value: .sortBottomSheet(._setIsPresented(true)))
       
     case ._onAppear:
       state.shortsNewsItems = LongStorageStub.items
+      return .none
+      
+    case let ._sortLongShortsItems(sortType):
+      var sortedShortsNewsItems = state.shortsNewsItems
+      if sortType == .latest {
+        sortedShortsNewsItems.sort(by: {
+          $0.cardState.news.writtenDateTime > $1.cardState.news.writtenDateTime
+        })
+      } else {
+        sortedShortsNewsItems.sort(by: {
+          $0.cardState.news.writtenDateTime < $1.cardState.news.writtenDateTime
+        })
+      }
+      state.shortsNewsItems = sortedShortsNewsItems
       return .none
       
     case ._setEditMode:
@@ -117,6 +138,17 @@ public let longStorageNewsListReducer = Reducer<
     case ._setLongShortsItemCount:
       state.shortsNewsItemsCount = state.shortsNewsItems.count
       return .none
+      
+    case let ._setSortType(sortType):
+      state.sortType = sortType
+      return .none
+      
+    case let .sortBottomSheet(._sort(sortType)):
+      return Effect.concatenate(
+        Effect(value: ._setSortType(sortType)),
+        Effect(value: ._sortLongShortsItems(sortType)),
+        Effect(value: .sortBottomSheet(._setIsPresented(false)))
+      )
       
     default: return .none
     }
