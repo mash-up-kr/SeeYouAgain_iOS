@@ -62,9 +62,9 @@ public let newsCardCoordinatorReducer: Reducer<
         return .none
         
       case let .routeAction(_, action: .newsList(.newsItem(id: id, action: ._navigateWebView(url)))):
-        state.routes.push(.web(.init(webAddress: url)))
+        state.routes.push(.web(.init(newsId: id, webAddress: url)))
         return .none
-
+        
       default: return .none
       }
     }

@@ -13,6 +13,7 @@ import Foundation
 import Services
 
 public struct WebState: Equatable {
+  var newsId: Int
   var webAddress: String
   var saveButtonDisabled: Bool
   var isDisplayTooltip: Bool
@@ -20,10 +21,12 @@ public struct WebState: Equatable {
   var warningToastMessage: String?
   
   public init(
+    newsId: Int,
     webAddress: String,
     saveButtonDisabled: Bool = false,
     isDisplayTooltip: Bool = true
   ) {
+    self.newsId = newsId
     self.webAddress = webAddress
     self.saveButtonDisabled = saveButtonDisabled
     self.isDisplayTooltip = isDisplayTooltip
@@ -42,6 +45,7 @@ public enum WebAction: Equatable {
   case _presentWaringToast(String)
   case _hideSaveToast
   case _hideWarningToast
+  case _postNewsId(Int)
   
   // MARK: - Inner SetState Action
   case _setSaveButtonDisabled(Bool)
@@ -52,9 +56,14 @@ public enum WebAction: Equatable {
 
 public struct WebEnvironment {
   let mainQueue: AnySchedulerOf<DispatchQueue>
+  let newsCardService: NewsCardService
   
-  public init(mainQueue: AnySchedulerOf<DispatchQueue> = .main) {
+  public init(
+    mainQueue: AnySchedulerOf<DispatchQueue> = .main,
+    newsCardService: NewsCardService
+  ) {
     self.mainQueue = mainQueue
+    self.newsCardService = newsCardService
   }
 }
 
@@ -76,10 +85,7 @@ public let webReducer = Reducer.combine([
       return .none
       
     case .saveButtonTapped:
-      // TODO: - 추후 뉴스 저장 API 구현
-      // TODO: - 뉴스 저장에 따른 리스폰스를 통해 토스트 메시지 노출 (저장완료 or 에러)
-      // TODO: - 저장 버튼 상태값 변경
-      return Effect(value: ._setSaveButtonDisabled(true))
+      return Effect(value: ._postNewsId(state.newsId))
       
     case .tooltipButtonTapped:
       return Effect(value: ._setIsDisplayTooltip(false))
@@ -109,6 +115,23 @@ public let webReducer = Reducer.combine([
       
     case ._hideWarningToast:
       return Effect(value: ._setWarningToastMessage(nil))
+      
+    case let ._postNewsId(id):
+      return env.newsCardService.saveNews(id)
+        .catchToEffect()
+        .flatMap { result -> Effect<WebAction, Never> in
+          switch result {
+          case .success:
+            return Effect.concatenate([
+              Effect(value: ._setSaveButtonDisabled(true)),
+              Effect(value: ._presentSaveToast("오래 간직할 뉴스에 추가했어요."))
+            ])
+            
+          case .failure:
+            return Effect(value: ._presentWaringToast("인터넷이 불안정해서 저장되지 못했어요."))
+          }
+        }
+        .eraseToEffect()
       
     case let ._setSaveButtonDisabled(disabled):
       state.saveButtonDisabled = disabled

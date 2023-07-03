@@ -16,6 +16,7 @@ public enum NewsCardAPI {
   case getNewsCard(Int)
   case completeTodayShorts(Int)
   case fetchNews(String, Date, Int, Int)
+  case saveNews(Int)
 }
 
 extension NewsCardAPI: TargetType {
@@ -39,6 +40,9 @@ extension NewsCardAPI: TargetType {
       
     case let .fetchNews(keyword, _, _, _):
       return "/hot-keywords/\(keyword)"
+      
+    case .saveNews:
+      return "/member/news"
     }
   }
   
@@ -58,6 +62,9 @@ extension NewsCardAPI: TargetType {
       
     case .fetchNews:
       return .get
+      
+    case .saveNews:
+      return .post
     }
   }
   
@@ -98,6 +105,10 @@ extension NewsCardAPI: TargetType {
         parameters: requestDTO.toDictionary,
         encoding: .queryString
       )
+      
+    case let .saveNews(newsId):
+      let requestDTO = SaveNewsRequestDTO(newsId: newsId)
+      return .requestJSONEncodable(requestDTO)
     }
   }
   

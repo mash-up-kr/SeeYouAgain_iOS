@@ -49,8 +49,8 @@ internal let newsCardScreenReducer = Reducer<
     .pullback(
       state: /NewsCardScreenState.web,
       action: /NewsCardScreenAction.web,
-      environment: { _ in
-        WebEnvironment()
+      environment: {
+        WebEnvironment(newsCardService: $0.newsCardService)
       }
     ),
   shortsCompleteReducer
