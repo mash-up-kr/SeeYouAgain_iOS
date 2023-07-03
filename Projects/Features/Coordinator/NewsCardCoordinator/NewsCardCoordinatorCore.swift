@@ -60,6 +60,10 @@ public let newsCardCoordinatorReducer: Reducer<
       case let .routeAction(_, action: .newsList(._willDisappear(totalShortsCount))):
         state.routes.push(.shortsComplete(.init(totalShortsCount: totalShortsCount)))
         return .none
+        
+      case let .routeAction(_, action: .newsList(.newsItem(id: id, action: ._navigateWebView(url)))):
+        state.routes.push(.web(.init(webAddress: url)))
+        return .none
 
       default: return .none
       }
