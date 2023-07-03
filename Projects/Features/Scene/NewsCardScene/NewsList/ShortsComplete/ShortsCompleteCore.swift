@@ -9,10 +9,11 @@
 import ComposableArchitecture
 
 public struct ShortsCompleteState: Equatable {
-  // TODO: 실데이터로 반영 필요
-  var totalShorts: Int = 57
+  var totalShortsCount: Int
   
-  public init() {}
+  public init(totalShortsCount: Int) {
+    self.totalShortsCount = totalShortsCount
+  }
 }
 
 public enum ShortsCompleteAction {

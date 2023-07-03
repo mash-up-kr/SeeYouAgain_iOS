@@ -7,20 +7,11 @@
 //
 
 import Combine
+import Common
 import ComposableArchitecture
 import Foundation
-
-public struct ShortsNews: Equatable, Identifiable {
-  public let id: Int
-  public let category: String
-  public let keywords: String
-  
-  public init(id: Int, category: String, keywords: String) {
-    self.id = id
-    self.category = category
-    self.keywords = keywords
-  }
-}
+import Models
+import Services
 
 public struct ShortStorageNewsListState: Equatable {
   var isInEditMode: Bool
@@ -31,37 +22,45 @@ public struct ShortStorageNewsListState: Equatable {
   var remainTimeString: String
   var remainTime: Int = 24 * 60 * 60
   var currentTimeSeconds: Int = 0 // 지금 시간이 몇초를 담고있냐! 17:27:21 => 62841
+  var cursorId: Int = 0
+  let pagingSize = 10
   
   public init(
     isInEditMode: Bool,
-    shortslistCount: Int,
+    shortsNewsItemsCount: Int,
     shortsCompleteCount: Int
   ) {
     self.isInEditMode = isInEditMode
-    self.shortsNewsItemsCount = shortslistCount
+    self.shortsNewsItemsCount = shortsNewsItemsCount
     self.shortsCompleteCount = shortsCompleteCount
     self.today = Date().fullDateToString()
     self.remainTimeString = initializeRemainTimeString()
   }
 }
 
-public enum ShortStorageNewsListAction: Equatable {
+public enum ShortStorageNewsListAction {
   // MARK: - User Action
   case backButtonTapped
   case editButtonTapped
   case deleteButtonTapped
   
   // MARK: - Inner Business Action
-  case _onAppear
+  case _viewWillAppear
   case _updateTimer
   case _decreaseRemainTime
   case _updateZeroTime
+  case _fetchTodayShorts(FetchType)
+  case _handleTodayShortsResponse(TodayShorts, FetchType)
+  case _deleteTodayShorts([Int])
+  case _handleDeleteTodayShortsResponse(Result<VoidResponse?, Error>)
   
   // MARK: - Inner SetState Action
+  case _setTodayShortsItem(TodayShorts)
   case _setEditMode
   case _setTodayShortsItemEditMode
   case _setTodayShortsItemList
   case _setTodayShortsItemCount
+  case _setSelectedItemIds
   case _setCurrentTimeSeconds
   case _setRemainTime(Int)
   case _setRemainTimeString(Int)
@@ -73,11 +72,14 @@ public enum ShortStorageNewsListAction: Equatable {
 
 public struct ShortStorageNewsListEnvironment {
   let mainQueue: AnySchedulerOf<DispatchQueue>
+  let myPageService: MyPageService
 
   public init(
-    mainQueue: AnySchedulerOf<DispatchQueue>
+    mainQueue: AnySchedulerOf<DispatchQueue>,
+    myPageService: MyPageService
   ) {
     self.mainQueue = mainQueue
+    self.myPageService = myPageService
   }
 }
 
@@ -105,101 +107,13 @@ public let shortStorageNewsListReducer = Reducer<
       ])
       
     case .deleteButtonTapped:
-      return Effect.concatenate([
-        Effect(value: ._setEditMode),
-        Effect(value: ._setTodayShortsItemList),
-        Effect(value: ._setTodayShortsItemEditMode)
-      ])
+      return Effect(value: ._setSelectedItemIds)
       
-    case ._onAppear:
-      // TODO: API 연결 시, 실데이터로 반영 필요
-      state.shortsNewsItems = [
-        TodayShortsItemState(
-          id: 0,
-          isInEditMode: state.isInEditMode,
-          isSelected: false,
-          cardState: TodayShortsCardState(
-            shortsNews: ShortsNews(
-              id: 0,
-              category: "#세계",
-              keywords: "#자위대 호위함 #사카이 료 (Sakai Ryo) #이스턴 엔데버23 #부산항"
-            ),
-            isCardSelectable: !state.isInEditMode,
-            isSelected: false
-          )
-        ),
-        TodayShortsItemState(
-          id: 1,
-          isInEditMode: state.isInEditMode,
-          isSelected: false,
-          cardState: TodayShortsCardState(
-            shortsNews: ShortsNews(
-              id: 0,
-              category: "#세계",
-              keywords: "#뿡뿡 호위함 #사카이 료 (Sakai Ryo) #이스턴 엔데버23 #부산항"
-            ),
-            isCardSelectable: !state.isInEditMode,
-            isSelected: false
-          )
-        ),
-        TodayShortsItemState(
-          id: 2,
-          isInEditMode: state.isInEditMode,
-          isSelected: false,
-          cardState: TodayShortsCardState(
-            shortsNews: ShortsNews(
-              id: 0,
-              category: "#세계",
-              keywords: "#뽕뽕 호위함 #사카이 료료료료료룔료료료 #이스턴휴이이이엥 #부산항"
-            ),
-            isCardSelectable: !state.isInEditMode,
-            isSelected: false
-          )
-        ),
-        TodayShortsItemState(
-          id: 3,
-          isInEditMode: state.isInEditMode,
-          isSelected: false,
-          cardState: TodayShortsCardState(
-            shortsNews: ShortsNews(
-              id: 0,
-              category: "#세계",
-              keywords: "#빵빵 호위함 #사카이 료 (Sakai Ryo) #이스턴 엔데버23 #부산항"
-            ),
-            isCardSelectable: !state.isInEditMode,
-            isSelected: false
-          )
-        ),
-        TodayShortsItemState(
-          id: 4,
-          isInEditMode: state.isInEditMode,
-          isSelected: false,
-          cardState: TodayShortsCardState(
-            shortsNews: ShortsNews(
-              id: 0,
-              category: "#세계",
-              keywords: "#쿵쿵 호위함 #사카이 료 (Sakai Ryo) #이스턴 엔데버23 #부산항"
-            ),
-            isCardSelectable: !state.isInEditMode,
-            isSelected: false
-          )
-        ),
-        TodayShortsItemState(
-          id: 5,
-          isInEditMode: state.isInEditMode,
-          isSelected: false,
-          cardState: TodayShortsCardState(
-            shortsNews: ShortsNews(
-              id: 0,
-              category: "#세계",
-              keywords: "#쿙쿙 호위함 #사카이 료 (Sakai Ryo) #이스턴 엔데버23 #부산항"
-            ),
-            isCardSelectable: !state.isInEditMode,
-            isSelected: false
-          )
-        )
-      ]
-      return Effect(value: ._setCurrentTimeSeconds)
+    case ._viewWillAppear:
+      return Effect.concatenate([
+        Effect(value: ._setCurrentTimeSeconds),
+        Effect(value: ._fetchTodayShorts(.initial))
+      ])
       
     case ._updateTimer:
       return Effect.timer(
@@ -220,6 +134,60 @@ public let shortStorageNewsListReducer = Reducer<
         Effect(value: ._initializeShortStorageNewsList)
       ])
       
+    case let ._fetchTodayShorts(fetchType):
+      return env.myPageService.getTodayShorts(
+        state.cursorId,
+        state.pagingSize
+      )
+      .catchToEffect()
+      .flatMap { result -> Effect<ShortStorageNewsListAction, Never> in
+        switch result {
+        case let .success(todayShorts):
+          return Effect(value: ._handleTodayShortsResponse(todayShorts, fetchType))
+          
+        case .failure:
+          return .none
+        }
+      }
+      .eraseToEffect()
+      
+    case let ._handleTodayShortsResponse(todayShorts, fetchType):
+      return handleTodayShortsResponse(&state, source: todayShorts, fetchType: fetchType)
+
+    case let ._deleteTodayShorts(shortsIds):
+      return env.myPageService.deleteTodayShorts(shortsIds)
+        .catchToEffect(ShortStorageNewsListAction._handleDeleteTodayShortsResponse)
+
+    case let ._handleDeleteTodayShortsResponse(result):
+      switch result {
+      case .success:
+        return Effect.concatenate([
+          Effect(value: ._setEditMode),
+          Effect(value: ._setTodayShortsItemList),
+          Effect(value: ._setTodayShortsItemEditMode)
+        ])
+        
+      default: return .none
+      }
+
+    case let ._setTodayShortsItem(todayShorts):
+      state.shortsNewsItems = IdentifiedArrayOf(uniqueElements: todayShorts.memberShorts.map {
+        TodayShortsItemState(
+          id: $0.id,
+          isInEditMode: false,
+          isSelected: false,
+          cardState: TodayShortsCardState(
+            shortsNews: NewsCard(
+              id: $0.id,
+              keywords: $0.keywords.replacingOccurrences(of: " ", with: "").components(separatedBy: ","),
+              category: $0.category),
+            isCardSelectable: true,
+            isSelected: false
+          )
+        )
+      })
+      return .none
+      
     case ._setEditMode:
       state.isInEditMode.toggle()
       return .none
@@ -239,6 +207,16 @@ public let shortStorageNewsListReducer = Reducer<
       state.shortsNewsItemsCount = state.shortsNewsItems.count
       return .none
       
+    case ._setSelectedItemIds:
+      var selectedItemIds: [Int] = []
+      
+      for item in state.shortsNewsItems {
+        if item.isSelected {
+          selectedItemIds.append(item.id)
+        }
+      }
+      return Effect(value: ._deleteTodayShorts(selectedItemIds))
+      
     case ._setCurrentTimeSeconds:
       state.currentTimeSeconds = calculateCurrentTimeSeconds()
       return Effect(value: ._setRemainTime(state.currentTimeSeconds))
@@ -256,12 +234,9 @@ public let shortStorageNewsListReducer = Reducer<
       return .none
       
     case ._initializeShortStorageNewsList:
-      // TODO: 실데이터 반영 필요
       state.shortsNewsItems.removeAll()
-      state.shortsNewsItemsCount = 0
-      state.shortsCompleteCount = 0
       state.today = Date().fullDateToString()
-      return .none
+      return Effect(value: ._fetchTodayShorts(.initial))
       
     case let .shortsNewsItem(id: tappedId, action: .itemTapped):
       return .none
@@ -273,6 +248,26 @@ public let shortStorageNewsListReducer = Reducer<
     }
   }
 )
+
+private func handleTodayShortsResponse(
+  _ state: inout ShortStorageNewsListState,
+  source todayShorts: TodayShorts,
+  fetchType: FetchType
+) -> Effect<ShortStorageNewsListAction, Never> {
+  switch fetchType {
+  case .initial:
+    state.shortsNewsItemsCount = todayShorts.numberOfShorts
+    state.shortsCompleteCount = todayShorts.numberOfReadShorts
+    return Effect(value: ._setTodayShortsItem(todayShorts))
+    
+    // TODO: 페이징 기능 구현 필요
+  case .continuousPaging:
+    return .none
+    
+  case .newPaging:
+    return .none
+  }
+}
 
 fileprivate func initializeRemainTimeString() -> String {
   let currentTimeSeconds = calculateCurrentTimeSeconds()
@@ -302,29 +297,9 @@ fileprivate func remainTimeToString(time: Int) -> String {
   return String(format: "%02i:%02i:%02i", hour, minute, second)
 }
 
-// TODO: 코드 위치 변경 필요
 fileprivate let dateComponentsFormatter: DateComponentsFormatter = {
   let formatter = DateComponentsFormatter()
   formatter.allowedUnits = [.hour, .minute, .second]
   formatter.zeroFormattingBehavior = .pad
   return formatter
 }()
-
-// TODO: 코드 위치 변경 필요
-extension Date {
-  func fullDateToString() -> String {
-    let dateFormatter = DateFormatter()
-    dateFormatter.dateFormat = "yyyy년 M월 dd일"
-    dateFormatter.locale = Locale(identifier: "ko_KR")
-    dateFormatter.timeZone = TimeZone(identifier: "KST")
-    return dateFormatter.string(from: self)
-  }
-  
-  func yearMonthToString() -> String {
-    let dateFormatter = DateFormatter()
-    dateFormatter.dateFormat = "yyyy년 M월"
-    dateFormatter.locale = Locale(identifier: "ko_KR")
-    dateFormatter.timeZone = TimeZone(identifier: "KST")
-    return dateFormatter.string(from: self)
-  }
-}

@@ -124,15 +124,30 @@ public let appCoordinatorReducer: Reducer<
             .routeAction(
               _, action: .main(
                 .newsCardScroll(
-                  .newsCard(id: _, action: ._navigateNewsList(id))
+                  .newsCard(id: _, action: ._navigateNewsList(id, keyword))
                 )
               )
             )
           )
         )
       ):
-        // TODO: 상희누나 id로 코디네이터 초기화해서 야무지게 사용하면 돼여
-        state.routes.push(.newsCard(.init()))
+        state.routes.push(
+          .newsCard(
+            .init(
+              routes: [
+                .root(
+                  .newsList(
+                    .init(
+                      shortsId: id,
+                      keywordTitle: keyword
+                    )
+                  ),
+                  embedInNavigationView: true
+                )
+              ]
+            )
+          )
+        )
         return .none
         
       case let .routeAction(
@@ -146,19 +161,22 @@ public let appCoordinatorReducer: Reducer<
           )
         )
       ):
-        // TODO: 상희야 키워드 넣어놓았다
         state.routes.push(.newsCard(
           .init(routes: [
             .root(
               .newsList(
-                .init(keywordTitle: keyword)
+                .init(
+                  source: .hot,
+                  shortsId: 0,
+                  keywordTitle: "#\(keyword)"
+                )
               ),
               embedInNavigationView: true
             )
           ])
         ))
         return .none
-        
+
       case let .routeAction(
         _,
         action: .tabBar(
@@ -171,7 +189,7 @@ public let appCoordinatorReducer: Reducer<
                   action: .shortStorageNewsList(
                     .shortsNewsItem(
                       id: id,
-                      action: .cardAction(.rightButtonTapped)
+                      action: .cardAction(._navigateNewsList(keyword))
                     )
                   )
                 )
@@ -180,31 +198,19 @@ public let appCoordinatorReducer: Reducer<
           )
         )
       ):
-        state.routes.push(.newsCard(.init()))
-        return .none
-        
-      case let .routeAction(
-        _,
-        action: .tabBar(
-          .myPage(
-            .routeAction(
-              _,
-              action: .shortStorage(
-                .routeAction(
-                  _,
-                  action: .shortStorageNewsList(
-                    .shortsNewsItem(
-                      id: id,
-                      action: .cardAction(.cardTapped)
-                    )
-                  )
+        state.routes.push(.newsCard(
+          .init(routes: [
+            .root(
+              .newsList(
+                .init(
+                  shortsId: id,
+                  keywordTitle: keyword
                 )
-              )
+              ),
+              embedInNavigationView: true
             )
-          )
-        )
-      ):
-        state.routes.push(.newsCard(.init()))
+          ])
+        ))
         return .none
         
       case let .routeAction(

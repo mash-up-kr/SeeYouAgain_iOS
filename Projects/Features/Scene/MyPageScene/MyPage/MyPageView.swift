@@ -28,8 +28,8 @@ public struct MyPageView: View {
         )
         
         ZStack(alignment: .topTrailing) {
-          DesignSystem.Images.earth
-            .frame(width: 106, height: 106)
+          DesignSystem.Images.imageEarth
+            .frame(width: 124, height: 121)
             .padding(.trailing, 24)
           
           MyInfoView(

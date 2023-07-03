@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "card_world.svg",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

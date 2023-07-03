@@ -8,9 +8,12 @@
 
 import Alamofire
 import Foundation
+import Models
 
 public enum MyPageAPI {
   case getMemberInfo
+  case getTodayShorts(Int, Int)
+  case deleteTodayShorts([Int])
 }
 
 extension MyPageAPI: TargetType {
@@ -22,6 +25,10 @@ extension MyPageAPI: TargetType {
     switch self {
     case .getMemberInfo:
       return "/member/info"
+    case .getTodayShorts:
+      return "/member-news-card/"
+    case .deleteTodayShorts:
+      return "/member-news-card"
     }
   }
   
@@ -29,6 +36,12 @@ extension MyPageAPI: TargetType {
     switch self {
     case .getMemberInfo:
       return .get
+      
+    case .getTodayShorts:
+      return .get
+      
+    case .deleteTodayShorts:
+      return .post
     }
   }
   
@@ -36,12 +49,26 @@ extension MyPageAPI: TargetType {
     switch self {
     case .getMemberInfo:
       return .requestPlain
+      
+    case let .getTodayShorts(cursorId, size):
+      let requestDTO = TodayShortsRequestDTO(
+        cursorId: cursorId,
+        size: size
+      )
+      return .requestParameters(
+        parameters: requestDTO.toDictionary,
+        encoding: .queryString
+      )
+      
+    case let .deleteTodayShorts(shortsIds):
+      let requestDTO = DeleteTodayShortsRequestDTO(shortsIds: shortsIds)
+      return .requestJSONEncodable(requestDTO)
     }
   }
   
   public var sampleData: Data {
     switch self {
-    case .getMemberInfo:
+    default:
       return Data()
     }
   }

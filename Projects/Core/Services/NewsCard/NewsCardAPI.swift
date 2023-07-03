@@ -14,6 +14,8 @@ public enum NewsCardAPI {
   case getAllNewsCards(Date, Int, Int)
   case saveNewsCard(Int)
   case getNewsCard(Int)
+  case completeTodayShorts(Int)
+  case fetchNews(String, Date, Int, Int)
 }
 
 extension NewsCardAPI: TargetType {
@@ -31,6 +33,12 @@ extension NewsCardAPI: TargetType {
       
     case let .getNewsCard(newsId):
       return "/news-card/\(newsId)"
+      
+    case .completeTodayShorts:
+      return "/member-news-card"
+      
+    case let .fetchNews(keyword, _, _, _):
+      return "/hot-keywords/\(keyword)"
     }
   }
   
@@ -43,6 +51,12 @@ extension NewsCardAPI: TargetType {
       return .post
       
     case .getNewsCard:
+      return .get
+      
+    case .completeTodayShorts:
+      return .delete
+      
+    case .fetchNews:
       return .get
     }
   }
@@ -67,6 +81,21 @@ extension NewsCardAPI: TargetType {
     case .getNewsCard:
       return .requestParameters(
         parameters: NewsRequestDTO.init().toDictionary,
+        encoding: .queryString
+      )
+      
+    case let .completeTodayShorts(shortsId):
+      let requestDTO = CompleteTodayShortsRequestDTO(newsCardId: shortsId)
+      return .requestJSONEncodable(requestDTO)
+      
+    case let .fetchNews(_, targetDateTime, cursorId, pagingSize):
+      let requestDTO = NewsCardsRequestDTO(
+        targetDateTime: targetDateTime.toFormattedString(format: "yyyy-MM-dd'T'HH:mm:ss"),
+        cursorId: cursorId,
+        size: pagingSize
+      )
+      return .requestParameters(
+        parameters: requestDTO.toDictionary,
         encoding: .queryString
       )
     }

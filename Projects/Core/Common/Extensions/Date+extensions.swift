@@ -14,4 +14,20 @@ extension Date {
     dateFormatter.dateFormat = format
     return dateFormatter.string(from: self)
   }
+  
+  public func fullDateToString() -> String {
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = "yyyy년 M월 d일"
+    dateFormatter.locale = Locale(identifier: "ko_KR")
+    dateFormatter.timeZone = TimeZone(identifier: "KST")
+    return dateFormatter.string(from: self)
+  }
+  
+  public func yearMonthToString() -> String {
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = "yyyy년 M월"
+    dateFormatter.locale = Locale(identifier: "ko_KR")
+    dateFormatter.timeZone = TimeZone(identifier: "KST")
+    return dateFormatter.string(from: self)
+  }
 }

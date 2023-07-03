@@ -11,45 +11,9 @@ import ComposableArchitecture
 import Foundation
 import Models
 
-public struct News: Equatable, Identifiable {
-  public let id: Int
-  let title: String
-  let thumbnailImageUrl: String?
-  let newsLink: String
-  let press: String
-  let writtenDateTime: String
-  let type: String
-  
-  public init(
-    id: Int,
-    title: String,
-    thumbnailImageUrl: String?,
-    newsLink: String,
-    press: String,
-    writtenDateTime: String,
-    type: String
-  ) {
-    self.id = id
-    self.title = title
-    self.thumbnailImageUrl = thumbnailImageUrl
-    self.newsLink = newsLink
-    self.press = press
-    self.writtenDateTime = writtenDateTime
-    self.type = type
-  }
-}
-
 public struct NewsCardState: Equatable, Identifiable {
   public var id: Int
-  var news = News(
-    id: 0,
-    title: "“따박따박 이자 받는게 최고야”...마음 편안한 예금, 금리 4% 재진입",
-    thumbnailImageUrl: nil,
-    newsLink: "https://naver.com",
-    press: "매일경제",
-    writtenDateTime: "2023.06.03 04:24",
-    type: "경제"
-  )
+  public var news: News
 }
 
 public enum NewsCardAction: Equatable {

@@ -6,8 +6,10 @@
 //  Copyright © 2023 mashup.seeYouAgain. All rights reserved.
 //
 
+import Common
 import ComposableArchitecture
 import DesignSystem
+import Models
 import NukeUI
 import SwiftUI
 
@@ -21,16 +23,13 @@ public struct NewsCardView: View {
   public var body: some View {
     WithViewStore(store) { viewStore in
       HStack(alignment: .top, spacing: 0) {
-        if let imageUrl = viewStore.state.news.thumbnailImageUrl {
-          // TODO: 서버에서 받아오는 URL 이미지로 변경 필요
+        if let imageUrl = viewStore.state.news.thumbnailImageUrl, imageUrl != "null" {
           LazyImage(url: URL(string: imageUrl)) { state in
             if let image = state.image {
               image
                 .resizable()
                 .frame(width: 56, height: 56)
                 .clipShape(Circle())
-            } else {
-              ProgressView()
             }
           }
 
@@ -83,10 +82,10 @@ private struct NewsDataView: View {
         Text(news.press)
           .font(.r14)
           .foregroundColor(DesignSystem.Colors.grey50)
-        
+
         CategoryView(
-          category: "경제",
-          color: DesignSystem.Colors.economic
+          category: CategoryType(uppercasedName: news.category)?.rawValue ?? "",
+          color: CategoryType(uppercasedName: news.category)?.color ?? DesignSystem.Colors.economic
         )
         
         Spacer()
@@ -105,6 +104,25 @@ private struct NewsDataView: View {
         
         Spacer()
       }
+    }
+  }
+}
+
+fileprivate extension CategoryType {
+  var color: Color {
+    switch self {
+    case .politics:
+      return DesignSystem.Colors.politics
+    case .economic:
+      return DesignSystem.Colors.economic
+    case .society:
+      return DesignSystem.Colors.society
+    case .world:
+      return DesignSystem.Colors.world
+    case .culture:
+      return DesignSystem.Colors.culture
+    case .science:
+      return DesignSystem.Colors.science
     }
   }
 }

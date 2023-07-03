@@ -21,7 +21,7 @@ public struct ShortStorageCoordinatorState: Equatable, IndexedRouterState {
         .shortStorageNewsList(
           .init(
             isInEditMode: false,
-            shortslistCount: 6,
+            shortsNewsItemsCount: 10,
             shortsCompleteCount: 0
           )
         ),
@@ -40,11 +40,14 @@ public enum ShortStorageCoordinatorAction: IndexedRouterAction {
 
 public struct ShortStorageCoordinatorEnvironment {
   let mainQueue: AnySchedulerOf<DispatchQueue>
+  let myPageService: MyPageService
   
   public init(
-    mainQueue: AnySchedulerOf<DispatchQueue>
+    mainQueue: AnySchedulerOf<DispatchQueue>,
+    myPageService: MyPageService
   ) {
     self.mainQueue = mainQueue
+    self.myPageService = myPageService
   }
 }
 
@@ -54,7 +57,10 @@ public let shortStorageCoordinatorReducer: Reducer<
   ShortStorageCoordinatorEnvironment
 > = shortStorageScreenReducer
   .forEachIndexedRoute(environment: {
-    ShortStorageScreenEnvironment(mainQueue: $0.mainQueue)
+    ShortStorageScreenEnvironment(
+      mainQueue: $0.mainQueue,
+      myPageService: $0.myPageService
+    )
   })
   .withRouteReducer(
     Reducer { state, action, env in
