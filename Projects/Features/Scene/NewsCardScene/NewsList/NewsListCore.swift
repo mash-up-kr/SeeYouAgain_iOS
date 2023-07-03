@@ -49,6 +49,7 @@ public enum NewsListAction: Equatable {
   case _onAppear
   case _willDisappear(Int)
   case _completeTodayShorts(Int)
+  case _handleNewsResponse(SourceType)
   
   // MARK: - Inner SetState Action
   case _initializeNewsItems
@@ -84,44 +85,8 @@ public let newsListReducer = Reducer.combine([
       return Effect(value: ._completeTodayShorts(state.shortsId))
 
     case ._onAppear:
-      switch state.source {
-      case .hot:
-        var keyword = state.keywordTitle
-        keyword.removeFirst()
-        
-        return env.newsCardService.fetchNews(
-          keyword,
-          state.cursorDate,
-          state.cursorPage,
-          state.pagingSize
-        )
-        .catchToEffect()
-        .flatMap { result -> Effect<NewsListAction, Never> in
-          switch result {
-          case let .success(news):
-            let news = news.map { $0.toDomain }
-            return Effect(value: ._setNewsItems(news))
-          case .failure:
-            return .none
-          }
-        }
-        .eraseToEffect()
-        
-      default:
-        return env.newsCardService.getNewsCard(state.shortsId)
-          .catchToEffect()
-          .flatMap { result -> Effect<NewsListAction, Never> in
-            switch result {
-            case let .success(news):
-              let news = news.map { $0.toDomain }
-              return Effect(value: ._setNewsItems(news))
-            case .failure:
-              return .none
-            }
-          }
-          .eraseToEffect()
-      }
-      
+      return Effect(value: ._handleNewsResponse(state.source))
+
     case ._willDisappear:
       return .none
       
@@ -145,6 +110,9 @@ public let newsListReducer = Reducer.combine([
         }
         .eraseToEffect()
       
+    case let ._handleNewsResponse(source):
+      return handleSourceType(&state, env, source: source)
+      
     case let ._setNewsItems(newsItems):
       state.newsItems = IdentifiedArrayOf(uniqueElements: newsItems.map {
         NewsCardState(
@@ -167,3 +135,47 @@ public let newsListReducer = Reducer.combine([
     }
   }
 ])
+
+private func handleSourceType(
+  _ state: inout NewsListState,
+  _ env: NewsListEnvironment,
+  source: SourceType
+) -> Effect<NewsListAction, Never> {
+  switch source {
+  case .hot:
+    var keyword = state.keywordTitle
+    keyword.removeFirst()
+    
+    return env.newsCardService.fetchNews(
+      keyword,
+      state.cursorDate,
+      state.cursorPage,
+      state.pagingSize
+    )
+    .catchToEffect()
+    .flatMap { result -> Effect<NewsListAction, Never> in
+      switch result {
+      case let .success(news):
+        let news = news.map { $0.toDomain }
+        return Effect(value: ._setNewsItems(news))
+      case .failure:
+        return .none
+      }
+    }
+    .eraseToEffect()
+    
+  default:
+    return env.newsCardService.getNewsCard(state.shortsId)
+      .catchToEffect()
+      .flatMap { result -> Effect<NewsListAction, Never> in
+        switch result {
+        case let .success(news):
+          let news = news.map { $0.toDomain }
+          return Effect(value: ._setNewsItems(news))
+        case .failure:
+          return .none
+        }
+      }
+      .eraseToEffect()
+  }
+}
