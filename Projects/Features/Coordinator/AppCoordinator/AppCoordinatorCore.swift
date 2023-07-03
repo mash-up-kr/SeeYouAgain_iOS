@@ -124,14 +124,13 @@ public let appCoordinatorReducer: Reducer<
             .routeAction(
               _, action: .main(
                 .newsCardScroll(
-                  .newsCard(id: _, action: ._navigateNewsList(id))
+                  .newsCard(id: _, action: ._navigateNewsList(id, keyword))
                 )
               )
             )
           )
         )
       ):
-        // TODO: 상희누나 id로 코디네이터 초기화해서 야무지게 사용하면 돼여
         state.routes.push(
           .newsCard(
             .init(
@@ -140,7 +139,7 @@ public let appCoordinatorReducer: Reducer<
                   .newsList(
                     .init(
                       shortsId: id,
-                      keywordTitle: ""
+                      keywordTitle: keyword
                     )
                   ),
                   embedInNavigationView: true

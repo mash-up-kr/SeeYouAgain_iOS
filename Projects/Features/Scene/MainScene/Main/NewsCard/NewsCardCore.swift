@@ -57,7 +57,7 @@ public enum NewsCardAction {
   case newsCardTapped
   
   // MARK: - Inner Business Action
-  case _navigateNewsList(Int)
+  case _navigateNewsList(Int, String)
   case _saveNewsCard
   case _handleSaveNewsCardResponse(Result<VoidResponse?, Error>)
   
@@ -93,7 +93,7 @@ public let newsCardReducer = Reducer<
     return Effect(value: ._saveNewsCard)
 
   case .newsCardTapped:
-    return Effect(value: ._navigateNewsList(state.newsCard.id))
+    return Effect(value: ._navigateNewsList(state.newsCard.id, state.newsCard.keywords.joined(separator: " ")))
     
   case ._navigateNewsList:
     return .none
