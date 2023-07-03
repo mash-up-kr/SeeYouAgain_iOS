@@ -57,8 +57,8 @@ public let newsCardCoordinatorReducer: Reducer<
   .withRouteReducer(
     Reducer { state, action, env in
       switch action {        
-      case .routeAction(_, action: .newsList(._willDisappear)):
-        state.routes.push(.shortsComplete(.init()))
+      case let .routeAction(_, action: .newsList(._willDisappear(totalShortsCount))):
+        state.routes.push(.shortsComplete(.init(totalShorts: totalShortsCount)))
         return .none
 
       default: return .none

@@ -35,7 +35,8 @@ public enum NewsListAction: Equatable {
   
   // MARK: - Inner Business Action
   case _onAppear
-  case _willDisappear
+  case _willDisappear(Int)
+  case _completeTodayShorts(Int)
   
   // MARK: - Inner SetState Action
   case _initializeNewsItems
@@ -68,10 +69,7 @@ public let newsListReducer = Reducer.combine([
       return .none
       
     case .completeButtonTapped:
-      return Effect.concatenate([
-        Effect(value: ._initializeNewsItems),
-        Effect(value: ._willDisappear)
-      ])
+      return Effect(value: ._completeTodayShorts(state.shortsId))
 
     case ._onAppear:
       return env.newsCardService.getNewsCard(state.shortsId)
@@ -93,6 +91,22 @@ public let newsListReducer = Reducer.combine([
     case ._initializeNewsItems:
       state.newsItems.removeAll()
       return .none
+      
+    case let ._completeTodayShorts(shortsId):
+      return env.newsCardService.completeTodayShorts(shortsId)
+        .catchToEffect()
+        .flatMap { result -> Effect<NewsListAction, Never> in
+          switch result {
+          case let .success(totalShortsCount):
+            return Effect.concatenate([
+              Effect(value: ._initializeNewsItems),
+              Effect(value: ._willDisappear(totalShortsCount))
+            ])
+          case .failure:
+            return .none
+          }
+        }
+        .eraseToEffect()
       
     case let ._setNewsItems(newsItems):
       state.newsItems = IdentifiedArrayOf(uniqueElements: newsItems.map {

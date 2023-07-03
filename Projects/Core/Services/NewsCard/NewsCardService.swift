@@ -25,6 +25,7 @@ public struct NewsCardService {
   
   public var saveNewsCard: (_ newsCardId: Int) -> Effect<VoidResponse?, Error>
   public var getNewsCard: (_ newsCardId: Int) -> Effect<[NewsResponseDTO], Error>
+  public var completeTodayShorts: (_ shortsId: Int) -> Effect<Int, Error>
 }
 
 extension NewsCardService {
@@ -57,6 +58,17 @@ extension NewsCardService {
           type: [NewsResponseDTO].self
         )
         .compactMap { $0 }
+        .eraseToEffect()
+    },
+    completeTodayShorts: { shortsId in
+      return Provider<MyPageAPI>
+        .init()
+        .request(
+          NewsCardAPI.completeTodayShorts(shortsId),
+          type: CompleteTodayShortsResponseDTO.self
+        )
+        .compactMap { $0 }
+        .map { $0.toDomain }
         .eraseToEffect()
     }
   )
