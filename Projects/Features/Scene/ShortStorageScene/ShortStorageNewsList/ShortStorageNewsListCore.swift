@@ -297,29 +297,9 @@ fileprivate func remainTimeToString(time: Int) -> String {
   return String(format: "%02i:%02i:%02i", hour, minute, second)
 }
 
-// TODO: 코드 위치 변경 필요
 fileprivate let dateComponentsFormatter: DateComponentsFormatter = {
   let formatter = DateComponentsFormatter()
   formatter.allowedUnits = [.hour, .minute, .second]
   formatter.zeroFormattingBehavior = .pad
   return formatter
 }()
-
-// TODO: 코드 위치 변경 필요
-extension Date {
-  func fullDateToString() -> String {
-    let dateFormatter = DateFormatter()
-    dateFormatter.dateFormat = "yyyy년 M월 dd일"
-    dateFormatter.locale = Locale(identifier: "ko_KR")
-    dateFormatter.timeZone = TimeZone(identifier: "KST")
-    return dateFormatter.string(from: self)
-  }
-  
-  func yearMonthToString() -> String {
-    let dateFormatter = DateFormatter()
-    dateFormatter.dateFormat = "yyyy년 M월"
-    dateFormatter.locale = Locale(identifier: "ko_KR")
-    dateFormatter.timeZone = TimeZone(identifier: "KST")
-    return dateFormatter.string(from: self)
-  }
-}

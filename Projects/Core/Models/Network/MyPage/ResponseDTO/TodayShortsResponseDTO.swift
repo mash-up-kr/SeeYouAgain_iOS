@@ -24,22 +24,9 @@ public extension TodayShortsResponseDTO {
           id: $0.id,
           keywords: $0.keywords,
           category: $0.category,
-          crawledDateTime: $0.crawledDateTime.toDate()
+          crawledDateTime: $0.crawledDateTime
         )
       }
     )
-  }
-}
-
-fileprivate extension String {
-  func toDate() -> Date {
-    let dateFormatter = DateFormatter()
-    dateFormatter.dateFormat = "yyyy-MM-ddTHH:mm:ss"
-    dateFormatter.timeZone = TimeZone(identifier: "UTC")
-    
-    if let date = dateFormatter.date(from: self) {
-      return date
-    }
-    return Date()
   }
 }

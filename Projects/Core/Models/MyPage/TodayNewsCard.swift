@@ -12,13 +12,13 @@ public struct TodayNewsCard: Equatable {
   public let id: Int
   public let keywords: String
   public let category: String
-  public let crawledDateTime: Date
+  public let crawledDateTime: String
   
   public init(
     id: Int,
     keywords: String,
     category: String,
-    crawledDateTime: Date
+    crawledDateTime: String
   ) {
     self.id = id
     self.keywords = keywords
@@ -33,7 +33,7 @@ public extension TodayNewsCard {
     id: 0,
     keywords: "자위대 호위함, 사키이 료, 이스턴 엔데버23",
     category: "POLITICS",
-    crawledDateTime: Date()
+    crawledDateTime: "2023.07.03. 오후 5:43"
   )
 #endif
 }
