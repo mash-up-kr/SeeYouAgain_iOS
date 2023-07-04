@@ -8,6 +8,7 @@
 
 import Alamofire
 import ComposableArchitecture
+import Foundation
 import Models
 
 #if DEBUG
@@ -21,6 +22,12 @@ public struct MyPageService {
     _ pagingSize: Int
   ) -> Effect<TodayShorts, Error>
   public var deleteTodayShorts: (_ shortsIds: [Int]) -> Effect<VoidResponse?, Error>
+  public var fetchSavedNews: (
+    _ targetDateTime: String,
+    _ cursorWrittenDateTime: Date,
+    _ size: Int,
+    _ pivot: Pivot
+  ) -> Effect<SavedNewsList, Error>
 }
 
 extension MyPageService {
@@ -55,6 +62,22 @@ extension MyPageService {
           type: VoidResponse.self
         )
         .compactMap { $0 }
+        .eraseToEffect()
+    },
+    fetchSavedNews: { targetDateTime, cursorWrittenDateTime, size, pivot in
+      return Provider<MyPageAPI>
+        .init()
+        .request(
+          MyPageAPI.fetchSavedNews(
+            targetDateTime,
+            cursorWrittenDateTime,
+            size,
+            pivot
+          ),
+          type: SavedNewsResponseDTO.self
+        )
+        .compactMap { $0 }
+        .map { $0.toDomain }
         .eraseToEffect()
     }
   )
