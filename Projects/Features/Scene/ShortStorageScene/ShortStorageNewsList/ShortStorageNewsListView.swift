@@ -102,7 +102,7 @@ public struct ShortStorageNewsListView: View {
       .onAppear {
         viewStore.send(._viewWillAppear)
       }
-    }.debug()
+    }
   }
 }
 
