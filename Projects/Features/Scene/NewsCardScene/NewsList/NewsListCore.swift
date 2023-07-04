@@ -10,14 +10,34 @@ import Combine
 import Common
 import ComposableArchitecture
 import Foundation
+import Models
+import Services
+
+public enum SourceType: Equatable {
+  case main
+  case hot
+  case mypage
+}
 
 public struct NewsListState: Equatable {
+  var source: SourceType
+  var shortsId: Int
   var keywordTitle: String
   var newsItems: IdentifiedArrayOf<NewsCardState> = []
   var sortType: SortType
   var sortBottomSheetState: SortBottomSheetState
+  var cursorPage: Int = 0
+  var cursorDate: Date = .now
+  var pagingSize = 20
   
-  public init(keywordTitle: String, newsItems: IdentifiedArrayOf<NewsCardState> = []) {
+  public init(
+    source: SourceType = .mypage,
+    shortsId: Int,
+    keywordTitle: String,
+    newsItems: IdentifiedArrayOf<NewsCardState> = []
+  ) {
+    self.source = source
+    self.shortsId = shortsId
     self.keywordTitle = keywordTitle
     self.newsItems = newsItems
     self.sortType = .latest
@@ -33,11 +53,14 @@ public enum NewsListAction {
   
   // MARK: - Inner Business Action
   case _onAppear
-  case _willDisappear
+  case _willDisappear(Int)
+  case _completeTodayShorts(Int)
+  case _handleNewsResponse(SourceType)
   case _sortNewsItems(SortType)
   
   // MARK: - Inner SetState Action
   case _initializeNewsItems
+  case _setNewsItems([News])
   case _setSortType(SortType)
   
   // MARK: - Child Action
@@ -46,7 +69,11 @@ public enum NewsListAction {
 }
 
 public struct NewsListEnvironment {
-  public init() {}
+  fileprivate let newsCardService: NewsCardService
+  
+  public init(newsCardService: NewsCardService) {
+    self.newsCardService = newsCardService
+  }
 }
 
 public let newsListReducer = Reducer.combine([
@@ -70,112 +97,69 @@ public let newsListReducer = Reducer.combine([
       return .none
       
     case .completeButtonTapped:
-      return Effect.concatenate([
-        Effect(value: ._initializeNewsItems),
-        Effect(value: ._willDisappear)
-      ])
+      return Effect(value: ._completeTodayShorts(state.shortsId))
       
     case .showSortBottomSheet:
       return Effect(value: .sortBottomSheet(._setIsPresented(true)))
       
     case ._onAppear:
-      /* 임시 데이터 안들어가게 잠시 주석해놨습니다
-      state.newsItems = [
-        NewsCardState(
-          id: 0,
-          news: News(
-            id: 0,
-            title: "“따박따박 이자 받는게 최고야”...마음 편안한 예금, 금리 4% 재진입",
-            thumbnailImageUrl: nil,
-            newsLink: "https://naver.com",
-            press: "매시업",
-            writtenDateTime: "2023.06.03 04:24",
-            type: "경제"
-          )
-        ),
-        NewsCardState(
-          id: 1,
-          news: News(
-            id: 1,
-            title: "“따박따박 이자 받는게 최고야”...마음 편안한 예금, 금리 4% 재진입",
-            thumbnailImageUrl: "https://static.mk.co.kr/facebook_mknews.jpg",
-            newsLink: "https://naver.com",
-            press: "매시업",
-            writtenDateTime: "2023.06.03 04:24",
-            type: "경제"
-          )
-        ),
-        NewsCardState(
-          id: 2,
-          news: News(
-            id: 2,
-            title: "2222뉴스제목입니당",
-            thumbnailImageUrl: "https://static.mk.co.kr/facebook_mknews.jpg",
-            newsLink: "https://naver.com",
-            press: "매시업",
-            writtenDateTime: "2023.06.03 04:24",
-            type: "경제"
-          )
-        ),
-        NewsCardState(
-          id: 3,
-          news: News(
-            id: 3,
-            title: "3333뉴스제목입니당",
-            thumbnailImageUrl: "https://static.mk.co.kr/facebook_mknews.jpg",
-            newsLink: "https://naver.com",
-            press: "매시업",
-            writtenDateTime: "2023.06.03 04:24",
-            type: "경제"
-          )
-        ),
-        NewsCardState(
-          id: 4,
-          news: News(
-            id: 4,
-            title: "4444뉴스제목입니당",
-            thumbnailImageUrl: "https://static.mk.co.kr/facebook_mknews.jpg",
-            newsLink: "https://naver.com",
-            press: "매시업",
-            writtenDateTime: "2023.06.23 04:24",
-            type: "경제"
-          )
-        ),
-        NewsCardState(
-          id: 5,
-          news: News(
-            id: 5,
-            title: "5555뉴스제목입니당",
-            thumbnailImageUrl: "https://static.mk.co.kr/facebook_mknews.jpg",
-            newsLink: "https://naver.com",
-            press: "매시업",
-            writtenDateTime: "2023.06.25 04:24",
-            type: "경제"
-          )
-        )
-      ]
-       */
-      return .none
+      return Effect(value: ._handleNewsResponse(state.source))
       
     case ._willDisappear:
       return .none
       
+    case let ._completeTodayShorts(shortsId):
+      return env.newsCardService.completeTodayShorts(shortsId)
+        .catchToEffect()
+        .flatMap { result -> Effect<NewsListAction, Never> in
+          switch result {
+          case let .success(totalShortsCount):
+            return Effect.concatenate([
+              Effect(value: ._initializeNewsItems),
+              Effect(value: ._willDisappear(totalShortsCount))
+            ])
+          case .failure:
+            return .none
+          }
+        }
+        .eraseToEffect()
+      
+    case let ._handleNewsResponse(source):
+      return handleSourceType(&state, env, source: source)
+      
     case let ._sortNewsItems(sortType):
       // TODO: 정렬
       /*
-      var sortedNewsItems = state.newsItems
-      if sortType == .latest {
-        sortedNewsItems.sort(by: { $0.writtenDateTime > $1.writtenDateTime })
-      } else {
-        sortedNewsItems.sort(by: { $0.writtenDateTime < $1.writtenDateTime })
-      }
-      state.newsItems = sortedNewsItems
-      */
+       var sortedNewsItems = state.newsItems
+       if sortType == .latest {
+       sortedNewsItems.sort(by: { $0.writtenDateTime > $1.writtenDateTime })
+       } else {
+       sortedNewsItems.sort(by: { $0.writtenDateTime < $1.writtenDateTime })
+       }
+       state.newsItems = sortedNewsItems
+       */
       return .none
-      
       
     case ._initializeNewsItems:
       state.newsItems.removeAll()
+      return .none
+      
+    case let ._setNewsItems(newsItems):
+      state.newsItems = IdentifiedArrayOf(uniqueElements: newsItems.map {
+        NewsCardState(
+          id: $0.id,
+          news: News(
+            id: $0.id,
+            title: $0.title,
+            thumbnailImageUrl: $0.thumbnailImageUrl,
+            newsLink: $0.newsLink,
+            press: $0.press,
+            writtenDateTime: $0.writtenDateTime,
+            type: $0.type,
+            category: $0.category
+          )
+        )
+      })
       return .none
       
     case let ._setSortType(sortType):
@@ -193,3 +177,47 @@ public let newsListReducer = Reducer.combine([
     }
   }
 ])
+
+private func handleSourceType(
+  _ state: inout NewsListState,
+  _ env: NewsListEnvironment,
+  source: SourceType
+) -> Effect<NewsListAction, Never> {
+  switch source {
+  case .hot:
+    var keyword = state.keywordTitle
+    keyword.removeFirst()
+    
+    return env.newsCardService.fetchNews(
+      keyword,
+      state.cursorDate,
+      state.cursorPage,
+      state.pagingSize
+    )
+    .catchToEffect()
+    .flatMap { result -> Effect<NewsListAction, Never> in
+      switch result {
+      case let .success(news):
+        let news = news.map { $0.toDomain }
+        return Effect(value: ._setNewsItems(news))
+      case .failure:
+        return .none
+      }
+    }
+    .eraseToEffect()
+    
+  default:
+    return env.newsCardService.getNewsCard(state.shortsId)
+      .catchToEffect()
+      .flatMap { result -> Effect<NewsListAction, Never> in
+        switch result {
+        case let .success(news):
+          let news = news.map { $0.toDomain }
+          return Effect(value: ._setNewsItems(news))
+        case .failure:
+          return .none
+        }
+      }
+      .eraseToEffect()
+  }
+}

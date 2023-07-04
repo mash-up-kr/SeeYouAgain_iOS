@@ -66,7 +66,10 @@ internal let myPageScreenReducer = Reducer<
       state: /MyPageScreenState.shortStorage,
       action: /MyPageScreenAction.shortStorage,
       environment: {
-        ShortStorageCoordinatorEnvironment(mainQueue: $0.mainQueue)
+        ShortStorageCoordinatorEnvironment(
+          mainQueue: $0.mainQueue,
+          myPageService: $0.myPageService
+        )
       }
     ),
   longStorageCoordinatorReducer

@@ -154,14 +154,3 @@ public let longStorageNewsListReducer = Reducer<
     }
   }
 ])
-
-// TODO: 코드 위치 변경 필요
-extension Date {
-  func yearMonthToString() -> String {
-    let dateFormatter = DateFormatter()
-    dateFormatter.dateFormat = "yyyy년 M월"
-    dateFormatter.locale = Locale(identifier: "ko_KR")
-    dateFormatter.timeZone = TimeZone(identifier: "KST")
-    return dateFormatter.string(from: self)
-  }
-}

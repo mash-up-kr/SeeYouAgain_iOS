@@ -25,6 +25,11 @@ public enum NewsCardScreenAction {
 }
 
 internal struct NewsCardScreenEnvironment {
+  fileprivate let newsCardService: NewsCardService
+  
+  internal init(newsCardService: NewsCardService) {
+    self.newsCardService = newsCardService
+  }
 }
 
 internal let newsCardScreenReducer = Reducer<
@@ -36,8 +41,8 @@ internal let newsCardScreenReducer = Reducer<
     .pullback(
       state: /NewsCardScreenState.newsList,
       action: /NewsCardScreenAction.newsList,
-      environment: { _ in
-        NewsListEnvironment()
+      environment: {
+        NewsListEnvironment(newsCardService: $0.newsCardService)
       }
     ),
   webReducer

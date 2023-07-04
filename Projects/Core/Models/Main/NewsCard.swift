@@ -12,6 +12,16 @@ public struct NewsCard: Equatable, Identifiable {
   public let id: Int
   public let keywords: [String]
   public let category: String
+  
+  public init(id: Int, keywords: [String], category: String) {
+    self.id = id
+    self.keywords = keywords
+    self.category = category
+  }
+  
+  public func hashtagString() -> String {
+    return keywords.map { "#\($0)" }.joined(separator: " ")
+  }
 }
 
 public extension NewsCard {

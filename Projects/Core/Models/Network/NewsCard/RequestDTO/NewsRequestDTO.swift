@@ -20,7 +20,7 @@ public struct NewsRequestDTO: Encodable {
   
   public init(
     cursorWrittenDateTime: String = "",
-    size: Int = 10,
+    size: Int = 20,
     pivot: Pivot = .DESC
   ) {
     self.cursorWrittenDateTime = cursorWrittenDateTime

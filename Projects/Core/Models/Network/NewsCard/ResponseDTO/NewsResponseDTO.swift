@@ -16,6 +16,7 @@ public struct NewsResponseDTO: Decodable {
   public let press: String
   public let writtenDateTime: String
   public let type: String
+  public let category: String
   
   enum CodingKeys: String, CodingKey {
     case id
@@ -25,5 +26,21 @@ public struct NewsResponseDTO: Decodable {
     case press
     case writtenDateTime
     case type
+    case category
+  }
+}
+
+public extension NewsResponseDTO {
+  var toDomain: News {
+    return News(
+      id: id,
+      title: title,
+      thumbnailImageUrl: thumbnailImageURL,
+      newsLink: newsLink,
+      press: press,
+      writtenDateTime: writtenDateTime,
+      type: type,
+      category: category
+    )
   }
 }

@@ -6,6 +6,7 @@
 //  Copyright © 2023 mashup.seeYouAgain. All rights reserved.
 //
 
+import Common
 import ComposableArchitecture
 import DesignSystem
 import SwiftUI
@@ -20,21 +21,19 @@ struct TodayShortsCardView: View {
   var body: some View {
     WithViewStore(store) { viewStore in
       HStack(alignment: .top, spacing: 0) {
-        // TODO: 디자인 확정시 카드 이미지 변경 필요
-        DesignSystem.Images.earthCard
-        
+        CategoryType(uppercasedName: viewStore.state.shortsNews.category)?.image
+
         Spacer()
           .frame(width: 16)
-        
+
         HStack {
-          Text(viewStore.state.shortsNews.keywords)
+          Text(viewStore.state.shortsNews.hashtagString())
             .font(.b16)
             .foregroundColor(DesignSystem.Colors.grey90)
           Spacer()
         }
         
         if viewStore.isCardSelectable {
-          // 선택할 수 있을 때만 화살표 있음
           Spacer()
             .frame(width: 16)
           
@@ -56,6 +55,25 @@ struct TodayShortsCardView: View {
           viewStore.send(.cardTapped)
         }
       }
+    }
+  }
+}
+
+fileprivate extension CategoryType {
+  var image: Image {
+    switch self {
+    case .politics:
+      return DesignSystem.Images.cardPolitics
+    case .economic:
+      return DesignSystem.Images.cardEconomics
+    case .society:
+      return DesignSystem.Images.cardSociety
+    case .world:
+      return DesignSystem.Images.cardWorld
+    case .culture:
+      return DesignSystem.Images.cardCulture
+    case .science:
+      return DesignSystem.Images.cardIt
     }
   }
 }
