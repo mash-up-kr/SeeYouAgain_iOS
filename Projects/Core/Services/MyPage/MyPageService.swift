@@ -24,7 +24,6 @@ public struct MyPageService {
   public var deleteTodayShorts: (_ shortsIds: [Int]) -> Effect<VoidResponse?, Error>
   public var fetchSavedNews: (
     _ targetDateTime: String,
-    _ cursorWrittenDateTime: Date,
     _ size: Int,
     _ pivot: Pivot
   ) -> Effect<SavedNewsList, Error>
@@ -64,13 +63,12 @@ extension MyPageService {
         .compactMap { $0 }
         .eraseToEffect()
     },
-    fetchSavedNews: { targetDateTime, cursorWrittenDateTime, size, pivot in
+    fetchSavedNews: { targetDateTime, size, pivot in
       return Provider<MyPageAPI>
         .init()
         .request(
           MyPageAPI.fetchSavedNews(
             targetDateTime,
-            cursorWrittenDateTime,
             size,
             pivot
           ),

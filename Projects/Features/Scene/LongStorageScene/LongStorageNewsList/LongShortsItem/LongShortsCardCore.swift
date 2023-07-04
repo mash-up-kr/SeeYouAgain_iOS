@@ -34,6 +34,7 @@ public enum LongShortsCardAction: Equatable {
   case cardTapped
   
   // MARK: - Inner Business Action
+  case _navigateNewsList(String)
   
   // MARK: - Inner SetState Action
   
@@ -51,6 +52,12 @@ public let longShortsCardReducer = Reducer<
 >.combine([
   Reducer { state, action, env in
     switch action {
+    case .rightButtonTapped:
+      return Effect(value: ._navigateNewsList(state.news.newsLink))
+      
+    case .cardTapped:
+      return Effect(value: ._navigateNewsList(state.news.newsLink))
+      
     default: return .none
     }
   }

@@ -184,7 +184,7 @@ public let appCoordinatorReducer: Reducer<
                   action: .longStorageNewsList(
                     .shortsNewsItem(
                       id: id,
-                      action: .cardAction(.cardTapped)
+                      action: .cardAction(._navigateNewsList(url))
                     )
                   )
                 )
@@ -193,31 +193,7 @@ public let appCoordinatorReducer: Reducer<
           )
         )
       ):
-        state.routes.push(.newsCard(.init(newsId: id, webAddress: "https://naver.com")))
-        return .none
-        
-      case let .routeAction(
-        _,
-        action: .tabBar(
-          .myPage(
-            .routeAction(
-              _,
-              action: .longStorage(
-                .routeAction(
-                  _,
-                  action: .longStorageNewsList(
-                    .shortsNewsItem(
-                      id: id,
-                      action: .cardAction(.rightButtonTapped)
-                    )
-                  )
-                )
-              )
-            )
-          )
-        )
-      ):
-        state.routes.push(.newsCard(.init(newsId: id, webAddress: "https://naver.com")))
+        state.routes.push(.newsCard(.init(newsId: id, webAddress: url)))
         return .none
         
       case .routeAction(_, action: .newsCard(.routeAction(_, action: .web(.backButtonTapped)))):

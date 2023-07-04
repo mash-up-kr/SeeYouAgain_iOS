@@ -21,6 +21,7 @@ public struct LongStorageNewsListState: Equatable {
   var isLatestMode: Bool = true
   var cursorDate: Date = .now
   var currentDate = Date()
+  var pagingSize: Int = 20
   
   public init(
     isInEditMode: Bool,
@@ -114,8 +115,7 @@ public let longStorageNewsListReducer = Reducer<
     case let ._fetchSavedNews(fetchType):
       return env.myPageService.fetchSavedNews(
         state.currentDate.toFormattedTargetDate(),
-        subtractTwoDay(from: state.cursorDate),
-        20,
+        state.pagingSize,
         .ASC
       )
       .catchToEffect()
@@ -172,12 +172,6 @@ public let longStorageNewsListReducer = Reducer<
     }
   }
 ])
-
-fileprivate func subtractTwoDay(from date: Date) -> Date {
-  let calendar = Calendar.current
-  let modifiedDate = calendar.date(byAdding: .day, value: -3, to: date)
-  return modifiedDate ?? date
-}
 
 private func handleSavedNewsResponse(
   _ state: inout LongStorageNewsListState,

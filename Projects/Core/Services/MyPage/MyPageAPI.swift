@@ -14,7 +14,7 @@ public enum MyPageAPI {
   case getMemberInfo
   case getTodayShorts(Int, Int)
   case deleteTodayShorts([Int])
-  case fetchSavedNews(String, Date, Int, Pivot)
+  case fetchSavedNews(String, Int, Pivot)
 }
 
 extension MyPageAPI: TargetType {
@@ -73,10 +73,9 @@ extension MyPageAPI: TargetType {
       let requestDTO = DeleteTodayShortsRequestDTO(shortsIds: shortsIds)
       return .requestJSONEncodable(requestDTO)
       
-    case let .fetchSavedNews(targetDate, cursorWrittenDateTime, size, pivot):
+    case let .fetchSavedNews(targetDate, size, pivot):
       let requestDTO = SavedNewsRequestDTO(
         targetDate: targetDate,
-        cursorWrittenDateTime: cursorWrittenDateTime.toFormattedString(format: "yyyy-MM-dd'T'HH:mm:ss"),
         size: size,
         pivot: pivot
       )
