@@ -41,6 +41,7 @@ public enum WebAction: Equatable {
   
   // MARK: - Inner Business Action
   case _onAppear
+  case _checkNewsSavedStatus
   case _presentSaveToast(String)
   case _presentWaringToast(String)
   case _hideSaveToast
@@ -78,8 +79,22 @@ public let webReducer = Reducer.combine([
         Effect(value: ._setIsDisplayTooltip(false))
           .delay(for: 4, scheduler: env.mainQueue)
           .eraseToEffect(),
-        // TODO: - 추후 해당 뉴스가 이미 저장된 뉴스인지 API 판별 후 저장 버튼 비활성화 처리 추가 필요
+        Effect(value: ._checkNewsSavedStatus)
       ])
+      
+    case ._checkNewsSavedStatus:
+      return env.newsCardService.checkSavedStatus(state.newsId)
+        .catchToEffect()
+        .flatMap { result -> Effect<WebAction, Never> in
+          switch result {
+          case let .success(status):
+            return Effect(value: ._setSaveButtonDisabled(status.isSaved))
+            
+          case .failure:
+            return .none
+          }
+        }
+        .eraseToEffect()
       
     case .backButtonTapped:
       return .none
