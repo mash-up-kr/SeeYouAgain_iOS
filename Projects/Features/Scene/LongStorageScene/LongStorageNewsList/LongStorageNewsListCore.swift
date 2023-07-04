@@ -225,7 +225,10 @@ public let longStorageNewsListReducer = Reducer<
       }
       
       if selectedItemIds.isEmpty {
-        return .none
+        return Effect.concatenate([
+          Effect(value: ._setEditMode),
+          Effect(value: ._setLongShortsItemEditMode)
+        ])
       }
       return Effect(value: ._deleteSavedNews(selectedItemIds))
 
