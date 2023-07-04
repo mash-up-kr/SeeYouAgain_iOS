@@ -193,12 +193,12 @@ private struct TooltipView: View {
         ZStack {
           // 산 모양 라인
           trianglePathView
-            .padding(.leading, 115)
+            .padding(.leading, 117)
 
           // 아래 네모칸 윗부분 일정 부분 가리기 위한 삼각형
           TriangleShape()
             .frame(width: 20, height: 15)
-            .padding(.leading, 115)
+            .padding(.leading, 117)
             .padding(.bottom, -2) // 산모양 라인이랑 겹치지 않게 하기 위해 내려와있음
             .foregroundColor(.white)
         }
