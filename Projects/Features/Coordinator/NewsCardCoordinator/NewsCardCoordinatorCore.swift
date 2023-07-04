@@ -16,20 +16,38 @@ public struct NewsCardCoordinatorState: Equatable, IndexedRouterState {
   public var routes: [Route<NewsCardScreenState>]
   
   public init(
-    routes: [Route<NewsCardScreenState>] = [
+    source: SourceType,
+    shortsId: Int,
+    keywordTitle: String
+  ) {
+    self.routes = [
       .root(
         .newsList(
           .init(
-            shortsId: 0,
-            keywordTitle: "",
-            newsItems: []
+            source: source,
+            shortsId: shortsId,
+            keywordTitle: keywordTitle
           )
         ),
         embedInNavigationView: true
       )
     ]
+  }
+  
+  public init(
+    newsId: Int,
+    webAddress: String
   ) {
-    self.routes = routes
+    self.routes = [
+      .root(
+        .web(
+          .init(
+            newsId: newsId,
+            webAddress: webAddress
+          )
+        )
+      )
+    ]
   }
 }
 

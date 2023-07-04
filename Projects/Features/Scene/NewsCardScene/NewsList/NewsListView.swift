@@ -24,7 +24,7 @@ public struct NewsListView: View {
           TopNavigationBar(
             leftIcon: DesignSystem.Icons.iconNavigationLeft,
             leftIconButtonAction: {
-              viewStore.send(.backButtonTapped)
+              viewStore.send(.backButtonTapped(viewStore.source))
             }
           )
           

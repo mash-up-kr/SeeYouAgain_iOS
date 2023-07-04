@@ -30,7 +30,7 @@ public struct AppCoordinatorEnvironment {
   let mainQueue: AnySchedulerOf<DispatchQueue>
   let userDefaultsService: UserDefaultsService
   let appVersionService: AppVersionService
-  let newsCardService: NewsCardService  
+  let newsCardService: NewsCardService
   let categoryService: CategoryService
   let hotKeywordService: HotKeywordService
   let myPageService: MyPageService
@@ -131,23 +131,7 @@ public let appCoordinatorReducer: Reducer<
           )
         )
       ):
-        state.routes.push(
-          .newsCard(
-            .init(
-              routes: [
-                .root(
-                  .newsList(
-                    .init(
-                      shortsId: id,
-                      keywordTitle: keyword
-                    )
-                  ),
-                  embedInNavigationView: true
-                )
-              ]
-            )
-          )
-        )
+        state.routes.push(.newsCard(.init(source: .main, shortsId: id, keywordTitle: keyword)))
         return .none
         
       case let .routeAction(
@@ -161,22 +145,9 @@ public let appCoordinatorReducer: Reducer<
           )
         )
       ):
-        state.routes.push(.newsCard(
-          .init(routes: [
-            .root(
-              .newsList(
-                .init(
-                  source: .hot,
-                  shortsId: 0,
-                  keywordTitle: "#\(keyword)"
-                )
-              ),
-              embedInNavigationView: true
-            )
-          ])
-        ))
+        state.routes.push(.newsCard(.init(source: .hot, shortsId: 0, keywordTitle: "#\(keyword)")))
         return .none
-
+        
       case let .routeAction(
         _,
         action: .tabBar(
@@ -198,19 +169,7 @@ public let appCoordinatorReducer: Reducer<
           )
         )
       ):
-        state.routes.push(.newsCard(
-          .init(routes: [
-            .root(
-              .newsList(
-                .init(
-                  shortsId: id,
-                  keywordTitle: keyword
-                )
-              ),
-              embedInNavigationView: true
-            )
-          ])
-        ))
+        state.routes.push(.newsCard(.init(source: .mypage, shortsId: id, keywordTitle: keyword)))
         return .none
         
       case let .routeAction(
@@ -234,8 +193,7 @@ public let appCoordinatorReducer: Reducer<
           )
         )
       ):
-        // TODO: 실데이터 반영 필요
-        state.routes.push(.newsCard(.init(routes: [.root(.web(.init(newsId: id, webAddress: "https://naver.com")))])))
+        state.routes.push(.newsCard(.init(newsId: id, webAddress: "https://naver.com")))
         return .none
         
       case let .routeAction(
@@ -259,14 +217,13 @@ public let appCoordinatorReducer: Reducer<
           )
         )
       ):
-        // TODO: 실데이터 반영 필요
-        state.routes.push(.newsCard(.init(routes: [.root(.web(.init(newsId: id, webAddress: "https://naver.com")))])))
+        state.routes.push(.newsCard(.init(newsId: id, webAddress: "https://naver.com")))
         return .none
         
       case .routeAction(_, action: .newsCard(.routeAction(_, action: .web(.backButtonTapped)))):
         state.routes.pop()
         return .none
-
+        
       case .routeAction(_, action: .newsCard(.routeAction(_, action: .shortsComplete(.backButtonTapped)))):
         state.routes.pop()
         return Effect(
@@ -313,9 +270,15 @@ public let appCoordinatorReducer: Reducer<
           )
         )
         
-      case .routeAction(_, action: .newsCard(.routeAction(_, action: .newsList(.backButtonTapped)))):
+      case let .routeAction(_, action: .newsCard(.routeAction(_, action: .newsList(.backButtonTapped(source))))):
         state.routes.pop()
-        return Effect(value: .routeAction(0, action: .tabBar(._setTabHiddenStatus(false))))
+        switch source {
+        case .main, .hot:
+          return Effect(value: .routeAction(0, action: .tabBar(._setTabHiddenStatus(false))))
+          
+        case .mypage:
+          return .none
+        }
         
       default: return .none
       }

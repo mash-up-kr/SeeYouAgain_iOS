@@ -7,6 +7,7 @@
 //
 
 import ComposableArchitecture
+import Foundation
 import LongStorageNewsList
 import Services
 import TCACoordinators
@@ -15,11 +16,21 @@ public enum LongStorageScreenState: Equatable {
   case longStorageNewsList(LongStorageNewsListState)
 }
 
-public enum LongStorageScreenAction: Equatable {
+public enum LongStorageScreenAction {
   case longStorageNewsList(LongStorageNewsListAction)
 }
 
 internal struct LongStorageScreenEnvironment {
+  let mainQueue: AnySchedulerOf<DispatchQueue>
+  let myPageService: MyPageService
+  
+  internal init(
+    mainQueue: AnySchedulerOf<DispatchQueue>,
+    myPageService: MyPageService
+  ) {
+    self.mainQueue = mainQueue
+    self.myPageService = myPageService
+  }
 }
 
 internal let longStorageScreenReducer = Reducer<
@@ -31,8 +42,11 @@ internal let longStorageScreenReducer = Reducer<
     .pullback(
       state: /LongStorageScreenState.longStorageNewsList,
       action: /LongStorageScreenAction.longStorageNewsList,
-      environment: { _ in
-        LongStorageNewsListEnvironment()
+      environment: {
+        LongStorageNewsListEnvironment(
+          mainQueue: $0.mainQueue,
+          myPageService: $0.myPageService
+        )
       }
     )
 ])

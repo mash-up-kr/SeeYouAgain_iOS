@@ -21,8 +21,7 @@ public struct LongStorageCoordinatorState: Equatable, IndexedRouterState {
         .longStorageNewsList(
           .init(
             isInEditMode: false,
-            shortslistCount: 6,
-            shortsClearCount: 3
+            shortslistCount: 6
           )
         ),
         embedInNavigationView: true
@@ -33,13 +32,22 @@ public struct LongStorageCoordinatorState: Equatable, IndexedRouterState {
   }
 }
 
-public enum LongStorageCoordinatorAction: Equatable, IndexedRouterAction {
+public enum LongStorageCoordinatorAction: IndexedRouterAction {
   case updateRoutes([Route<LongStorageScreenState>])
   case routeAction(Int, action: LongStorageScreenAction)
 }
 
 public struct LongStorageCoordinatorEnvironment {
-  public init() {}
+  let mainQueue: AnySchedulerOf<DispatchQueue>
+  let myPageService: MyPageService
+  
+  public init(
+    mainQueue: AnySchedulerOf<DispatchQueue>,
+    myPageService: MyPageService
+  ) {
+    self.mainQueue = mainQueue
+    self.myPageService = myPageService
+  }
 }
 
 public let longStorageCoordinatorReducer: Reducer<
@@ -47,8 +55,11 @@ public let longStorageCoordinatorReducer: Reducer<
   LongStorageCoordinatorAction,
   LongStorageCoordinatorEnvironment
 > = longStorageScreenReducer
-  .forEachIndexedRoute(environment: { _ in
-    LongStorageScreenEnvironment()
+  .forEachIndexedRoute(environment: {
+    LongStorageScreenEnvironment(
+      mainQueue: $0.mainQueue,
+      myPageService: $0.myPageService
+    )
   })
   .withRouteReducer(
     Reducer { state, action, env in

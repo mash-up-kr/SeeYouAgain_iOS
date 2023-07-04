@@ -42,7 +42,7 @@ public struct NewsListState: Equatable {
 
 public enum NewsListAction: Equatable {
   // MARK: - User Action
-  case backButtonTapped
+  case backButtonTapped(SourceType)
   case completeButtonTapped
   
   // MARK: - Inner Business Action

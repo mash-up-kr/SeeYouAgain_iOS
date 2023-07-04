@@ -40,7 +40,7 @@ public struct LongStorageNewsListView: View {
           VStack(spacing: 0) {
             MonthInfoView(
               month: viewStore.state.month,
-              shortsCompleteCount: viewStore.state.shortsCompleteCount
+              newsListCount: viewStore.state.shortsNewsItemsCount
             )
             
             Spacer()
@@ -89,7 +89,7 @@ public struct LongStorageNewsListView: View {
         .ignoresSafeArea()
       }
       .onAppear {
-        viewStore.send(._onAppear)
+        viewStore.send(._viewWillAppear)
       }
     }
   }
@@ -97,14 +97,14 @@ public struct LongStorageNewsListView: View {
 
 private struct MonthInfoView: View {
   private var month: String
-  private var shortsCompleteCount: Int
+  private var newsListCount: Int
   
   fileprivate init(
     month: String,
-    shortsCompleteCount: Int
+    newsListCount: Int
   ) {
     self.month = month
-    self.shortsCompleteCount = shortsCompleteCount
+    self.newsListCount = newsListCount
   }
   
   fileprivate var body: some View {
@@ -130,7 +130,7 @@ private struct MonthInfoView: View {
         }
       }
       
-      Text("\(shortsCompleteCount)숏스")
+      Text("\(newsListCount)숏스")
         .font(.b24)
         .foregroundColor(DesignSystem.Colors.grey100)
     }

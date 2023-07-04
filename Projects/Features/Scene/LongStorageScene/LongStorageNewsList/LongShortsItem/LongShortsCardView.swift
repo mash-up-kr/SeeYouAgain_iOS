@@ -8,6 +8,7 @@
 
 import ComposableArchitecture
 import DesignSystem
+import Models
 import NukeUI
 import SwiftUI
 
@@ -17,20 +18,17 @@ struct LongShortsCardView: View {
   init(store: Store<LongShortsCardState, LongShortsCardAction>) {
     self.store = store
   }
-  
+
   var body: some View {
     WithViewStore(store) { viewStore in
       HStack(alignment: .top, spacing: 0) {
-        if let imageUrl = viewStore.state.news.thumbnailImageUrl {
-          // TODO: 서버에서 받아오는 URL 이미지로 변경 필요
+        if let imageUrl = viewStore.state.news.thumbnailImageUrl, imageUrl != "null" {
           LazyImage(url: URL(string: imageUrl)) { state in
             if let image = state.image {
               image
                 .resizable()
                 .frame(width: 56, height: 56)
                 .clipShape(Circle())
-            } else {
-              ProgressView()
             }
           }
           

@@ -7,34 +7,7 @@
 //
 
 import ComposableArchitecture
-
-public struct News: Equatable, Identifiable {
-  public let id: Int
-  let title: String
-  let thumbnailImageUrl: String?
-  let newsLink: String
-  let press: String
-  let writtenDateTime: String
-  let type: String
-  
-  public init(
-    id: Int,
-    title: String,
-    thumbnailImageUrl: String?,
-    newsLink: String,
-    press: String,
-    writtenDateTime: String,
-    type: String
-  ) {
-    self.id = id
-    self.title = title
-    self.thumbnailImageUrl = thumbnailImageUrl
-    self.newsLink = newsLink
-    self.press = press
-    self.writtenDateTime = writtenDateTime
-    self.type = type
-  }
-}
+import Models
 
 public struct LongShortsCardState: Equatable, Identifiable {
   public var id: Int

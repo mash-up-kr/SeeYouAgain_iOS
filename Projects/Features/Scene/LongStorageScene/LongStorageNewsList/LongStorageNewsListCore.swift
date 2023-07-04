@@ -10,29 +10,29 @@ import Combine
 import Common
 import ComposableArchitecture
 import Foundation
-
+import Models
+import Services
 
 public struct LongStorageNewsListState: Equatable {
   var isInEditMode: Bool
   var month: String
   var shortsNewsItemsCount: Int // 저장한 숏스 수
-  var shortsCompleteCount: Int // 완료한 숏스 수
   var shortsNewsItems: IdentifiedArrayOf<LongShortsItemState> = []
   var isLatestMode: Bool = true
+  var cursorDate: Date = .now
+  var currentDate = Date()
   
   public init(
     isInEditMode: Bool,
-    shortslistCount: Int,
-    shortsClearCount: Int
+    shortslistCount: Int
   ) {
     self.isInEditMode = isInEditMode
     self.month = Date().yearMonthToString()
     self.shortsNewsItemsCount = shortslistCount
-    self.shortsCompleteCount = shortsClearCount
   }
 }
 
-public enum LongStorageNewsListAction: Equatable {
+public enum LongStorageNewsListAction {
   // MARK: - User Action
   case backButtonTapped
   case editButtonTapped
@@ -44,11 +44,14 @@ public enum LongStorageNewsListAction: Equatable {
   case sortByTypeButtonTapped
   
   // MARK: - Inner Business Action
-  case _onAppear
+  case _viewWillAppear
+  case _fetchSavedNews(FetchType)
+  case _handleSavedNewsResponse(SavedNewsList, FetchType)
   
   // MARK: - Inner SetState Action
   case _setEditMode
   case _setLongShortsItemEditMode
+  case _setLongShortsItem([News])
   case _setLongShortsItemList
   case _setLongShortsItemCount
   
@@ -57,7 +60,16 @@ public enum LongStorageNewsListAction: Equatable {
 }
 
 public struct LongStorageNewsListEnvironment {
-  public init() {}
+  let mainQueue: AnySchedulerOf<DispatchQueue>
+  let myPageService: MyPageService
+
+  public init(
+    mainQueue: AnySchedulerOf<DispatchQueue>,
+    myPageService: MyPageService
+  ) {
+    self.mainQueue = mainQueue
+    self.myPageService = myPageService
+  }
 }
 
 public let longStorageNewsListReducer = Reducer<
@@ -96,9 +108,30 @@ public let longStorageNewsListReducer = Reducer<
       // TODO: 타입에 따른 정렬 구현 필요
       return .none
       
-    case ._onAppear:
-      state.shortsNewsItems = LongStorageStub.items
-      return .none
+    case ._viewWillAppear:
+      return Effect(value: ._fetchSavedNews(.initial))
+      
+    case let ._fetchSavedNews(fetchType):
+      return env.myPageService.fetchSavedNews(
+        state.currentDate.toFormattedTargetDate(),
+        subtractTwoDay(from: state.cursorDate),
+        20,
+        .ASC
+      )
+      .catchToEffect()
+      .flatMap { result -> Effect<LongStorageNewsListAction, Never> in
+        switch result {
+        case let .success(savedNewsList):
+          return Effect(value: ._handleSavedNewsResponse(savedNewsList, fetchType))
+          
+        case .failure:
+          return .none
+        }
+      }
+      .eraseToEffect()
+      
+    case let ._handleSavedNewsResponse(savedNewsList, fetchType):
+      return handleSavedNewsResponse(&state, source: savedNewsList, fetchType: fetchType)
       
     case ._setEditMode:
       state.isInEditMode.toggle()
@@ -109,6 +142,22 @@ public let longStorageNewsListReducer = Reducer<
         state.shortsNewsItems[index].isInEditMode = state.isInEditMode
         state.shortsNewsItems[index].cardState.isCardSelectable = !state.isInEditMode
       }
+      return .none
+
+    case let ._setLongShortsItem(newsList):
+      state.shortsNewsItems = IdentifiedArrayOf(uniqueElements: newsList.map {
+        LongShortsItemState(
+          id: $0.id,
+          isInEditMode: false,
+          isSelected: false,
+          cardState: LongShortsCardState(
+            id: $0.id,
+            news: $0,
+            isCardSelectable: true,
+            isSelected: false
+          )
+        )
+      })
       return .none
       
     case ._setLongShortsItemList:
@@ -123,3 +172,28 @@ public let longStorageNewsListReducer = Reducer<
     }
   }
 ])
+
+fileprivate func subtractTwoDay(from date: Date) -> Date {
+  let calendar = Calendar.current
+  let modifiedDate = calendar.date(byAdding: .day, value: -3, to: date)
+  return modifiedDate ?? date
+}
+
+private func handleSavedNewsResponse(
+  _ state: inout LongStorageNewsListState,
+  source savedNewsList: SavedNewsList,
+  fetchType: FetchType
+) -> Effect<LongStorageNewsListAction, Never> {
+  switch fetchType {
+  case .initial:
+    state.shortsNewsItemsCount = savedNewsList.savedNewsCount
+    return Effect(value: ._setLongShortsItem(savedNewsList.newsList))
+    
+    // TODO: 페이징 기능 구현 필요
+  case .continuousPaging:
+    return .none
+
+  case .newPaging:
+    return .none
+  }
+}
