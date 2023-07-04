@@ -52,7 +52,7 @@ public struct BottomSheet<
         .padding(.top, 8)
     }
     .background(Color.white.opacity(0.8).blurEffect())
-    .cornerRadius(20)
+    .clipShape(RoundCorners())
   }
 }
 
@@ -93,5 +93,19 @@ public extension View {
       .ignoresSafeArea()
     }
     .animation(.easeInOut, value: isPresented.wrappedValue)
+  }
+}
+
+private struct RoundCorners: Shape {
+  var radius: CGFloat = 20
+  var corners: UIRectCorner = [.topLeft, .topRight]
+  
+  func path(in rect: CGRect) -> Path {
+    let path = UIBezierPath(
+      roundedRect: rect,
+      byRoundingCorners: corners,
+      cornerRadii: CGSize(width: radius, height: radius)
+    )
+    return Path(path.cgPath)
   }
 }
