@@ -47,7 +47,7 @@ public enum LongStorageNewsListAction {
   // MARK: - Inner Business Action
   case _viewWillAppear
   case _fetchSavedNews(FetchType)
-  case _handleSavedNewsResponse(SavedNewsList, FetchType)
+  case _handleFetchSavedNewsResponse(SavedNewsList, FetchType)
   case _deleteSavedNews([Int])
   case _handleDeleteSavedNewsResponse(Result<VoidResponse?, Error>)
   
@@ -121,7 +121,7 @@ public let longStorageNewsListReducer = Reducer<
       .flatMap { result -> Effect<LongStorageNewsListAction, Never> in
         switch result {
         case let .success(savedNewsList):
-          return Effect(value: ._handleSavedNewsResponse(savedNewsList, fetchType))
+          return Effect(value: ._handleFetchSavedNewsResponse(savedNewsList, fetchType))
           
         case .failure:
           return .none
@@ -129,7 +129,7 @@ public let longStorageNewsListReducer = Reducer<
       }
       .eraseToEffect()
       
-    case let ._handleSavedNewsResponse(savedNewsList, fetchType):
+    case let ._handleFetchSavedNewsResponse(savedNewsList, fetchType):
       return handleSavedNewsResponse(&state, source: savedNewsList, fetchType: fetchType)
       
     case let ._deleteSavedNews(newsIds):
