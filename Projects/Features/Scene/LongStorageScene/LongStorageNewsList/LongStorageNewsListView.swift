@@ -184,9 +184,6 @@ private struct FilterView: View {
             
             DesignSystem.Icons.iconChevronDown
           }
-          .onTapGesture {
-            // isSortStatusByType.toggle()
-          }
         }
         .padding(.horizontal, 24)
         
