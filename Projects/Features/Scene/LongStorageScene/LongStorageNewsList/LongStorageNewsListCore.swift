@@ -22,6 +22,7 @@ public struct LongStorageNewsListState: Equatable {
   var cursorDate: Date = .now
   var currentDate = Date()
   var pagingSize: Int = 20
+  var pivot: Pivot = .DESC // 최신순이 기본값
   
   public init(
     isInEditMode: Bool,
@@ -46,7 +47,7 @@ public enum LongStorageNewsListAction {
   
   // MARK: - Inner Business Action
   case _viewWillAppear
-  case _fetchSavedNews(FetchType)
+  case _fetchSavedNews(FetchType, Pivot)
   case _handleFetchSavedNewsResponse(SavedNewsList, FetchType)
   case _deleteSavedNews([Int])
   case _handleDeleteSavedNewsResponse(Result<VoidResponse?, Error>)
@@ -58,6 +59,7 @@ public enum LongStorageNewsListAction {
   case _setLongShortsItemList
   case _setLongShortsItemCount
   case _setSelectedItemIds
+  case _setPivot
   
   // MARK: - Child Action
   case shortsNewsItem(id: LongShortsItemState.ID, action: LongShortsItemAction)
@@ -102,20 +104,20 @@ public let longStorageNewsListReducer = Reducer<
       
     case .sortByTimeButtonTapped:
       state.isLatestMode.toggle()
-      return .none
+      return Effect(value: ._setPivot)
       
     case .sortByTypeButtonTapped:
       // TODO: 타입에 따른 정렬 구현 필요
       return .none
       
     case ._viewWillAppear:
-      return Effect(value: ._fetchSavedNews(.initial))
+      return Effect(value: ._fetchSavedNews(.initial, state.pivot))
       
-    case let ._fetchSavedNews(fetchType):
+    case let ._fetchSavedNews(fetchType, pivot):
       return env.myPageService.fetchSavedNews(
         state.currentDate.toFormattedTargetDate(),
         state.pagingSize,
-        .ASC
+        pivot
       )
       .catchToEffect()
       .flatMap { result -> Effect<LongStorageNewsListAction, Never> in
@@ -196,6 +198,10 @@ public let longStorageNewsListReducer = Reducer<
         return .none
       }
       return Effect(value: ._deleteSavedNews(selectedItemIds))
+      
+    case ._setPivot:
+      state.pivot = state.isLatestMode ? .DESC : .ASC
+      return Effect(value: ._fetchSavedNews(.initial, state.pivot))
       
     default: return .none
     }
