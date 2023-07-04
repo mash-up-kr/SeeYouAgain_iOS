@@ -48,6 +48,8 @@ public enum LongStorageNewsListAction {
   case _viewWillAppear
   case _fetchSavedNews(FetchType)
   case _handleSavedNewsResponse(SavedNewsList, FetchType)
+  case _deleteSavedNews([Int])
+  case _handleDeleteSavedNewsResponse(Result<VoidResponse?, Error>)
   
   // MARK: - Inner SetState Action
   case _setEditMode
@@ -55,6 +57,7 @@ public enum LongStorageNewsListAction {
   case _setLongShortsItem([News])
   case _setLongShortsItemList
   case _setLongShortsItemCount
+  case _setSelectedItemIds
   
   // MARK: - Child Action
   case shortsNewsItem(id: LongShortsItemState.ID, action: LongShortsItemAction)
@@ -95,11 +98,7 @@ public let longStorageNewsListReducer = Reducer<
       ])
       
     case .deleteButtonTapped:
-      return Effect.concatenate([
-        Effect(value: ._setEditMode),
-        Effect(value: ._setLongShortsItemList),
-        Effect(value: ._setLongShortsItemEditMode)
-      ])
+      return Effect(value: ._setSelectedItemIds)
       
     case .sortByTimeButtonTapped:
       state.isLatestMode.toggle()
@@ -132,6 +131,22 @@ public let longStorageNewsListReducer = Reducer<
       
     case let ._handleSavedNewsResponse(savedNewsList, fetchType):
       return handleSavedNewsResponse(&state, source: savedNewsList, fetchType: fetchType)
+      
+    case let ._deleteSavedNews(newsIds):
+      return env.myPageService.deleteNews(newsIds)
+        .catchToEffect(LongStorageNewsListAction._handleDeleteSavedNewsResponse)
+      
+    case let ._handleDeleteSavedNewsResponse(result):
+      switch result {
+      case .success:
+        return Effect.concatenate([
+          Effect(value: ._setEditMode),
+          Effect(value: ._setLongShortsItemList),
+          Effect(value: ._setLongShortsItemEditMode)
+        ])
+        
+      default: return .none
+      }
       
     case ._setEditMode:
       state.isInEditMode.toggle()
@@ -167,6 +182,20 @@ public let longStorageNewsListReducer = Reducer<
     case ._setLongShortsItemCount:
       state.shortsNewsItemsCount = state.shortsNewsItems.count
       return .none
+      
+    case ._setSelectedItemIds:
+      var selectedItemIds: [Int] = []
+      
+      for item in state.shortsNewsItems {
+        if item.isSelected {
+          selectedItemIds.append(item.id)
+        }
+      }
+      
+      if selectedItemIds.isEmpty {
+        return .none
+      }
+      return Effect(value: ._deleteSavedNews(selectedItemIds))
       
     default: return .none
     }
