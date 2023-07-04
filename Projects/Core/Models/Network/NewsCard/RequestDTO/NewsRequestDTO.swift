@@ -12,12 +12,7 @@ public struct NewsRequestDTO: Encodable {
   public let cursorWrittenDateTime: String
   public let size: Int
   public let pivot: Pivot
-  
-  public enum Pivot: String, Encodable {
-    case DESC
-    case ASC
-  }
-  
+
   public init(
     cursorWrittenDateTime: String = "",
     size: Int = 20,

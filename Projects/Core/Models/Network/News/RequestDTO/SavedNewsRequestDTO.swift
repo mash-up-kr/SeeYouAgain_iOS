@@ -12,17 +12,15 @@ public struct SavedNewsRequestDTO: Encodable {
   let targetDate: String
   let cursorWrittenDateTime: String
   let size: Int
-  public let pivot: Pivot
+  public let pivot: Pivot = .DESC
 
   public init(
     targetDate: String,
     cursorWrittenDateTime: String = "",
-    size: Int = 20,
-    pivot: Pivot = .DESC
+    size: Int = 20
   ) {
     self.targetDate = targetDate
     self.cursorWrittenDateTime = cursorWrittenDateTime
     self.size = size
-    self.pivot = pivot
   }
 }

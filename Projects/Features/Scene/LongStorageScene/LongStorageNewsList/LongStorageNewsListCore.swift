@@ -47,14 +47,11 @@ public enum LongStorageNewsListAction {
   case previousMonthButtonTapped
   case nextMonthButtonTapped
   case showSortBottomSheet
-  case sortByTimeButtonTapped
-  case sortByTypeButtonTapped
   
   // MARK: - Inner Business Action
-  case _onAppear
   case _sortLongShortsItems(SortType)
   case _viewWillAppear
-  case _fetchSavedNews(FetchType, Pivot)
+  case _fetchSavedNews(FetchType)
   case _handleFetchSavedNewsResponse(SavedNewsList, FetchType)
   case _deleteSavedNews([Int])
   case _handleDeleteSavedNewsResponse(Result<VoidResponse?, Error>)
@@ -67,7 +64,6 @@ public enum LongStorageNewsListAction {
   case _setLongShortsItemCount
   case _setSortType(SortType)
   case _setSelectedItemIds
-  case _setPivot
   
   // MARK: - Child Action
   case shortsNewsItem(id: LongShortsItemState.ID, action: LongShortsItemAction)
@@ -120,19 +116,8 @@ public let longStorageNewsListReducer = Reducer<
     case .showSortBottomSheet:
       return Effect(value: .sortBottomSheet(._setIsPresented(true)))
       
-    case .sortByTimeButtonTapped:
-      state.isLatestMode.toggle()
-      return Effect(value: ._setPivot)
-      
-    case ._onAppear:
-      return .none
-      
-    case .sortByTypeButtonTapped:
-      // TODO: 타입에 따른 정렬 구현 필요
-      return .none
-      
     case ._viewWillAppear:
-      return Effect(value: ._fetchSavedNews(.initial, state.pivot))
+      return Effect(value: ._fetchSavedNews(.initial))
       
     case let ._sortLongShortsItems(sortType):
       var sortedShortsNewsItems = state.shortsNewsItems
@@ -148,11 +133,10 @@ public let longStorageNewsListReducer = Reducer<
       state.shortsNewsItems = sortedShortsNewsItems
       return .none
       
-    case let ._fetchSavedNews(fetchType, pivot):
+    case let ._fetchSavedNews(fetchType):
       return env.myPageService.fetchSavedNews(
         state.currentDate.toFormattedTargetDate(),
-        state.pagingSize,
-        pivot
+        state.pagingSize
       )
       .catchToEffect()
       .flatMap { result -> Effect<LongStorageNewsListAction, Never> in
@@ -244,11 +228,7 @@ public let longStorageNewsListReducer = Reducer<
         return .none
       }
       return Effect(value: ._deleteSavedNews(selectedItemIds))
-      
-    case ._setPivot:
-      state.pivot = state.isLatestMode ? .DESC : .ASC
-      return Effect(value: ._fetchSavedNews(.initial, state.pivot))
-      
+
     default: return .none
     }
   }
