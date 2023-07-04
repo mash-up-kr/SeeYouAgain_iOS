@@ -6,6 +6,7 @@
 //  Copyright © 2023 mashup.seeYouAgain. All rights reserved.
 //
 
+import Common
 import ComposableArchitecture
 import DesignSystem
 import SwiftUI
@@ -45,19 +46,10 @@ public struct LongStorageNewsListView: View {
             
             Spacer()
               .frame(height: viewStore.state.isInEditMode ? 40 : 48)
-
+            
             // 필터 뷰
             if !viewStore.state.isInEditMode && viewStore.state.shortsNewsItemsCount != 0 {
-              FilterView(
-                isSortStatusByTime: viewStore.binding(
-                  get: { $0.isLatestMode },
-                  send: LongStorageNewsListAction.sortByTimeButtonTapped
-                ),
-                isSortStatusByType: viewStore.binding(
-                  get: { $0.isLatestMode },
-                  send: LongStorageNewsListAction.sortByTypeButtonTapped
-                )
-              )
+              FilterView(store: store.scope(state: \.sortType))
             }
             
             if viewStore.shortsNewsItemsCount == 0 {
@@ -91,6 +83,30 @@ public struct LongStorageNewsListView: View {
       .onAppear {
         viewStore.send(._onAppear)
       }
+      .bottomSheet(
+        isPresented: viewStore.binding(
+          get: \.sortBottomSheetState.isPresented,
+          send: { .sortBottomSheet(._setIsPresented($0)) }
+        ),
+        headerArea: { LongStorageSortBottomSheetHeader() },
+        content: {
+          LongStorageSortBottomSheetContent(
+            store: store.scope(
+              state: \.sortBottomSheetState,
+              action: LongStorageNewsListAction.sortBottomSheet
+            )
+          )
+        },
+        bottomArea: {
+          LongStorageSortBottomSheetFooter(
+            store: store.scope(
+              state: \.sortBottomSheetState,
+              action: LongStorageNewsListAction.sortBottomSheet
+            )
+            .stateless
+          )
+        }
+      )        
     }
   }
 }
@@ -138,40 +154,42 @@ private struct MonthInfoView: View {
 }
 
 private struct FilterView: View {
-  @Binding fileprivate var isSortStatusByTime: Bool
-  @Binding fileprivate var isSortStatusByType: Bool // TODO: 카테고리 타입으로 변경 필요
+  private let store: Store<SortType, LongStorageNewsListAction>
+  
+  fileprivate init(store: Store<SortType, LongStorageNewsListAction>) {
+    self.store = store
+  }
   
   fileprivate var body: some View {
-    VStack(spacing: 0) {
-      HStack(spacing: 0) {
-        Group {
-          Text(isSortStatusByTime ? "최신순" : "오래된 순")
-            .font(.r14)
-            .foregroundColor(DesignSystem.Colors.grey70)
+    WithViewStore(store) { viewStore in
+      VStack(spacing: 0) {
+        HStack(spacing: 0) {
+          Group {
+            Text(viewStore.state.rawValue)
+              .font(.r14)
+              .foregroundColor(DesignSystem.Colors.grey70)
+            
+            DesignSystem.Icons.iconChevronDown
+          }
+          .onTapGesture {
+            viewStore.send(.showSortBottomSheet)
+          }
           
-          DesignSystem.Icons.iconChevronDown
+          Spacer()
+          
+          Group {
+            Text("전체")
+              .font(.r14)
+              .foregroundColor(DesignSystem.Colors.grey70)
+            
+            DesignSystem.Icons.iconChevronDown
+          }
         }
-        .onTapGesture {
-          isSortStatusByTime.toggle()
-        }
+        .padding(.horizontal, 24)
         
         Spacer()
-        
-        Group {
-          Text("전체")
-            .font(.r14)
-            .foregroundColor(DesignSystem.Colors.grey70)
-          
-          DesignSystem.Icons.iconChevronDown
-        }
-        .onTapGesture {
-          isSortStatusByType.toggle()
-        }
+          .frame(height: 16)
       }
-      .padding(.horizontal, 24)
-      
-      Spacer()
-        .frame(height: 16)
     }
   }
 }

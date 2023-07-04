@@ -33,7 +33,7 @@ public struct NewsCardCoordinatorState: Equatable, IndexedRouterState {
   }
 }
 
-public enum NewsCardCoordinatorAction: Equatable, IndexedRouterAction {
+public enum NewsCardCoordinatorAction: IndexedRouterAction {
   case updateRoutes([Route<NewsCardScreenState>])
   case routeAction(Int, action: NewsCardScreenAction)
 }
