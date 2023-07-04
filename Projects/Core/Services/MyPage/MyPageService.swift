@@ -27,6 +27,7 @@ public struct MyPageService {
     _ size: Int,
     _ pivot: Pivot
   ) -> Effect<SavedNewsList, Error>
+  public var deleteNews: (_ newsIds: [Int]) -> Effect<VoidResponse?, Error>
 }
 
 extension MyPageService {
@@ -76,6 +77,16 @@ extension MyPageService {
         )
         .compactMap { $0 }
         .map { $0.toDomain }
+        .eraseToEffect()
+    },
+    deleteNews: { newsIds in
+      return Provider<MyPageAPI>
+        .init()
+        .request(
+          MyPageAPI.deleteSavedNews(newsIds),
+          type: VoidResponse.self
+        )
+        .compactMap { $0 }
         .eraseToEffect()
     }
   )
