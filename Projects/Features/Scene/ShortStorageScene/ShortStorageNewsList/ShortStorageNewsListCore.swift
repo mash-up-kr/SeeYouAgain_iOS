@@ -107,7 +107,11 @@ public let shortStorageNewsListReducer = Reducer<
       ])
       
     case .deleteButtonTapped:
-      return Effect(value: ._setSelectedItemIds)
+      return Effect.concatenate([
+        Effect(value: ._setEditMode),
+        Effect(value: ._setTodayShortsItemEditMode),
+        Effect(value: ._setSelectedItemIds)
+      ])
       
     case ._viewWillAppear:
       return Effect.concatenate([
@@ -214,6 +218,10 @@ public let shortStorageNewsListReducer = Reducer<
         if item.isSelected {
           selectedItemIds.append(item.id)
         }
+      }
+      
+      if selectedItemIds.isEmpty {
+        return .none
       }
       return Effect(value: ._deleteTodayShorts(selectedItemIds))
       
