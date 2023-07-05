@@ -7,6 +7,7 @@
 //
 
 import ComposableArchitecture
+import Foundation
 import NewsList
 import Services
 import TCACoordinators
@@ -25,9 +26,14 @@ public enum NewsCardScreenAction {
 }
 
 internal struct NewsCardScreenEnvironment {
+  fileprivate let mainQueue: AnySchedulerOf<DispatchQueue>
   fileprivate let newsCardService: NewsCardService
   
-  internal init(newsCardService: NewsCardService) {
+  internal init(
+    mainQueue: AnySchedulerOf<DispatchQueue>,
+    newsCardService: NewsCardService
+  ) {
+    self.mainQueue = mainQueue
     self.newsCardService = newsCardService
   }
 }
@@ -42,7 +48,10 @@ internal let newsCardScreenReducer = Reducer<
       state: /NewsCardScreenState.newsList,
       action: /NewsCardScreenAction.newsList,
       environment: {
-        NewsListEnvironment(newsCardService: $0.newsCardService)
+        NewsListEnvironment(
+          mainQueue: $0.mainQueue,
+          newsCardService: $0.newsCardService
+        )
       }
     ),
   webReducer
