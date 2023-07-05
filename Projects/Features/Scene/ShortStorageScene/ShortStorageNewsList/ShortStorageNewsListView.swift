@@ -205,7 +205,7 @@ private struct TooltipView: View {
         .frame(width: 20, height: 15)
         .zIndex(1)
         
-        toolTipContentView
+        tooltipContentView
       }
     }
   }
@@ -220,7 +220,7 @@ private struct TooltipView: View {
     .stroke(DesignSystem.Colors.grey80, lineWidth: 1)
   }
   
-  private var toolTipContentView: some View {
+  private var tooltipContentView: some View {
     WithViewStore(store) { viewStore in
       ZStack {
         Rectangle()
