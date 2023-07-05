@@ -22,6 +22,7 @@ public enum NewsCardAction: Equatable {
   case cardTapped
   
   // MARK: - Inner Business Action
+  case _navigateWebView(String)
   
   // MARK: - Inner SetState Action
   
@@ -35,6 +36,9 @@ public struct NewsCardEnvironment {
 public let newsCardReducer = Reducer.combine([
   Reducer<NewsCardState, NewsCardAction, NewsCardEnvironment> { state, action, env in
     switch action {
+    case .rightButtonTapped, .cardTapped:
+      return Effect(value: ._navigateWebView(state.news.newsLink))
+      
     default: return .none
     }
   }

@@ -193,7 +193,8 @@ public let appCoordinatorReducer: Reducer<
           )
         )
       ):
-        state.routes.push(.newsCard(.init(webAddress: "https://naver.com")))
+        // TODO: 실데이터 반영 필요
+        state.routes.push(.newsCard(.init(routes: [.root(.web(.init(newsId: id, webAddress: "https://naver.com")))])))
         return .none
         
       case let .routeAction(
@@ -217,7 +218,7 @@ public let appCoordinatorReducer: Reducer<
           )
         )
       ):
-        state.routes.push(.newsCard(.init(webAddress: "https://naver.com")))
+        state.routes.push(.newsCard(.init(routes: [.root(.web(.init(newsId: id, webAddress: "https://naver.com")))])))
         return .none
         
       case .routeAction(_, action: .newsCard(.routeAction(_, action: .web(.backButtonTapped)))):

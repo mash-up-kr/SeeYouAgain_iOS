@@ -13,6 +13,7 @@ import Foundation
 import Services
 
 public struct WebState: Equatable {
+  var newsId: Int
   var webAddress: String
   var saveButtonDisabled: Bool
   var isDisplayTooltip: Bool
@@ -20,10 +21,12 @@ public struct WebState: Equatable {
   var warningToastMessage: String?
   
   public init(
+    newsId: Int,
     webAddress: String,
     saveButtonDisabled: Bool = false,
     isDisplayTooltip: Bool = true
   ) {
+    self.newsId = newsId
     self.webAddress = webAddress
     self.saveButtonDisabled = saveButtonDisabled
     self.isDisplayTooltip = isDisplayTooltip
@@ -38,10 +41,12 @@ public enum WebAction: Equatable {
   
   // MARK: - Inner Business Action
   case _onAppear
+  case _checkNewsSavedStatus
   case _presentSaveToast(String)
   case _presentWaringToast(String)
   case _hideSaveToast
   case _hideWarningToast
+  case _postNewsId(Int)
   
   // MARK: - Inner SetState Action
   case _setSaveButtonDisabled(Bool)
@@ -52,9 +57,14 @@ public enum WebAction: Equatable {
 
 public struct WebEnvironment {
   let mainQueue: AnySchedulerOf<DispatchQueue>
+  let newsCardService: NewsCardService
   
-  public init(mainQueue: AnySchedulerOf<DispatchQueue> = .main) {
+  public init(
+    mainQueue: AnySchedulerOf<DispatchQueue>,
+    newsCardService: NewsCardService
+  ) {
     self.mainQueue = mainQueue
+    self.newsCardService = newsCardService
   }
 }
 
@@ -69,17 +79,28 @@ public let webReducer = Reducer.combine([
         Effect(value: ._setIsDisplayTooltip(false))
           .delay(for: 4, scheduler: env.mainQueue)
           .eraseToEffect(),
-        // TODO: - 추후 해당 뉴스가 이미 저장된 뉴스인지 API 판별 후 저장 버튼 비활성화 처리 추가 필요
+        Effect(value: ._checkNewsSavedStatus)
       ])
+      
+    case ._checkNewsSavedStatus:
+      return env.newsCardService.checkSavedStatus(state.newsId)
+        .catchToEffect()
+        .flatMap { result -> Effect<WebAction, Never> in
+          switch result {
+          case let .success(status):
+            return Effect(value: ._setSaveButtonDisabled(status.isSaved))
+            
+          case .failure:
+            return .none
+          }
+        }
+        .eraseToEffect()
       
     case .backButtonTapped:
       return .none
       
     case .saveButtonTapped:
-      // TODO: - 추후 뉴스 저장 API 구현
-      // TODO: - 뉴스 저장에 따른 리스폰스를 통해 토스트 메시지 노출 (저장완료 or 에러)
-      // TODO: - 저장 버튼 상태값 변경
-      return Effect(value: ._setSaveButtonDisabled(true))
+      return Effect(value: ._postNewsId(state.newsId))
       
     case .tooltipButtonTapped:
       return Effect(value: ._setIsDisplayTooltip(false))
@@ -109,6 +130,23 @@ public let webReducer = Reducer.combine([
       
     case ._hideWarningToast:
       return Effect(value: ._setWarningToastMessage(nil))
+      
+    case let ._postNewsId(id):
+      return env.newsCardService.saveNews(id)
+        .catchToEffect()
+        .flatMap { result -> Effect<WebAction, Never> in
+          switch result {
+          case .success:
+            return Effect.concatenate([
+              Effect(value: ._setSaveButtonDisabled(true)),
+              Effect(value: ._presentSaveToast("오래 간직할 뉴스에 추가했어요."))
+            ])
+            
+          case .failure:
+            return Effect(value: ._presentWaringToast("인터넷이 불안정해서 저장되지 못했어요."))
+          }
+        }
+        .eraseToEffect()
       
     case let ._setSaveButtonDisabled(disabled):
       state.saveButtonDisabled = disabled
