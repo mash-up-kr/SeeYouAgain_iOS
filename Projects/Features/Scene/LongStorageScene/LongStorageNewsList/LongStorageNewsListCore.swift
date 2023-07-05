@@ -25,6 +25,9 @@ public struct LongStorageNewsListState: Equatable {
   var currentDate = Date()
   var pagingSize: Int = 20
   var pivot: Pivot = .DESC // 최신순이 기본값
+  var successToastMessage: String?
+  var failureToastMessage: String?
+  var selectedItemCounts: Int = 0
   
   public init(
     isInEditMode: Bool,
@@ -55,6 +58,10 @@ public enum LongStorageNewsListAction {
   case _handleFetchSavedNewsResponse(SavedNewsList, FetchType)
   case _deleteSavedNews([Int])
   case _handleDeleteSavedNewsResponse(Result<VoidResponse?, Error>)
+  case _presentSuccessToast(String)
+  case _presentFailureToast(String)
+  case _hideSuccessToast
+  case _hideFailureToast
   
   // MARK: - Inner SetState Action
   case _setEditMode
@@ -64,6 +71,8 @@ public enum LongStorageNewsListAction {
   case _setLongShortsItemCount
   case _setSortType(SortType)
   case _setSelectedItemIds
+  case _setSuccessToastMessage(String?)
+  case _setFailureToastMessage(String?)
   
   // MARK: - Child Action
   case shortsNewsItem(id: LongShortsItemState.ID, action: LongShortsItemAction)
@@ -103,6 +112,9 @@ public let longStorageNewsListReducer = Reducer<
       environment: { _ in SortBottomSheetEnvironment() }
     ),
   Reducer { state, action, env in
+    struct SuccessToastCancelID: Hashable {}
+    struct FailureToastCancelID: Hashable {}
+    
     switch action {
     case .editButtonTapped:
       return Effect.concatenate([
@@ -163,11 +175,39 @@ public let longStorageNewsListReducer = Reducer<
         return Effect.concatenate([
           Effect(value: ._setEditMode),
           Effect(value: ._setLongShortsItemList),
-          Effect(value: ._setLongShortsItemEditMode)
+          Effect(value: ._setLongShortsItemEditMode),
+          Effect(value: ._presentSuccessToast("\(state.selectedItemCounts)개의 숏스를 삭제했어요."))
         ])
         
-      default: return .none
+      case .failure:
+        return Effect(value: ._presentFailureToast("인터넷이 불안정해서 삭제되지 못했어요."))
       }
+      
+    case let ._presentSuccessToast(toastMessage):
+      return Effect.concatenate([
+        Effect(value: ._setSuccessToastMessage(toastMessage)),
+        .cancel(id: SuccessToastCancelID()),
+        Effect(value: ._hideSuccessToast)
+          .delay(for: 2, scheduler: env.mainQueue)
+          .eraseToEffect()
+          .cancellable(id: SuccessToastCancelID(), cancelInFlight: true)
+      ])
+      
+    case let ._presentFailureToast(toastMessage):
+      return Effect.concatenate([
+        Effect(value: ._setFailureToastMessage(toastMessage)),
+        .cancel(id: FailureToastCancelID()),
+        Effect(value: ._hideFailureToast)
+          .delay(for: 2, scheduler: env.mainQueue)
+          .eraseToEffect()
+          .cancellable(id: FailureToastCancelID(), cancelInFlight: true)
+      ])
+      
+    case ._hideSuccessToast:
+      return Effect(value: ._setSuccessToastMessage(nil))
+      
+    case ._hideFailureToast:
+      return Effect(value: ._setFailureToastMessage(nil))
       
     case ._setEditMode:
       state.isInEditMode.toggle()
@@ -224,6 +264,8 @@ public let longStorageNewsListReducer = Reducer<
         }
       }
       
+      state.selectedItemCounts = selectedItemIds.count
+      
       if selectedItemIds.isEmpty {
         return Effect.concatenate([
           Effect(value: ._setEditMode),
@@ -231,6 +273,14 @@ public let longStorageNewsListReducer = Reducer<
         ])
       }
       return Effect(value: ._deleteSavedNews(selectedItemIds))
+      
+    case let ._setSuccessToastMessage(toastMessage):
+      state.successToastMessage = toastMessage
+      return .none
+      
+    case let ._setFailureToastMessage(toastMessage):
+      state.failureToastMessage = toastMessage
+      return .none
 
     default: return .none
     }
