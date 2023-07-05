@@ -75,6 +75,7 @@ public struct TabBarView: View {
         }
       })
       .bottomSheet(
+        backgroundColor: DesignSystem.Colors.white.opacity(0.62).blurEffect(),
         isPresented: viewStore.binding(
           get: \.categoryBottomSheet.isPresented,
           send: {
