@@ -282,7 +282,7 @@ public let longStorageNewsListReducer = Reducer<
       case .minus:
         state.targetDate = state.targetDate.minusMonth()
 
-      case .next:
+      case .plus:
         state.targetDate = state.targetDate.plusMonth()
       }
       
