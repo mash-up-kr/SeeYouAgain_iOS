@@ -9,10 +9,12 @@
 import SwiftUI
 
 public struct BottomSheet<
+  BackgroundColor: View,
   HeaderArea: View,
   Content: View,
   BottomArea: View
 >: View {
+  private var backgroundColor: BackgroundColor
   @Binding private var isPresented: Bool
   private var headerArea: HeaderArea
   private var content: Content
@@ -24,11 +26,13 @@ public struct BottomSheet<
     .first { $0.isKeyWindow }
   
   public init(
+    backgroundColor: BackgroundColor,
     isPresented: Binding<Bool>,
     @ViewBuilder headerArea: () -> HeaderArea,
     @ViewBuilder content: () -> Content,
     @ViewBuilder bottomArea: () -> BottomArea
   ) {
+    self.backgroundColor = backgroundColor
     self._isPresented = isPresented
     self.headerArea = headerArea()
     self.content = content()
@@ -51,17 +55,19 @@ public struct BottomSheet<
         .frame(height: keyWindow?.safeAreaInsets.bottom)
         .padding(.top, 8)
     }
-    .background(Color.white.opacity(0.8).blurEffect())
+    .background(backgroundColor)
     .clipShape(RoundCorners())
   }
 }
 
 public extension View {
   func bottomSheet<
+    BackgroundColor: View,
     HeaderArea: View,
     Content: View,
     BottomArea: View
   >(
+    backgroundColor: BackgroundColor = Color.white,
     isPresented: Binding<Bool>,
     @ViewBuilder headerArea: () -> HeaderArea,
     @ViewBuilder content: () -> Content,
@@ -81,6 +87,7 @@ public extension View {
             .transition(.opacity)
           
           BottomSheet(
+            backgroundColor: backgroundColor,
             isPresented: isPresented,
             headerArea: headerArea,
             content: content,

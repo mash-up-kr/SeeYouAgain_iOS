@@ -60,7 +60,7 @@ public struct WebEnvironment {
   let newsCardService: NewsCardService
   
   public init(
-    mainQueue: AnySchedulerOf<DispatchQueue> = .main,
+    mainQueue: AnySchedulerOf<DispatchQueue>,
     newsCardService: NewsCardService
   ) {
     self.mainQueue = mainQueue

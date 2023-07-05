@@ -49,7 +49,15 @@ public struct LongStorageNewsListView: View {
             
             // 필터 뷰
             if !viewStore.state.isInEditMode && viewStore.state.shortsNewsItemsCount != 0 {
-              FilterView(store: store.scope(state: \.sortType))
+              HStack {
+                SortBottomSheetButton(store: store.scope(state: \.sortType))
+                Spacer()
+                FilterBottomSheetButton(store: store.scope(state: \.selectedCategories))
+              }
+              .padding(.horizontal, 24)
+              
+              Spacer()
+                .frame(height: 16)
             }
             
             if viewStore.shortsNewsItemsCount == 0 {
@@ -83,30 +91,8 @@ public struct LongStorageNewsListView: View {
       .onAppear {
         viewStore.send(._viewWillAppear)
       }
-      .bottomSheet(
-        isPresented: viewStore.binding(
-          get: \.sortBottomSheetState.isPresented,
-          send: { .sortBottomSheet(._setIsPresented($0)) }
-        ),
-        headerArea: { LongStorageSortBottomSheetHeader() },
-        content: {
-          LongStorageSortBottomSheetContent(
-            store: store.scope(
-              state: \.sortBottomSheetState,
-              action: LongStorageNewsListAction.sortBottomSheet
-            )
-          )
-        },
-        bottomArea: {
-          LongStorageSortBottomSheetFooter(
-            store: store.scope(
-              state: \.sortBottomSheetState,
-              action: LongStorageNewsListAction.sortBottomSheet
-            )
-            .stateless
-          )
-        }
-      )        
+      .longStorageSortBottomSheet(store: store)
+      .filterBottomSheet(store: store)
     }
   }
 }
@@ -153,7 +139,8 @@ private struct MonthInfoView: View {
   }
 }
 
-private struct FilterView: View {
+// 정렬 바텀시트 버튼
+private struct SortBottomSheetButton: View {
   private let store: Store<SortType, LongStorageNewsListAction>
   
   fileprivate init(store: Store<SortType, LongStorageNewsListAction>) {
@@ -162,34 +149,47 @@ private struct FilterView: View {
   
   fileprivate var body: some View {
     WithViewStore(store) { viewStore in
-      VStack(spacing: 0) {
-        HStack(spacing: 0) {
-          Group {
-            Text(viewStore.state.rawValue)
-              .font(.r14)
-              .foregroundColor(DesignSystem.Colors.grey70)
-            
-            DesignSystem.Icons.iconChevronDown
-          }
-          .onTapGesture {
-            viewStore.send(.showSortBottomSheet)
-          }
-          
-          Spacer()
-          
-          Group {
-            Text("전체")
-              .font(.r14)
-              .foregroundColor(DesignSystem.Colors.grey70)
-            
-            DesignSystem.Icons.iconChevronDown
-          }
-        }
-        .padding(.horizontal, 24)
+      HStack(spacing: 0) {
+        Text(viewStore.state.rawValue)
+          .font(.r14)
+          .foregroundColor(DesignSystem.Colors.grey70)
         
-        Spacer()
-          .frame(height: 16)
+        DesignSystem.Icons.iconChevronDown
       }
+      .onTapGesture { viewStore.send(.showSortBottomSheet) }
+    }
+  }
+}
+
+// 카테고리 필터 바텀시트 버튼
+private struct FilterBottomSheetButton: View {
+  private let store: Store<Set<CategoryType>, LongStorageNewsListAction>
+  
+  fileprivate init(store: Store<Set<CategoryType>, LongStorageNewsListAction>) {
+    self.store = store
+  }
+  
+  fileprivate var body: some View {
+    WithViewStore(store) { viewStore in
+      HStack(spacing: 0) {
+        Text(buildSelectedCategoriesText(viewStore.state))
+          .font(.r14)
+          .foregroundColor(DesignSystem.Colors.grey70)
+        
+        DesignSystem.Icons.iconChevronDown
+      }
+      .onTapGesture { viewStore.send(.showCategoryFilterBottomSheet) }
+    }
+  }
+    
+  private func buildSelectedCategoriesText(_ selectedCategories: Set<CategoryType>) -> String {
+    let sortedSelectedCategories = selectedCategories.sorted(by: CategoryType.compare)
+    if sortedSelectedCategories.isEmpty || sortedSelectedCategories.count == CategoryType.allCases.count {
+      return "전체"
+    } else {
+      return sortedSelectedCategories
+        .map { $0.rawValue }
+        .joined(separator: "•")
     }
   }
 }
