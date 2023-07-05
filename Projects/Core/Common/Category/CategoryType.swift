@@ -37,4 +37,15 @@ public enum CategoryType: String, CaseIterable {
       return nil
     }
   }
+  
+  public var indexValue: Int {
+    var indexValue = -1
+    for (index, item) in Self.allCases.enumerated() {
+      if item.rawValue == self.rawValue {
+        indexValue = index
+        break
+      }
+    }
+    return indexValue
+  }
 }

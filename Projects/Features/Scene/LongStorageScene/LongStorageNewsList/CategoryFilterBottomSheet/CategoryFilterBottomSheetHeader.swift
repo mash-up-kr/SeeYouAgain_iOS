@@ -33,7 +33,10 @@ struct CategoryFilterBottomSheetHeader: View {
         
         ScrollView(.horizontal, showsIndicators: false) {
           HStack(spacing: 8) {
-            ForEach(Array(viewStore.state), id: \.self) { category in
+            ForEach(
+              viewStore.state.sorted(by: { $0.indexValue < $1.indexValue }),
+              id: \.self
+            ) { category in
               CategoryBadge(category: category)
                 .onTapGesture {
                   viewStore.send(.selectCategory(category))
