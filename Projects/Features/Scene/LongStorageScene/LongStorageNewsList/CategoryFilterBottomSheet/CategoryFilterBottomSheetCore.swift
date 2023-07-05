@@ -64,7 +64,6 @@ public let categoryFilterBottomSheetReducer = Reducer<
     return .none
     
   case let ._setSelectedCategories(selectedCategories):
-    print(selectedCategories)
     state.selectedCategories = selectedCategories
     return .none
     
