@@ -135,7 +135,7 @@ public let newsListReducer = Reducer.combine([
               Effect(value: ._willDisappear(totalShortsCount))
             ])
           case .failure:
-            return Effect(value: ._presentSuccessToast("인터넷이 불안정해서 읽음처리되지 못했어요."))
+            return Effect(value: ._presentFailureToast("인터넷이 불안정해서 읽음처리되지 못했어요."))
           }
         }
         .eraseToEffect()
