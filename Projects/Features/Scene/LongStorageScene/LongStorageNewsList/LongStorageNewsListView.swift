@@ -39,10 +39,7 @@ public struct LongStorageNewsListView: View {
         
         ScrollView {
           VStack(spacing: 0) {
-            MonthInfoView(
-              month: viewStore.state.month,
-              newsListCount: viewStore.state.shortsNewsItemsCount
-            )
+            MonthInfoView(store: store)
             
             Spacer()
               .frame(height: viewStore.state.isInEditMode ? 40 : 48)
@@ -98,43 +95,46 @@ public struct LongStorageNewsListView: View {
 }
 
 private struct MonthInfoView: View {
-  private var month: String
-  private var newsListCount: Int
+  private let store: Store<LongStorageNewsListState, LongStorageNewsListAction>
   
-  fileprivate init(
-    month: String,
-    newsListCount: Int
-  ) {
-    self.month = month
-    self.newsListCount = newsListCount
+  fileprivate init(store: Store<LongStorageNewsListState, LongStorageNewsListAction>) {
+    self.store = store
   }
   
   fileprivate var body: some View {
-    VStack(spacing: 8) {
-      Spacer()
-        .frame(height: 40)
-      
-      HStack(spacing: 16) {
-        Button {
-          // TODO: 기준 날짜보다 과거의 데이터 있을 떄에만 버튼 활성화
-        } label: {
-          DesignSystem.Icons.iconActiveCaretLeft
+    WithViewStore(store) { viewStore in
+      VStack(spacing: 8) {
+        Spacer()
+          .frame(height: 40)
+        
+        HStack(spacing: 16) {
+          Button {
+            viewStore.send(.minusMonthButtonTapped)
+          } label: {
+            DesignSystem.Icons.iconActiveCaretLeft
+          }
+          
+          Text(viewStore.state.month)
+            .underline(true, color: DesignSystem.Colors.grey90)
+            .font(.b14)
+            .foregroundColor(DesignSystem.Colors.grey90)
+            .onTapGesture {
+              viewStore.send(.datePickerTapped)
+            }
+          
+          Button {
+            viewStore.send(.plusMonthButtonTapped)
+          } label: {
+            viewStore.state.isCurrentMonth
+            ? DesignSystem.Icons.iconInactiveCaretRight : DesignSystem.Icons.iconActiveCaretRight
+          }
+          .disabled(viewStore.state.isCurrentMonth)
         }
         
-        Text(month)
-          .font(.b14)
-          .foregroundColor(DesignSystem.Colors.grey90)
-        
-        Button {
-          // TODO: 기준 날짜보다 최근인 데이터 있을 때에만 버튼 활성화
-        } label: {
-          DesignSystem.Icons.iconActiveCaretRight
-        }
+        Text("\(viewStore.state.shortsNewsItemsCount)숏스")
+          .font(.b24)
+          .foregroundColor(DesignSystem.Colors.grey100)
       }
-      
-      Text("\(newsListCount)숏스")
-        .font(.b24)
-        .foregroundColor(DesignSystem.Colors.grey100)
     }
   }
 }
