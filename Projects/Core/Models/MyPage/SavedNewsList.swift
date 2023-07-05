@@ -9,7 +9,6 @@
 import Foundation
 
 public struct SavedNewsList {
-  public let month: String
   public let savedNewsCount: Int
   public let newsList: [News]
 }
