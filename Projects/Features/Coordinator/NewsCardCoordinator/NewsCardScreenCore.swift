@@ -7,6 +7,7 @@
 //
 
 import ComposableArchitecture
+import Foundation
 import NewsList
 import Services
 import TCACoordinators
@@ -25,9 +26,14 @@ public enum NewsCardScreenAction: Equatable {
 }
 
 internal struct NewsCardScreenEnvironment {
+  fileprivate let mainQueue: AnySchedulerOf<DispatchQueue>
   fileprivate let newsCardService: NewsCardService
   
-  internal init(newsCardService: NewsCardService) {
+  internal init(
+    mainQueue: AnySchedulerOf<DispatchQueue>,
+    newsCardService: NewsCardService
+  ) {
+    self.mainQueue = mainQueue
     self.newsCardService = newsCardService
   }
 }
@@ -50,7 +56,10 @@ internal let newsCardScreenReducer = Reducer<
       state: /NewsCardScreenState.web,
       action: /NewsCardScreenAction.web,
       environment: {
-        WebEnvironment(newsCardService: $0.newsCardService)
+        WebEnvironment(
+          mainQueue: $0.mainQueue,
+          newsCardService: $0.newsCardService
+        )
       }
     ),
   shortsCompleteReducer

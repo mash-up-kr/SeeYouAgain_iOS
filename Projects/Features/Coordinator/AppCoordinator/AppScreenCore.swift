@@ -107,7 +107,10 @@ internal let appScreenReducer = Reducer<
       state: /AppScreenState.newsCard,
       action: /AppScreenAction.newsCard,
       environment: {
-        NewsCardCoordinatorEnvironment(newsCardService: $0.newsCardService)
+        NewsCardCoordinatorEnvironment(
+          mainQueue: $0.mainQueue,
+          newsCardService: $0.newsCardService
+        )
       }
     ),
   settingCoordinatorReducer

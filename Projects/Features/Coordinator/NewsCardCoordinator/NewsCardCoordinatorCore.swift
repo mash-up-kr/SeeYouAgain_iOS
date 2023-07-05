@@ -39,9 +39,14 @@ public enum NewsCardCoordinatorAction: Equatable, IndexedRouterAction {
 }
 
 public struct NewsCardCoordinatorEnvironment {
+  fileprivate let mainQueue: AnySchedulerOf<DispatchQueue>
   fileprivate let newsCardService: NewsCardService
   
-  public init(newsCardService: NewsCardService) {
+  public init(
+    mainQueue: AnySchedulerOf<DispatchQueue>,
+    newsCardService: NewsCardService
+  ) {
+    self.mainQueue = mainQueue
     self.newsCardService = newsCardService
   }
 }
@@ -52,7 +57,10 @@ public let newsCardCoordinatorReducer: Reducer<
   NewsCardCoordinatorEnvironment
 > = newsCardScreenReducer
   .forEachIndexedRoute(environment: {
-    NewsCardScreenEnvironment(newsCardService: $0.newsCardService)
+    NewsCardScreenEnvironment(
+      mainQueue: $0.mainQueue,
+      newsCardService: $0.newsCardService
+    )
   })
   .withRouteReducer(
     Reducer { state, action, env in
