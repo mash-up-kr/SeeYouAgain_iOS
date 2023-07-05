@@ -215,6 +215,13 @@ public let shortStorageNewsListReducer = Reducer<
           selectedItemIds.append(item.id)
         }
       }
+      
+      if selectedItemIds.isEmpty {
+        return Effect.concatenate([
+          Effect(value: ._setEditMode),
+          Effect(value: ._setTodayShortsItemEditMode)
+        ])
+      }
       return Effect(value: ._deleteTodayShorts(selectedItemIds))
       
     case ._setCurrentTimeSeconds:
