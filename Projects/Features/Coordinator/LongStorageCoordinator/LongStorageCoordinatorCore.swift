@@ -33,7 +33,7 @@ public struct LongStorageCoordinatorState: Equatable, IndexedRouterState {
   }
 }
 
-public enum LongStorageCoordinatorAction: Equatable, IndexedRouterAction {
+public enum LongStorageCoordinatorAction: IndexedRouterAction {
   case updateRoutes([Route<LongStorageScreenState>])
   case routeAction(Int, action: LongStorageScreenAction)
 }

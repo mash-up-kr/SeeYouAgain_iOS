@@ -19,7 +19,7 @@ public enum NewsCardScreenState: Equatable {
   case shortsComplete(ShortsCompleteState)
 }
 
-public enum NewsCardScreenAction: Equatable {
+public enum NewsCardScreenAction {
   case newsList(NewsListAction)
   case web(WebAction)
   case shortsComplete(ShortsCompleteAction)
