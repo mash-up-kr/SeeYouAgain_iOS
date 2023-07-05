@@ -34,7 +34,7 @@ struct CategoryFilterBottomSheetHeader: View {
         ScrollView(.horizontal, showsIndicators: false) {
           HStack(spacing: 8) {
             ForEach(
-              viewStore.state.sorted(by: { $0.indexValue < $1.indexValue }),
+              viewStore.state.sorted(by: CategoryType.compare),
               id: \.self
             ) { category in
               CategoryBadge(category: category)

@@ -183,7 +183,7 @@ private struct FilterBottomSheetButton: View {
   }
     
   private func buildSelectedCategoriesText(_ selectedCategories: Set<CategoryType>) -> String {
-    let sortedSelectedCategories = selectedCategories.sorted { $0.indexValue < $1.indexValue }
+    let sortedSelectedCategories = selectedCategories.sorted(by: CategoryType.compare)
     if sortedSelectedCategories.isEmpty || sortedSelectedCategories.count == CategoryType.allCases.count {
       return "전체"
     } else {

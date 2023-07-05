@@ -38,14 +38,14 @@ public enum CategoryType: String, CaseIterable {
     }
   }
   
-  public var indexValue: Int {
-    var indexValue = -1
-    for (index, item) in Self.allCases.enumerated() {
-      if item.rawValue == self.rawValue {
-        indexValue = index
-        break
-      }
+  public var indexValue: Int? {
+    Self.allCases.firstIndex(where: { $0.rawValue == self.rawValue })
+  }
+  
+  public static func compare(_ left: CategoryType, _ right: CategoryType) -> Bool {
+    if let leftIndex = left.indexValue, let rightIndex = right.indexValue {
+      return leftIndex < rightIndex
     }
-    return indexValue
+    return false
   }
 }
