@@ -36,10 +36,7 @@ public struct NewsCardEnvironment {
 public let newsCardReducer = Reducer.combine([
   Reducer<NewsCardState, NewsCardAction, NewsCardEnvironment> { state, action, env in
     switch action {
-    case .rightButtonTapped:
-      return Effect(value: ._navigateWebView(state.news.newsLink))
-      
-    case .cardTapped:
+    case .rightButtonTapped, .cardTapped:
       return Effect(value: ._navigateWebView(state.news.newsLink))
       
     default: return .none
