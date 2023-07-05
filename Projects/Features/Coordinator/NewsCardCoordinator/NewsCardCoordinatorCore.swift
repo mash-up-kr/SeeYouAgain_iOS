@@ -35,7 +35,7 @@ public struct NewsCardCoordinatorState: Equatable, IndexedRouterState {
   }
   
   public init(webAddress: String) {
-    self.routes = [.root(.web(.init(webAddress: webAddress)))]
+    self.routes = [.root(.web(.init(newsId: 0, webAddress: webAddress)))]
   }
 }
 
