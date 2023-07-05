@@ -12,16 +12,17 @@ import DesignSystem
 import SwiftUI
 
 struct CategoryFilterBottomSheetFooter: View {
-  private let store: Store<Void, CategoryFilterBottomSheetAction>
+  private let store: Store<CategoryFilterBottomSheetState, CategoryFilterBottomSheetAction>
   
-  init(store: Store<Void, CategoryFilterBottomSheetAction>) {
+  init(store: Store<CategoryFilterBottomSheetState, CategoryFilterBottomSheetAction>) {
     self.store = store
   }
   
   var body: some View {
-    WithViewStore(store) { viewStore in
+    WithViewStore(store, observe: \.selectedCategories) { viewStore in
       BottomButton(
         title: "확인",
+        disabled: viewStore.state.isEmpty,
         action: {
           viewStore.send(.confirmBottomButtonTapped)
         }

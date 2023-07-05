@@ -48,7 +48,6 @@ struct CategoryFilterBottomSheet: ViewModifier {
                 state: \.categoryFilterBottomSheetState,
                 action: LongStorageNewsListAction.categoryFilterBottomSheet
               )
-              .stateless
             )
           }
         )
