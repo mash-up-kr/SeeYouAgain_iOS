@@ -126,16 +126,13 @@ public let newsListReducer = Reducer.combine([
       return handleSourceType(&state, env, source: source)
       
     case let ._sortNewsItems(sortType):
-      // TODO: 정렬
-      /*
-       var sortedNewsItems = state.newsItems
-       if sortType == .latest {
-       sortedNewsItems.sort(by: { $0.writtenDateTime > $1.writtenDateTime })
-       } else {
-       sortedNewsItems.sort(by: { $0.writtenDateTime < $1.writtenDateTime })
-       }
-       state.newsItems = sortedNewsItems
-       */
+      var sortedNewsItems = state.newsItems
+      if sortType == .latest {
+        sortedNewsItems.sort(by: { $0.news.writtenDateTime > $1.news.writtenDateTime })
+      } else {
+        sortedNewsItems.sort(by: { $0.news.writtenDateTime < $1.news.writtenDateTime })
+      }
+      state.newsItems = sortedNewsItems
       return .none
       
     case ._initializeNewsItems:
