@@ -19,7 +19,7 @@ public struct ShortsCompleteState: Equatable {
 public enum ShortsCompleteAction {
   // MARK: - User Action
   case backButtonTapped
-  case completeButtonTapped
+  case confirmButtonTapped
   
   // MARK: - Inner Business Action
   
