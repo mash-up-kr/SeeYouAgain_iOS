@@ -50,6 +50,7 @@ public enum WebAction: Equatable {
   case _hideSaveToast
   case _hideWarningToast
   case _postNewsId(Int)
+  case _handleNewsSavedStatus(Bool)
   
   // MARK: - Inner SetState Action
   case _setSaveButtonDisabled(Bool)
@@ -78,12 +79,7 @@ public let webReducer = Reducer.combine([
     
     switch action {
     case ._onAppear:
-      return .merge([
-        Effect(value: ._setIsDisplayTooltip(false))
-          .delay(for: 4, scheduler: env.mainQueue)
-          .eraseToEffect(),
-        Effect(value: ._checkNewsSavedStatus)
-      ])
+      return Effect(value: ._checkNewsSavedStatus)
       
     case ._checkNewsSavedStatus:
       return env.newsCardService.checkSavedStatus(state.newsId)
@@ -91,7 +87,7 @@ public let webReducer = Reducer.combine([
         .flatMap { result -> Effect<WebAction, Never> in
           switch result {
           case let .success(status):
-            return Effect(value: ._setSaveButtonDisabled(status.isSaved))
+            return Effect(value: ._handleNewsSavedStatus(status.isSaved))
             
           case .failure:
             return .none
@@ -151,6 +147,20 @@ public let webReducer = Reducer.combine([
         }
         .eraseToEffect()
       
+    case let ._handleNewsSavedStatus(isSaved):
+      if isSaved {
+        return Effect.concatenate([
+          Effect(value: ._setSaveButtonDisabled(isSaved)),
+          Effect(value: ._setIsDisplayTooltip(!isSaved))
+        ])
+      }
+      return Effect.concatenate([
+        Effect(value: ._setSaveButtonDisabled(isSaved)),
+        Effect(value: ._setIsDisplayTooltip(isSaved))
+          .delay(for: 4, scheduler: env.mainQueue)
+          .eraseToEffect()
+      ])
+      
     case let ._setSaveButtonDisabled(disabled):
       state.saveButtonDisabled = disabled
       return .none
@@ -161,7 +171,7 @@ public let webReducer = Reducer.combine([
       }
       state.isDisplayTooltip = isDisplay
       return .none
-    
+      
     case let ._setSaveToastMessage(toastMessage):
       state.saveToastMessage = toastMessage
       return .none
