@@ -13,12 +13,6 @@ import Foundation
 import Models
 import Services
 
-public enum SourceType: Equatable {
-  case main
-  case hot
-  case mypage
-}
-
 public struct NewsListState: Equatable {
   var source: SourceType
   var shortsId: Int
@@ -33,7 +27,7 @@ public struct NewsListState: Equatable {
   var failureToastMessage: String?
   
   public init(
-    source: SourceType = .mypage,
+    source: SourceType,
     shortsId: Int,
     keywordTitle: String,
     newsItems: IdentifiedArrayOf<NewsCardState> = []
@@ -52,6 +46,7 @@ public enum NewsListAction {
   case backButtonTapped(SourceType)
   case completeButtonTapped
   case showSortBottomSheet
+  case navigateWebView(SourceType, Int, String)
   
   // MARK: - Inner Business Action
   case _onAppear
@@ -117,6 +112,9 @@ public let newsListReducer = Reducer.combine([
       
     case .showSortBottomSheet:
       return Effect(value: .sortBottomSheet(._setIsPresented(true)))
+      
+    case .navigateWebView:
+      return .none
       
     case ._onAppear:
       return Effect(value: ._handleNewsResponse(state.source))
@@ -220,6 +218,9 @@ public let newsListReducer = Reducer.combine([
       state.failureToastMessage = toastMessage
       return .none
 
+    case let .newsItem(id, action: ._navigateWebView(url)):
+      return Effect(value: .navigateWebView(state.source, id, url))
+      
     default: return .none
     }
   }

@@ -169,7 +169,7 @@ public let appCoordinatorReducer: Reducer<
           )
         )
       ):
-        state.routes.push(.newsCard(.init(source: .mypage, shortsId: id, keywordTitle: keyword)))
+        state.routes.push(.newsCard(.init(source: .shortStorage, shortsId: id, keywordTitle: keyword)))
         return .none
         
       case let .routeAction(
@@ -193,11 +193,13 @@ public let appCoordinatorReducer: Reducer<
           )
         )
       ):
-        state.routes.push(.newsCard(.init(newsId: id, webAddress: url)))
+        state.routes.push(.newsCard(.init(source: .longStorage, newsId: id, webAddress: url)))
         return .none
         
-      case .routeAction(_, action: .newsCard(.routeAction(_, action: .web(.backButtonTapped)))):
-        state.routes.pop()
+      case let .routeAction(_, action: .newsCard(.routeAction(_, action: .web(.backButtonTapped(source))))):
+        if source == .longStorage {
+          state.routes.pop()
+        }
         return .none
         
       case .routeAction(_, action: .newsCard(.routeAction(_, action: .shortsComplete(.backButtonTapped)))):
@@ -252,7 +254,7 @@ public let appCoordinatorReducer: Reducer<
         case .main, .hot:
           return Effect(value: .routeAction(0, action: .tabBar(._setTabHiddenStatus(false))))
           
-        case .mypage:
+        case .shortStorage, .longStorage:
           return .none
         }
         
