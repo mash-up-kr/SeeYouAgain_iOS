@@ -88,6 +88,46 @@ public struct LongStorageNewsListView: View {
       .onAppear {
         viewStore.send(._viewWillAppear)
       }
+      .bottomSheet(
+        isPresented: viewStore.binding(
+          get: \.sortBottomSheetState.isPresented,
+          send: { .sortBottomSheet(._setIsPresented($0)) }
+        ),
+        headerArea: { LongStorageSortBottomSheetHeader() },
+        content: {
+          LongStorageSortBottomSheetContent(
+            store: store.scope(
+              state: \.sortBottomSheetState,
+              action: LongStorageNewsListAction.sortBottomSheet
+            )
+          )
+        },
+        bottomArea: {
+          LongStorageSortBottomSheetFooter(
+            store: store.scope(
+              state: \.sortBottomSheetState,
+              action: LongStorageNewsListAction.sortBottomSheet
+            )
+            .stateless
+          )
+        }
+      )
+      .apply(content: { view in
+        WithViewStore(store.scope(state: \.successToastMessage)) { successToastMessageViewStore in
+          view.toast(
+            text: successToastMessageViewStore.state,
+            toastType: .info
+          )
+        }
+      })
+      .apply(content: { view in
+        WithViewStore(store.scope(state: \.failureToastMessage)) { failureToastMessageViewStore in
+          view.toast(
+            text: failureToastMessageViewStore.state,
+            toastType: .warning
+          )
+        }
+      })
       .longStorageSortBottomSheet(store: store)
       .filterBottomSheet(store: store)
     }

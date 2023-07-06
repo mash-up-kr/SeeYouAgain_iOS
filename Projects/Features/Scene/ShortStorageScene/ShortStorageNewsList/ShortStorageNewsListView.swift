@@ -110,6 +110,22 @@ public struct ShortStorageNewsListView: View {
       .onAppear {
         viewStore.send(._viewWillAppear)
       }
+      .apply(content: { view in
+        WithViewStore(store.scope(state: \.successToastMessage)) { successToastMessageViewStore in
+          view.toast(
+            text: successToastMessageViewStore.state,
+            toastType: .info
+          )
+        }
+      })
+      .apply(content: { view in
+        WithViewStore(store.scope(state: \.failureToastMessage)) { failureToastMessageViewStore in
+          view.toast(
+            text: failureToastMessageViewStore.state,
+            toastType: .warning
+          )
+        }
+      })
     }
   }
 }

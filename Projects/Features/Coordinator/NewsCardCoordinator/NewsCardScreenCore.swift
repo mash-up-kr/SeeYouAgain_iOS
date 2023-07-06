@@ -48,7 +48,10 @@ internal let newsCardScreenReducer = Reducer<
       state: /NewsCardScreenState.newsList,
       action: /NewsCardScreenAction.newsList,
       environment: {
-        NewsListEnvironment(newsCardService: $0.newsCardService)
+        NewsListEnvironment(
+          mainQueue: $0.mainQueue,
+          newsCardService: $0.newsCardService
+        )
       }
     ),
   webReducer
