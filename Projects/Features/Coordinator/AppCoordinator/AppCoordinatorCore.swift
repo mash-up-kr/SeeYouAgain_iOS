@@ -225,7 +225,7 @@ public let appCoordinatorReducer: Reducer<
           )
         )
         
-      case .routeAction(_, action: .newsCard(.routeAction(_, action: .shortsComplete(.completeButtonTapped)))):
+      case .routeAction(_, action: .newsCard(.routeAction(_, action: .shortsComplete(.confirmButtonTapped)))):
         state.routes.pop()
         return Effect(
           value: .routeAction(
