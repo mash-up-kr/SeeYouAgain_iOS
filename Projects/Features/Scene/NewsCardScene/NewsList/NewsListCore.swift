@@ -45,6 +45,7 @@ public enum NewsListAction {
   // MARK: - User Action
   case backButtonTapped(SourceType)
   case completeButtonTapped
+  case saveButtonTapped
   case showSortBottomSheet
   case navigateWebView(SourceType, Int, String)
   
@@ -52,7 +53,9 @@ public enum NewsListAction {
   case _onAppear
   case _willDisappear(Int)
   case _completeTodayShorts(Int)
+  case _saveTodayShorts(Int)
   case _handleNewsResponse(SourceType)
+  case _handleSaveTodayShortsResponse(Result<VoidResponse?, Error>)
   case _sortNewsItems(SortType)
   case _presentSuccessToast(String)
   case _presentFailureToast(String)
@@ -110,6 +113,9 @@ public let newsListReducer = Reducer.combine([
     case .completeButtonTapped:
       return Effect(value: ._completeTodayShorts(state.shortsId))
       
+    case .saveButtonTapped:
+      return Effect(value: ._saveTodayShorts(state.shortsId))
+      
     case .showSortBottomSheet:
       return Effect(value: .sortBottomSheet(._setIsPresented(true)))
       
@@ -138,8 +144,18 @@ public let newsListReducer = Reducer.combine([
         }
         .eraseToEffect()
       
+    case let ._saveTodayShorts(shortsId):
+      return env.newsCardService.saveNewsCard(shortsId)
+        .catchToEffect(NewsListAction._handleSaveTodayShortsResponse)
+      
     case let ._handleNewsResponse(source):
       return handleSourceType(&state, env, source: source)
+      
+    case ._handleSaveTodayShortsResponse(.success):
+      return Effect(value: ._presentSuccessToast("오늘 읽을 숏스에 저장됐어요:)"))
+      
+    case ._handleSaveTodayShortsResponse(.failure):
+      return Effect(value: ._presentFailureToast("인터넷이 불안정해서 저장되지 못했어요."))
       
     case let ._sortNewsItems(sortType):
       var sortedNewsItems = state.newsItems

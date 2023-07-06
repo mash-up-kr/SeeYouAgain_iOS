@@ -74,8 +74,8 @@ public struct NewsListView: View {
         VStack(spacing: 0) {
           Spacer()
           
-          BottomButton(title: "다 읽었어요") {
-            viewStore.send(.completeButtonTapped)
+          BottomButton(title: viewStore.source == .shortStorage ? "다 읽었어요" : "오늘 읽을 숏스에 저장") {
+            viewStore.send(viewStore.source == .shortStorage ? .completeButtonTapped : .saveButtonTapped)
           }
         }
       }
@@ -103,6 +103,22 @@ public struct NewsListView: View {
           )
         }
       )
+      .apply(content: { view in
+        WithViewStore(store.scope(state: \.successToastMessage)) { successToastMessageViewStore in
+          view.toast(
+            text: successToastMessageViewStore.state,
+            toastType: .info
+          )
+        }
+      })
+      .apply(content: { view in
+        WithViewStore(store.scope(state: \.failureToastMessage)) { failureToastMessageViewStore in
+          view.toast(
+            text: failureToastMessageViewStore.state,
+            toastType: .warning
+          )
+        }
+      })
     }
   }
 }
