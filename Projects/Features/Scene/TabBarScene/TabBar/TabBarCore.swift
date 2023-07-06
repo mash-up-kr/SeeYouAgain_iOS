@@ -145,6 +145,8 @@ public let tabBarReducer = Reducer<
       state.selectedTab = tab
       if tab == .hotKeyword {
         return Effect(value: .hotKeyword(.routeAction(0, action: .hotKeyword(._viewWillAppear))))
+      } else if tab == .myPage {
+        return Effect(value: .myPage(.routeAction(0, action: .myPage(._viewWillAppear))))
       }
       return .none
       
