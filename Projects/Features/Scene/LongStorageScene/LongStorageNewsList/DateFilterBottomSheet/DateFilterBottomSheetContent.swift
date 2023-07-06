@@ -46,7 +46,7 @@ struct DateFilterBottomSheetContent: View {
         }
         .pickerStyle(.wheel)
       }
-    }.debug()
+    }
   }
 }
 
