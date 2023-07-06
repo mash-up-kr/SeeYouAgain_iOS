@@ -59,7 +59,10 @@ internal let newsCardScreenReducer = Reducer<
       state: /NewsCardScreenState.web,
       action: /NewsCardScreenAction.web,
       environment: {
-        WebEnvironment(newsCardService: $0.newsCardService)
+        WebEnvironment(
+          mainQueue: $0.mainQueue,
+          newsCardService: $0.newsCardService
+        )
       }
     ),
   shortsCompleteReducer

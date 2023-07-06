@@ -23,6 +23,7 @@ public struct ShortStorageNewsListState: Equatable {
   var remainTime: Int = 24 * 60 * 60
   var currentTimeSeconds: Int = 0 // 지금 시간이 몇초를 담고있냐! 17:27:21 => 62841
   var cursorId: Int = 0
+  var isDisplayTooltip = false
   let pagingSize = 10
   var successToastMessage: String?
   var failureToastMessage: String?
@@ -46,6 +47,7 @@ public enum ShortStorageNewsListAction {
   case backButtonTapped
   case editButtonTapped
   case deleteButtonTapped
+  case tooltipButtonTapped
   
   // MARK: - Inner Business Action
   case _viewWillAppear
@@ -71,6 +73,7 @@ public enum ShortStorageNewsListAction {
   case _setCurrentTimeSeconds
   case _setRemainTime(Int)
   case _setRemainTimeString(Int)
+  case _toggleIsDisplayTooltip
   case _initializeShortStorageNewsList
   case _setSuccessToastMessage(String?)
   case _setFailureToastMessage(String?)
@@ -120,6 +123,9 @@ public let shortStorageNewsListReducer = Reducer<
     case .deleteButtonTapped:
       return Effect(value: ._setSelectedItemIds)
       
+    case .tooltipButtonTapped:
+      return Effect(value: ._toggleIsDisplayTooltip)
+  
     case ._viewWillAppear:
       return Effect.concatenate([
         Effect(value: ._setCurrentTimeSeconds),
@@ -255,6 +261,13 @@ public let shortStorageNewsListReducer = Reducer<
         }
       }
       state.selectedItemCounts = selectedItemIds.count
+      
+      if selectedItemIds.isEmpty {
+        return Effect.concatenate([
+          Effect(value: ._setEditMode),
+          Effect(value: ._setTodayShortsItemEditMode)
+        ])
+      }
       return Effect(value: ._deleteTodayShorts(selectedItemIds))
       
     case ._setCurrentTimeSeconds:
@@ -271,6 +284,10 @@ public let shortStorageNewsListReducer = Reducer<
       if time == 0 {
         return Effect(value: ._updateZeroTime)
       }
+      return .none
+      
+    case ._toggleIsDisplayTooltip:
+      state.isDisplayTooltip.toggle()
       return .none
       
     case ._initializeShortStorageNewsList:
