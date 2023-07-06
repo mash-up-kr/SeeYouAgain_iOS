@@ -13,6 +13,7 @@ import Foundation
 import Services
 
 public struct WebState: Equatable {
+  var source: SourceType
   var newsId: Int
   var webAddress: String
   var saveButtonDisabled: Bool
@@ -21,11 +22,13 @@ public struct WebState: Equatable {
   var warningToastMessage: String?
   
   public init(
+    source: SourceType,
     newsId: Int,
     webAddress: String,
     saveButtonDisabled: Bool = false,
     isDisplayTooltip: Bool = true
   ) {
+    self.source = source
     self.newsId = newsId
     self.webAddress = webAddress
     self.saveButtonDisabled = saveButtonDisabled
@@ -35,7 +38,7 @@ public struct WebState: Equatable {
 
 public enum WebAction: Equatable {
   // MARK: - User Action
-  case backButtonTapped
+  case backButtonTapped(SourceType)
   case saveButtonTapped
   case tooltipButtonTapped
   

@@ -24,7 +24,7 @@ public struct WebView: View {
         VStack {
           TopNavigationBar(
             leftIcon: DesignSystem.Icons.iconNavigationLeft,
-            leftIconButtonAction: { viewStore.send(.backButtonTapped) },
+            leftIconButtonAction: { viewStore.send(.backButtonTapped(viewStore.source)) },
             rightText: "저장",
             rightIconButtonAction: { viewStore.send(.saveButtonTapped) },
             isRightButtonActive: viewStore.binding(

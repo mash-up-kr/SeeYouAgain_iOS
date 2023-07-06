@@ -6,6 +6,7 @@
 //  Copyright © 2023 mashup.seeYouAgain. All rights reserved.
 //
 
+import Common
 import ComposableArchitecture
 import NewsList
 import Services
@@ -34,8 +35,8 @@ public struct NewsCardCoordinatorState: Equatable, IndexedRouterState {
     ]
   }
   
-  public init(webAddress: String) {
-    self.routes = [.root(.web(.init(newsId: 0, webAddress: webAddress)))]
+  public init(source: SourceType, webAddress: String) {
+    self.routes = [.root(.web(.init(source: source, newsId: 0, webAddress: webAddress)))]
   }
 }
 
@@ -75,9 +76,19 @@ public let newsCardCoordinatorReducer: Reducer<
         state.routes.push(.shortsComplete(.init(totalShortsCount: totalShortsCount)))
         return .none
         
-      case let .routeAction(_, action: .newsList(.newsItem(id: id, action: ._navigateWebView(url)))):
-        state.routes.push(.web(.init(newsId: id, webAddress: url)))
+      case let .routeAction(_, action: .newsList(.navigateWebView(source, id, url))):
+        state.routes.push(.web(.init(source: source, newsId: id, webAddress: url)))
         return .none
+        
+      case let .routeAction(_, action: .web(.backButtonTapped(source))):
+        switch source {
+        case .hot, .main, .shortStorage:
+          state.routes.pop()
+          return .none
+          
+        case .longStorage:
+          return .none
+        }
         
       default: return .none
       }
