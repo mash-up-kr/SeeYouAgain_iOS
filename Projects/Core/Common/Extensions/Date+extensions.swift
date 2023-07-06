@@ -70,4 +70,18 @@ extension Date {
     dateFormatter.dateFormat = "M"
     return dateFormatter.string(from: self)
   }
+  
+  public func yearToInt() -> Int {
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = "yyyy"
+    let yearString = dateFormatter.string(from: self)
+    return Int(yearString)!
+  }
+  
+  public func monthToInt() -> Int {
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = "M"
+    let monthString = dateFormatter.string(from: self)
+    return Int(monthString)!
+  }
 }

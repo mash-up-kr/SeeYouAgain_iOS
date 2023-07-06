@@ -38,6 +38,8 @@ public struct LongStorageNewsListState: Equatable {
   var selectedItemCounts: Int = 0
   var isCurrentMonth: Bool = true // 현재 월이 가장 마지막 월인지 여부
   var currentMonth = Date().monthToString() // 현재 날짜에 해당하는 월
+  var dateFilterBottomSheetState: DateFilterBottomSheetState // 날짜 변경 바텀 시트
+  var dateType: DateType
   
   public init(
     isInEditMode: Bool,
@@ -49,7 +51,9 @@ public struct LongStorageNewsListState: Equatable {
     self.sortType = .latest
     self.sortBottomSheetState = SortBottomSheetState(sortType: .latest, isPresented: false)
     self.categoryFilterBottomSheetState = CategoryFilterBottomSheetState()
+    self.dateFilterBottomSheetState = DateFilterBottomSheetState()
     self.selectedCategories = Set(CategoryType.allCases)
+    self.dateType = .init(year: Date().yearToInt(), month: Date().monthToInt())
   }
 }
 
@@ -63,6 +67,7 @@ public enum LongStorageNewsListAction {
   case plusMonthButtonTapped
   case showSortBottomSheet
   case showCategoryFilterBottomSheet
+  case showDateFilterBottomSheet
   
   // MARK: - Inner Business Action
   case _sortLongShortsItems(SortType)
@@ -89,6 +94,7 @@ public enum LongStorageNewsListAction {
   case _setSuccessToastMessage(String?)
   case _setFailureToastMessage(String?)
   case _setTargetDate(MonthType)
+  case _setDateType(Date)
   case _setMonth
   case _setIsCurrentMonth
   
@@ -96,6 +102,7 @@ public enum LongStorageNewsListAction {
   case shortsNewsItem(id: LongShortsItemState.ID, action: LongShortsItemAction)
   case sortBottomSheet(SortBottomSheetAction)
   case categoryFilterBottomSheet(CategoryFilterBottomSheetAction)
+  case dateFilterBottomSheet(DateFilterBottomSheetAction)
 }
 
 public struct LongStorageNewsListEnvironment {
@@ -136,6 +143,12 @@ public let longStorageNewsListReducer = Reducer<
       action: /LongStorageNewsListAction.categoryFilterBottomSheet,
       environment: { _ in CategoryFilterBottomSheetEnvironment() }
     ),
+  dateFilterBottomSheetReducer
+    .pullback(
+      state: \.dateFilterBottomSheetState,
+      action: /LongStorageNewsListAction.dateFilterBottomSheet,
+      environment: { _ in DateFilterBottomSheetEnvironment() }
+    ),
   Reducer { state, action, env in
     struct SuccessToastCancelID: Hashable {}
     struct FailureToastCancelID: Hashable {}
@@ -165,6 +178,10 @@ public let longStorageNewsListReducer = Reducer<
     case .showCategoryFilterBottomSheet:
       state.categoryFilterBottomSheetState = .init(selectedCategories: state.selectedCategories)
       return Effect(value: .categoryFilterBottomSheet(._setIsPresented(true)))
+      
+    case .showDateFilterBottomSheet:
+      state.dateFilterBottomSheetState = .init()
+      return Effect(value: .dateFilterBottomSheet(._setIsPresented(true)))
       
     case ._viewWillAppear:
       return Effect(value: ._fetchSavedNews(.initial))
@@ -338,8 +355,13 @@ public let longStorageNewsListReducer = Reducer<
       
       return Effect.concatenate([
         Effect(value: ._setMonth),
-        Effect(value: ._setIsCurrentMonth)
+        Effect(value: ._setIsCurrentMonth),
+        Effect(value: ._setDateType(state.targetDate))
       ])
+      
+    case let ._setDateType(date):
+      state.dateType = .init(year: date.yearToInt(), month: date.monthToInt())
+      return .none
       
     case ._setMonth:
       state.month = state.targetDate.yearMonthToString()
@@ -363,6 +385,16 @@ public let longStorageNewsListReducer = Reducer<
         Effect(value: .categoryFilterBottomSheet(._setIsPresented(false)))
       )
       
+    case let .dateFilterBottomSheet(._filter(year, month)):
+      state.targetDate = "\(year)-\(month)-01".toDate()
+      
+      return Effect.concatenate([
+        Effect(value: ._setDateType(state.targetDate)),
+        Effect(value: ._setIsCurrentMonth),
+        Effect(value: .dateFilterBottomSheet(._setIsPresented(false))),
+        Effect(value: ._fetchSavedNews(.initial))
+      ])
+      
     default: return .none
     }
   }
@@ -384,5 +416,14 @@ private func handleSavedNewsResponse(
 
   case .newPaging:
     return .none
+  }
+}
+
+fileprivate extension String {
+  func toDate() -> Date {
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = "yyyy-M-dd"
+    dateFormatter.timeZone = TimeZone(identifier: "ko_kr")
+    return dateFormatter.date(from: self)!
   }
 }

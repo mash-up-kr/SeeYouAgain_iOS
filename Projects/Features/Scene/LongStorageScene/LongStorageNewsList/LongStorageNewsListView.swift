@@ -130,6 +130,7 @@ public struct LongStorageNewsListView: View {
       })
       .longStorageSortBottomSheet(store: store)
       .filterBottomSheet(store: store)
+      .dateFilterBottomSheet(store: store)
     }
   }
 }
@@ -154,14 +155,8 @@ private struct MonthInfoView: View {
             DesignSystem.Icons.iconActiveCaretLeft
           }
           
-          Text(viewStore.state.month)
-            .underline(true, color: DesignSystem.Colors.grey90)
-            .font(.b14)
-            .foregroundColor(DesignSystem.Colors.grey90)
-            .onTapGesture {
-              viewStore.send(.datePickerTapped)
-            }
-          
+          DateFilterButton(store: store.scope(state: \.dateType))
+
           Button {
             viewStore.send(.plusMonthButtonTapped)
           } label: {
@@ -230,6 +225,28 @@ private struct FilterBottomSheetButton: View {
       return sortedSelectedCategories
         .map { $0.rawValue }
         .joined(separator: "•")
+    }
+  }
+}
+
+private struct DateFilterButton: View {
+  private let store: Store<DateType, LongStorageNewsListAction>
+  
+  fileprivate init(store: Store<DateType, LongStorageNewsListAction>) {
+    self.store = store
+  }
+  
+  fileprivate var body: some View {
+    WithViewStore(store) { viewStore in
+      HStack(spacing: 0) {
+        Text("\(String(viewStore.state.year))년 \(viewStore.state.month)월")
+          .underline(true, color: DesignSystem.Colors.grey90)
+          .font(.b14)
+          .foregroundColor(DesignSystem.Colors.grey90)
+          .onTapGesture {
+            viewStore.send(.showDateFilterBottomSheet)
+          }
+      }
     }
   }
 }
