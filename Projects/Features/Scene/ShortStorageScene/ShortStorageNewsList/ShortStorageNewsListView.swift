@@ -50,7 +50,7 @@ public struct ShortStorageNewsListView: View {
                 shortsCompleteCount: viewStore.shortsCompleteCount,
                 message: "오늘은 아직 저장한 뉴스가 없어요\n뉴스를 보고 마음에 드면 저장해보세요"
               )
-            } else if viewStore.shortsCompleteCount == viewStore.shortsNewsItemsCount {
+            } else if viewStore.shortsCompleteCount != 0 && viewStore.shortsNewsItemsCount == 0 {
               // 오늘 저장한 숏스 다 읽은 경우
               EmptyNewsContentView(
                 shortsNewsItemsCount: viewStore.shortsNewsItemsCount,
@@ -110,6 +110,22 @@ public struct ShortStorageNewsListView: View {
       .onAppear {
         viewStore.send(._viewWillAppear)
       }
+      .apply(content: { view in
+        WithViewStore(store.scope(state: \.successToastMessage)) { successToastMessageViewStore in
+          view.toast(
+            text: successToastMessageViewStore.state,
+            toastType: .info
+          )
+        }
+      })
+      .apply(content: { view in
+        WithViewStore(store.scope(state: \.failureToastMessage)) { failureToastMessageViewStore in
+          view.toast(
+            text: failureToastMessageViewStore.state,
+            toastType: .warning
+          )
+        }
+      })
     }
   }
 }

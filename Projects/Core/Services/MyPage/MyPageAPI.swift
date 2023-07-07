@@ -14,6 +14,8 @@ public enum MyPageAPI {
   case getMemberInfo
   case getTodayShorts(Int, Int)
   case deleteTodayShorts([Int])
+  case fetchSavedNews(String, Int)
+  case deleteSavedNews([Int])
 }
 
 extension MyPageAPI: TargetType {
@@ -25,10 +27,18 @@ extension MyPageAPI: TargetType {
     switch self {
     case .getMemberInfo:
       return "/member/info"
+      
     case .getTodayShorts:
       return "/member-news-card/"
+      
     case .deleteTodayShorts:
       return "/member-news-card"
+      
+    case .fetchSavedNews:
+      return "/member-news"
+      
+    case .deleteSavedNews:
+      return "/member/news/bulk-delete"
     }
   }
   
@@ -41,6 +51,12 @@ extension MyPageAPI: TargetType {
       return .get
       
     case .deleteTodayShorts:
+      return .post
+      
+    case .fetchSavedNews:
+      return .get
+      
+    case .deleteSavedNews:
       return .post
     }
   }
@@ -62,6 +78,20 @@ extension MyPageAPI: TargetType {
       
     case let .deleteTodayShorts(shortsIds):
       let requestDTO = DeleteTodayShortsRequestDTO(shortsIds: shortsIds)
+      return .requestJSONEncodable(requestDTO)
+      
+    case let .fetchSavedNews(targetDate, size):
+      let requestDTO = SavedNewsRequestDTO(
+        targetDate: targetDate,
+        size: size
+      )
+      return .requestParameters(
+        parameters: requestDTO.toDictionary,
+        encoding: .queryString
+      )
+      
+    case let .deleteSavedNews(newsIds):
+      let requestDTO = DeleteNewsRequestDTO(newsIds: newsIds)
       return .requestJSONEncodable(requestDTO)
     }
   }

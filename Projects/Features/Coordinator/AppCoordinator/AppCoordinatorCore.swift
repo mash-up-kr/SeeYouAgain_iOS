@@ -184,7 +184,7 @@ public let appCoordinatorReducer: Reducer<
                   action: .longStorageNewsList(
                     .shortsNewsItem(
                       id: id,
-                      action: .cardAction(.cardTapped)
+                      action: .cardAction(._navigateNewsList(url))
                     )
                   )
                 )
@@ -193,32 +193,7 @@ public let appCoordinatorReducer: Reducer<
           )
         )
       ):
-        // TODO: 실데이터 반영 필요
-        state.routes.push(.newsCard(.init(source: .longStorage, webAddress: "https://naver.com")))
-        return .none
-        
-      case let .routeAction(
-        _,
-        action: .tabBar(
-          .myPage(
-            .routeAction(
-              _,
-              action: .longStorage(
-                .routeAction(
-                  _,
-                  action: .longStorageNewsList(
-                    .shortsNewsItem(
-                      id: id,
-                      action: .cardAction(.rightButtonTapped)
-                    )
-                  )
-                )
-              )
-            )
-          )
-        )
-      ):
-        state.routes.push(.newsCard(.init(source: .longStorage, webAddress: "https://naver.com")))
+        state.routes.push(.newsCard(.init(source: .longStorage, newsId: id, webAddress: url)))
         return .none
         
       case let .routeAction(_, action: .newsCard(.routeAction(_, action: .web(.backButtonTapped(source))))):
@@ -250,7 +225,7 @@ public let appCoordinatorReducer: Reducer<
           )
         )
         
-      case .routeAction(_, action: .newsCard(.routeAction(_, action: .shortsComplete(.completeButtonTapped)))):
+      case .routeAction(_, action: .newsCard(.routeAction(_, action: .shortsComplete(.confirmButtonTapped)))):
         state.routes.pop()
         return Effect(
           value: .routeAction(

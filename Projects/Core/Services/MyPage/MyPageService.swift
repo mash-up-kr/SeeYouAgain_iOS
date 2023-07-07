@@ -21,6 +21,11 @@ public struct MyPageService {
     _ pagingSize: Int
   ) -> Effect<TodayShorts, Error>
   public var deleteTodayShorts: (_ shortsIds: [Int]) -> Effect<VoidResponse?, Error>
+  public var fetchSavedNews: (
+    _ targetDateTime: String,
+    _ size: Int
+  ) -> Effect<SavedNewsList, Error>
+  public var deleteNews: (_ newsIds: [Int]) -> Effect<VoidResponse?, Error>
 }
 
 extension MyPageService {
@@ -52,6 +57,30 @@ extension MyPageService {
         .init()
         .request(
           MyPageAPI.deleteTodayShorts(shortsIds),
+          type: VoidResponse.self
+        )
+        .compactMap { $0 }
+        .eraseToEffect()
+    },
+    fetchSavedNews: { targetDateTime, size in
+      return Provider<MyPageAPI>
+        .init()
+        .request(
+          MyPageAPI.fetchSavedNews(
+            targetDateTime,
+            size
+          ),
+          type: SavedNewsResponseDTO.self
+        )
+        .compactMap { $0 }
+        .map { $0.toDomain }
+        .eraseToEffect()
+    },
+    deleteNews: { newsIds in
+      return Provider<MyPageAPI>
+        .init()
+        .request(
+          MyPageAPI.deleteSavedNews(newsIds),
           type: VoidResponse.self
         )
         .compactMap { $0 }

@@ -49,7 +49,7 @@ public struct ShortsCompleteView: View {
         Spacer()
         
         BottomButton(title: "확인") {
-          viewStore.send(.completeButtonTapped)
+          viewStore.send(.confirmButtonTapped)
         }
       }
     }

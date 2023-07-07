@@ -8,6 +8,7 @@
 
 import Common
 import ComposableArchitecture
+import Foundation
 import NewsList
 import Services
 import SwiftUI
@@ -35,8 +36,22 @@ public struct NewsCardCoordinatorState: Equatable, IndexedRouterState {
     ]
   }
   
-  public init(source: SourceType, webAddress: String) {
-    self.routes = [.root(.web(.init(source: source, newsId: 0, webAddress: webAddress)))]
+  public init(
+    source: SourceType,
+    newsId: Int,
+    webAddress: String
+  ) {
+    self.routes = [
+      .root(
+        .web(
+          .init(
+            source: source,
+            newsId: newsId,
+            webAddress: webAddress
+          )
+        )
+      )
+    ]
   }
 }
 

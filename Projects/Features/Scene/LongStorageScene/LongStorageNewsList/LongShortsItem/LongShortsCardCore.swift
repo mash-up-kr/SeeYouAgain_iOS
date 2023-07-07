@@ -7,34 +7,7 @@
 //
 
 import ComposableArchitecture
-
-public struct News: Equatable, Identifiable {
-  public let id: Int
-  let title: String
-  let thumbnailImageUrl: String?
-  let newsLink: String
-  let press: String
-  let writtenDateTime: String
-  let type: String
-  
-  public init(
-    id: Int,
-    title: String,
-    thumbnailImageUrl: String?,
-    newsLink: String,
-    press: String,
-    writtenDateTime: String,
-    type: String
-  ) {
-    self.id = id
-    self.title = title
-    self.thumbnailImageUrl = thumbnailImageUrl
-    self.newsLink = newsLink
-    self.press = press
-    self.writtenDateTime = writtenDateTime
-    self.type = type
-  }
-}
+import Models
 
 public struct LongShortsCardState: Equatable, Identifiable {
   public var id: Int
@@ -61,6 +34,7 @@ public enum LongShortsCardAction: Equatable {
   case cardTapped
   
   // MARK: - Inner Business Action
+  case _navigateNewsList(String)
   
   // MARK: - Inner SetState Action
   
@@ -78,6 +52,12 @@ public let longShortsCardReducer = Reducer<
 >.combine([
   Reducer { state, action, env in
     switch action {
+    case .rightButtonTapped:
+      return Effect(value: ._navigateNewsList(state.news.newsLink))
+      
+    case .cardTapped:
+      return Effect(value: ._navigateNewsList(state.news.newsLink))
+      
     default: return .none
     }
   }

@@ -23,6 +23,8 @@ public struct NewsListState: Equatable {
   var cursorPage: Int = 0
   var cursorDate: Date = .now
   var pagingSize = 20
+  var successToastMessage: String?
+  var failureToastMessage: String?
   
   public init(
     source: SourceType,
@@ -43,6 +45,7 @@ public enum NewsListAction {
   // MARK: - User Action
   case backButtonTapped(SourceType)
   case completeButtonTapped
+  case saveButtonTapped
   case showSortBottomSheet
   case navigateWebView(SourceType, Int, String)
   
@@ -50,13 +53,21 @@ public enum NewsListAction {
   case _onAppear
   case _willDisappear(Int)
   case _completeTodayShorts(Int)
+  case _saveTodayShorts(Int)
   case _handleNewsResponse(SourceType)
+  case _handleSaveTodayShortsResponse(Result<VoidResponse?, Error>)
   case _sortNewsItems(SortType)
+  case _presentSuccessToast(String)
+  case _presentFailureToast(String)
+  case _hideSuccessToast
+  case _hideFailureToast
   
   // MARK: - Inner SetState Action
   case _initializeNewsItems
   case _setNewsItems([News])
   case _setSortType(SortType)
+  case _setSuccessToastMessage(String?)
+  case _setFailureToastMessage(String?)
   
   // MARK: - Child Action
   case newsItem(id: NewsCardState.ID, action: NewsCardAction)
@@ -64,9 +75,14 @@ public enum NewsListAction {
 }
 
 public struct NewsListEnvironment {
+  fileprivate let mainQueue: AnySchedulerOf<DispatchQueue>
   fileprivate let newsCardService: NewsCardService
   
-  public init(newsCardService: NewsCardService) {
+  public init(
+    mainQueue: AnySchedulerOf<DispatchQueue>,
+    newsCardService: NewsCardService
+  ) {
+    self.mainQueue = mainQueue
     self.newsCardService = newsCardService
   }
 }
@@ -87,12 +103,18 @@ public let newsListReducer = Reducer.combine([
       environment: { _ in SortBottomSheetEnvironment() }
     ),
   Reducer<NewsListState, NewsListAction, NewsListEnvironment> { state, action, env in
+    struct SuccessToastCancelID: Hashable {}
+    struct FailureToastCancelID: Hashable {}
+    
     switch action {
     case .backButtonTapped:
       return .none
       
     case .completeButtonTapped:
       return Effect(value: ._completeTodayShorts(state.shortsId))
+      
+    case .saveButtonTapped:
+      return Effect(value: ._saveTodayShorts(state.shortsId))
       
     case .showSortBottomSheet:
       return Effect(value: .sortBottomSheet(._setIsPresented(true)))
@@ -117,13 +139,23 @@ public let newsListReducer = Reducer.combine([
               Effect(value: ._willDisappear(totalShortsCount))
             ])
           case .failure:
-            return .none
+            return Effect(value: ._presentFailureToast("인터넷이 불안정해서 읽음처리되지 못했어요."))
           }
         }
         .eraseToEffect()
       
+    case let ._saveTodayShorts(shortsId):
+      return env.newsCardService.saveNewsCard(shortsId)
+        .catchToEffect(NewsListAction._handleSaveTodayShortsResponse)
+      
     case let ._handleNewsResponse(source):
       return handleSourceType(&state, env, source: source)
+      
+    case ._handleSaveTodayShortsResponse(.success):
+      return Effect(value: ._presentSuccessToast("오늘 읽을 숏스에 저장됐어요:)"))
+      
+    case ._handleSaveTodayShortsResponse(.failure):
+      return Effect(value: ._presentFailureToast("인터넷이 불안정해서 저장되지 못했어요."))
       
     case let ._sortNewsItems(sortType):
       var sortedNewsItems = state.newsItems
@@ -134,6 +166,32 @@ public let newsListReducer = Reducer.combine([
       }
       state.newsItems = sortedNewsItems
       return .none
+      
+    case let ._presentSuccessToast(toastMessage):
+      return Effect.concatenate([
+        Effect(value: ._setSuccessToastMessage(toastMessage)),
+        .cancel(id: SuccessToastCancelID()),
+        Effect(value: ._hideSuccessToast)
+          .delay(for: 2, scheduler: env.mainQueue)
+          .eraseToEffect()
+          .cancellable(id: SuccessToastCancelID(), cancelInFlight: true)
+      ])
+      
+    case let ._presentFailureToast(toastMessage):
+      return Effect.concatenate([
+        Effect(value: ._setFailureToastMessage(toastMessage)),
+        .cancel(id: FailureToastCancelID()),
+        Effect(value: ._hideFailureToast)
+          .delay(for: 2, scheduler: env.mainQueue)
+          .eraseToEffect()
+          .cancellable(id: FailureToastCancelID(), cancelInFlight: true)
+      ])
+      
+    case ._hideSuccessToast:
+      return Effect(value: ._setSuccessToastMessage(nil))
+      
+    case ._hideFailureToast:
+      return Effect(value: ._setFailureToastMessage(nil))
       
     case ._initializeNewsItems:
       state.newsItems.removeAll()
@@ -168,6 +226,14 @@ public let newsListReducer = Reducer.combine([
         Effect(value: .sortBottomSheet(._setIsPresented(false)))
       )
       
+    case let ._setSuccessToastMessage(toastMessage):
+      state.successToastMessage = toastMessage
+      return .none
+      
+    case let ._setFailureToastMessage(toastMessage):
+      state.failureToastMessage = toastMessage
+      return .none
+
     case let .newsItem(id, action: ._navigateWebView(url)):
       return Effect(value: .navigateWebView(state.source, id, url))
       

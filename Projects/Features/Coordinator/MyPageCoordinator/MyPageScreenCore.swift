@@ -76,8 +76,11 @@ internal let myPageScreenReducer = Reducer<
     .pullback(
       state: /MyPageScreenState.longStorage,
       action: /MyPageScreenAction.longStorage,
-      environment: { _ in
-        LongStorageCoordinatorEnvironment()
+      environment: {
+        LongStorageCoordinatorEnvironment(
+          mainQueue: $0.mainQueue,
+          myPageService: $0.myPageService
+        )
       }
     ),
   settingCoordinatorReducer
