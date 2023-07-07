@@ -12,8 +12,8 @@ public enum Pivot: String, Encodable {
   case desc
   case asc
 
-  enum CodingKeys: String, CodingKey {
-    case desc = "DESC"
-    case asc = "ASC"
+  public func encode(to encoder: Encoder) throws {
+    var container = encoder.singleValueContainer()
+    try container.encode(rawValue.uppercased())
   }
 }
