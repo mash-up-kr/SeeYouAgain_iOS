@@ -11,9 +11,9 @@ import DesignSystem
 import SwiftUI
 
 struct DateFilterBottomSheetFooter: View {
-  private let store: Store<DateFilterBottomSheetState, DateFilterBottomSheetAction>
+  private let store: Store<Void, DateFilterBottomSheetAction>
   
-  init(store: Store<DateFilterBottomSheetState, DateFilterBottomSheetAction>) {
+  init(store: Store<Void, DateFilterBottomSheetAction>) {
     self.store = store
   }
   

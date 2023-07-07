@@ -39,6 +39,7 @@ struct DateFilterBottomSheet: ViewModifier {
                 state: \.dateFilterBottomSheetState,
                 action: LongStorageNewsListAction.dateFilterBottomSheet
               )
+              .stateless
             )
           }
         )

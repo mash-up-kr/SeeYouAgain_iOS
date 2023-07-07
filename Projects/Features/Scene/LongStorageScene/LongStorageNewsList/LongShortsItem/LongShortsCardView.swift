@@ -88,7 +88,7 @@ private struct NewsDataView: View {
           .foregroundColor(DesignSystem.Colors.grey50)
         
         CategoryView(
-          category: CategoryType(uppercasedName: news.category)?.rawValue ?? "",
+          category: CategoryType(uppercasedName: news.category)?.rawValue ?? "카테고리 없음",
           color: CategoryType(uppercasedName: news.category)?.color ?? DesignSystem.Colors.economic
         )
         

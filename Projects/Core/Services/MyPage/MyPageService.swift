@@ -8,7 +8,6 @@
 
 import Alamofire
 import ComposableArchitecture
-import Foundation
 import Models
 
 #if DEBUG

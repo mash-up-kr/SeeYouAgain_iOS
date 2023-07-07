@@ -10,16 +10,6 @@ import Common
 import ComposableArchitecture
 import Foundation
 
-public struct DateType: Equatable {
-  var year: Int
-  var month: Int
-  
-  public init(year: Int, month: Int) {
-    self.year = year
-    self.month = month
-  }
-}
-
 struct DateFilterBottomSheetState: Equatable {
   public var year: Int = Date().yearToInt()
   public var month: Int = Date().monthToInt() - 1 // 피커에서 배열 인덱스로 사용해서 1을 빼줌
