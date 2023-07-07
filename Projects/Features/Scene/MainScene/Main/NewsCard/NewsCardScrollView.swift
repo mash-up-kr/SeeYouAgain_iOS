@@ -62,7 +62,6 @@ private struct NewsCardsView: View {
         .frame(width: viewStore.layout.size.width)
         .offset(viewStore.offsets[id])
         .rotationEffect(.degrees(viewStore.degrees[id]))
-        .animation(.easeInOut, value: viewStore.currentScrollOffset)
       }
     }
   }

@@ -25,41 +25,27 @@ struct NewsCardView: View {
             .resizable()
             .scaledToFit()
             .opacity(viewStore.isFolded ? 0 : 1)
-            .animation(.easeInOut, value: viewStore.isFolded)
           
           if let newsCardType = NewsCardType(rawValue: viewStore.newsCard.category) {
-            if viewStore.isFolded {
-              newsCardType.background
-                .resizable()
-                .scaledToFit()
-                .padding(20)
-                .transition(.offset(x: 0, y: -10))
-            }
+            newsCardType.background
+              .resizable()
+              .scaledToFit()
+              .padding(20)
+              .opacity(viewStore.isFolded ? 1 : 0)
+              .transition(.offset(x: 0, y: -10))
             
-            LetterPaper(
-              store: store,
-              newsPaper: newsCardType.image
-            )
+            LetterPaper(store: store.actionless, newsPaper: newsCardType.image)
+              .frame(height: viewStore.isFolded ? 0 : geometry.size.height)
           }
           
-          LetterBottom(deviceRatio: viewStore.layout.ratio)
-            .cornerRadius(10, corners: [.bottomLeft, .bottomRight])
+          DesignSystem.Images.letterEnvelope
+            .resizable()
+            .scaledToFit()
           
-          LetterSide(deviceRatio: viewStore.layout.ratio)
-            .cornerRadius(10, corners: [.bottomLeft, .bottomRight])
-          
-          LetterTop(
-            isFold: viewStore.binding(
-              get: \.isFolded,
-              send: { ._setIsFolded($0) }
-            ),
-            deviceRatio: viewStore.layout.ratio
-          )
+          LetterTop(store: store.scope(state: \.isFolded).actionless)
         }
         .opacity(viewStore.opacity)
-        .animation(.easeInOut, value: viewStore.opacity)
         .offset(y: viewStore.yOffset)
-        .animation(.easeInOut, value: viewStore.yOffset)
         .onTapGesture {
           viewStore.send(.newsCardTapped)
         }
