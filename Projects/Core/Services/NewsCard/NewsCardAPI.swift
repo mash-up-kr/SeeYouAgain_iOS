@@ -39,8 +39,8 @@ extension NewsCardAPI: TargetType {
     case .completeTodayShorts:
       return "/member-news-card"
       
-    case let .hotkeywordFetchNews(keyword, _, _, _):
-      return "/hot-keywords/\(keyword)"
+    case .hotkeywordFetchNews:
+      return "/news"
       
     case .saveNews:
       return "/member/news"
@@ -102,8 +102,9 @@ extension NewsCardAPI: TargetType {
       let requestDTO = CompleteTodayShortsRequestDTO(newsCardId: shortsId)
       return .requestJSONEncodable(requestDTO)
       
-    case let .hotkeywordFetchNews(_, targetDateTime, cursorId, pagingSize):
-      let requestDTO = NewsCardsRequestDTO(
+    case let .hotkeywordFetchNews(keyword, targetDateTime, cursorId, pagingSize):
+      let requestDTO = HotKeywordNewsCardRequestDTO(
+        keyword: keyword,
         targetDateTime: targetDateTime.toFormattedString(format: "yyyy-MM-dd'T'HH:mm:ss"),
         cursorId: cursorId,
         size: pagingSize
