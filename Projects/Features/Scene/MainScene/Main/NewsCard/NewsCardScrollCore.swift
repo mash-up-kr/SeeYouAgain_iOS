@@ -26,7 +26,6 @@ public struct NewsCardLayout: Equatable {
 
 public struct NewsCardScrollState: Equatable {
   var dragDirection: DragDirection
-  var gestureDragOffset: CGFloat
   var currentScrollOffset: CGFloat
   var previousScrollIndex: Int
   var currentScrollIndex: Int
@@ -40,7 +39,6 @@ public struct NewsCardScrollState: Equatable {
     newsCards: IdentifiedArrayOf<NewsCardState>
   ) {
     self.dragDirection = .none
-    self.gestureDragOffset = 0
     self.currentScrollOffset = 0
     self.previousScrollIndex = 0
     self.currentScrollIndex = 0
@@ -58,19 +56,16 @@ public enum NewsCardScrollAction {
   
   // MARK: - Inner Business Action
   case _onAppear
-  case _calculateScrollIndex
-  case _calculateCurrentScrollOffset
   case _updateIsFolds
-  case _calculateDegrees
-  case _calculateOffsets
+  case _calculateScrollIndex
+  case _calculateCurrentScrollOffset(CGFloat)
+  case _calculateDegrees(CGFloat)
+  case _calculateOffsets(CGFloat)
   case _fetchNewsCardsIfNeeded(Int, Int)
   case _concatenateNewsCards([NewsCard])
   
   // MARK: - Inner SetState Action
   case _setDragDirection(DragDirection)
-  case _setGestureDragOffset(CGFloat)
-  case _setCurrentScrollOffset(CGFloat)
-  case _setScrollIndex(Int)
   
   // MARK: - Child Action
   case newsCard(id: Int, action: NewsCardAction)
@@ -110,11 +105,11 @@ public let newsCardScrollReducer = Reducer<
         
       case .horizontal:
         return Effect.concatenate(
-          Effect(value: ._setGestureDragOffset(translation.width)),
-          Effect(value: ._calculateCurrentScrollOffset),
-          Effect(value: ._calculateDegrees),
-          Effect(value: ._calculateOffsets)
+          Effect(value: ._calculateCurrentScrollOffset(translation.width)),
+          Effect(value: ._calculateDegrees(translation.width)),
+          Effect(value: ._calculateOffsets(translation.width))
         )
+        
       case .vertical:
         return Effect(value: .newsCard(id: state.currentScrollIndex, action: .dragOnChanged(translation)))
       }
@@ -127,11 +122,10 @@ public let newsCardScrollReducer = Reducer<
       case .horizontal:
         return Effect.concatenate(
           Effect(value: ._setDragDirection(.none)),
-          Effect(value: ._setGestureDragOffset(.zero)),
-          Effect(value: ._calculateCurrentScrollOffset),
-          Effect(value: ._updateIsFolds),
-          Effect(value: ._calculateDegrees),
-          Effect(value: ._calculateOffsets)
+          Effect(value: ._calculateCurrentScrollOffset(.zero)),
+          Effect(value: ._calculateDegrees(.zero)),
+          Effect(value: ._calculateOffsets(.zero)),
+          Effect(value: ._updateIsFolds)
         )
       case .vertical:
         return Effect.concatenate(
@@ -145,56 +139,36 @@ public let newsCardScrollReducer = Reducer<
         return .none
       }
       return Effect.concatenate(
-        Effect(value: ._calculateCurrentScrollOffset),
+        Effect(value: ._calculateCurrentScrollOffset(.zero)),
         Effect(value: .newsCard(id: 0, action: ._setIsFolded(false))),
-        Effect(value: ._calculateDegrees),
-        Effect(value: ._calculateOffsets)
+        Effect(value: ._calculateDegrees(.zero)),
+        Effect(value: ._calculateOffsets(.zero))
       )
-      
-    case ._calculateScrollIndex:
-      guard !state.newsCards.isEmpty else { return .none }
-      let logicalOffset = (state.currentScrollOffset - state.layout.leadingOffset) * -1.0
-      let contentWidth = state.layout.size.width + state.layout.spacing
-      let floatIndex = (logicalOffset) / contentWidth
-      let intIndex = Int(round(floatIndex))
-      let newPageIndex = min(max(intIndex, 0), state.newsCards.count - 1)
-      return Effect(value: ._setScrollIndex(newPageIndex))
-      
-    case ._calculateCurrentScrollOffset:
-      let contentWidth = state.layout.size.width + state.layout.spacing
-      let activePageOffset = CGFloat(state.currentScrollIndex) * contentWidth
-      let scrollOffset = state.layout.leadingOffset - activePageOffset + state.gestureDragOffset
-      return Effect(value: ._setCurrentScrollOffset(scrollOffset))
-      
+    
     case ._updateIsFolds:
       return Effect.concatenate(
         Effect(value: .newsCard(id: state.previousScrollIndex, action: ._setIsFolded(true))),
         Effect(value: .newsCard(id: state.currentScrollIndex, action: ._setIsFolded(false)))
       )
       
-    case ._calculateDegrees:
-      calculateDegrees(&state, newsCardWidth: state.layout.size.width)
+    case ._calculateScrollIndex:
+      calculateCurrentScrollIndex(&state)
       return .none
       
-    case ._calculateOffsets:
-      calculateOffsets(&state, newsCardWidth: state.layout.size.width)
+    case let ._calculateCurrentScrollOffset(gestureDragOffset):
+      calculateCurrentScrollOffset(&state, gestureDragOffset: gestureDragOffset)
+      return .none
+      
+    case let ._calculateDegrees(gestureDragOffset):
+      calculateDegrees(&state, gestureDragOffset: gestureDragOffset)
+      return .none
+      
+    case let ._calculateOffsets(gestureDragOffset):
+      calculateOffsets(&state, gestureDragOffset: gestureDragOffset)
       return .none
       
     case let ._setDragDirection(direction):
       state.dragDirection = direction
-      return .none
-      
-    case let ._setGestureDragOffset(dragOffset):
-      state.gestureDragOffset = dragOffset
-      return .none
-      
-    case let ._setCurrentScrollOffset(scrollOffset):
-      state.currentScrollOffset = scrollOffset
-      return .none
-      
-    case let ._setScrollIndex(pageIndex):
-      state.previousScrollIndex = state.currentScrollIndex
-      state.currentScrollIndex = pageIndex
       return .none
       
     case ._fetchNewsCardsIfNeeded:
@@ -232,28 +206,41 @@ private func scrollToNextCard(_ state: NewsCardScrollState) -> Effect<NewsCardSc
     await send(._setDragDirection(.horizontal))
     // 자연스럽게 스크롤이 넘어가는 것처럼 보이기위해 임의로 드래그 이벤트 발생시킨다.
     for width in scrollRange {
-      await send(.dragOnChanged(CGSize(width: width, height: 0)))
+      await send(.dragOnChanged(CGSize(width: width, height: 0)), animation: .easeInOut)
     }
-    await send(._calculateScrollIndex)
-    await send(._fetchNewsCardsIfNeeded(nextScrollIndex, newsCardsCount))
-    await send(.dragOnEnded(CGSize(width: -scrollWidth, height: 0)))
+    await send(._calculateScrollIndex, animation: .easeInOut)
+    await send(._fetchNewsCardsIfNeeded(nextScrollIndex, newsCardsCount), animation: .easeInOut)
+    await send(.dragOnEnded(CGSize(width: -scrollWidth, height: 0)), animation: .easeInOut)
   }
 }
 
-private func calculateCurrentScrollOffset(_ state: NewsCardScrollState) -> CGFloat {
+private func calculateCurrentScrollIndex(_ state: inout NewsCardScrollState) {
+  guard !state.newsCards.isEmpty else { return }
+  let logicalOffset = (state.currentScrollOffset - state.layout.leadingOffset) * -1.0
+  let contentWidth = state.layout.size.width + state.layout.spacing
+  let floatIndex = (logicalOffset) / contentWidth
+  let intIndex = Int(round(floatIndex))
+  let newPageIndex = min(max(intIndex, 0), state.newsCards.count - 1)
+  state.previousScrollIndex = state.currentScrollIndex
+  state.currentScrollIndex = newPageIndex
+}
+
+private func calculateCurrentScrollOffset(
+  _ state: inout NewsCardScrollState,
+  gestureDragOffset: CGFloat
+) {
   let contentWidth = state.layout.size.width + state.layout.spacing
   let activePageOffset = CGFloat(state.currentScrollIndex) * contentWidth
-  let scrollOffset = state.layout.leadingOffset - activePageOffset + state.gestureDragOffset
-  return scrollOffset
+  let scrollOffset = state.layout.leadingOffset - activePageOffset + gestureDragOffset
+  state.currentScrollOffset = scrollOffset
 }
 
 private func calculateDegrees(
   _ state: inout NewsCardScrollState,
-  newsCardWidth: CGFloat
+  gestureDragOffset: CGFloat
 ) {
   let rotationDegree: Double = 11.0
-  let slope = rotationDegree / newsCardWidth
-  let gestureDragOffset = state.gestureDragOffset
+  let slope = rotationDegree / state.layout.size.width
   let yOffset = rotationDegree
   
   let calculateRange = state.currentScrollIndex - 2...state.currentScrollIndex + 2
@@ -269,7 +256,7 @@ private func calculateDegrees(
     case let pageIndex where pageIndex < index:
       let weight = min(2.0, Double(index - pageIndex))
       state.degrees[index] = slope * gestureDragOffset + weight * yOffset
-    
+      
     default:
       state.degrees[index] = 0.0
     }
@@ -278,21 +265,19 @@ private func calculateDegrees(
 
 private func calculateOffsets(
   _ state: inout NewsCardScrollState,
-  newsCardWidth: CGFloat
+  gestureDragOffset: CGFloat
 ) {
   let distance: Double = 25.0
-  let slope = distance / newsCardWidth
-  let gestureDragOffset = state.gestureDragOffset
+  let slope = distance / state.layout.size.width
   let yOffset = distance
   
   let calculateRange = state.currentScrollIndex - 2...state.currentScrollIndex + 2
   for index in calculateRange where 0..<state.newsCards.count ~= index {
     switch state.currentScrollIndex {
     case let pageIndex where pageIndex > index:
-      let weight = min(2.0, Double(pageIndex - index))
       state.offsets[index] = CGSize(
-        width: slope * gestureDragOffset - weight * yOffset,
-        height: -slope * gestureDragOffset + weight * yOffset
+        width: slope * gestureDragOffset - yOffset,
+        height: -slope * gestureDragOffset + yOffset
       )
       
     case let pageIndex where pageIndex == index:
@@ -303,10 +288,9 @@ private func calculateOffsets(
       )
       
     case let pageIndex where pageIndex < index:
-      let weight = min(2.0, Double(index - pageIndex))
       state.offsets[index] = CGSize(
-        width: slope * gestureDragOffset + weight * yOffset,
-        height: slope * gestureDragOffset + weight * yOffset
+        width: slope * gestureDragOffset + yOffset,
+        height: slope * gestureDragOffset + yOffset
       )
       
     default:
