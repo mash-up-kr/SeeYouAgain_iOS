@@ -29,7 +29,7 @@ extension MyPageAPI: TargetType {
       return "/member/info"
       
     case .getTodayShorts:
-      return "/member-news-card/"
+      return "/member-news-card/saved"
       
     case .deleteTodayShorts:
       return "/member-news-card"
