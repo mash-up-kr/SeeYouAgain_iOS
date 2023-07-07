@@ -84,7 +84,7 @@ extension NewsCardService {
       return Provider<NewsCardAPI>
         .init()
         .request(
-          NewsCardAPI.fetchNews(keyword, targetDateTime, cursorId, pagingSize),
+          NewsCardAPI.hotkeywordFetchNews(keyword, targetDateTime, cursorId, pagingSize),
           type: [NewsResponseDTO].self
         )
         .compactMap { $0 }
