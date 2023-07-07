@@ -30,7 +30,7 @@ struct LetterPaper: View {
         
         newsPaper
           .resizable()
-          .offset(y: -5)
+          .offset(y: -10)
           .overlay {
             NewsCardContent(store: store)
           }
