@@ -31,7 +31,6 @@ public struct User: Equatable {
 }
 
 public extension User {
-#if DEBUG
   static let stub = User(
     nickname: "똑똑한여행가",
     joinPeriod: 114,
@@ -39,5 +38,4 @@ public extension User {
     todayShorts: 1,
     savedShorts: 16
   )
-#endif
 }
