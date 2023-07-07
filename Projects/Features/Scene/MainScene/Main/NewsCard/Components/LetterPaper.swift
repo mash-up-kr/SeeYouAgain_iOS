@@ -12,11 +12,11 @@ import DesignSystem
 import SwiftUI
 
 struct LetterPaper: View {
-  private let store: Store<NewsCardState, NewsCardAction>
+  private let store: Store<NewsCardState, Never>
   private let newsPaper: Image
   
   init(
-    store: Store<NewsCardState, NewsCardAction>,
+    store: Store<NewsCardState, Never>,
     newsPaper: Image
   ) {
     self.store = store
@@ -24,22 +24,19 @@ struct LetterPaper: View {
   }
   
   var body: some View {
-    WithViewStore(store) { viewStore in
-      GeometryReader { geometry in
-        VStack {
-          Spacer()
-          
-          newsPaper
-            .resizable()
-            .frame(height: viewStore.isFolded ? 0 : geometry.size.height - 5)
-            .offset(y: -5)
-            .overlay {
-              NewsCardContent(store: store.actionless)
-            }
-            .animation(.interpolatingSpring(stiffness: 300, damping: 20).delay(0.3), value: viewStore.isFolded)
-        }
-        .opacity(viewStore.isFolded ? 0 : 1)
+    WithViewStore(store, observe: \.isFolded) { viewStore in
+      VStack {
+        Spacer()
+        
+        newsPaper
+          .resizable()
+          .offset(y: -10)
+          .overlay {
+            NewsCardContent(store: store)
+          }
+          .animation(.interpolatingSpring(stiffness: 300, damping: 20).delay(0.3), value: viewStore.state)
       }
+      .opacity(viewStore.state ? 0 : 1)
     }
   }
 }

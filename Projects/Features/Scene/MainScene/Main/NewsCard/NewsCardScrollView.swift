@@ -7,6 +7,7 @@
 //
 
 import ComposableArchitecture
+import Foundation
 import SwiftUI
 
 struct NewsCardScrollView: View {
@@ -25,18 +26,26 @@ struct NewsCardScrollView: View {
         .frame(height: viewStore.layout.size.height)
       }
       .onAppear {
-        viewStore.send(._onAppear)
+        DispatchQueue.main.async {
+          viewStore.send(._onAppear, animation: .easeInOut)
+        }
       }
       .offset(x: viewStore.currentScrollOffset, y: 0)
       .simultaneousGesture(
         DragGesture()
           .onChanged { value in
-            viewStore.send(.dragOnChanged(value.translation))
+            DispatchQueue.main.async {
+              viewStore.send(.dragOnChanged(value.translation), animation: .easeInOut)
+            }
           }
           .onEnded { value in
-            viewStore.send(._calculateScrollIndex)
-            viewStore.send(._fetchNewsCardsIfNeeded(viewStore.currentScrollIndex, viewStore.newsCards.count))
-            viewStore.send(.dragOnEnded(value.translation))
+            DispatchQueue.main.async {
+              withAnimation(.easeInOut) {
+                viewStore.send(._calculateScrollIndex)
+                viewStore.send(._fetchNewsCardsIfNeeded(viewStore.currentScrollIndex, viewStore.newsCards.count))
+                viewStore.send(.dragOnEnded(value.translation))
+              }
+            }
           }
       )
     }
@@ -62,7 +71,6 @@ private struct NewsCardsView: View {
         .frame(width: viewStore.layout.size.width)
         .offset(viewStore.offsets[id])
         .rotationEffect(.degrees(viewStore.degrees[id]))
-        .animation(.easeInOut, value: viewStore.currentScrollOffset)
       }
     }
   }
