@@ -258,6 +258,15 @@ public let appCoordinatorReducer: Reducer<
           return .none
         }
         
+      case let .routeAction(_, action: .newsCard(.routeAction(_, action: .newsList(._onDisappear(source))))):
+        switch source {
+        case .main, .hot:
+          return Effect(value: .routeAction(0, action: .tabBar(._setTabHiddenStatus(false))))
+          
+        case .shortStorage, .longStorage:
+          return .none
+        }
+        
       default: return .none
       }
     }

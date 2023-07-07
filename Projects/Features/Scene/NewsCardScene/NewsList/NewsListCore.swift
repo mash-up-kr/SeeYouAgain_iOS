@@ -51,6 +51,7 @@ public enum NewsListAction {
   
   // MARK: - Inner Business Action
   case _onAppear
+  case _onDisappear(SourceType)
   case _willDisappear(Int)
   case _completeTodayShorts(Int)
   case _saveTodayShorts(Int)
@@ -124,6 +125,9 @@ public let newsListReducer = Reducer.combine([
       
     case ._onAppear:
       return Effect(value: ._handleNewsResponse(state.source))
+      
+    case ._onDisappear:
+      return .none
       
     case ._willDisappear:
       return .none

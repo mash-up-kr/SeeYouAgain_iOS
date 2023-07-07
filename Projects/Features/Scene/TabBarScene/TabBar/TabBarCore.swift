@@ -229,6 +229,19 @@ public let tabBarReducer = Reducer<
     case .myPage(
       .routeAction(
         _,
+        action: .shortStorage(
+          .routeAction(
+            _,
+            action: .shortStorageNewsList(._onDisappear)
+          )
+        )
+      )
+    ):
+      return Effect(value: ._setTabHiddenStatus(false))
+      
+    case .myPage(
+      .routeAction(
+        _,
         action: .longStorage(
           .routeAction(
             _,
@@ -239,7 +252,23 @@ public let tabBarReducer = Reducer<
     ):
       return Effect(value: ._setTabHiddenStatus(false))
       
+    case .myPage(
+      .routeAction(
+        _,
+        action: .longStorage(
+          .routeAction(
+            _,
+            action: .longStorageNewsList(._onDisappear)
+          )
+        )
+      )
+    ):
+      return Effect(value: ._setTabHiddenStatus(false))
+      
     case .myPage(.routeAction(_, action: .setting(.routeAction(_, action: .setting(.backButtonTapped))))):
+      return Effect(value: ._setTabHiddenStatus(false))
+      
+    case .myPage(.routeAction(_, action: .setting(.routeAction(_, action: .setting(._onDisappear))))):
       return Effect(value: ._setTabHiddenStatus(false))
       
     case .categoryBottomSheet(._categoriesIsUpdated):

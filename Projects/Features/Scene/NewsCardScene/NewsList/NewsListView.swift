@@ -119,6 +119,9 @@ public struct NewsListView: View {
           )
         }
       })
+      .onDisappear {
+        viewStore.send(._onDisappear(viewStore.source))
+      }
     }
   }
 }
