@@ -68,8 +68,6 @@ public enum NewsCardScrollAction {
   
   // MARK: - Inner SetState Action
   case _setDragDirection(DragDirection)
-  case _setDegrees([Double])
-  case _setOffsets([CGSize])
   case _setGestureDragOffset(CGFloat)
   case _setCurrentScrollOffset(CGFloat)
   case _setScrollIndex(Int)
@@ -175,23 +173,15 @@ public let newsCardScrollReducer = Reducer<
       )
       
     case ._calculateDegrees:
-      let updateDegrees = calculateDegrees(state, newsCardWidth: state.layout.size.width)
-      return Effect(value: ._setDegrees(updateDegrees))
+      calculateDegrees(&state, newsCardWidth: state.layout.size.width)
+      return .none
       
     case ._calculateOffsets:
-      let updateOffsets = calculateOffsets(state, newsCardWidth: state.layout.size.width)
-      return Effect(value: ._setOffsets(updateOffsets))
+      calculateOffsets(&state, newsCardWidth: state.layout.size.width)
+      return .none
       
     case let ._setDragDirection(direction):
       state.dragDirection = direction
-      return .none
-      
-    case let ._setDegrees(degrees):
-      state.degrees = degrees
-      return .none
-      
-    case let ._setOffsets(offsets):
-      state.offsets = offsets
       return .none
       
     case let ._setGestureDragOffset(dragOffset):
@@ -256,68 +246,71 @@ private func calculateCurrentScrollOffset(_ state: NewsCardScrollState) -> CGFlo
   let scrollOffset = state.layout.leadingOffset - activePageOffset + state.gestureDragOffset
   return scrollOffset
 }
+
 private func calculateDegrees(
-  _ state: NewsCardScrollState,
+  _ state: inout NewsCardScrollState,
   newsCardWidth: CGFloat
-) -> [Double] {
+) {
   let rotationDegree: Double = 11.0
   let slope = rotationDegree / newsCardWidth
   let gestureDragOffset = state.gestureDragOffset
   let yOffset = rotationDegree
   
-  return state.degrees.indices.map { index in
+  let calculateRange = state.currentScrollIndex - 2...state.currentScrollIndex + 2
+  for index in calculateRange where 0..<state.newsCards.count ~= index {
     switch state.currentScrollIndex {
     case let pageIndex where pageIndex > index:
       let weight = min(2.0, Double(pageIndex - index))
-      return slope * gestureDragOffset - weight * yOffset
+      state.degrees[index] = slope * gestureDragOffset - weight * yOffset
       
     case let pageIndex where pageIndex == index:
-      return slope * gestureDragOffset
+      state.degrees[index] = slope * gestureDragOffset
       
     case let pageIndex where pageIndex < index:
       let weight = min(2.0, Double(index - pageIndex))
-      return slope * gestureDragOffset + weight * yOffset
-      
+      state.degrees[index] = slope * gestureDragOffset + weight * yOffset
+    
     default:
-      return 0.0
+      state.degrees[index] = 0.0
     }
   }
 }
 
 private func calculateOffsets(
-  _ state: NewsCardScrollState,
+  _ state: inout NewsCardScrollState,
   newsCardWidth: CGFloat
-) -> [CGSize] {
+) {
   let distance: Double = 25.0
   let slope = distance / newsCardWidth
   let gestureDragOffset = state.gestureDragOffset
   let yOffset = distance
   
-  return state.offsets.indices.map { index in
+  let calculateRange = state.currentScrollIndex - 2...state.currentScrollIndex + 2
+  for index in calculateRange where 0..<state.newsCards.count ~= index {
     switch state.currentScrollIndex {
     case let pageIndex where pageIndex > index:
       let weight = min(2.0, Double(pageIndex - index))
-      return CGSize(
+      state.offsets[index] = CGSize(
         width: slope * gestureDragOffset - weight * yOffset,
         height: -slope * gestureDragOffset + weight * yOffset
       )
       
     case let pageIndex where pageIndex == index:
       let sign: Double = (gestureDragOffset > 0 ? 1.0 : -1.0)
-      return CGSize(
+      state.offsets[index] = CGSize(
         width: slope * gestureDragOffset,
         height: sign * slope * gestureDragOffset
       )
       
     case let pageIndex where pageIndex < index:
       let weight = min(2.0, Double(index - pageIndex))
-      return CGSize(
+      state.offsets[index] = CGSize(
         width: slope * gestureDragOffset + weight * yOffset,
         height: slope * gestureDragOffset + weight * yOffset
       )
       
     default:
-      return CGSize(width: 0, height: 0)
+      state.offsets[index] = CGSize(width: 0, height: 0)
     }
   }
 }
