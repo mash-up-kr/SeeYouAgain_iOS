@@ -32,7 +32,7 @@ public struct LongStorageNewsListState: Equatable {
   var cursorDate: Date = .now
   var targetDate = Date().firstDayOfMonth() // 항상 해당 월의 1일로 데이터 조회
   var pagingSize: Int = 20
-  var pivot: Pivot = .DESC // 최신순이 기본값
+  var pivot: Pivot = .desc // 최신순이 기본값
   var successToastMessage: String?
   var failureToastMessage: String?
   var selectedItemCounts: Int = 0

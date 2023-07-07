@@ -9,6 +9,11 @@
 import Foundation
 
 public enum Pivot: String, Encodable {
-  case DESC
-  case ASC
+  case desc
+  case asc
+
+  enum CodingKeys: String, CodingKey {
+    case desc = "DESC"
+    case asc = "ASC"
+  }
 }
