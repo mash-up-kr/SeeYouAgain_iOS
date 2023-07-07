@@ -44,19 +44,28 @@ extension Date {
   
   // 기준 월의 이전 월
   public func minusMonth() -> Date {
-    Calendar.current.date(byAdding: .month, value: -1, to: self)!
-    
+    guard let month = Calendar.current.date(byAdding: .month, value: -1, to: self) else {
+      return Date()
+    }
+    return month
   }
   
   // 기준 월의 이후 월
   public func plusMonth() -> Date {
-    Calendar.current.date(byAdding: .month, value: 1, to: self)!
+    guard let month = Calendar.current.date(byAdding: .month, value: 1, to: self) else {
+      return Date()
+    }
+    return month
   }
   
   // 기준 월의 첫번째 날짜 출력
   public func firstDayOfMonth() -> Date {
     let components = Calendar.current.dateComponents([.year, .month], from: self)
-    return Calendar.current.date(from: components)!
+    
+    guard let day = Calendar.current.date(from: components) else {
+      return Date()
+    }
+    return day
   }
   
   public func yearToString() -> String {
@@ -82,6 +91,10 @@ extension Date {
     let dateFormatter = DateFormatter()
     dateFormatter.dateFormat = "M"
     let monthString = dateFormatter.string(from: self)
-    return Int(monthString)!
+  
+    guard let monthInt = Int(monthString) else {
+      return 0
+    }
+    return monthInt
   }
 }
