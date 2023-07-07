@@ -49,29 +49,3 @@ struct DateFilterBottomSheetContent: View {
     }
   }
 }
-
-struct DatePickerView: View {
-  @State private var year: Int = Date().yearToInt()
-  @State private var month: Int = Date().monthToInt() - 1 // 피커에서 배열 인덱스로 사용해서 1 빼줘야 해당 월이 나옴
-  
-  private var years: [Int] = [2023]
-  private var months = [Int](1...12)
-  
-  var body: some View {
-    HStack {
-      Picker(selection: self.$year, label: Text("")) {
-        ForEach(0..<self.years.count, id: \.self) { index in
-          Text("\(String(self.years[index]))년").tag(index)
-        }
-      }
-      .pickerStyle(.wheel)
-      
-      Picker(selection: self.$month, label: Text("")) {
-        ForEach(0..<self.months.count, id: \.self) { index in
-          Text("\(self.months[index])월").tag(index)
-        }
-      }
-      .pickerStyle(.wheel)
-    }
-  }
-}

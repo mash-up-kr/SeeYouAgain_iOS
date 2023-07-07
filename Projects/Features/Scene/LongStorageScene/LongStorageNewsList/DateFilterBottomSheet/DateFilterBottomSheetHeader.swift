@@ -12,14 +12,12 @@ import SwiftUI
 
 struct DateFilterBottomSheetHeader: View {
   var body: some View {
-    VStack {
-      HStack {
-        Text("날짜를 선택해주세요")
-          .font(.b18)
-          .foregroundColor(DesignSystem.Colors.grey100)
-        
-        Spacer()
-      }
+    HStack {
+      Text("날짜를 선택해주세요")
+        .font(.b18)
+        .foregroundColor(DesignSystem.Colors.grey100)
+      
+      Spacer()
     }
     .padding(.horizontal, 24)
   }
