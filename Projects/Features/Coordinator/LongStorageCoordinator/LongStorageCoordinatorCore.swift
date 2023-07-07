@@ -19,10 +19,7 @@ public struct LongStorageCoordinatorState: Equatable, IndexedRouterState {
     routes: [Route<LongStorageScreenState>] = [
       .root(
         .longStorageNewsList(
-          .init(
-            isInEditMode: false,
-            shortslistCount: 6
-          )
+          .init()
         ),
         embedInNavigationView: true
       )

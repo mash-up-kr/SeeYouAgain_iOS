@@ -19,9 +19,9 @@ public enum MonthType {
 }
 
 public struct LongStorageNewsListState: Equatable {
-  var isInEditMode: Bool
+  var isInEditMode: Bool = false
   var month: String
-  var shortsNewsItemsCount: Int // 저장한 숏스 수
+  var shortsNewsItemsCount: Int = 0 // 저장한 숏스 수
   var allShortsNewsItems: IdentifiedArrayOf<LongShortsItemState> = [] // 전체 오래된 숏스
   var shortsNewsItems: IdentifiedArrayOf<LongShortsItemState> = [] // 필터링된 오래된 숏스
   var isLatestMode: Bool = true
@@ -41,13 +41,8 @@ public struct LongStorageNewsListState: Equatable {
   var dateFilterBottomSheetState: DateFilterBottomSheetState // 날짜 변경 바텀 시트
   var dateType: DateType
   
-  public init(
-    isInEditMode: Bool,
-    shortslistCount: Int
-  ) {
-    self.isInEditMode = isInEditMode
+  public init() {
     self.month = Date().yearMonthToString()
-    self.shortsNewsItemsCount = shortslistCount
     self.sortType = .latest
     self.sortBottomSheetState = SortBottomSheetState(sortType: .latest, isPresented: false)
     self.categoryFilterBottomSheetState = CategoryFilterBottomSheetState()
