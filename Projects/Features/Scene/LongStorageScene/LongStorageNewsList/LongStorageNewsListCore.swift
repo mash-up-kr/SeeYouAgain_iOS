@@ -197,7 +197,7 @@ public let longStorageNewsListReducer = Reducer<
       
     case ._filterLongShortsItems:
       var filteredShortsNewsItems = state.allShortsNewsItems.filter {
-        if let category = CategoryType(rawValue: $0.cardState.news.type) {
+        if let category = CategoryType(uppercasedName: $0.cardState.news.category) {
           return state.selectedCategories.contains(category)
         }
         return false
@@ -294,6 +294,7 @@ public let longStorageNewsListReducer = Reducer<
           )
         )
       })
+      state.allShortsNewsItems = state.shortsNewsItems
       return .none
       
     case ._setLongShortsItemList:
