@@ -65,6 +65,7 @@ public enum LongStorageNewsListAction {
   case showDateFilterBottomSheet
   
   // MARK: - Inner Business Action
+  case _onDisappear
   case _sortLongShortsItems(SortType)
   case _filterLongShortsItems
   case _viewWillAppear

@@ -110,6 +110,9 @@ public struct ShortStorageNewsListView: View {
       .onAppear {
         viewStore.send(._viewWillAppear)
       }
+      .onDisappear {
+        viewStore.send(._onDisappear)
+      }
       .apply(content: { view in
         WithViewStore(store.scope(state: \.successToastMessage)) { successToastMessageViewStore in
           view.toast(

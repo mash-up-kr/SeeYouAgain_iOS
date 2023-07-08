@@ -51,6 +51,7 @@ public enum ShortStorageNewsListAction {
   
   // MARK: - Inner Business Action
   case _viewWillAppear
+  case _onDisappear
   case _updateTimer
   case _decreaseRemainTime
   case _updateZeroTime

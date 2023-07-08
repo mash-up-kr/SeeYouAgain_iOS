@@ -42,6 +42,7 @@ public enum SettingAction: Equatable {
   
   // MARK: - Inner Business Action
   case _onAppear
+  case _onDisappear
   case _fetchCurrentAppVersion
   case _fetchLatestAppVersion
   
@@ -77,6 +78,9 @@ public let settingReducer = Reducer.combine([
       
     case ._onAppear:
       return Effect(value: ._fetchCurrentAppVersion)
+      
+    case ._onDisappear:
+      return .none
       
     case ._fetchCurrentAppVersion:
       return env.appVersionService.fetchAppVersion()
