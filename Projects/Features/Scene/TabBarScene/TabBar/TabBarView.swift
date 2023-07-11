@@ -66,10 +66,19 @@ public struct TabBarView: View {
         )
       }
       .apply(content: { view in
-        WithViewStore(store.scope(state: \.toastMessage)) { toastMessageViewStore in
+        WithViewStore(store.scope(state: \.infoToastMessage)) { toastMessageViewStore in
           view.toast(
             text: toastMessageViewStore.state,
-            toastType: buildToastType(message: toastMessageViewStore.state),
+            toastType: .info,
+            toastOffset: -38
+          )
+        }
+      })
+      .apply(content: { view in
+        WithViewStore(store.scope(state: \.warningToastMessage)) { toastMessageViewStore in
+          view.toast(
+            text: toastMessageViewStore.state,
+            toastType: .warning,
             toastOffset: -38
           )
         }
@@ -114,15 +123,4 @@ public struct TabBarView: View {
       })
     }
   }
-}
-
-private func buildToastType(message: String?) -> ToastType {
-  guard let message = message else { return .basic }
-  if message == "오늘 읽을 숏스에 저장됐어요:)" {
-    return .info
-  }
-  if message == "인터넷이 불안정해서 저장되지 못했어요." {
-    return .warning
-  }
-  return .basic
 }

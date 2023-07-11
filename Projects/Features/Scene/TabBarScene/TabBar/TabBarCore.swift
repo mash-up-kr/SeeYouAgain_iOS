@@ -20,7 +20,8 @@ public struct TabBarState: Equatable {
   public var categoryBottomSheet: BottomSheetState
   public var selectedTab: TabBarItem = .house
   public var isTabHidden: Bool = false
-  public var toastMessage: String?
+  public var infoToastMessage: String?
+  public var warningToastMessage: String?
   
   public init(
     hotKeyword: HotKeywordCoordinatorState,
@@ -42,12 +43,14 @@ public enum TabBarAction {
   case tabSelected(TabBarItem)
   
   // MARK: - Inner Business Action
-  case _presentToast(String)
+  case _presentInfoToast(String)
+  case _presentWarningToast(String)
   case _hideToast
   
   // MARK: - Inner SetState Action
   case _setTabHiddenStatus(Bool)
-  case _setToastMessage(String?)
+  case _setInfoToastMessage(String?)
+  case _setWarningToastMessage(String?)
   
   // MARK: - Child Action
   case hotKeyword(HotKeywordCoordinatorAction)
@@ -150,9 +153,20 @@ public let tabBarReducer = Reducer<
       }
       return .none
       
-    case let ._presentToast(toastMessage):
+    case let ._presentInfoToast(toastMessage):
       return .concatenate(
-        Effect(value: ._setToastMessage(toastMessage)),
+        Effect.cancel(id: TabBarID._presentToast),
+        Effect(value: ._setInfoToastMessage(toastMessage)),
+        Effect.cancel(id: TabBarID._presentToast),
+        Effect(value: ._hideToast)
+          .delay(for: 2, scheduler: env.mainQueue)
+          .eraseToEffect()
+          .cancellable(id: TabBarID._presentToast, cancelInFlight: true)
+      )
+      
+    case let ._presentWarningToast(toastMessage):
+      return .concatenate(
+        Effect(value: ._setWarningToastMessage(toastMessage)),
         Effect.cancel(id: TabBarID._presentToast),
         Effect(value: ._hideToast)
           .delay(for: 2, scheduler: env.mainQueue)
@@ -161,14 +175,21 @@ public let tabBarReducer = Reducer<
       )
       
     case ._hideToast:
-      return Effect(value: ._setToastMessage(nil))
+      return Effect.merge(
+        Effect(value: ._setInfoToastMessage(nil)),
+        Effect(value: ._setWarningToastMessage(nil))
+      )
     
     case ._setTabHiddenStatus(let status):
       state.isTabHidden = status
       return .none
       
-    case let ._setToastMessage(message):
-      state.toastMessage = message
+    case let ._setInfoToastMessage(message):
+      state.infoToastMessage = message
+      return .none
+      
+    case let ._setWarningToastMessage(message):
+      state.warningToastMessage = message
       return .none
       
     case let .main(.routeAction(_, action: .main(.showCategoryBottomSheet(categories)))):
@@ -191,10 +212,10 @@ public let tabBarReducer = Reducer<
     ):
       switch response {
       case .success:
-        return Effect(value: ._presentToast("오늘 읽을 숏스에 저장됐어요:)"))
+        return Effect(value: ._presentInfoToast("오늘 읽을 숏스에 저장됐어요:)"))
         
-      case .failure:
-        return Effect(value: ._presentToast("인터넷이 불안정해서 저장되지 못했어요."))
+      case let .failure(error):
+        return presentToast(on: error)
       }
       
     // 메인: 뉴스 카드를 선택하여 뉴스 리스트로 이동할 때 
@@ -278,3 +299,17 @@ public let tabBarReducer = Reducer<
     }
   }
 ])
+
+private func presentToast(on error: Error) -> Effect<TabBarAction, Never> {
+  guard let providerError = error.toProviderError() else { return .none }
+  switch providerError.code {
+  case .failedRequest:
+    return Effect(value: ._presentWarningToast("인터넷이 불안정해서 저장되지 못했어요."))
+  
+  case .isNotSuccessful:
+    return Effect(value: ._presentWarningToast("이미 저장한 뉴스에요."))
+    
+  case .failedDecode:
+    return Effect(value: ._presentWarningToast("저장에 실패했어요."))
+  }
+}
