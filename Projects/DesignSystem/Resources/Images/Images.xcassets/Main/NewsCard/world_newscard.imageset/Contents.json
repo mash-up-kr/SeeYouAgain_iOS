@@ -1,8 +1,19 @@
 {
   "images" : [
     {
-      "filename" : "letter_world.svg",
-      "idiom" : "universal"
+      "filename" : "world_newscard@1x.png",
+      "idiom" : "universal",
+      "scale" : "1x"
+    },
+    {
+      "filename" : "world_newscard@2x.png",
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
+      "filename" : "world_newscard@3x.png",
+      "idiom" : "universal",
+      "scale" : "3x"
     }
   ],
   "info" : {

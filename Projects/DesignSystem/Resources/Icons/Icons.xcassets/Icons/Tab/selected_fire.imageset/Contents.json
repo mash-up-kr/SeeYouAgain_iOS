@@ -1,8 +1,19 @@
 {
   "images" : [
     {
-      "filename" : "selected_fire.svg",
-      "idiom" : "universal"
+      "filename" : "selected_fire@1x.png",
+      "idiom" : "universal",
+      "scale" : "1x"
+    },
+    {
+      "filename" : "selected_fire@2x.png",
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
+      "filename" : "selected_fire@3x.png",
+      "idiom" : "universal",
+      "scale" : "3x"
     }
   ],
   "info" : {
