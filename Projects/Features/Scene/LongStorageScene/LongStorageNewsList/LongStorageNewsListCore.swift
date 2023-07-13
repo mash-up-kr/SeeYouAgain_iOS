@@ -176,7 +176,10 @@ public let longStorageNewsListReducer = Reducer<
       return Effect(value: .categoryFilterBottomSheet(._setIsPresented(true)))
       
     case .showDateFilterBottomSheet:
-      state.dateFilterBottomSheetState = .init()
+      state.dateFilterBottomSheetState = .init(
+        year: state.dateType.year,
+        month: state.dateType.month - 1
+      )
       return Effect(value: .dateFilterBottomSheet(._setIsPresented(true)))
       
     case ._viewWillAppear:
