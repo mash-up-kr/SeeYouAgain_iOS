@@ -121,6 +121,9 @@ public struct TabBarView: View {
           )
         }
       })
+      .onDisappear {
+        viewStore.send(._hideToast)        
+      }
     }
   }
 }
