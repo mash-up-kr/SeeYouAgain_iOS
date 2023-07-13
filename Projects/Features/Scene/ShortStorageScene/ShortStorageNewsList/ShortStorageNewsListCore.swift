@@ -133,6 +133,12 @@ public let shortStorageNewsListReducer = Reducer<
         Effect(value: ._fetchTodayShorts(.initial))
       ])
       
+    case ._onDisappear:
+      return Effect.merge(
+        Effect(value: ._setSuccessToastMessage(nil)),
+        Effect(value: ._setFailureToastMessage(nil))
+      )
+      
     case ._updateTimer:
       return Effect.timer(
         id: TimerId(),

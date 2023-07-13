@@ -127,7 +127,10 @@ public let newsListReducer = Reducer.combine([
       return Effect(value: ._handleNewsResponse(state.source))
       
     case ._onDisappear:
-      return .none
+      return Effect.merge(
+        Effect(value: ._hideSuccessToast),
+        Effect(value: ._hideFailureToast)
+      )
       
     case ._willDisappear:
       return .none
@@ -161,8 +164,8 @@ public let newsListReducer = Reducer.combine([
     case ._handleSaveTodayShortsResponse(.success):
       return Effect(value: ._presentSuccessToast("오늘 읽을 숏스에 저장됐어요:)"))
       
-    case ._handleSaveTodayShortsResponse(.failure):
-      return Effect(value: ._presentFailureToast("인터넷이 불안정해서 저장되지 못했어요."))
+    case let ._handleSaveTodayShortsResponse(.failure(error)):
+      return presentToast(on: error)
       
     case let ._sortNewsItems(sortType):
       var sortedNewsItems = state.newsItems
@@ -290,5 +293,19 @@ private func handleSourceType(
         }
       }
       .eraseToEffect()
+  }
+}
+
+private func presentToast(on error: Error) -> Effect<NewsListAction, Never> {
+  guard let providerError = error.toProviderError() else { return .none }
+  switch providerError.code {
+  case .failedRequest:
+    return Effect(value: ._presentFailureToast("인터넷이 불안정해서 저장되지 못했어요."))
+  
+  case .isNotSuccessful:
+    return Effect(value: ._presentFailureToast("이미 저장한 뉴스에요."))
+    
+  case .failedDecode:
+    return Effect(value: ._presentFailureToast("저장에 실패했어요."))
   }
 }

@@ -46,6 +46,7 @@ struct NewsCardView: View {
         }
         .opacity(viewStore.opacity)
         .offset(y: viewStore.yOffset)
+        .animation(.easeInOut, value: viewStore.opacity)
         .onTapGesture {
           viewStore.send(.newsCardTapped)
         }
