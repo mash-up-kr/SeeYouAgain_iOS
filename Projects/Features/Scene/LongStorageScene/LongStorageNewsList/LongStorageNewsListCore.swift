@@ -179,6 +179,11 @@ public let longStorageNewsListReducer = Reducer<
       state.dateFilterBottomSheetState = .init()
       return Effect(value: .dateFilterBottomSheet(._setIsPresented(true)))
       
+    case ._onDisappear:
+      return Effect.merge(
+        Effect(value: ._hideSuccessToast),
+        Effect(value: ._hideFailureToast)
+      )
     case ._viewWillAppear:
       return Effect(value: ._fetchSavedNews(.initial))
       

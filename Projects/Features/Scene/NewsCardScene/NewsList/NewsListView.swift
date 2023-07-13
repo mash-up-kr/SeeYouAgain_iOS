@@ -120,8 +120,6 @@ public struct NewsListView: View {
         }
       })
       .onDisappear {
-        viewStore.send(._hideSuccessToast)
-        viewStore.send(._hideFailureToast)
         viewStore.send(._onDisappear(viewStore.source))
       }
     }

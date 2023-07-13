@@ -127,7 +127,10 @@ public let newsListReducer = Reducer.combine([
       return Effect(value: ._handleNewsResponse(state.source))
       
     case ._onDisappear:
-      return .none
+      return Effect.merge(
+        Effect(value: ._hideSuccessToast),
+        Effect(value: ._hideFailureToast)
+      )
       
     case ._willDisappear:
       return .none
