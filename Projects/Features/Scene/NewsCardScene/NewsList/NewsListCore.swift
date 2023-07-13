@@ -153,7 +153,10 @@ public let newsListReducer = Reducer.combine([
         .catchToEffect(NewsListAction._handleSaveTodayShortsResponse)
       
     case let ._handleNewsResponse(source):
-      return handleSourceType(&state, env, source: source)
+      return .concatenate([
+        handleSourceType(&state, env, source: source),
+        Effect(value: ._sortNewsItems(state.sortType)),
+      ])
       
     case ._handleSaveTodayShortsResponse(.success):
       return Effect(value: ._presentSuccessToast("오늘 읽을 숏스에 저장됐어요:)"))

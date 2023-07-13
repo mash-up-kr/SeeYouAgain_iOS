@@ -224,7 +224,10 @@ public let longStorageNewsListReducer = Reducer<
       .eraseToEffect()
       
     case let ._handleFetchSavedNewsResponse(savedNewsList, fetchType):
-      return handleSavedNewsResponse(&state, source: savedNewsList, fetchType: fetchType)
+      return .concatenate([
+        handleSavedNewsResponse(&state, source: savedNewsList, fetchType: fetchType),
+        Effect(value: ._sortLongShortsItems(state.sortType)),
+      ])
       
     case let ._deleteSavedNews(newsIds):
       return env.myPageService.deleteNews(newsIds)
