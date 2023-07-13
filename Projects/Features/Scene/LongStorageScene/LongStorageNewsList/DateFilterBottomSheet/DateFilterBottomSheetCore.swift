@@ -11,15 +11,25 @@ import ComposableArchitecture
 import Foundation
 
 struct DateFilterBottomSheetState: Equatable {
-  public var year: Int = Date().yearToInt()
-  public var month: Int = Date().monthToInt() - 1 // 피커에서 배열 인덱스로 사용해서 1을 빼줌
+  public var year: Int
+  public var month: Int // 피커에서 배열 인덱스로 사용해서 1을 빼줌
   public var isPresented: Bool
   
-  public var years: [Int] = [2023]
-  public var months = [Int](1...Date().monthToInt())
+  public var years: [Int]
+  public var months: [Int]
   
-  init(isPresented: Bool = false) {
+  init(
+    year: Int = Date().yearToInt(),
+    month: Int = Date().monthToInt() - 1,
+    isPresented: Bool = false,
+    years: [Int] = [2023],
+    months: [Int] = Array(1...Date().monthToInt())
+  ) {
+    self.year = year
+    self.month = month
     self.isPresented = isPresented
+    self.years = years
+    self.months = months
   }
 }
 

@@ -176,7 +176,10 @@ public let longStorageNewsListReducer = Reducer<
       return Effect(value: .categoryFilterBottomSheet(._setIsPresented(true)))
       
     case .showDateFilterBottomSheet:
-      state.dateFilterBottomSheetState = .init()
+      state.dateFilterBottomSheetState = .init(
+        year: state.dateType.year,
+        month: state.dateType.month - 1
+      )
       return Effect(value: .dateFilterBottomSheet(._setIsPresented(true)))
       
     case ._viewWillAppear:
@@ -224,7 +227,10 @@ public let longStorageNewsListReducer = Reducer<
       .eraseToEffect()
       
     case let ._handleFetchSavedNewsResponse(savedNewsList, fetchType):
-      return handleSavedNewsResponse(&state, source: savedNewsList, fetchType: fetchType)
+      return .concatenate([
+        handleSavedNewsResponse(&state, source: savedNewsList, fetchType: fetchType),
+        Effect(value: ._sortLongShortsItems(state.sortType)),
+      ])
       
     case let ._deleteSavedNews(newsIds):
       return env.myPageService.deleteNews(newsIds)
