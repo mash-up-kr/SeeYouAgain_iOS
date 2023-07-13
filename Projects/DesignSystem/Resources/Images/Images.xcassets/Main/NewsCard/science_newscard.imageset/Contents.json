@@ -1,8 +1,19 @@
 {
   "images" : [
     {
-      "filename" : "letter_science.svg",
-      "idiom" : "universal"
+      "filename" : "science_newscard@1x.png",
+      "idiom" : "universal",
+      "scale" : "1x"
+    },
+    {
+      "filename" : "science_newscard@2x.png",
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
+      "filename" : "science_newscard@3x.png",
+      "idiom" : "universal",
+      "scale" : "3x"
     }
   ],
   "info" : {

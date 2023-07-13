@@ -1,8 +1,19 @@
 {
   "images" : [
     {
-      "filename" : "letter_politics.svg",
-      "idiom" : "universal"
+      "filename" : "politics_newscard@1x.png",
+      "idiom" : "universal",
+      "scale" : "1x"
+    },
+    {
+      "filename" : "politics_newscard@2x.png",
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
+      "filename" : "politics_newscard@3x.png",
+      "idiom" : "universal",
+      "scale" : "3x"
     }
   ],
   "info" : {
