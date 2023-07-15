@@ -40,6 +40,7 @@ public struct LongStorageNewsListState: Equatable {
   var currentMonth = Date().monthToString() // 현재 날짜에 해당하는 월
   var dateFilterBottomSheetState: DateFilterBottomSheetState // 날짜 변경 바텀 시트
   var dateType: DateType
+  var isLoading: Bool = false
   
   public init() {
     self.month = Date().yearMonthToString()
@@ -93,6 +94,7 @@ public enum LongStorageNewsListAction {
   case _setDateType(Date)
   case _setMonth
   case _setIsCurrentMonth
+  case _setIsLoading(Bool)
   
   // MARK: - Child Action
   case shortsNewsItem(id: LongShortsItemState.ID, action: LongShortsItemAction)
@@ -188,7 +190,10 @@ public let longStorageNewsListReducer = Reducer<
         Effect(value: ._hideFailureToast)
       )
     case ._viewWillAppear:
-      return Effect(value: ._fetchSavedNews(.initial))
+      return Effect.concatenate([
+        Effect(value: ._setIsLoading(true)),
+        Effect(value: ._fetchSavedNews(.initial))
+      ])
       
     case let ._sortLongShortsItems(sortType):
       var sortedShortsNewsItems = state.shortsNewsItems
@@ -233,6 +238,7 @@ public let longStorageNewsListReducer = Reducer<
       
     case let ._handleFetchSavedNewsResponse(savedNewsList, fetchType):
       return .concatenate([
+        Effect(value: ._setIsLoading(false)),
         handleSavedNewsResponse(&state, source: savedNewsList, fetchType: fetchType),
         Effect(value: ._sortLongShortsItems(state.sortType)),
       ])
@@ -377,6 +383,10 @@ public let longStorageNewsListReducer = Reducer<
       
     case ._setIsCurrentMonth:
       state.isCurrentMonth = state.targetDate.monthToString() == state.currentMonth
+      return .none
+      
+    case let ._setIsLoading(isLoading):
+      state.isLoading = isLoading
       return .none
       
     case let .sortBottomSheet(._sort(sortType)):

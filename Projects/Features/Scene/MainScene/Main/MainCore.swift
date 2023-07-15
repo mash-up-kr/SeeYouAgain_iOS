@@ -31,6 +31,7 @@ public struct MainState: Equatable {
   var cursorPage: Int = 0
   var cursorDate: Date = .now
   var saveGuideState: SaveGuideState?
+  var isLoading: Bool = false
   public init() { }
 }
 
@@ -51,6 +52,7 @@ public enum MainAction {
   case _setNewsCards(Result<[NewsCard], Error>, FetchType)
   case _setNewsCardScrollState([NewsCard])
   case _setSaveGuideState(SaveGuideState?)
+  case _setIsLoading(Bool)
   
   // MARK: - Child Action
   case newsCardScroll(NewsCardScrollAction)
@@ -169,11 +171,11 @@ public let mainReducer = Reducer.combine([
       switch result {
       case let .success(newsCards):
         return handleNewsCardsResponse(&state, source: newsCards, fetchType: fetchType)
-      
+        
       case .failure:
         return .none
       }
-    
+      
     case let ._setNewsCardScrollState(newsCards):
       state.newsCardScrollState = NewsCardScrollState(
         layout: state.newsCardLayout,
@@ -194,13 +196,23 @@ public let mainReducer = Reducer.combine([
       state.saveGuideState = saveGuideState
       return .none
       
+    case let ._setIsLoading(isLoading):
+      state.isLoading = isLoading
+      return .none
+      
     case let .newsCardScroll(._fetchNewsCardsIfNeeded(currentScrollIndex, newsCardsCount)):
       if newsCardsCount - currentScrollIndex > Constant.pagingCriticalPoint { return .none }
       state.cursorPage += 1
       return Effect(value: ._fetchNewsCards(.continuousPaging))
       
     case .newsCardScroll(.newsCard(id: _, action: ._saveNewsCard)):
-      return Effect(value: .saveGuide(._startAnimation))
+      return .concatenate([
+        Effect(value: ._setIsLoading(true)),
+        Effect(value: .saveGuide(._startAnimation))
+      ])
+      
+    case .newsCardScroll(.newsCard(id: _, action: ._handleSaveNewsCardResponse)):
+      return Effect(value: ._setIsLoading(false))
       
     default:
       return .none

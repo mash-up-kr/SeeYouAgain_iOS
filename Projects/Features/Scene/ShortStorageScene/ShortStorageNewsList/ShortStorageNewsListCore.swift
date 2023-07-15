@@ -28,17 +28,20 @@ public struct ShortStorageNewsListState: Equatable {
   var successToastMessage: String?
   var failureToastMessage: String?
   var selectedItemCounts: Int = 0
+  var isLoading: Bool
   
   public init(
     isInEditMode: Bool,
     shortsNewsItemsCount: Int,
-    shortsCompleteCount: Int
+    shortsCompleteCount: Int,
+    isLoading: Bool = false
   ) {
     self.isInEditMode = isInEditMode
     self.shortsNewsItemsCount = shortsNewsItemsCount
     self.shortsCompleteCount = shortsCompleteCount
     self.today = Date().fullDateToString()
     self.remainTimeString = initializeRemainTimeString()
+    self.isLoading = isLoading
   }
 }
 
@@ -78,6 +81,7 @@ public enum ShortStorageNewsListAction {
   case _initializeShortStorageNewsList
   case _setSuccessToastMessage(String?)
   case _setFailureToastMessage(String?)
+  case _setIsLoading(Bool)
   
   // MARK: - Child Action
   case shortsNewsItem(id: TodayShortsItemState.ID, action: TodayShortsItemAction)
@@ -129,7 +133,7 @@ public let shortStorageNewsListReducer = Reducer<
   
     case ._viewWillAppear:
       return Effect.concatenate([
-        Effect(value: ._setCurrentTimeSeconds),
+        Effect(value: ._setIsLoading(true)),
         Effect(value: ._fetchTodayShorts(.initial))
       ])
       
@@ -176,7 +180,11 @@ public let shortStorageNewsListReducer = Reducer<
       .eraseToEffect()
       
     case let ._handleTodayShortsResponse(todayShorts, fetchType):
-      return handleTodayShortsResponse(&state, source: todayShorts, fetchType: fetchType)
+      return Effect.concatenate([
+        Effect(value: ._setIsLoading(false)),
+        Effect(value: ._setCurrentTimeSeconds),
+        handleTodayShortsResponse(&state, source: todayShorts, fetchType: fetchType)
+      ])
 
     case let ._deleteTodayShorts(shortsIds):
       return env.myPageService.deleteTodayShorts(shortsIds)
@@ -291,6 +299,10 @@ public let shortStorageNewsListReducer = Reducer<
       if time == 0 {
         return Effect(value: ._updateZeroTime)
       }
+      return .none
+      
+    case let ._setIsLoading(isLoading):
+      state.isLoading = isLoading
       return .none
       
     case ._toggleIsDisplayTooltip:

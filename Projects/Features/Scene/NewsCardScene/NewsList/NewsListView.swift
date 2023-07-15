@@ -81,6 +81,7 @@ public struct NewsListView: View {
           }
         }
       }
+      .loading(viewStore.state.isLoading)
       .bottomSheet(
         isPresented: viewStore.binding(
           get: \.sortBottomSheetState.isPresented,

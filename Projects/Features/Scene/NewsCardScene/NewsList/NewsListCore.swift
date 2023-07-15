@@ -25,6 +25,7 @@ public struct NewsListState: Equatable {
   var pagingSize = 20
   var successToastMessage: String?
   var failureToastMessage: String?
+  var isLoading: Bool = false
   
   public init(
     source: SourceType,
@@ -69,6 +70,7 @@ public enum NewsListAction {
   case _setSortType(SortType)
   case _setSuccessToastMessage(String?)
   case _setFailureToastMessage(String?)
+  case _setIsLoading(Bool)
   
   // MARK: - Child Action
   case newsItem(id: NewsCardState.ID, action: NewsCardAction)
@@ -124,7 +126,10 @@ public let newsListReducer = Reducer.combine([
       return .none
       
     case ._onAppear:
-      return Effect(value: ._handleNewsResponse(state.source))
+      return Effect.concatenate([
+        Effect(value: ._setIsLoading(true)),
+        Effect(value: ._handleNewsResponse(state.source))
+      ])
       
     case ._onDisappear:
       return Effect.merge(
@@ -243,6 +248,10 @@ public let newsListReducer = Reducer.combine([
     case let ._setFailureToastMessage(toastMessage):
       state.failureToastMessage = toastMessage
       return .none
+      
+    case let ._setIsLoading(isLoading):
+      state.isLoading = isLoading
+      return .none
 
     case let .newsItem(id, action: ._navigateWebView(url)):
       return Effect(value: .navigateWebView(state.source, id, url))
@@ -273,7 +282,10 @@ private func handleSourceType(
       switch result {
       case let .success(news):
         let news = news.map { $0.toDomain }
-        return Effect(value: ._setNewsItems(news))
+        return Effect.concatenate([
+          Effect(value: ._setIsLoading(false)),
+          Effect(value: ._setNewsItems(news))
+        ])
       case .failure:
         return .none
       }
