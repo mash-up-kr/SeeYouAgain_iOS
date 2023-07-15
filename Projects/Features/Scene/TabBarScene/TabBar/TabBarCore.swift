@@ -233,6 +233,19 @@ public let tabBarReducer = Reducer<
       
     case .myPage(.routeAction(_, action: .myPage(.info(.shortsAction(.longShortsButtonTapped))))):
       return Effect(value: ._setTabHiddenStatus(true))
+    
+    case .myPage(
+      .routeAction(
+        _,
+        action: .shortStorage(
+          .routeAction(
+            _,
+            action: .shortStorageNewsList(._viewWillAppear)
+          )
+        )
+      )
+    ):
+      return Effect(value: ._setTabHiddenStatus(true))
       
     case .myPage(
       .routeAction(
