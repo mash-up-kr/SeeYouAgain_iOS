@@ -27,6 +27,7 @@ public struct HotKeywordState: Equatable {
 
 public enum HotKeywordAction: Equatable {
   // MARK: - User Action
+  case backToForeground
   case pullToRefresh
   case hotKeywordCircleTapped(String, currentOffset: CGFloat)
   
@@ -69,6 +70,12 @@ public let hotKeywordReducer = Reducer.combine([
     struct SetHotKeywordToastCancelID: Hashable {}
     
     switch action {
+    case .backToForeground:
+      return .concatenate([
+        Effect(value: ._fetchData),
+        Effect(value: ._setIsRefresh(true))
+      ])
+      
     case .pullToRefresh:
       return .concatenate([
         Effect(value: ._fetchData),

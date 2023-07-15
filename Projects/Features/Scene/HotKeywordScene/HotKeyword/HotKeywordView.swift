@@ -66,6 +66,9 @@ public struct HotKeywordView: View {
           offset = basicOffset
         }
       }
+      .onAppCameToForeground {
+        viewStore.send(.backToForeground)
+      }
     }
     .navigationBarHidden(true)
     .apply(content: { view in
@@ -178,6 +181,14 @@ extension HotKeywordView {
     static var defaultValue: CGFloat = .zero
     static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
       value += nextValue()
+    }
+  }
+}
+
+fileprivate extension View {
+  func onAppCameToForeground(perform action: @escaping () -> Void) -> some View {
+    self.onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
+      action()
     }
   }
 }
