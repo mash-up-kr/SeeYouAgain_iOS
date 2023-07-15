@@ -85,6 +85,7 @@ public struct LongStorageNewsListView: View {
         .padding(.bottom, 16)
         .ignoresSafeArea()
       }
+      .loading(viewStore.state.isLoading)
       .onAppear {
         viewStore.send(._viewWillAppear)
       }

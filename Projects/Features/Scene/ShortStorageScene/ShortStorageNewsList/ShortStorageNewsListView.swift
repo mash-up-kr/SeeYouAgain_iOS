@@ -107,6 +107,7 @@ public struct ShortStorageNewsListView: View {
         .padding(.bottom, 16)
         .ignoresSafeArea()
       }
+      .loading(viewStore.state.isLoading)
       .onAppear {
         viewStore.send(._viewWillAppear)
       }
