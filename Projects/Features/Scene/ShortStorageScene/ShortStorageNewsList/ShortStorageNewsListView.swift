@@ -43,19 +43,14 @@ public struct ShortStorageNewsListView: View {
               shortsCompleteCount: viewStore.shortsCompleteCount
             )
             
+            // 현재 저장한 오늘의 숏스가 없는 경우
             if viewStore.shortsNewsItemsCount == 0 {
-              // 오늘 저장한 숏스 없는 경우
               EmptyNewsContentView(
                 shortsNewsItemsCount: viewStore.shortsNewsItemsCount,
                 shortsCompleteCount: viewStore.shortsCompleteCount,
-                message: "오늘은 아직 저장한 뉴스가 없어요\n뉴스를 보고 마음에 드면 저장해보세요"
-              )
-            } else if viewStore.shortsCompleteCount != 0 && viewStore.shortsNewsItemsCount == 0 {
-              // 오늘 저장한 숏스 다 읽은 경우
-              EmptyNewsContentView(
-                shortsNewsItemsCount: viewStore.shortsNewsItemsCount,
-                shortsCompleteCount: viewStore.shortsCompleteCount,
-                message: "오늘 저장한 뉴스를 다 읽었어요!"
+                message: viewStore.shortsCompleteCount == 0 ?
+                "오늘은 아직 저장한 뉴스가 없어요\n뉴스를 보고 마음에 드면 저장해보세요" :
+                  "오늘 저장한 뉴스를 다 읽었어요!"
               )
             } else {
               Spacer()
