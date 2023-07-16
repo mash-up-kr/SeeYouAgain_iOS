@@ -299,7 +299,10 @@ private func handleSourceType(
         switch result {
         case let .success(news):
           let news = news.map { $0.toDomain }
-          return Effect(value: ._setNewsItems(news))
+          return Effect.concatenate([
+            Effect(value: ._setIsLoading(false)),
+            Effect(value: ._setNewsItems(news))
+          ])
         case .failure:
           return .none
         }
