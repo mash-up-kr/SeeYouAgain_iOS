@@ -21,6 +21,9 @@ public struct HotKeywordState: Equatable {
   var isFirstLoading: Bool = true
   var currentOffset: CGFloat = 0
   var toastMessage: String?
+  var isScrollToLeading: Bool = false
+  var isHotkeywordVisiable: Bool = false
+  var isAllowHitTest: Bool = true
   
   public init() { }
 }
@@ -30,9 +33,10 @@ public enum HotKeywordAction: Equatable {
   case backToForeground
   case pullToRefresh
   case hotKeywordCircleTapped(String, currentOffset: CGFloat)
+  case hotkeywordTapTapped
+  case otherTapsTapped
   
   // MARK: - Inner Business Action
-  case _viewWillAppear
   case _fetchData
   case _reloadData(HotKeywordDTO)
   case _showAnimation
@@ -47,6 +51,9 @@ public enum HotKeywordAction: Equatable {
   case _setIsRefresh(Bool)
   case _setIsFirstLoading(Bool)
   case _setCurrentOffset(CGFloat)
+  case _setHotkeywordVisiable(Bool)
+  case _setIsScrollToLeading(Bool)
+  case _setAllowHitTest(Bool)
   
   // MARK: - Child Action
   case showKeywordNewsList(String)
@@ -72,12 +79,13 @@ public let hotKeywordReducer = Reducer.combine([
     switch action {
     case .backToForeground:
       return .concatenate([
-        Effect(value: ._fetchData),
-        Effect(value: ._setIsRefresh(true))
+        Effect(value: ._setIsFirstLoading(true)),
+        Effect(value: .pullToRefresh),
       ])
       
     case .pullToRefresh:
       return .concatenate([
+        Effect(value: ._setAllowHitTest(false)),
         Effect(value: ._fetchData),
         Effect(value: ._setIsRefresh(true))
       ])
@@ -91,11 +99,15 @@ public let hotKeywordReducer = Reducer.combine([
         Effect(value: ._setCurrentOffset(offset))
       ])
       
-    case ._viewWillAppear:
+    case .hotkeywordTapTapped:
       return .concatenate([
         Effect(value: ._setIsFirstLoading(false)),
-        Effect(value: ._showAnimation)
+        Effect(value: ._setIsScrollToLeading(true)),
+        Effect(value: ._setHotkeywordVisiable(true))
       ])
+      
+    case .otherTapsTapped:
+      return Effect(value: ._setHotkeywordVisiable(false))
       
     case ._fetchData:
       return env.hotKeywordService.fetchHotKeyword()
@@ -103,11 +115,17 @@ public let hotKeywordReducer = Reducer.combine([
         .flatMapLatest { result -> Effect<HotKeywordAction, Never> in
           switch result {
           case let .success(hotKeywordDTO):
-            return Effect(value: ._reloadData(hotKeywordDTO))
+            return .concatenate([
+              Effect(value: ._reloadData(hotKeywordDTO)),
+              Effect(value: ._setAllowHitTest(true))
+            ])
             
           case .failure:
-            // lina-TODO: 아무것도 없는 경우 화면처리, subtitle 텍스트 변경, 로딩 중에 재시도 못하게 변경
-            return Effect(value: ._presentToast("인터넷 연결 상태가 불안정합니다."))
+            return .concatenate([
+              Effect(value: ._presentToast("인터넷 연결 상태가 불안정합니다.")),
+              Effect(value: ._setSubTitleText(nil)),
+              Effect(value: ._setAllowHitTest(true))
+            ])
           }
         }
         .eraseToEffect()
@@ -176,6 +194,18 @@ public let hotKeywordReducer = Reducer.combine([
       return .none
       
     case let .showKeywordNewsList(keyword):
+      return .none
+      
+    case let ._setIsScrollToLeading(canScrollToLeading):
+      state.isScrollToLeading = state.isHotkeywordVisiable && canScrollToLeading
+      return .none
+      
+    case let ._setHotkeywordVisiable(isHotkeywordVisiable):
+      state.isHotkeywordVisiable = isHotkeywordVisiable
+      return .none
+      
+    case let ._setAllowHitTest(isAllowHitTest):
+      state.isAllowHitTest = isAllowHitTest
       return .none
     }
   }

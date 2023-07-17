@@ -147,11 +147,15 @@ public let tabBarReducer = Reducer<
     case let .tabSelected(tab):
       state.selectedTab = tab
       if tab == .hotKeyword {
-        return Effect(value: .hotKeyword(.routeAction(0, action: .hotKeyword(._viewWillAppear))))
+        return Effect(value: .hotKeyword(.routeAction(0, action: .hotKeyword(.hotkeywordTapTapped))))
       } else if tab == .myPage {
-        return Effect(value: .myPage(.routeAction(0, action: .myPage(._viewWillAppear))))
+        return .concatenate(
+          Effect(value: .myPage(.routeAction(0, action: .myPage(._viewWillAppear)))),
+          Effect(value: .hotKeyword(.routeAction(0, action: .hotKeyword(.otherTapsTapped))))
+        )
+      } else {
+        return Effect(value: .hotKeyword(.routeAction(0, action: .hotKeyword(.otherTapsTapped))))
       }
-      return .none
       
     case let ._presentInfoToast(toastMessage):
       return .concatenate(

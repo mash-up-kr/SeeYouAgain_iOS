@@ -22,7 +22,7 @@ public struct BubbleView: View {
   // 써클의 중앙이 보일때 애니메이션을 시작해야하는데, 스크롤 할 때 offset이 크게 잡히는 경향이 있어서 여유 공간을 뺀 너비를 사용함
   private let spaceWidth: CGFloat = {
     let screenWidth = UIScreen.main.bounds.width
-    return screenWidth - screenWidth / 4
+    return screenWidth * 2 / 3
   }()
   
   public init(
@@ -63,6 +63,8 @@ public struct BubbleView: View {
         .onChange(of: offset) { currentOffset in
           if isAnimated == false {
             isAnimated = currentOffset > (pointX - spaceWidth)
+          } else if currentOffset < (pointX - spaceWidth * 3 / 2) {
+            isAnimated = false
           }
         }
         .frame(
