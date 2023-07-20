@@ -33,8 +33,8 @@ public enum HotKeywordAction: Equatable {
   case backToForeground
   case pullToRefresh
   case hotKeywordCircleTapped(String, currentOffset: CGFloat)
-  case hotkeywordTapTapped
-  case otherTapsTapped
+  case hotkeywordTabTapped
+  case otherTabsTapped
   
   // MARK: - Inner Business Action
   case _fetchData
@@ -99,14 +99,14 @@ public let hotKeywordReducer = Reducer.combine([
         Effect(value: ._setCurrentOffset(offset))
       ])
       
-    case .hotkeywordTapTapped:
+    case .hotkeywordTabTapped:
       return .concatenate([
         Effect(value: ._setIsFirstLoading(false)),
         Effect(value: ._setIsScrollToLeading(true)),
         Effect(value: ._setHotkeywordVisiable(true))
       ])
       
-    case .otherTapsTapped:
+    case .otherTabsTapped:
       return Effect(value: ._setHotkeywordVisiable(false))
       
     case ._fetchData:
