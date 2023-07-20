@@ -17,13 +17,15 @@ public struct HotKeywordView: View {
     self.store = store
   }
   
-  // lina-TODO: 코드 정리(여기 값들 스토어로 이동 할지) 후 기기 사이즈 골고루 더블 체크
   @Namespace var leadingID
+  
   @State private var offset: CGFloat = 0
+  
   private let keyWindow = UIApplication.shared.connectedScenes
     .compactMap { $0 as? UIWindowScene }
     .flatMap { $0.windows }
     .first { $0.isKeyWindow }
+  
   private var screenWidth: CGFloat {
     UIScreen.main.bounds.width
   }
@@ -35,31 +37,35 @@ public struct HotKeywordView: View {
     return UIScreen.main.bounds.height - (topSafearea + bottomSafearea + titleViewHeight + tabberHeight)
   }
   public var basicOffset: CGFloat {
-    return screenWidth - screenWidth / 4
+    screenWidth * 2 / 3
   }
-
+  
   public var body: some View {
     WithViewStore(store) { viewStore in
       ScrollView(.vertical, showsIndicators: false) {
         titleView
         
         bubbleChartScrollView
-        
+          .allowsHitTesting(viewStore.isAllowHitTest)
+
         // 하단 탭바 높이만큼 여백
         Spacer()
           .frame(height: 82)
       }
       .background(DesignSystem.Colors.blue50)
       .refreshable {
-        offset = basicOffset
+        offset = 0
         viewStore.send(.pullToRefresh)
       }
       .onAppear {
         if viewStore.isFirstLoading {
           viewStore.send(._fetchData)
         } else {
-          offset = viewStore.currentOffset
+          offset = viewStore.currentOffset == .zero ? basicOffset : viewStore.currentOffset
         }
+      }
+      .onDisappear {
+        viewStore.send(._setCurrentOffset(offset + basicOffset))
       }
       .onChange(of: viewStore.isFirstLoading) { isFirstLoading in
         if isFirstLoading == false {
@@ -112,7 +118,7 @@ public struct HotKeywordView: View {
             HStack {
               scrollObservableView
                 .id(leadingID)
-          
+              
               GeometryReader { geometry in
                 ForEach(viewStore.hotKeywordPointList.pointList, id: \.self) { hotKeywordPoint in
                   BubbleView(
@@ -124,7 +130,7 @@ public struct HotKeywordView: View {
                       .send(
                         .hotKeywordCircleTapped(
                           hotKeywordPoint.keyword,
-                          currentOffset: offset + screenWidth/4
+                          currentOffset: offset + basicOffset
                         )
                       )
                     }
@@ -142,6 +148,9 @@ public struct HotKeywordView: View {
             }
             .onPreferenceChange(ScrollOffsetKey.self) { value in
               offset = value
+              if offset > 0 {
+                viewStore.send(._setIsScrollToLeading(false))
+              }
             }
           }
         }
@@ -151,8 +160,17 @@ public struct HotKeywordView: View {
         )
         .onChange(of: viewStore.isRefresh) { isRefresh in
           if isRefresh {
-            offset = basicOffset
-            viewStore.send(._setIsRefresh(false))
+            withAnimation {
+              proxy.scrollTo(leadingID, anchor: .topLeading)
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+              offset = basicOffset
+              viewStore.send(._setIsRefresh(false))
+            }
+          }
+        }
+        .onChange(of: viewStore.isScrollToLeading) { canScrollToLeading in
+          if canScrollToLeading {
             withAnimation {
               proxy.scrollTo(leadingID, anchor: .topLeading)
             }
