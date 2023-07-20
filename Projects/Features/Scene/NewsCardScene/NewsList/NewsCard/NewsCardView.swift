@@ -30,6 +30,10 @@ public struct NewsCardView: View {
                 .resizable()
                 .frame(width: 56, height: 56)
                 .clipShape(Circle())
+            } else {
+              DesignSystem.Colors.grey30
+                .frame(width: 56, height: 56)
+                .clipShape(Circle())
             }
           }
 
