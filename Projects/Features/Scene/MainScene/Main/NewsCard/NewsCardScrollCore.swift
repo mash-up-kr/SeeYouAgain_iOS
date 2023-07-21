@@ -238,7 +238,7 @@ private func decideNextScrollIndex(_ currentIndex: Int, _ floatIndex: CGFloat) -
   let nextScrollThreshold = 30
   // floatIndex의 소수점 2번째까지 자리수를 구한다.
   let scrollDegree = Int(floatIndex * 100) % 100
-  // 만약 현재 인덱스가 3이고 floatIndex가 3.70이하이면 30퍼센트 이동한거니 이전 페이지(2)로 이동한다.
+  // 만약 현재 인덱스가 3이고 floatIndex가 2.70이하이면 30퍼센트 이동한거니 이전 페이지(2)로 이동한다.
   if CGFloat(currentIndex) > floatIndex, scrollDegree <= prevScrollThreshold {
     return currentIndex - 1
   }
