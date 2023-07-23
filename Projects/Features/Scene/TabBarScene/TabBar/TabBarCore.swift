@@ -221,13 +221,6 @@ public let tabBarReducer = Reducer<
       case let .failure(error):
         return presentToast(on: error)
       }
-      
-    // 메인: 뉴스 카드를 선택하여 뉴스 리스트로 이동할 때 
-    case .main(.routeAction(_, action: .main(.newsCardScroll(.newsCard(id: _, action: ._navigateNewsList))))):
-      return Effect(value: ._setTabHiddenStatus(true))
-      
-    case .hotKeyword(.routeAction(_, action: .hotKeyword(.showKeywordNewsList))):
-      return Effect(value: ._setTabHiddenStatus(true))
     
     case .myPage(.routeAction(_, action: .myPage(.settingButtonTapped))):
       return Effect(value: ._setTabHiddenStatus(true))
