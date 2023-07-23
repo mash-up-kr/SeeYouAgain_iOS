@@ -53,8 +53,8 @@ private struct GradientView: View {
     HStack {
       LinearGradient(
         colors: [
-          DesignSystem.Colors.lightBlue,
-          DesignSystem.Colors.lightBlue.opacity(0)
+          Color(red: 0.84, green: 0.91, blue: 0.97),
+          Color(red: 0.87, green: 0.92, blue: 0.95).opacity(0)
         ],
         startPoint: .leading,
         endPoint: .trailing
