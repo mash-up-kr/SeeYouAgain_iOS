@@ -198,12 +198,12 @@ public let appCoordinatorReducer: Reducer<
         
       case let .routeAction(_, action: .newsCard(.routeAction(_, action: .web(.backButtonTapped(source))))):
         if source == .longStorage {
-          state.routes.pop()
+          state.routes.goBack()
         }
         return .none
         
       case .routeAction(_, action: .newsCard(.routeAction(_, action: .shortsComplete(.backButtonTapped)))):
-        state.routes.pop()
+        state.routes.goBack()
         return Effect(
           value: .routeAction(
             0,
@@ -226,7 +226,7 @@ public let appCoordinatorReducer: Reducer<
         )
         
       case .routeAction(_, action: .newsCard(.routeAction(_, action: .shortsComplete(.confirmButtonTapped)))):
-        state.routes.pop()
+        state.routes.goBack()
         return Effect(
           value: .routeAction(
             0,
@@ -249,23 +249,8 @@ public let appCoordinatorReducer: Reducer<
         )
         
       case let .routeAction(_, action: .newsCard(.routeAction(_, action: .newsList(.backButtonTapped(source))))):
-        state.routes.pop()
-        switch source {
-        case .main, .hot:
-          return Effect(value: .routeAction(0, action: .tabBar(._setTabHiddenStatus(false))))
-          
-        case .shortStorage, .longStorage:
-          return .none
-        }
-        
-      case let .routeAction(_, action: .newsCard(.routeAction(_, action: .newsList(._onDisappear(source))))):
-        switch source {
-        case .main, .hot:
-          return Effect(value: .routeAction(0, action: .tabBar(._setTabHiddenStatus(false))))
-          
-        case .shortStorage, .longStorage:
-          return .none
-        }
+        state.routes.goBack()
+        return .none
         
       default: return .none
       }
