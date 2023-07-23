@@ -219,10 +219,35 @@ private func calculateCurrentScrollIndex(_ state: inout NewsCardScrollState) {
   let logicalOffset = (state.currentScrollOffset - state.layout.leadingOffset) * -1.0
   let contentWidth = state.layout.size.width + state.layout.spacing
   let floatIndex = (logicalOffset) / contentWidth
-  let intIndex = Int(round(floatIndex))
+  let intIndex = decideNextScrollIndex(state.currentScrollIndex, floatIndex)
   let newPageIndex = min(max(intIndex, 0), state.newsCards.count - 1)
   state.previousScrollIndex = state.currentScrollIndex
   state.currentScrollIndex = newPageIndex
+}
+
+/**
+ * - Parameters:
+ *    - currentIndex:
+ *      - 정의: 의미현재 카드의 인덱스
+ *    - floatIndex:
+ *      - 정의: 현재 스크롤이 반영된 실수 형태의 인덱스.
+ *      - 범위: currentIndex - 1 <= floatIndex <= currentIndex + 1
+ */
+private func decideNextScrollIndex(_ currentIndex: Int, _ floatIndex: CGFloat) -> Int {
+  let prevScrollThreshold = 70
+  let nextScrollThreshold = 30
+  // floatIndex의 소수점 2번째까지 자리수를 구한다.
+  let scrollDegree = Int(floatIndex * 100) % 100
+  // 만약 현재 인덱스가 3이고 floatIndex가 2.70이하이면 30퍼센트 이동한거니 이전 페이지(2)로 이동한다.
+  if CGFloat(currentIndex) > floatIndex, scrollDegree <= prevScrollThreshold {
+    return currentIndex - 1
+  }
+  // 만약 현재 인덱스가 3이고 floatIndex가 3.30이상이면 30퍼센트 이동한거니 다음 페이지(4)로 이동한다.
+  if CGFloat(currentIndex) < floatIndex, scrollDegree >= nextScrollThreshold {
+    return currentIndex + 1
+  }
+  // 그 외 경우에는 현재 인덱스 유지한다.
+  return currentIndex
 }
 
 private func calculateCurrentScrollOffset(
