@@ -14,9 +14,14 @@ struct ShortsTabBarView: View {
   @Binding var selection: TabBarItem
   private let selectionWidth: [CGFloat] = [98, 113, 95]
   
+  private let keyWindow = UIApplication.shared.connectedScenes
+  .compactMap { $0 as? UIWindowScene }
+  .flatMap { $0.windows }
+  .first { $0.isKeyWindow }
+  
   var body: some View {
     GeometryReader { geometry in
-      VStack {
+      VStack(spacing: 0) {
         Spacer()
         
         HStack(spacing: 8) {
@@ -26,23 +31,14 @@ struct ShortsTabBarView: View {
           .frame(height: 50)
         }
         .frame(width: geometry.size.width, height: 82)
-        .background(
-          DesignSystem.Colors.coolgrey100
-        )
-        .cornerRadius(24)
-        .overlay(
-          RoundedRectangle(cornerRadius: 24)
-            .stroke(
-              LinearGradient(
-                gradient: Gradient(colors: [Color.clear, Color.white]),
-                startPoint: .leading,
-                endPoint: .trailing
-              )
-            )
-        )
+        .background(DesignSystem.Colors.white)
+        .cornerRadius(40, corners: [.topLeft, .topRight])
+        
+        DesignSystem.Colors.white
+          .frame(height: keyWindow?.safeAreaInsets.bottom ?? 0)
       }
+      .ignoresSafeArea(edges: [.bottom])
     }
-    .padding(.horizontal, 24)
   }
 }
 
