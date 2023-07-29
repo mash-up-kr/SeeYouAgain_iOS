@@ -20,8 +20,8 @@ module.exports = async function deployLocal() {
 
 async function setBuildInfo(newVersionNumber, newBuildNumber) {
   const { execa } = await import("execa");
-  const configFilePath = "./Projects/App/xcconfigs/SeeYouAgain.shared.xcconfig";
-  const xcodeProjPath = "./Projects/App/App.xcodeproj"
+  const configFilePath = "./Projects/WatchApp/xcconfigs/SeeYouAgain.shared.xcconfig";
+  const xcodeProjPath = "./Projects/WatchApp/WatchApp.xcodeproj"
 
   _setXCConfigValue("MARKETING_VERSION", newVersionNumber, configFilePath);
 
@@ -31,9 +31,9 @@ async function setBuildInfo(newVersionNumber, newBuildNumber) {
 }
 
 function createReleaseCommit(newVersionNumber, newBuildNumber) {
-  const configFilePath = "./Projects/App/xcconfigs/SeeYouAgain.shared.xcconfig";
+  const configFilePath = "./Projects/WatchApp/xcconfigs/SeeYouAgain.shared.xcconfig";
   const commitMessage = `:bookmark: v${newVersionNumber}-${newBuildNumber}`;
-  const infoPlistFilePath = "./Projects/App/Info.plist"
+  const infoPlistFilePath = "./Projects/WatchApp/Info.plist"
 
   if (shell.exec(`git add ${infoPlistFilePath} ${configFilePath} && git commit -m "${commitMessage}" && git push`).code > 0) {
     shell.echo("❌ 'createReleaseCommit' failed");
@@ -99,9 +99,9 @@ async function checkoutBranch(newVersionNumber, newBuildNumber) {
   await execa("git", ["fetch"]);
   shell.echo("✅ 'git fetch' 완료\n");
 
-  shell.echo("🌀 'git checkout main' 실행중");
-  await execa("git", ["checkout", "main"]);
-  shell.echo("✅ 'git checkout main' 완료\n");
+  shell.echo("🌀 'git checkout develop' 실행중");
+  await execa("git", ["checkout", "develop"]);
+  shell.echo("✅ 'git checkout develop' 완료\n");
 
   await execa("git", ["pull"]);
   shell.echo("✅ 'git pull' 완료\n");
@@ -116,7 +116,7 @@ async function checkoutBranch(newVersionNumber, newBuildNumber) {
 }
 
 function fetchCurrentVersion() {
-  const configFilePath = "./Projects/App/xcconfigs/SeeYouAgain.shared.xcconfig";
+  const configFilePath = "./Projects/WatchApp/xcconfigs/SeeYouAgain.shared.xcconfig";
 
   const currentVersion = _getXCConfigValue("MARKETING_VERSION", configFilePath);
 

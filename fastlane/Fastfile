@@ -24,15 +24,15 @@ platform :ios do
     update_and_build_app("Prod")
     upload_to_testflight(skip_waiting_for_build_processing: true)
     download_dsyms(
-      app_identifier: "com.mashup.seeYouAgain",
-      output_directory: "./Projects/App/Outputs/Archives/PROD"
+      app_identifier: "com.mashup.seeYouAgain.watchkitapp",
+      output_directory: "./Projects/WatchApp/Outputs/Archives/PROD"
     )
 
     update_and_build_app("Dev")
     upload_to_testflight(skip_waiting_for_build_processing: true)
     download_dsyms(
-      app_identifier: "com.mashup.seeYouAgain.dev",
-      output_directory: "./Projects/App/Outputs/Archives/DEV"
+      app_identifier: "com.mashup.seeYouAgain.watchkitapp.dev",
+      output_directory: "./Projects/WatchApp/Outputs/Archives/DEV"
     )
 
     create_tag(new_version_number, new_build_number)
@@ -69,7 +69,7 @@ end
 def set_build_info(new_version_number, new_build_number)
   set_xcconfig_value("MARKETING_VERSION", new_version_number)
   increment_build_number(
-    xcodeproj: './Projects/App/App.xcodeproj',
+    xcodeproj: './Projects/WatchApp/WatchApp.xcodeproj',
     build_number: new_build_number
   )
 end
@@ -80,7 +80,7 @@ def create_tag(new_version_number, new_build_number)
   system( `git tag #{tag_name} && git push -u origin "#{tag_name}"` )
 end
 
-def set_xcconfig_value(targetKey, targetValue, xcconfigs_file_path = '../Projects/App/xcconfigs/SeeYouAgain.shared.xcconfig')
+def set_xcconfig_value(targetKey, targetValue, xcconfigs_file_path = '../Projects/WatchApp/xcconfigs/SeeYouAgain.shared.xcconfig')
   configs = {}
  
   # read configs
@@ -104,25 +104,25 @@ def update_and_build_app(scheme = "")
   case scheme
   when "Prod"
     update_app_identifier(
-      xcodeproj: "./Projects/App/App.xcodeproj",
+      xcodeproj: "./Projects/WatchApp/WatchApp.xcodeproj",
       plist_path: "Info.plist",
-      app_identifier: "com.mashup.seeYouAgain"
+      app_identifier: "com.mashup.seeYouAgain.watchkitapp"
     )
   build_app(
     workspace: "SeeYouAgain.xcworkspace",
-    output_directory: "./Projects/App/Outputs/Archives/PROD",
+    output_directory: "./Projects/WatchApp/Outputs/Archives/PROD",
     scheme: "#{scheme}-SeeYouAgain",
     xcargs: "-allowProvisioningUpdates"
   )
   when "Dev"
     update_app_identifier(
-      xcodeproj: "./Projects/App/App.xcodeproj",
+      xcodeproj: "./Projects/WatchApp/WatchApp.xcodeproj",
       plist_path: "Info.plist",
-      app_identifier: "com.mashup.seeYouAgain.dev"
+      app_identifier: "com.mashup.seeYouAgain.watchkitapp.dev"
     )
   build_app(
     workspace: "SeeYouAgain.xcworkspace",
-    output_directory: "./Projects/App/Outputs/Archives/DEV",
+    output_directory: "./Projects/WatchApp/Outputs/Archives/DEV",
     scheme: "#{scheme}-SeeYouAgain",
     xcargs: "-allowProvisioningUpdates"
   )
