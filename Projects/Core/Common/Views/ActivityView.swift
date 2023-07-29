@@ -11,15 +11,15 @@ import SwiftUI
 #if os(iOS)
 public struct ActivityView: UIViewControllerRepresentable {
   @Binding var isPresented: Bool
-  var appLink: String
+  public let activityItems: [Any]
   public let applicationActivities: [UIActivity]? = nil
   
   public init(
     isPresented: Binding<Bool>,
-    appLink: String
+    activityItems: [Any]
   ) {
     self._isPresented = isPresented
-    self.appLink = appLink
+    self.activityItems = activityItems
   }
   
   public func makeUIViewController(context: Context) -> UIViewController {
@@ -27,11 +27,8 @@ public struct ActivityView: UIViewControllerRepresentable {
   }
   
   public func updateUIViewController(_ uiViewController: UIViewController, context: Context) {
-    guard let url = URL(string: appLink) else { return }
-    let shareItems = [url]
-    
     let activityViewController = UIActivityViewController(
-      activityItems: shareItems,
+      activityItems: activityItems,
       applicationActivities: applicationActivities
     )
     

@@ -45,6 +45,11 @@ public struct MyPageCoordinatorView: View {
           action: MyPageScreenAction.setting,
           then: SettingCoordinatorView.init
         )
+        CaseLet(
+          state: /MyPageScreenState.achievementShare,
+          action: MyPageScreenAction.achievementShare,
+          then: AchievementShareView.init
+        )
       }
     }
   }
