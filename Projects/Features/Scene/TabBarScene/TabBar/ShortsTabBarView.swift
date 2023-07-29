@@ -12,30 +12,34 @@ import SwiftUI
 struct ShortsTabBarView: View {
   public let tabs: [TabBarItem]
   @Binding var selection: TabBarItem
-  private let selectionWidth: [CGFloat] = [98, 113, 95]
   
   private let keyWindow = UIApplication.shared.connectedScenes
-  .compactMap { $0 as? UIWindowScene }
-  .flatMap { $0.windows }
-  .first { $0.isKeyWindow }
+    .compactMap { $0 as? UIWindowScene }
+    .flatMap { $0.windows }
+    .first { $0.isKeyWindow }
   
   var body: some View {
     GeometryReader { geometry in
       VStack(spacing: 0) {
         Spacer()
         
-        HStack(spacing: 8) {
-          ForEach(tabs, id: \.self) { tab in
-            singleTabView(tab: tab)
-          }
-          .frame(height: 50)
+        HStack(spacing: 0) {
+          Spacer().frame(width: 32)
+          singleTabView(tab: TabBarItem.hotKeyword)
+          
+          Spacer().frame(width: 8)
+          singleTabView(tab: TabBarItem.house)
+          
+          Spacer().frame(width: 8)
+          singleTabView(tab: TabBarItem.myPage)
+          
+          Spacer().frame(width: 32)
         }
-        .frame(width: geometry.size.width, height: 82)
+        .padding(.vertical, 16)
         .background(DesignSystem.Colors.white)
         .cornerRadius(40, corners: [.topLeft, .topRight])
         
-        DesignSystem.Colors.white
-          .frame(height: keyWindow?.safeAreaInsets.bottom ?? 0)
+        DesignSystem.Colors.white.frame(height: keyWindow?.safeAreaInsets.bottom ?? 0)
       }
       .ignoresSafeArea(edges: [.bottom])
     }
@@ -45,10 +49,10 @@ struct ShortsTabBarView: View {
 extension ShortsTabBarView {
   private func singleTabView(tab: TabBarItem) -> some View {
     HStack(spacing: 0) {
-      (selection == tab ? tab.selectedIcon : tab.defaultIcon)
-        .frame(width: 26, height: 26)
-      
       if selection == tab {
+        tab.selectedIcon
+          .frame(width: 26, height: 26)
+        
         Spacer()
           .frame(width: 8)
         
@@ -56,15 +60,19 @@ extension ShortsTabBarView {
           .font(.b14)
           .foregroundColor(tab.textColor)
           .fixedSize()
+        
+      } else {
+        Spacer()
+        
+        tab.defaultIcon
+          .frame(width: 26, height: 26)
+        
+        Spacer()
       }
     }
     .padding(.horizontal, 20)
     .padding(.vertical, 12)
-    .scaleEffect(1)
-    .frame(width: selection == tab ? selectionWidth[tab.rawValue] : 79)
-    .background(
-      selection == tab ? tab.backgroundColor : Color.clear
-    )
+    .background(selection == tab ? tab.backgroundColor : Color.clear)
     .cornerRadius(32)
     .onTapGesture {
       withAnimation(.linear(duration: 0.2)) {
