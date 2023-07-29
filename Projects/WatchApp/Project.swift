@@ -28,10 +28,10 @@ let project = Project.make(
       )
     ),
     .make(
-      name: "Dev-SeeYouAgain-WatchOS-dev",
+      name: "Dev-SeeYouAgain-WatchOS",
       platform: .watchOS,
       product: .watch2Extension,
-      bundleId: "com.mashup.seeYouAgain.watchkitapp",
+      bundleId: "com.mashup.seeYouAgain.watchkitapp-dev",
       deploymentTarget: .watchOS(targetVersion: "9.0"),
       infoPlist: .file(path: .relativeToRoot("Projects/WatchApp/Info.plist")),
       sources: ["Sources/**"],
