@@ -10,9 +10,9 @@ import SwiftUI
 
 @main
 struct SeeYouAgainWatchApp: App {
-    var body: some Scene {
-        WindowGroup {
-            ContentView()
-        }
+  var body: some Scene {
+    WindowGroup {
+      ContentView()
     }
+  }
 }
