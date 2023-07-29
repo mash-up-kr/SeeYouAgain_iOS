@@ -31,6 +31,25 @@ public struct HotKeywordDTO: Decodable, Equatable {
     return "\(year)년 \(month)월 \(day)일 \(hour):01 ~ \(hour + 1):00 기준"
   }
   
+  public var watchTimeString: String {
+    var standardDate = Date()
+    if let date = DateFormatter.hotKeywordDateFormatter1.date(from: createdAt) {
+      standardDate = date
+    } else if let date = DateFormatter.hotKeywordDateFormatter2.date(from: createdAt) {
+      standardDate = date
+    } else {
+      return ""
+    }
+    
+    let calendar = Calendar.current
+    let year = calendar.component(.year, from: standardDate)
+    let month = String(format: "%02d", calendar.component(.month, from: standardDate))
+    let day = calendar.component(.day, from: standardDate)
+    let hour = calendar.component(.hour, from: standardDate)
+    
+    return "\(year)-\(month)-\(day) \(hour)시 기준"
+  }
+  
   public init(createdAt: String, ranking: [String]) {
     self.createdAt = createdAt
     self.ranking = ranking
