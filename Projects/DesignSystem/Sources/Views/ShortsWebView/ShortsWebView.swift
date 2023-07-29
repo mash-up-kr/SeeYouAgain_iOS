@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+#if os(iOS)
 import WebKit
 
 struct UIWebView: UIViewRepresentable {
@@ -33,3 +34,4 @@ public struct ShortsWebView: View {
     UIWebView(url: URL(string: webAddress)!)
   }
 }
+#endif

@@ -11,7 +11,11 @@ import Combine
 import CombineExt
 import ComposableArchitecture
 import Foundation
+#if os(watchOS)
+import ModelsWatchOS
+#else
 import Models
+#endif
 
 public struct AppVersionService {
   public let fetchAppVersion: () -> Effect<String, Never>

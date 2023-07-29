@@ -7,10 +7,15 @@
 //
 
 import Alamofire
+#if os(watchOS)
+import CommonWatchOS
+import ModelsWatchOS
+#else
 import Common
+import Models
+#endif
 import ComposableArchitecture
 import Foundation
-import Models
 
 public struct HotKeywordService {
   public var fetchHotKeyword: () -> Effect<HotKeywordDTO, Error>

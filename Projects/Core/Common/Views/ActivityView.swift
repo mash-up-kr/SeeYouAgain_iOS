@@ -8,6 +8,7 @@
 
 import SwiftUI
 
+#if os(iOS)
 public struct ActivityView: UIViewControllerRepresentable {
   @Binding var isPresented: Bool
   var appLink: String
@@ -43,3 +44,4 @@ public struct ActivityView: UIViewControllerRepresentable {
     }
   }
 }
+#endif

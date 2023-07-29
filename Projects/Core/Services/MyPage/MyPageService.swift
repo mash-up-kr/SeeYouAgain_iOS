@@ -8,7 +8,11 @@
 
 import Alamofire
 import ComposableArchitecture
+#if os(watchOS)
+import ModelsWatchOS
+#else
 import Models
+#endif
 
 #if DEBUG
 import XCTestDynamicOverlay
