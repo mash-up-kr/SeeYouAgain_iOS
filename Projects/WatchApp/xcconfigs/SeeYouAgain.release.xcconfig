@@ -1,0 +1,4 @@
+#include "./SeeYouAgain.shared.xcconfig"
+
+ONLY_ACTIVE_ARCH=YES
+BUNDLE_NAME=숏스
