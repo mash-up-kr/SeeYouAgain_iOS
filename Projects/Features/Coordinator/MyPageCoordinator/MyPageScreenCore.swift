@@ -20,6 +20,7 @@ public enum MyPageScreenState: Equatable {
   case shortStorage(ShortStorageCoordinatorState)
   case longStorage(LongStorageCoordinatorState)
   case setting(SettingCoordinatorState)
+  case achievementShare(AchievementShareState)
 }
 
 public enum MyPageScreenAction {
@@ -27,6 +28,7 @@ public enum MyPageScreenAction {
   case shortStorage(ShortStorageCoordinatorAction)
   case longStorage(LongStorageCoordinatorAction)
   case setting(SettingCoordinatorAction)
+  case achievementShare(AchievementShareAction)
 }
 
 internal struct MyPageScreenEnvironment {
@@ -60,6 +62,12 @@ internal let myPageScreenReducer = Reducer<
           myPageService: $0.myPageService
         )
       }
+    ),
+  achievementShareReducer
+    .pullback(
+      state: /MyPageScreenState.achievementShare,
+      action: /MyPageScreenAction.achievementShare,
+      environment: { _ in AchievementShareEnvironment() }
     ),
   shortStorageCoordinatorReducer
     .pullback(

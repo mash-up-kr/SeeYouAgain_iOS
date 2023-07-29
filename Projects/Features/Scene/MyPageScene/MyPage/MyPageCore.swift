@@ -13,7 +13,7 @@ import Services
 
 public struct MyPageState: Equatable {
   var info: MyInfoState = MyInfoState(user: .stub)
-  
+  var myAchievements: MyAchievementsState = MyAchievementsState()
   public init() {}
 }
 
@@ -32,6 +32,7 @@ public enum MyPageAction {
 
   // MARK: - Child Action
   case info(MyInfoAction)
+  case myAchievementsAction(MyAchievementsAction)
 }
 
 public struct MyPageEnvironment {
@@ -62,6 +63,14 @@ public let myPageReducer = Reducer<
       action: /MyPageAction.info,
       environment: {
         MyInfoEnvironment(myPageService: $0.myPageService)
+      }
+    ),
+  myAchievementsReducer
+    .pullback(
+      state: \.myAchievements,
+      action: /MyPageAction.myAchievementsAction,
+      environment: {
+        MyAchievementsEnviorment(mainQueue: $0.mainQueue, myPageService: $0.myPageService)
       }
     ),
   Reducer { state, action, env in

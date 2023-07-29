@@ -47,7 +47,12 @@ public struct MyPageView: View {
         Spacer()
           .frame(height: 39)
         
-        DesignSystem.Colors.lightBlue
+        MyAchievementsView(
+          store: store.scope(
+            state: \.myAchievements,
+            action: MyPageAction.myAchievementsAction
+          )
+        )        
       }
       .onAppear {
         viewStore.send(._viewWillAppear)
