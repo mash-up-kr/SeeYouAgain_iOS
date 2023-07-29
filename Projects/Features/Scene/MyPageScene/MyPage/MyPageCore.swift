@@ -70,7 +70,7 @@ public let myPageReducer = Reducer<
       state: \.myAchievements,
       action: /MyPageAction.myAchievementsAction,
       environment: {
-        MyAchievementsEnviorment(mainQueue: $0.mainQueue, myPageService: $0.myPageService)
+        MyAchievementsEnvironment(mainQueue: $0.mainQueue, myPageService: $0.myPageService)
       }
     ),
   Reducer { state, action, env in
