@@ -28,7 +28,7 @@ let project = Project.make(
       )
     ),
     .make(
-      name: "Dev-SeeYouAgain-WatchOS",
+      name: "Dev-SeeYouAgain-WatchOS-dev",
       platform: .watchOS,
       product: .watch2Extension,
       bundleId: "com.mashup.seeYouAgain.watchkitapp",
