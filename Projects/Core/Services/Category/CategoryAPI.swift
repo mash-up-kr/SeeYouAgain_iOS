@@ -8,7 +8,11 @@
 
 import Alamofire
 import Foundation
+#if os(watchOS)
+import ModelsWatchOS
+#else
 import Models
+#endif
 
 public enum CategoryAPI {
   case saveCategory(categories: [String])
