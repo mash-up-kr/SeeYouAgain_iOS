@@ -25,7 +25,7 @@ public enum MyAchievementsAction {
   case _onAppear
 }
 
-public struct MyAchievementsEnviorment {
+public struct MyAchievementsEnvironment {
   let mainQueue: AnySchedulerOf<DispatchQueue>
   let myPageService: MyPageService
   
@@ -41,7 +41,7 @@ public struct MyAchievementsEnviorment {
 public let myAchievementsReducer = Reducer<
   MyAchievementsState,
   MyAchievementsAction,
-  MyAchievementsEnviorment
+  MyAchievementsEnvironment
 > { state, action, environment in
   switch action {
   case .achievementBadgeTapped:
