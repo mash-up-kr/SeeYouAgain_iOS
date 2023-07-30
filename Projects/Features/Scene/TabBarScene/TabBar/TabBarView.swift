@@ -83,35 +83,6 @@ public struct TabBarView: View {
           )
         }
       })
-      .bottomSheet(
-        backgroundColor: DesignSystem.Colors.white.opacity(0.62).blurEffect(),
-        isPresented: viewStore.binding(
-          get: \.categoryBottomSheet.isPresented,
-          send: {
-            TabBarAction.categoryBottomSheet(
-              BottomSheetAction._setIsPresented($0)
-            )
-          }
-        ),
-        headerArea: { CategoryBottomSheetHeader() },
-        content: {
-          CategoryBottomSheet(
-            store: store.scope(
-              state: \.categoryBottomSheet,
-              action: TabBarAction.categoryBottomSheet
-            )
-          )
-        },
-        bottomArea: {
-          BottomButton(
-            title: "변경",
-            disabled: viewStore.categoryBottomSheet.selectedCategories.isEmpty,
-            action: {
-              viewStore.send(.categoryBottomSheet(.updateButtonTapped))
-            }
-          )
-        }
-      )
       .apply(content: { view in
         WithViewStore(store.scope(state: \.categoryBottomSheet.toastMessage)) { toastMessageViewStore in
           view.toast(
@@ -121,6 +92,12 @@ public struct TabBarView: View {
           )
         }
       })
+      .categoryBottomSheet(
+        store: store.scope(
+          state: \.categoryBottomSheet,
+          action: TabBarAction.categoryBottomSheet
+        )
+      )
       .onDisappear {
         viewStore.send(._hideToast)        
       }
