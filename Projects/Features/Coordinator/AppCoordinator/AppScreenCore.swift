@@ -41,6 +41,7 @@ internal struct AppScreenEnvironment {
   let categoryService: CategoryService
   let hotKeywordService: HotKeywordService
   let myPageService: MyPageService
+  let logService: LogService
   
   internal init(
     mainQueue: AnySchedulerOf<DispatchQueue>,
@@ -49,7 +50,8 @@ internal struct AppScreenEnvironment {
     newsCardService: NewsCardService,
     categoryService: CategoryService,
     hotKeywordService: HotKeywordService,
-    myPageService: MyPageService
+    myPageService: MyPageService,
+    logService: LogService
   ) {
     self.mainQueue = mainQueue
     self.userDefaultsService = userDefaultsService
@@ -58,6 +60,7 @@ internal struct AppScreenEnvironment {
     self.categoryService = categoryService
     self.hotKeywordService = hotKeywordService
     self.myPageService = myPageService
+    self.logService = logService
   }
 }
 
@@ -71,7 +74,10 @@ internal let appScreenReducer = Reducer<
       state: /AppScreenState.splash,
       action: /AppScreenAction.splash,
       environment: {
-        SplashEnvironment(userDefaultsService: $0.userDefaultsService)
+        SplashEnvironment(
+          userDefaultsService: $0.userDefaultsService,
+          logService: $0.logService
+        )
       }
     ),
   setCategoryReducer
