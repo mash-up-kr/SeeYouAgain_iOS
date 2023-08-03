@@ -34,6 +34,7 @@ public struct AppCoordinatorEnvironment {
   let categoryService: CategoryService
   let hotKeywordService: HotKeywordService
   let myPageService: MyPageService
+  let logService: LogService
   
   public init(
     mainQueue: AnySchedulerOf<DispatchQueue>,
@@ -42,7 +43,8 @@ public struct AppCoordinatorEnvironment {
     newsCardService: NewsCardService,
     categoryService: CategoryService,
     hotKeywordService: HotKeywordService,
-    myPageService: MyPageService
+    myPageService: MyPageService,
+    logService: LogService
   ) {
     self.mainQueue = mainQueue
     self.userDefaultsService = userDefaultsService
@@ -51,6 +53,7 @@ public struct AppCoordinatorEnvironment {
     self.categoryService = categoryService
     self.hotKeywordService = hotKeywordService
     self.myPageService = myPageService
+    self.logService = logService
   }
 }
 
@@ -68,7 +71,8 @@ public let appCoordinatorReducer: Reducer<
         newsCardService: $0.newsCardService,
         categoryService: $0.categoryService,
         hotKeywordService: $0.hotKeywordService,
-        myPageService: $0.myPageService
+        myPageService: $0.myPageService,
+        logService: $0.logService
       )
     }
   )

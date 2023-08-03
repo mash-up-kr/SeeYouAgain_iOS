@@ -26,9 +26,14 @@ public enum SplashAction: Equatable {
 
 public struct SplashEnvironment {
   let userDefaultsService: UserDefaultsService
+  let logService: LogService
   
-  public init(userDefaultsService: UserDefaultsService) {
+  public init(
+    userDefaultsService: UserDefaultsService,
+    logService: LogService
+  ) {
     self.userDefaultsService = userDefaultsService
+    self.logService = logService
   }
 }
 
@@ -49,7 +54,10 @@ public let splashReducer = Reducer.combine([
         })
       
     case ._moveToHome:
-      return .none
+      return Effect.merge(
+        env.logService.attendance().fireAndForget(),
+        env.logService.sharing().fireAndForget()
+      )
       
     case ._moveToSetCategory:
       return .none
