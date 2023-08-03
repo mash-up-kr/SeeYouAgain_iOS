@@ -54,10 +54,7 @@ public let splashReducer = Reducer.combine([
         })
       
     case ._moveToHome:
-      return Effect.merge(
-        env.logService.attendance().fireAndForget(),
-        env.logService.sharing().fireAndForget()
-      )
+      return env.logService.attendance().fireAndForget()
       
     case ._moveToSetCategory:
       return .none
