@@ -19,48 +19,61 @@ public struct MyPageView: View {
   
   public var body: some View {
     WithViewStore(store) { viewStore in
-      VStack(spacing: 0) {
-        TopNavigationBar(
-          rightIcon: DesignSystem.Icons.iconSetting,
-          rightIconButtonAction: {
-            viewStore.send(.settingButtonTapped)
-          }
-        )
-        
-        ZStack(alignment: .topTrailing) {
-          DesignSystem.Images.imageEarth
-            .frame(width: 124, height: 121)
-            .padding(.trailing, 24)
-          
-          MyInfoView(
-            store: store.scope(
-              state: \.info,
-              action: MyPageAction.info
+      ZStack {
+        ScrollView {
+          VStack(spacing: 0) {
+            TopNavigationBar(
+              rightIcon: DesignSystem.Icons.iconSetting,
+              rightIconButtonAction: {
+                viewStore.send(.settingButtonTapped)
+              }
             )
-          )
-          .padding(.horizontal, 24)
-          
-          Spacer()
+            
+            ZStack(alignment: .topTrailing) {
+              DesignSystem.Images.imageEarth
+                .frame(width: 124, height: 121)
+                .padding(.trailing, 24)
+              
+              MyInfoView(
+                store: store.scope(
+                  state: \.info,
+                  action: MyPageAction.info
+                )
+              )
+              .padding(.horizontal, 24)
+              
+              Spacer()
+            }
+            .padding(.top, 32)
+            
+            Spacer()
+              .frame(height: 20)
+            
+            StatisticsView(
+              store: store.scope(
+                state: \.statistics,
+                action: MyPageAction.statisticsAction
+              )
+            )
+            .padding(.horizontal, 24)
+            
+            MyAchievementsView(
+              store: store.scope(
+                state: \.myAchievements,
+                action: MyPageAction.myAchievementsAction
+              )
+            )
+            .padding(.horizontal, 24)
+          }
+          .onAppear {
+            viewStore.send(._viewWillAppear)
+          }
         }
-        .padding(.top, 32)
-        
-        Spacer()
-          .frame(height: 39)
-        
-        MyAchievementsView(
-          store: store.scope(
-            state: \.myAchievements,
-            action: MyPageAction.myAchievementsAction
-          )
-        )        
-      }
-      .onAppear {
-        viewStore.send(._viewWillAppear)
+        .navigationBarHidden(true)
+        .edgesIgnoringSafeArea(.bottom)
+        .myPageBackgroundView()
       }
     }
-    .navigationBarHidden(true)
-    .edgesIgnoringSafeArea(.bottom)
-    .myPageBackgroundView()
   }
 }
 

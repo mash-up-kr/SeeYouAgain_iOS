@@ -11,6 +11,14 @@ import Foundation
 public struct Statistics: Equatable {
   public let weeklyShortsCnt: [String: Int]
   public let dateOfShortsRead: DateOfShortsRead?
+  
+  public init(
+    weeklyShortsCnt: [String: Int],
+    dateOfShortsRead: DateOfShortsRead?
+  ) {
+    self.weeklyShortsCnt = weeklyShortsCnt
+    self.dateOfShortsRead = dateOfShortsRead
+  }
 }
 
 public struct DateOfShortsRead: Equatable {
@@ -19,18 +27,19 @@ public struct DateOfShortsRead: Equatable {
 }
 
 public extension Statistics {
-  #if DEBUG
   static let stub: Statistics = .init(
     weeklyShortsCnt: [
-      "7월 1주차" : 1,
-      "7월 2주차" : 2,
-      "7월 3주차" : 3,
-      "7월 4주차" : 4
+      "2024년 1월 1주차" : 3,
+      "2024년 1월 2주차" : 4,
+      "2023년 12월 4주차" : 1,
+      "2023년 12월 5주차" : 2,
     ],
     dateOfShortsRead: DateOfShortsRead(
       lastWeek: [ "2023-07-17" ],
-      thisWeek: [ "2023-07-29", "2023-07-30" ]
+      thisWeek: [
+        "2023-07-29",
+        "2023-07-30"
+      ]
     )
   )
-  #endif
 }

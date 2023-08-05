@@ -13,7 +13,9 @@ import Services
 
 public struct MyPageState: Equatable {
   var info: MyInfoState = MyInfoState(user: .stub)
+  var statistics: StatisticsState = StatisticsState(statistics: .stub)
   var myAchievements: MyAchievementsState = MyAchievementsState()
+  
   public init() {}
 }
 
@@ -24,14 +26,15 @@ public enum MyPageAction {
   // MARK: - Inner Business Action
   case _viewWillAppear
   case _fetchUserInfo
+  case _fetchWeeklyStats
   
   // MARK: - Inner SetState Action
   case _setMyInfoState(User)
-   
-   // MARK: - Inner SetState Action
+  case _setStatisticsState(Statistics)
 
   // MARK: - Child Action
   case info(MyInfoAction)
+  case statisticsAction(StatisticsAction)
   case myAchievementsAction(MyAchievementsAction)
 }
 
@@ -73,10 +76,21 @@ public let myPageReducer = Reducer<
         MyAchievementsEnvironment(mainQueue: $0.mainQueue, myPageService: $0.myPageService)
       }
     ),
+  statisticsReducer
+    .pullback(
+      state: \.statistics,
+      action: /MyPageAction.statisticsAction,
+      environment: {
+        StatisticsEnvironment(mainQueue: $0.mainQueue, myPageService: $0.myPageService)
+      }
+    ),
   Reducer { state, action, env in
     switch action {
     case ._viewWillAppear:
-      return Effect(value: ._fetchUserInfo)
+      return Effect.concatenate([
+        Effect(value: ._fetchUserInfo),
+        Effect(value: ._fetchWeeklyStats)
+      ])
       
     case ._fetchUserInfo:
       return env.myPageService.getMemberInfo()
@@ -92,8 +106,29 @@ public let myPageReducer = Reducer<
         }
         .eraseToEffect()
       
+    case ._fetchWeeklyStats:
+      return env.myPageService.fetchWeeklyStats()
+        .catchToEffect()
+        .flatMap { result -> Effect<MyPageAction, Never> in
+          switch result {
+          case let .success(statistics):
+            return Effect.concatenate([
+              Effect(value: ._setStatisticsState(statistics)),
+              Effect(value: .statisticsAction(.weeklyStatisticsAction(._calculateStates)))
+            ])
+
+          case .failure:
+            return .none
+          }
+        }
+        .eraseToEffect()
+      
     case let ._setMyInfoState(user):
       state.info = MyInfoState(user: user)
+      return .none
+      
+    case let ._setStatisticsState(statistics):
+      state.statistics = StatisticsState(statistics: statistics)
       return .none
       
     default: return .none
