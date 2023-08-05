@@ -15,12 +15,14 @@ import Services
 public struct StatisticsState: Equatable {
   var statistics: Statistics
   var weeklyStatistics: WeeklyStatisticsState
+  var categoryStatistics: CategoryStatisticsState
   var currentWeek: String = Date().currentWeek()
   
   public init(statistics: Statistics) {
     self.statistics = statistics
     
     self.weeklyStatistics = WeeklyStatisticsState(weeklyShortsCount: statistics.weeklyShortsCnt)
+    self.categoryStatistics = CategoryStatisticsState()
   }
 }
 
@@ -30,6 +32,7 @@ public enum StatisticsAction {
   
   // MARK: - Child Action
   case weeklyStatisticsAction(WeeklyStatisticsAction)
+  case categoryStatisticsAction(CategoryStatisticsAction)
 }
 
 public struct StatisticsEnvironment {
@@ -56,6 +59,14 @@ public let statisticsReducer = Reducer<
       action: /StatisticsAction.weeklyStatisticsAction,
       environment: {
         WeeklyStatisticsEnvironment(mainQueue: $0.mainQueue, myPageService: $0.myPageService)
+      }
+    ),
+  categoryStatisticsReducer
+    .pullback(
+      state: \.categoryStatistics,
+      action: /StatisticsAction.categoryStatisticsAction,
+      environment: {
+        CategoryStatisticsEnvironment(mainQueue: $0.mainQueue, myPageService: $0.myPageService)
       }
     ),
   Reducer { state, action, env in

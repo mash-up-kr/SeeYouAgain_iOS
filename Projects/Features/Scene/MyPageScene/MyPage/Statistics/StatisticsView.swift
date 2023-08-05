@@ -43,6 +43,13 @@ struct StatisticsView: View {
               action: StatisticsAction.weeklyStatisticsAction
             )
           )
+          
+          CategoryStatisticsView(
+            store: store.scope(
+              state: \.categoryStatistics,
+              action: StatisticsAction.categoryStatisticsAction
+            )
+          )
         }
       }
     }
