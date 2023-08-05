@@ -114,7 +114,8 @@ public let myPageReducer = Reducer<
           case let .success(statistics):
             return Effect.concatenate([
               Effect(value: ._setStatisticsState(statistics)),
-              Effect(value: .statisticsAction(.weeklyStatisticsAction(._calculateStates)))
+              Effect(value: .statisticsAction(.weeklyStatisticsAction(._calculateStates))),
+              Effect(value: .statisticsAction(.continuousStatisticsAction(._calculateStates)))
             ])
 
           case .failure:

@@ -57,6 +57,9 @@ public struct MyPageView: View {
             )
             .padding(.horizontal, 24)
             
+            Spacer()
+              .frame(height: 32)
+            
             MyAchievementsView(
               store: store.scope(
                 state: \.myAchievements,

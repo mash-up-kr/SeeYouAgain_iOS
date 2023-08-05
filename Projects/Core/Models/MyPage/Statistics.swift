@@ -10,11 +10,11 @@ import Foundation
 
 public struct Statistics: Equatable {
   public let weeklyShortsCnt: [String: Int]
-  public let dateOfShortsRead: DateOfShortsRead?
+  public let dateOfShortsRead: DateOfShortsRead
   
   public init(
     weeklyShortsCnt: [String: Int],
-    dateOfShortsRead: DateOfShortsRead?
+    dateOfShortsRead: DateOfShortsRead
   ) {
     self.weeklyShortsCnt = weeklyShortsCnt
     self.dateOfShortsRead = dateOfShortsRead

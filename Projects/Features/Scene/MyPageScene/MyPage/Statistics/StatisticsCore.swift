@@ -16,6 +16,7 @@ public struct StatisticsState: Equatable {
   var statistics: Statistics
   var weeklyStatistics: WeeklyStatisticsState
   var categoryStatistics: CategoryStatisticsState
+  var continuousStatistics: ContinuousStatisticsState
   var currentWeek: String = Date().currentWeek()
   
   public init(statistics: Statistics) {
@@ -23,6 +24,7 @@ public struct StatisticsState: Equatable {
     
     self.weeklyStatistics = WeeklyStatisticsState(weeklyShortsCount: statistics.weeklyShortsCnt)
     self.categoryStatistics = CategoryStatisticsState()
+    self.continuousStatistics = ContinuousStatisticsState(dateOfShortsRead: statistics.dateOfShortsRead)
   }
 }
 
@@ -33,6 +35,7 @@ public enum StatisticsAction {
   // MARK: - Child Action
   case weeklyStatisticsAction(WeeklyStatisticsAction)
   case categoryStatisticsAction(CategoryStatisticsAction)
+  case continuousStatisticsAction(ContinuousStatisticsAction)
 }
 
 public struct StatisticsEnvironment {
@@ -67,6 +70,14 @@ public let statisticsReducer = Reducer<
       action: /StatisticsAction.categoryStatisticsAction,
       environment: {
         CategoryStatisticsEnvironment(mainQueue: $0.mainQueue, myPageService: $0.myPageService)
+      }
+    ),
+  continuousStatisticsReducer
+    .pullback(
+      state: \.continuousStatistics,
+      action: /StatisticsAction.continuousStatisticsAction,
+      environment: {
+        ContinuousStatisticsEnvironment(mainQueue: $0.mainQueue, myPageService: $0.myPageService)
       }
     ),
   Reducer { state, action, env in

@@ -50,6 +50,16 @@ struct StatisticsView: View {
               action: StatisticsAction.categoryStatisticsAction
             )
           )
+          
+          // 이번 주에 숏스를 읽은 경우에만 보여지는 연속 통계 뷰
+          if !viewStore.state.statistics.dateOfShortsRead.thisWeek.isEmpty {
+            ContinuousStatisticsView(
+              store: store.scope(
+                state: \.continuousStatistics,
+                action: StatisticsAction.continuousStatisticsAction
+              )
+            )
+          }
         }
       }
     }
