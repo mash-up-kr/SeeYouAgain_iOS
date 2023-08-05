@@ -29,12 +29,12 @@ struct WeeklyStatisticsView: View {
           Spacer()
         }
         
-        WeekStatisticsDescriptionView(store: store)
+        WeeklyStatisticsDescriptionView(store: store)
         
         Spacer()
           .frame(height: 32)
         
-        WeekStatisticsGraphView(store: store)
+        WeeklyStatisticsGraphView(store: store)
       }
       .padding(.horizontal, 24)
       .padding(.vertical, 32)
@@ -47,7 +47,7 @@ struct WeeklyStatisticsView: View {
   }
 }
 
-private struct WeekStatisticsDescriptionView: View {
+private struct WeeklyStatisticsDescriptionView: View {
   private let store: Store<WeeklyStatisticsState, WeeklyStatisticsAction>
   
   fileprivate init(store: Store<WeeklyStatisticsState, WeeklyStatisticsAction>) {
@@ -112,7 +112,7 @@ private struct WeekStatisticsDescriptionView: View {
   }
 }
 
-private struct WeekStatisticsGraphView: View {
+private struct WeeklyStatisticsGraphView: View {
   private let store: Store<WeeklyStatisticsState, WeeklyStatisticsAction>
   
   fileprivate init(store: Store<WeeklyStatisticsState, WeeklyStatisticsAction>) {
