@@ -35,7 +35,6 @@ struct WeeklyStatisticsView: View {
           .frame(height: 32)
         
         WeekStatisticsGraphView(store: store)
-          .background(Color.pink)
       }
       .padding(.horizontal, 24)
       .padding(.vertical, 32)
