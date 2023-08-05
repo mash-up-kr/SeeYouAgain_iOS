@@ -13,10 +13,12 @@ import TCACoordinators
 
 public enum SettingScreenState: Equatable {
   case setting(SettingState)
+  case appVersion(AppVersionState)
 }
 
 public enum SettingScreenAction: Equatable {
   case setting(SettingAction)
+  case appVersion(AppVersionAction)
 }
 
 internal struct SettingScreenEnvironment {
@@ -36,8 +38,12 @@ internal let settingScreenReducer = Reducer<
     .pullback(
       state: /SettingScreenState.setting,
       action: /SettingScreenAction.setting,
-      environment: {
-        SettingEnvironment(appVersionService: $0.appVersionService)
-      }
+      environment: { _ in SettingEnvironment() }
+    ),
+  appVersionReducer
+    .pullback(
+      state: /SettingScreenState.appVersion,
+      action: /SettingScreenAction.appVersion,
+      environment: { AppVersionEnvironment(appVersionService: $0.appVersionService) }
     )
 ])

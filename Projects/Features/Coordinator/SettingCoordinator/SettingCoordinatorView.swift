@@ -26,6 +26,11 @@ public struct SettingCoordinatorView: View {
           action: SettingScreenAction.setting,
           then: SettingView.init
         )
+        CaseLet(
+          state: /SettingScreenState.appVersion,
+          action: SettingScreenAction.appVersion,
+          then: AppVersionView.init
+        )
       }
     }
     .navigationBarHidden(true)

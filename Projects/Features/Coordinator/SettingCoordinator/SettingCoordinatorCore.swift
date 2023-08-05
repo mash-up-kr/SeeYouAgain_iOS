@@ -51,6 +51,16 @@ public let settingCoordinatorReducer: Reducer<
   .withRouteReducer(
     Reducer { state, action, env in
       switch action {
+      // 설정 뷰 -> 앱 버전 뷰
+      case .routeAction(_, action: .setting(.navigateAppVersion)):
+        state.routes.push(.appVersion(.init()))
+        return .none
+        
+      // 앱 버전 뷰 -> 설정 뷰
+      case .routeAction(_, action: .appVersion(.backButtonTapped)):
+        state.routes.goBack()
+        return .none
+        
       default: return .none
       }
     }
