@@ -27,7 +27,7 @@ struct MyAchievementsView: View {
         
         Spacer().frame(height: 24)
         
-        AchievementsGridView(store: store.scope(state: \.badges))
+        AchievementsGridView(store: store.scope(state: \.achievements))
       }
     }
   }
@@ -49,17 +49,17 @@ fileprivate struct AchievementsGridView: View {
     GridItem(.flexible()),
     GridItem(.flexible())
   ]
-  private let store: Store<[AchievementType], MyAchievementsAction>
+  private let store: Store<[Achievement], MyAchievementsAction>
   
-  fileprivate init(store: Store<[AchievementType], MyAchievementsAction>) {
+  fileprivate init(store: Store<[Achievement], MyAchievementsAction>) {
     self.store = store
   }
   
   fileprivate var body: some View {
     WithViewStore(store) { viewStore in
       LazyVGrid(columns: columns, spacing: 24) {
-        ForEach(viewStore.state, id: \.self) { achievement in
-          AchievementBadgeView(achievement: achievement)
+        ForEach(viewStore.state, id: \.type) { achievement in
+          AchievementBadgeView(achievement: achievement.type)
             .onTapGesture {
               viewStore.send(.achievementBadgeTapped(achievement))
             }

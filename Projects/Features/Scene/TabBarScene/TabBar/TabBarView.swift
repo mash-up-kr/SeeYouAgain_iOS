@@ -98,6 +98,12 @@ public struct TabBarView: View {
           action: TabBarAction.categoryBottomSheet
         )
       )
+      .achievementBottomSheet(
+        achievement: viewStore.selectedAchievement,
+        isPresented: viewStore.binding(
+          get: \.achievementBottomSheetIsPresented,
+          send: TabBarAction._setAchievementBottomSheetIsPresented)
+      )
       .onDisappear {
         viewStore.send(._hideToast)        
       }

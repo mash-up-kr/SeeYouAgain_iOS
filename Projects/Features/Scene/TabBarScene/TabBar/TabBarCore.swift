@@ -10,6 +10,7 @@ import ComposableArchitecture
 import Foundation
 import HotKeywordCoordinator
 import MainCoordinator
+import Models
 import MyPageCoordinator
 import Services
 
@@ -22,6 +23,10 @@ public struct TabBarState: Equatable {
   public var isTabHidden: Bool = false
   public var infoToastMessage: String?
   public var warningToastMessage: String?
+  
+  // 업적 바텀시트에 보여줄 업적 정보
+  public var selectedAchievement: AchievementType = .none
+  public var achievementBottomSheetIsPresented: Bool = false
   
   public init(
     hotKeyword: HotKeywordCoordinatorState,
@@ -51,6 +56,7 @@ public enum TabBarAction {
   case _setTabHiddenStatus(Bool)
   case _setInfoToastMessage(String?)
   case _setWarningToastMessage(String?)
+  case _setAchievementBottomSheetIsPresented(Bool)
   
   // MARK: - Child Action
   case hotKeyword(HotKeywordCoordinatorAction)
@@ -196,6 +202,10 @@ public let tabBarReducer = Reducer<
       state.warningToastMessage = message
       return .none
       
+    case let ._setAchievementBottomSheetIsPresented(isPresented):
+      state.achievementBottomSheetIsPresented = isPresented
+      return .none
+      
     case let .main(.routeAction(_, action: .main(.showCategoryBottomSheet(categories)))):
       return Effect.concatenate(
         Effect(value: .categoryBottomSheet(._setSelectedCategories(categories))),
@@ -229,6 +239,16 @@ public let tabBarReducer = Reducer<
     case .hotKeyword(.routeAction(_, action: .hotKeyword(.showKeywordNewsList))):
       return Effect(value: ._setTabHiddenStatus(true))
     
+    // 마이페이지: 업적을 탭하여 바텀시트를 띄우는 액션
+    case let .myPage(
+      .routeAction(_, action: .myPage(
+        .myAchievementsAction(._presentAchievementBottomSheet(achievement))
+      ))
+    ):
+      state.selectedAchievement = achievement.type
+      state.achievementBottomSheetIsPresented = true
+      return .none
+      
     case .myPage(.routeAction(_, action: .myPage(.settingButtonTapped))):
       return Effect(value: ._setTabHiddenStatus(true))
       
