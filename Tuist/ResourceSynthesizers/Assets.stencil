@@ -151,7 +151,11 @@ import SwiftUI
 {% if resourceCount.image > 0 %}
 {{accessModifier}} struct ImageAsset {
   {{accessModifier}} fileprivate(set) var name: String
-
+	
+	{{accessModifier}} init(name: String) {
+		self.name = name
+  }
+  
   #if os(macOS)
   {{accessModifier}} typealias Image = NSImage
   #elseif os(iOS) || os(tvOS) || os(watchOS)
