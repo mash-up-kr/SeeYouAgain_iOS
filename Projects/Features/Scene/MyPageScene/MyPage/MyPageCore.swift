@@ -24,7 +24,7 @@ public enum MyPageAction {
   case settingButtonTapped
   
   // MARK: - Inner Business Action
-  case _viewWillAppear
+  case _onAppear
   case _fetchUserInfo
   case _fetchWeeklyStats
   
@@ -86,7 +86,7 @@ public let myPageReducer = Reducer<
     ),
   Reducer { state, action, env in
     switch action {
-    case ._viewWillAppear:
+    case ._onAppear:
       return Effect.concatenate([
         Effect(value: ._fetchUserInfo),
         Effect(value: ._fetchWeeklyStats)

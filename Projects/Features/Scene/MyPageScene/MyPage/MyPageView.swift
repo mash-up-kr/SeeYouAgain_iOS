@@ -66,7 +66,7 @@ public struct MyPageView: View {
             .padding(.horizontal, 24)
           }
           .onAppear {
-            viewStore.send(._viewWillAppear)
+            viewStore.send(._onAppear)
           }
         }
         .navigationBarHidden(true)
