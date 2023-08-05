@@ -20,6 +20,7 @@ public enum SettingAction: Equatable {
   // MARK: - User Action
   case backButtonTapped
   case navigateAppVersion
+  case navigateModeSelection
   // MARK: - Inner Business Action
   
   case _onDisappear
@@ -42,6 +43,9 @@ public let settingReducer = Reducer<
     return .none
     
   case .navigateAppVersion:
+    return .none
+    
+  case .navigateModeSelection:
     return .none
     
   case ._onDisappear:

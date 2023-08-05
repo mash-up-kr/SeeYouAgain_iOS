@@ -61,6 +61,16 @@ public let settingCoordinatorReducer: Reducer<
         state.routes.goBack()
         return .none
         
+      // 설정 뷰 -> 모드 선택 뷰
+      case .routeAction(_, action: .setting(.navigateModeSelection)):
+        state.routes.push(.modeSelection(.init()))
+        return .none
+      
+      // 모드 선택 뷰 -> 설정 뷰
+      case .routeAction(_, action: .modeSelection(.backButtonTapped)):
+        state.routes.goBack()
+        return .none
+        
       default: return .none
       }
     }

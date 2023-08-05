@@ -31,6 +31,11 @@ public struct SettingCoordinatorView: View {
           action: SettingScreenAction.appVersion,
           then: AppVersionView.init
         )
+        CaseLet(
+          state: /SettingScreenState.modeSelection,
+          action: SettingScreenAction.modeSelection,
+          then: ModeSelectionView.init
+        )        
       }
     }
     .navigationBarHidden(true)
