@@ -91,8 +91,11 @@ public let myPageCoordinatorReducer: Reducer<
         state.routes.pop()
         return .none
         
-      case let .routeAction(_, action: .myPage(.myAchievementsAction(.achievementBadgeTapped(badge)))):
-        state.routes.presentCover(.achievementShare(.init(achievementType: badge)), embedInNavigationView: true)
+      case let .routeAction(_, action: .myPage(.myAchievementsAction(._presentAchievementShareScreen(achievement)))):
+        state.routes.presentCover(
+          .achievementShare(.init(achievementType: achievement.type)),
+          embedInNavigationView: true
+        )
         return .none
         
       case .routeAction(_, action: .achievementShare(.dismissButtonDidTapped)):
