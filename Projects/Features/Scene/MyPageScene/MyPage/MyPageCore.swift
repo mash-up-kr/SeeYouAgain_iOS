@@ -67,7 +67,7 @@ public let myPageReducer = Reducer<
     ),
   myAchievementsReducer
     .pullback(
-      state: \.myAchievements,
+      state: \MyPageState.myAchievements,
       action: /MyPageAction.myAchievementsAction,
       environment: {
         MyAchievementsEnvironment(mainQueue: $0.mainQueue, myPageService: $0.myPageService)

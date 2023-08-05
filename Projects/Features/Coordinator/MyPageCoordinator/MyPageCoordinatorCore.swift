@@ -67,10 +67,6 @@ public let myPageCoordinatorReducer: Reducer<
   .withRouteReducer(
     Reducer { state, action, env in
       switch action {
-      case .routeAction(_, action: .myPage(.settingButtonTapped)):
-        state.routes.push(.setting(.init()))
-        return .none
-        
       case .routeAction(_, action: .myPage(.info(.shortsAction(.shortShortsButtonTapped)))):
         state.routes.push(.shortStorage(.init()))
         return .none
@@ -84,10 +80,6 @@ public let myPageCoordinatorReducer: Reducer<
         return .none
         
       case .routeAction(_, action: .longStorage(.routeAction(_, action: .longStorageNewsList(.backButtonTapped)))):
-        state.routes.pop()
-        return .none
-        
-      case .routeAction(_, action: .setting(.routeAction(_, action: .setting(.backButtonTapped)))):
         state.routes.pop()
         return .none
         

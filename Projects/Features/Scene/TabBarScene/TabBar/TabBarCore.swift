@@ -229,9 +229,6 @@ public let tabBarReducer = Reducer<
     case .hotKeyword(.routeAction(_, action: .hotKeyword(.showKeywordNewsList))):
       return Effect(value: ._setTabHiddenStatus(true))
     
-    case .myPage(.routeAction(_, action: .myPage(.settingButtonTapped))):
-      return Effect(value: ._setTabHiddenStatus(true))
-      
     case .myPage(.routeAction(_, action: .myPage(.info(.shortsAction(.shortShortsButtonTapped))))):
       return Effect(value: ._setTabHiddenStatus(true))
       
@@ -314,12 +311,6 @@ public let tabBarReducer = Reducer<
         )
       )
     ):
-      return Effect(value: ._setTabHiddenStatus(false))
-      
-    case .myPage(.routeAction(_, action: .setting(.routeAction(_, action: .setting(.backButtonTapped))))):
-      return Effect(value: ._setTabHiddenStatus(false))
-      
-    case .myPage(.routeAction(_, action: .setting(.routeAction(_, action: .setting(._onDisappear))))):
       return Effect(value: ._setTabHiddenStatus(false))
       
     case .categoryBottomSheet(._categoriesIsUpdated):

@@ -41,11 +41,6 @@ public struct MyPageCoordinatorView: View {
           then: LongStorageCoordinatorView.init
         )
         CaseLet(
-          state: /MyPageScreenState.setting,
-          action: MyPageScreenAction.setting,
-          then: SettingCoordinatorView.init
-        )
-        CaseLet(
           state: /MyPageScreenState.achievementShare,
           action: MyPageScreenAction.achievementShare,
           then: AchievementShareView.init
