@@ -47,12 +47,18 @@ struct StatisticsView: View {
             )
           )
           
-          CategoryStatisticsView(
-            store: store.scope(
-              state: \.categoryStatistics,
-              action: StatisticsAction.categoryStatisticsAction
+          ZStack(alignment: .topTrailing) {
+            CategoryStatisticsView(
+              store: store.scope(
+                state: \.categoryStatistics,
+                action: StatisticsAction.categoryStatisticsAction
+              )
             )
-          )
+            
+            DesignSystem.Images.imageMoney
+              .frame(width: 140, height: 140)
+              .offset(y: -45)
+          }
           
           // 이번 주에 숏스를 읽은 경우에만 보여지는 연속 통계 뷰
           if !viewStore.state.statistics.dateOfShortsRead.thisWeek.isEmpty {

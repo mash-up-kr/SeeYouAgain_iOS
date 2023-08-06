@@ -53,20 +53,12 @@ public struct MyPageView: View {
             .myPageBackgroundView()
             
             VStack(spacing: 32) {
-              ZStack(alignment: .topTrailing) {
-                StatisticsView(
-                  store: store.scope(
-                    state: \.statistics,
-                    action: MyPageAction.statisticsAction
-                  )
+              StatisticsView(
+                store: store.scope(
+                  state: \.statistics,
+                  action: MyPageAction.statisticsAction
                 )
-                
-                GeometryReader { geometry in
-                  DesignSystem.Images.imageMoney
-                    .frame(width: 140, height: 140)
-                    .offset(x: geometry.size.width - 140, y: 300)
-                }
-              }
+              )
               
               MyAchievementsView(
                 store: store.scope(
