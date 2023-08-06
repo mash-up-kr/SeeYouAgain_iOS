@@ -74,7 +74,7 @@ private struct ContinuousStatisticsDescriptionView: View {
           .frame(height: 9)
         
         HStack(spacing: 0) {
-          Text("저번 주 보다 ")
+          Text("저번 주보다 ")
             .font(.r14)
             .foregroundColor(DesignSystem.Colors.grey60)
           
