@@ -94,7 +94,7 @@ public let continuousStatisticsReducer = Reducer<
     return Effect(value: ._setConsecutiveDaysDifference)
     
   case ._setConsecutiveDaysDifference:
-    let difference = abs(state.consecutiveDaysOfThisWeek - state.consecutiveDaysOfLastWeek)
+    let difference = state.consecutiveDaysOfThisWeek - state.consecutiveDaysOfLastWeek
     let differenceString = ConsecutiveDay(rawValue: difference)?.description ?? ""
     state.consecutiveDaysDifference = differenceString
     return .none

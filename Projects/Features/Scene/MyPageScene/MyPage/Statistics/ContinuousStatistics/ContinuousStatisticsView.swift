@@ -74,19 +74,27 @@ private struct ContinuousStatisticsDescriptionView: View {
           .frame(height: 9)
         
         HStack(spacing: 0) {
-          Text("저번 주보다 ")
-            .font(.r14)
-            .foregroundColor(DesignSystem.Colors.grey60)
-          
-          Text("\(viewStore.state.consecutiveDaysDifference) 더")
-            .font(.b14)
-            .foregroundColor(DesignSystem.Colors.grey60)
-          
-          Text(" 읽었어요")
-            .font(.r14)
-            .foregroundColor(DesignSystem.Colors.grey60)
-          
-          Spacer()
+          if !viewStore.state.consecutiveDaysDifference.isEmpty {
+            Text("지난주보다 ")
+              .font(.r14)
+              .foregroundColor(DesignSystem.Colors.grey60)
+            
+            Text("\(viewStore.state.consecutiveDaysDifference)")
+              .font(.b14)
+              .foregroundColor(DesignSystem.Colors.grey60)
+            
+            Text(" 읽었어요")
+              .font(.r14)
+              .foregroundColor(DesignSystem.Colors.grey60)
+            
+            Spacer()
+          } else {
+            Text("읽은 날이 지난주와 같아요")
+              .font(.r14)
+              .foregroundColor(DesignSystem.Colors.grey60)
+            
+            Spacer()
+          }
         }
       }
     }
