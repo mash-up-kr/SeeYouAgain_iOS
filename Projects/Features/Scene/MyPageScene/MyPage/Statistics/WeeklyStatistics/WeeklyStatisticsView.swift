@@ -35,7 +35,7 @@ struct WeeklyStatisticsView: View {
           .frame(height: 32)
         
         WeeklyStatisticsGraphView(store: store)
-          .frame(height: 142)
+          .frame(height: viewStore.state.shortsMaxPercentage * 96 + 46) // 17 + 3 + 12 + 14
       }
       .padding(.horizontal, 24)
       .padding(.vertical, 32)
@@ -123,10 +123,10 @@ private struct WeeklyStatisticsGraphView: View {
   fileprivate var body: some View {
     WithViewStore(store) { viewStore in
       GeometryReader { geometry in
-        let sumOfSpace = geometry.size.width - CGFloat(viewStore.state.weeklyShortsCountList.count * 49)
+        let sumOfSpace = geometry.size.width - CGFloat(viewStore.state.weeklyShortsCountList.count * 60)
         let spacing = sumOfSpace / CGFloat(viewStore.state.weeklyShortsCountList.count - 1)
         
-        HStack(spacing: spacing) {
+        HStack(alignment: .bottom, spacing: spacing) {
           ForEach(0..<viewStore.state.weeklyShortsCountList.count, id: \.self) { index in
             VStack(spacing: 0) {
               if viewStore.state.weeklyShortsCountList[index].value != 0 {
@@ -176,6 +176,7 @@ private struct WeeklyStatisticsGraphView: View {
                   )
               }
             }
+            .frame(maxWidth: .infinity)
           }
         }
       }

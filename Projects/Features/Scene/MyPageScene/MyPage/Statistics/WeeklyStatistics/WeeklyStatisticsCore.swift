@@ -22,6 +22,7 @@ public struct WeeklyStatisticsState: Equatable {
   var weeklyShortsCountDifference: Int = 0 // 지난 주와 이번 주 숏스 읽은 수 비교 값
   var totalOfFourWeeksShortsCount = 0
   var shortsCountOfThisWeek = 0 // 이번주 읽은 숏스 카운트
+  var shortsMaxPercentage = 0.0 // 4주 중 가장 많이 읽은 숏스 수
   
   init(weeklyShortsCount: [String: Int]) {
     self.weeklyShortsCount = weeklyShortsCount
@@ -34,6 +35,7 @@ public enum WeeklyStatisticsAction {
   case _onAppear
   case _calculateStates
   case _calculateTotalOfFourWeeksShortsCount // 4주 간의 숏스 데이터 더하는 로직
+  case _calculateShortsMaxPercentage
   
   // MARK: - Inner SetState Action
   case _setWeeklyShortsCountList
@@ -41,6 +43,7 @@ public enum WeeklyStatisticsAction {
   case _setShortsCountOfThisWeek // 이번주 읽은 숏스 카운트
   case _setTotalOfFourWeeksShortsCount(Int) // 4주 간의 숏스 데이터 더한 값
   case _setFourWeeksShortsPercentageList // 4주 간의 숏스 데이터를 퍼센테이지 비율로 저장한 값
+  case _setShortsMaxPercentage(Double) // maxPercentage 기준으로 그래프뷰 높이 계산
 }
 
 public struct WeeklyStatisticsEnvironment {
@@ -79,6 +82,10 @@ public let weeklyStatisticsReducer = Reducer<
     }
     return Effect(value: ._setTotalOfFourWeeksShortsCount(total))
     
+  case ._calculateShortsMaxPercentage:
+    let maxValue = state.weeklyShortsPercentageList.max() ?? 0.0
+    return Effect(value: ._setShortsMaxPercentage(maxValue))
+    
   case ._setWeeklyShortsCountList:
     for index in 0..<state.weeklyShortsCountList.count {
       state.weeklyShortsCountList[index].key = splitYear(state.weeklyShortsCountList[index].key)
@@ -107,6 +114,10 @@ public let weeklyStatisticsReducer = Reducer<
       percentageList.append(percentage)
     }
     state.weeklyShortsPercentageList = percentageList
+    return Effect(value: ._calculateShortsMaxPercentage)
+    
+  case let ._setShortsMaxPercentage(percentage):
+    state.shortsMaxPercentage = percentage
     return .none
   }
 }

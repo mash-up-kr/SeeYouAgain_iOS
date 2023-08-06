@@ -52,19 +52,13 @@ public struct MyPageView: View {
             }
             .myPageBackgroundView()
             
-            VStack(spacing: 0) {
-              Spacer()
-                .frame(height: 20)
-              
+            VStack(spacing: 32) {
               StatisticsView(
                 store: store.scope(
                   state: \.statistics,
                   action: MyPageAction.statisticsAction
                 )
               )
-              
-              Spacer()
-                .frame(height: 32)
               
               MyAchievementsView(
                 store: store.scope(

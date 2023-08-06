@@ -21,7 +21,10 @@ struct StatisticsView: View {
   var body: some View {
     WithViewStore(store) { viewStore in
       VStack(spacing: 0) {
-        HStack(spacing: 8) {
+        Spacer()
+          .frame(height: 20)
+        
+        HStack(spacing: 0) {
           Text("주간 숏스 통계")
             .font(.b16)
             .foregroundColor(DesignSystem.Colors.grey80)
@@ -36,7 +39,7 @@ struct StatisticsView: View {
         Spacer()
           .frame(height: 16)
         
-        VStack(spacing: 16) {
+        VStack(spacing: 32) {
           WeeklyStatisticsView(
             store: store.scope(
               state: \.weeklyStatistics,
