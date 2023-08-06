@@ -23,7 +23,7 @@ public struct StatisticsState: Equatable {
     self.statistics = statistics
     
     self.weeklyStatistics = WeeklyStatisticsState(weeklyShortsCount: statistics.weeklyShortsCnt)
-    self.categoryStatistics = CategoryStatisticsState()
+    self.categoryStatistics = CategoryStatisticsState(categoryOfInterest: statistics.categoryOfInterest)
     self.continuousStatistics = ContinuousStatisticsState(dateOfShortsRead: statistics.dateOfShortsRead)
   }
 }

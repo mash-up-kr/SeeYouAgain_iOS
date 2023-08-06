@@ -10,13 +10,16 @@ import Foundation
 
 public struct Statistics: Equatable {
   public let weeklyShortsCnt: [String: Int]
+  public let categoryOfInterest: [String: Int]?
   public let dateOfShortsRead: DateOfShortsRead
   
   public init(
     weeklyShortsCnt: [String: Int],
+    categoryOfInterest: [String: Int]?,
     dateOfShortsRead: DateOfShortsRead
   ) {
     self.weeklyShortsCnt = weeklyShortsCnt
+    self.categoryOfInterest = categoryOfInterest
     self.dateOfShortsRead = dateOfShortsRead
   }
 }
@@ -34,11 +37,24 @@ public extension Statistics {
       "2023년 12월 4주차" : 1,
       "2023년 12월 5주차" : 2,
     ],
+    categoryOfInterest: [
+      "total" : 40,
+      "POLITICS" : 24,
+      "ECONOMIC" : 10,
+      "CULTURE" : 2
+    ],
     dateOfShortsRead: DateOfShortsRead(
-      lastWeek: [ "2023-07-17" ],
+      lastWeek: [
+        "2023-07-24",
+        "2023-07-26"
+      ],
       thisWeek: [
-        "2023-07-29",
-        "2023-07-30"
+        "2023-07-31",
+        "2023-08-01",
+        "2023-08-02",
+        "2023-08-04",
+        "2023-08-05",
+        "2023-08-06"
       ]
     )
   )

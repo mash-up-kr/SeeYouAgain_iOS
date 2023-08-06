@@ -10,6 +10,7 @@ import Foundation
 
 public struct StatisticsResponseDTO: Decodable {
   public let weeklyShortsCnt: [String: Int]
+  public let categoryOfInterest: [String: Int]?
   public let dateOfShortsRead: DateOfShortsReadListDTO
 }
 
@@ -22,6 +23,7 @@ public extension StatisticsResponseDTO {
   var toDomain: Statistics {
     return Statistics(
       weeklyShortsCnt: weeklyShortsCnt,
+      categoryOfInterest: categoryOfInterest,
       dateOfShortsRead: dateOfShortsRead.toDomain
     )
   }
