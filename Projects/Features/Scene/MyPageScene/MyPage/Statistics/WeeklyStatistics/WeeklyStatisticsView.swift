@@ -35,7 +35,10 @@ struct WeeklyStatisticsView: View {
           .frame(height: 32)
         
         WeeklyStatisticsGraphView(store: store)
-          .frame(height: viewStore.state.shortsMaxPercentage * 96 + 46) // 17 + 3 + 12 + 14
+          .frame(
+            height: viewStore.state.shortsMaxPercentage == 0.0 ?
+            96 : viewStore.state.shortsMaxPercentage * 96 + 46
+          )
       }
       .padding(.horizontal, 24)
       .padding(.vertical, 32)

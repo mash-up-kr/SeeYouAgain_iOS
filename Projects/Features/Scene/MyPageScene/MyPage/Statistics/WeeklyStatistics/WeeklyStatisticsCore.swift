@@ -19,7 +19,7 @@ public struct WeeklyStatisticsState: Equatable {
   var weeklyShortsCount: [String: Int] // 주차, 각 주차 당 읽은 숏스 수
   var weeklyShortsCountList: [(key: String, value: Int)] // 주차, 각 주차 당 읽은 숏스 수
   var weeklyShortsCountDifference: Int = 0 // 지난 주와 이번 주 숏스 읽은 수 비교 값
-  var weeklyShortsPercentageList: [Double] = [] // 4주간 읽은 숏스 비율을 담은 리스트
+  var weeklyShortsPercentageList: [Double] = Array(repeating: 0.0, count: 4) // 4주간 읽은 숏스 비율을 담은 리스트
   var shortsCountOfThisWeek = 0 // 이번주 읽은 숏스 카운트
   var totalOfFourWeeksShortsCount = 0 // 4주 간의 숏스 데이터 더한 값
   var shortsMaxPercentage = 0.0 // 4주 중 가장 많이 읽은 숏스 수
@@ -40,7 +40,7 @@ public enum WeeklyStatisticsAction {
   // MARK: - Inner SetState Action
   case _setWeeklyShortsCountList // 주차, 각 주차 당 읽은 숏스 수를 배열로 저장
   case _setWeeklyShortsCountDifference // 지난 주와 이번 주 숏스 읽은 수 비교 값 계산
-  case _setWeeklyShortsPercentageList // 4주 간의 숏스 데이터를 퍼센테이지 비율로 저장\
+  case _setWeeklyShortsPercentageList // 4주 간의 숏스 데이터를 퍼센테이지 비율로 저장
   case _setShortsCountOfThisWeek // 이번주 읽은 숏스 카운트
   case _setTotalOfFourWeeksShortsCount(Int) // 4주 간의 숏스 데이터 계산
   case _setShortsMaxPercentage(Double) // maxPercentage 기준으로 그래프뷰 높이 계산
@@ -104,7 +104,7 @@ public let weeklyStatisticsReducer = Reducer<
     
   case let ._setTotalOfFourWeeksShortsCount(total):
     state.totalOfFourWeeksShortsCount = total
-    return Effect(value: ._setWeeklyShortsPercentageList)
+    return total == 0 ? .none : Effect(value: ._setWeeklyShortsPercentageList)
     
   case ._setWeeklyShortsPercentageList:
     var percentageList: [Double] = []
