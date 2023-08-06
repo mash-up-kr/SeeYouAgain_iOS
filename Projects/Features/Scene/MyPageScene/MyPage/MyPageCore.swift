@@ -12,6 +12,7 @@ import Models
 import Services
 
 public struct MyPageState: Equatable {
+  var nickname: String = ""
   var info: MyInfoState = MyInfoState(user: .stub)
   var myAchievements: MyAchievementsState = MyAchievementsState()
   public init() {}
@@ -19,7 +20,7 @@ public struct MyPageState: Equatable {
 
 public enum MyPageAction {
   // MARK: - User Action
-  case settingButtonTapped
+  case settingButtonTapped(String)
   
   // MARK: - Inner Business Action
   case _viewWillAppear
@@ -93,6 +94,7 @@ public let myPageReducer = Reducer<
         .eraseToEffect()
       
     case let ._setMyInfoState(user):
+      state.nickname = user.nickname
       state.info = MyInfoState(user: user)
       return .none
       

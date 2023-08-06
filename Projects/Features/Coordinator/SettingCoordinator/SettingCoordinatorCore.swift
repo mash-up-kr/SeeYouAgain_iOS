@@ -15,15 +15,8 @@ import TCACoordinators
 public struct SettingCoordinatorState: Equatable, IndexedRouterState {
   public var routes: [Route<SettingScreenState>]
   
-  public init(
-    routes: [Route<SettingScreenState>] = [
-      .root(
-        .setting(.init()),
-        embedInNavigationView: true
-      )
-    ]
-  ) {
-    self.routes = routes
+  public init(nickname: String) {
+    self.routes = [.root(.setting(.init(nickname: nickname)), embedInNavigationView: true)]
   }
 }
 

@@ -13,7 +13,14 @@ import Services
 import UIKit
 
 public struct SettingState: Equatable {
-  public init() {}
+  var nickname: String  // 현재 닉네임
+  var updatedNickname: String // 수정 중인 닉네임. 수정이 완료되면 nickname으로 업데이트
+  var isEditMode: Bool = false  // 현재 닉네임 변경모드인지 여부
+  
+  public init(nickname: String) {
+    self.nickname = nickname
+    self.updatedNickname = nickname
+  }
 }
 
 public enum SettingAction: Equatable {
@@ -21,10 +28,12 @@ public enum SettingAction: Equatable {
   case backButtonTapped
   case navigateAppVersion
   case navigateModeSelection
+  
   // MARK: - Inner Business Action
   
-  case _onDisappear
   // MARK: - Inner SetState Action
+  case _setNickname(String)
+  case _setIsEditMode(Bool)
   
   // MARK: - Child Action
 }
@@ -48,7 +57,11 @@ public let settingReducer = Reducer<
   case .navigateModeSelection:
     return .none
     
-  case ._onDisappear:
+  case let ._setNickname(nickname):
+    return .none
+    
+  case let ._setIsEditMode(isEditMode):
+    state.isEditMode = isEditMode
     return .none
   }
 }

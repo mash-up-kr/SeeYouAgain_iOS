@@ -122,8 +122,16 @@ public let appCoordinatorReducer: Reducer<
         ]
         return .none
       
-      case .routeAction(_, action: .tabBar(.myPage(.routeAction(_, action: .myPage(.settingButtonTapped))))):
-        state.routes.push(.setting(.init()))
+      case let .routeAction(
+        _, action: .tabBar(
+          .myPage(
+            .routeAction(
+              _, action: .myPage(.settingButtonTapped(nickname))
+            )
+          )
+        )
+      ):
+        state.routes.push(.setting(.init(nickname: nickname)))
         return .none
         
       case .routeAction(_, action: .setting(.routeAction(_, action: .setting(.backButtonTapped)))):

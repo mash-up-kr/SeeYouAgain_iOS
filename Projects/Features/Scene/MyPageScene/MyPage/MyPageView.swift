@@ -23,7 +23,7 @@ public struct MyPageView: View {
         TopNavigationBar(
           rightIcon: DesignSystem.Icons.iconSetting,
           rightIconButtonAction: {
-            viewStore.send(.settingButtonTapped)
+            viewStore.send(.settingButtonTapped(viewStore.state.nickname))
           }
         )
         
