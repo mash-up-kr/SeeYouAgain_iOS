@@ -17,6 +17,8 @@ public struct ContinuousStatisticsState: Equatable {
   var consecutiveDaysOfLastWeek: Int = 0
   var consecutiveDaysDifference: String = ""
   var dayList: [String] = ["월", "화", "수", "목", "금", "토", "일"]
+  var dayListForCheckToday: [String] = ["월", "화", "수", "목", "금", "토", "일"]
+  var dayListForCheckTodayStatusList = Array(repeating: false, count: 7)
   
   public init(dateOfShortsRead: DateOfShortsRead) {
     self.dateOfShortsRead = dateOfShortsRead
@@ -36,6 +38,7 @@ public enum ContinuousStatisticsAction {
   case _setConsecutiveDaysOfLastWeek(Int)
   case _setConsecutiveDaysDifference
   case _setDayList([String])
+  case _setDayListForCheckToday
 }
 
 public struct ContinuousStatisticsEnvironment {
@@ -58,7 +61,10 @@ public let continuousStatisticsReducer = Reducer<
 > { state, action, env in
   switch action {
   case ._onAppear:
-    return Effect(value: ._calculateStates)
+    return Effect.concatenate([
+      Effect(value: ._setDayListForCheckToday),
+      Effect(value: ._calculateStates)
+    ])
     
   case ._calculateStates:
     return Effect.concatenate([
@@ -105,6 +111,27 @@ public let continuousStatisticsReducer = Reducer<
         state.dayList[index] = ""
       }
     }
+    return .none
+    
+  case ._setDayListForCheckToday:
+    let today = Date().day()
+    var statusList = [Bool]()
+    var findToday = false
+    
+    for (index, day) in state.dayListForCheckToday.enumerated() {
+      if day == today {
+        findToday = true // 오늘 찾았으면 찾았다고 표시
+        statusList.append(true) // 오늘 true 표시
+        continue
+      }
+      
+      if !findToday {
+        statusList.append(true) // 오늘 찾을 때까지 true 추가
+      } else {
+        statusList.append(false) // 오늘 찾았으면 false 추가
+      }
+    }
+    state.dayListForCheckTodayStatusList = statusList
     return .none
   }
 }

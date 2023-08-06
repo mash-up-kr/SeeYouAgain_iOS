@@ -26,7 +26,7 @@ struct ContinuousStatisticsView: View {
         Spacer()
           .frame(height: 24)
         
-        ContinuousStatisticsGraphView(dates: viewStore.state.dayList)
+        ContinuousStatisticsGraphView(store: store)
           .frame(height: 34)
       }
       .padding(.horizontal, 24)
@@ -102,30 +102,36 @@ private struct ContinuousStatisticsDescriptionView: View {
 }
 
 private struct ContinuousStatisticsGraphView: View {
-  private let dates: [String]
+  private let store: Store<ContinuousStatisticsState, ContinuousStatisticsAction>
   
-  fileprivate init(dates: [String]) {
-    self.dates = dates
+  fileprivate init(store: Store<ContinuousStatisticsState, ContinuousStatisticsAction>) {
+    self.store = store
   }
   
   fileprivate var body: some View {
-    GeometryReader { geometry in
-      let spacing = (geometry.size.width - CGFloat(dates.count * 34)) / CGFloat(dates.count - 1)
-      
-      HStack(spacing: spacing) {
-        ForEach(dates, id: \.self) { date in
-          ZStack {
-            Circle()
-              .foregroundColor(DesignSystem.Colors.coolgrey100)
-              .frame(width: 34, height: 34)
-            
-            if !date.isEmpty {
-              Text("\(date)")
-                .font(.b14)
-                .foregroundColor(DesignSystem.Colors.grey90)
-            } else {
-              DesignSystem.Icons.iconShorts
-                .frame(width: 18, height: 34)
+    WithViewStore(store) { viewStore in
+      GeometryReader { geometry in
+        let sumOfSpace = geometry.size.width - CGFloat(viewStore.state.dayList.count * 34)
+        let spacing = sumOfSpace / CGFloat(viewStore.state.dayList.count - 1)
+        
+        HStack(spacing: spacing) {
+          ForEach(0..<viewStore.state.dayList.count, id: \.self) { index in
+            ZStack {
+              Circle()
+                .foregroundColor(DesignSystem.Colors.coolgrey100)
+                .frame(width: 34, height: 34)
+              
+              if !viewStore.state.dayList[index].isEmpty {
+                Text("\(viewStore.state.dayList[index])")
+                  .font(.b14)
+                  .foregroundColor(
+                    viewStore.state.dayListForCheckTodayStatusList[index] ?
+                    DesignSystem.Colors.grey90 : DesignSystem.Colors.grey40
+                  )
+              } else {
+                DesignSystem.Icons.iconShorts
+                  .frame(width: 18, height: 34)
+              }
             }
           }
         }
