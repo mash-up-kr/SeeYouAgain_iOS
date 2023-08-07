@@ -27,9 +27,14 @@ public enum SettingCoordinatorAction: IndexedRouterAction {
 
 public struct SettingCoordinatorEnvironment {
   let appVersionService: AppVersionService
+  let userDefaultsService: UserDefaultsService
   
-  public init(appVersionService: AppVersionService) {
+  public init(
+    appVersionService: AppVersionService,
+    userDefaultsService: UserDefaultsService
+  ) {
     self.appVersionService = appVersionService
+    self.userDefaultsService = userDefaultsService
   }
 }
 
@@ -39,7 +44,10 @@ public let settingCoordinatorReducer: Reducer<
   SettingCoordinatorEnvironment
 > = settingScreenReducer
   .forEachIndexedRoute(environment: {
-    SettingScreenEnvironment(appVersionService: $0.appVersionService)
+    SettingScreenEnvironment(
+      appVersionService: $0.appVersionService,
+      userDefaultsService: $0.userDefaultsService
+    )
   })
   .withRouteReducer(
     Reducer { state, action, env in
@@ -64,6 +72,16 @@ public let settingCoordinatorReducer: Reducer<
         state.routes.goBack()
         return .none
         
+      // 모드 선택 뷰 -> 관심 기업 선택 뷰
+      case .routeAction(_, action: .modeSelection(.navigateCompanySelection)):
+        state.routes.push(.companySelection(.init()))
+        return .none
+        
+      // 관심 기업 선택 뷰 -> 모드 선택 뷰
+      case .routeAction(_, action: .companySelection(.backButtonTapped)):
+        state.routes.goBack()
+        return .none
+      
       default: return .none
       }
     }

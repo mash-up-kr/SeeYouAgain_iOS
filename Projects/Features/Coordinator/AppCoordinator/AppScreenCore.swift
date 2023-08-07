@@ -124,7 +124,10 @@ internal let appScreenReducer = Reducer<
       state: /AppScreenState.setting,
       action: /AppScreenAction.setting,
       environment: {
-        SettingCoordinatorEnvironment(appVersionService: $0.appVersionService)
+        SettingCoordinatorEnvironment(
+          appVersionService: $0.appVersionService,
+          userDefaultsService: $0.userDefaultsService
+        )
       }
     )
 ])
