@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct NewsCard: Equatable, Identifiable {
+public struct NewsCard: Equatable, Identifiable, Hashable {
   public let id: Int
   public let keywords: [String]
   public let category: String

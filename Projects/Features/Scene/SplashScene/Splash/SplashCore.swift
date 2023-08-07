@@ -11,6 +11,7 @@ import ComposableArchitecture
 import Foundation
 import Models
 import Services
+import WatchConnectivity
 
 public struct SplashState: Equatable {
   public init() { }
@@ -22,6 +23,7 @@ public enum SplashAction: Equatable {
   case _checkConnectHistory
   case _moveToHome
   case _moveToSetCategory
+  case _sendUserIDToWatch
 }
 
 public struct SplashEnvironment {
@@ -49,9 +51,17 @@ public let splashReducer = Reducer.combine([
         })
       
     case ._moveToHome:
-      return .none
-      
+      return Effect(value: ._sendUserIDToWatch)
+
     case ._moveToSetCategory:
+      return Effect(value: ._sendUserIDToWatch)
+
+    case ._sendUserIDToWatch:
+      let session = WCSession.default
+      if let value = UserDefaults.standard.string(forKey: "userID"), WCSession.isSupported(), session.isReachable {
+        session.sendMessage(["userID": value], replyHandler: nil, errorHandler: nil)
+      }
+      
       return .none
     }
   }
