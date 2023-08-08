@@ -16,7 +16,6 @@ public struct WeeklyStatisticsState: Equatable {
     return lhs.weeklyShortsCountList.first?.key == rhs.weeklyShortsCountList.last?.key
   }
   
-  var weeklyShortsCount: [String: Int] // 주차, 각 주차 당 읽은 숏스 수
   var weeklyShortsCountList: [(key: String, value: Int)] // 주차, 각 주차 당 읽은 숏스 수
   var weeklyShortsCountDifference: Int = 0 // 지난 주와 이번 주 숏스 읽은 수 비교 값
   var weeklyShortsPercentageList: [Double] = Array(repeating: 0.0, count: 4) // 4주간 읽은 숏스 비율을 담은 리스트
@@ -24,9 +23,8 @@ public struct WeeklyStatisticsState: Equatable {
   var totalOfFourWeeksShortsCount = 0 // 4주 간의 숏스 데이터 더한 값
   var shortsMaxPercentage = 0.0 // 4주 중 가장 많이 읽은 숏스 수
   
-  init(weeklyShortsCount: [String: Int]) {
-    self.weeklyShortsCount = weeklyShortsCount
-    self.weeklyShortsCountList = sortKeysByMonthAndWeek(weeklyShortsCount)
+  init(weeklyShortsCountList: [(key: String, value: Int)]) {
+    self.weeklyShortsCountList = weeklyShortsCountList
   }
 }
 
@@ -38,7 +36,6 @@ public enum WeeklyStatisticsAction {
   case _calculateShortsMaxPercentage
   
   // MARK: - Inner SetState Action
-  case _setWeeklyShortsCountList // 주차, 각 주차 당 읽은 숏스 수를 배열로 저장
   case _setWeeklyShortsCountDifference // 지난 주와 이번 주 숏스 읽은 수 비교 값 계산
   case _setWeeklyShortsPercentageList // 4주 간의 숏스 데이터를 퍼센테이지 비율로 저장
   case _setShortsCountOfThisWeek // 이번주 읽은 숏스 카운트
@@ -66,7 +63,7 @@ public let weeklyStatisticsReducer = Reducer<
 > { state, action, env in
   switch action {
   case ._onAppear:
-    return Effect(value: ._setWeeklyShortsCountList)
+    return .none
     
   case ._calculateStates:
     return Effect.concatenate([
@@ -86,16 +83,8 @@ public let weeklyStatisticsReducer = Reducer<
     let maxValue = state.weeklyShortsPercentageList.max() ?? 0.0
     return Effect(value: ._setShortsMaxPercentage(maxValue))
     
-  case ._setWeeklyShortsCountList:
-    for index in 0..<state.weeklyShortsCountList.count {
-      state.weeklyShortsCountList[index].key = splitYear(state.weeklyShortsCountList[index].key)
-    }
-    return .none
-    
   case ._setWeeklyShortsCountDifference:
-    if !state.weeklyShortsCountList.isEmpty {
-      state.weeklyShortsCountDifference = state.weeklyShortsCountList[3].value - state.weeklyShortsCountList[2].value
-    }
+    state.weeklyShortsCountDifference = state.weeklyShortsCountList[3].value - state.weeklyShortsCountList[2].value
     return .none
     
   case ._setShortsCountOfThisWeek:
@@ -120,15 +109,4 @@ public let weeklyStatisticsReducer = Reducer<
     state.shortsMaxPercentage = percentage
     return .none
   }
-}
-
-private func sortKeysByMonthAndWeek(_ dictionary: [String: Int]) -> [(key: String, value: Int)] {
-  return dictionary.sorted { $0.key < $1.key }
-}
-
-private func splitYear(_ string: String) -> String {
-  guard let index: String.Index = string.firstIndex(of: " ") else { return "" }
-  var week = "\(string[index...])"
-  week.removeFirst()
-  return week
 }

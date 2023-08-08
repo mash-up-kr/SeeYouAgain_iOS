@@ -37,7 +37,7 @@ struct WeeklyStatisticsView: View {
         WeeklyStatisticsGraphView(store: store)
           .frame(
             height: viewStore.state.shortsMaxPercentage == 0.0 ?
-            96 : viewStore.state.shortsMaxPercentage * 96 + 46
+            96 : viewStore.state.shortsMaxPercentage * 96 + 46 // 17 + 3 + 12 + 14 (그래프 제외한 높이)
           )
       }
       .padding(.horizontal, 24)
@@ -50,4 +50,3 @@ struct WeeklyStatisticsView: View {
     }
   }
 }
-
