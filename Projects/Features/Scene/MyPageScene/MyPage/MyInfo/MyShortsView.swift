@@ -24,12 +24,10 @@ struct MyShortsView: View {
             Spacer()
               .frame(width: 4)
             
-            Text("이번 달 ")
+            Text("내가 저장한 ")
               .font(.r14)
-            Text("\(viewStore.state.shorts.totalShortsCount)숏스 ")
+            Text("\(viewStore.state.shorts.totalShortsCount)개 숏스 ")
               .font(.b14)
-            Text("중")
-              .font(.r14)
           }
           .foregroundColor(DesignSystem.Colors.grey90)
           
@@ -41,7 +39,7 @@ struct MyShortsView: View {
             viewStore.send(.shortShortsButtonTapped)
           } label: {
             ShortsInfoView(
-              title: "오늘의 숏스",
+              title: "키워드별 뉴스",
               count: viewStore.state.shorts.todayShortsCount,
               fontColor: DesignSystem.Colors.blue200
             )
@@ -56,7 +54,7 @@ struct MyShortsView: View {
             viewStore.send(.longShortsButtonTapped)
           } label: {
             ShortsInfoView(
-              title: "오래 간직할 숏스",
+              title: "개별 뉴스",
               count: viewStore.state.shorts.savedShortsCount,
               fontColor: DesignSystem.Colors.grey80
             )
