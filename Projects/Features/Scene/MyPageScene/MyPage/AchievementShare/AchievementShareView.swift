@@ -18,6 +18,7 @@ public struct AchievementShareView: View {
   public init(store: Store<AchievementShareState, AchievementShareAction>) {
     self.store = store
   }
+  
   public var body: some View {
     WithViewStore(store) { viewStore in
       VStack {

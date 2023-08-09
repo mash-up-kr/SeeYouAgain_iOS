@@ -20,11 +20,17 @@ public enum MyPageAPI {
   case deleteTodayShorts([Int])
   case fetchSavedNews(String, Int)
   case deleteSavedNews([Int])
+  case fetchWeeklyStats
 }
 
 extension MyPageAPI: TargetType {
   public var baseURL: URL {
-    return URL(string: "http://3.36.227.253:8080/v1")!
+    switch self {
+    case .fetchWeeklyStats:
+      return URL(string: "http://3.36.227.253:8081/v1")!
+    default:
+      return URL(string: "http://3.36.227.253:8080/v1")!
+    }
   }
   
   public var path: String {
@@ -43,6 +49,9 @@ extension MyPageAPI: TargetType {
       
     case .deleteSavedNews:
       return "/member/news/bulk-delete"
+      
+    case .fetchWeeklyStats:
+      return "/member/weekly-stats"
     }
   }
   
@@ -62,6 +71,9 @@ extension MyPageAPI: TargetType {
       
     case .deleteSavedNews:
       return .post
+      
+    case .fetchWeeklyStats:
+      return .get
     }
   }
   
@@ -97,6 +109,9 @@ extension MyPageAPI: TargetType {
     case let .deleteSavedNews(newsIds):
       let requestDTO = DeleteNewsRequestDTO(newsIds: newsIds)
       return .requestJSONEncodable(requestDTO)
+      
+    case .fetchWeeklyStats:
+      return .requestPlain
     }
   }
   
