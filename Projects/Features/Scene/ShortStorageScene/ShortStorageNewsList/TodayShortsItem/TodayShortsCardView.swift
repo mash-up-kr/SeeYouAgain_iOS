@@ -21,11 +21,6 @@ struct TodayShortsCardView: View {
   var body: some View {
     WithViewStore(store) { viewStore in
       HStack(alignment: .top, spacing: 0) {
-        CategoryType(uppercasedName: viewStore.state.shortsNews.category)?.image
-
-        Spacer()
-          .frame(width: 16)
-
         HStack {
           Text(viewStore.state.shortsNews.hashtagString())
             .font(.b16)
@@ -33,17 +28,10 @@ struct TodayShortsCardView: View {
           Spacer()
         }
         
-        if viewStore.isCardSelectable {
-          Spacer()
-            .frame(width: 16)
-          
-          Button {
-            viewStore.send(.rightButtonTapped)
-          } label: {
-            DesignSystem.Icons.iconChevronRight
-              .frame(width: 16, height: 16)
-          }
-        }
+        Spacer()
+          .frame(width: 16)
+        
+        CategoryType(uppercasedName: viewStore.state.shortsNews.category)?.image
       }
       .frame(maxWidth: .infinity)
       .padding(.horizontal, 16)
