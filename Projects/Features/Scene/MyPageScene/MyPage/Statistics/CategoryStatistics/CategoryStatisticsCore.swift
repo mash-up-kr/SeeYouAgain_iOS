@@ -150,7 +150,7 @@ public let categoryStatisticsReducer = Reducer<
 }
 
 private func sortKeysByValue(_ dictionary: [String: Int]) -> [(key: String, value: Int)] {
-  var dictionaryList = dictionary.sorted { $0.value > $1.value }
+  let dictionaryList = dictionary.sorted { $0.value > $1.value }
   return moveTotalKeyToFirstIndex(dictionaryList)
 }
 

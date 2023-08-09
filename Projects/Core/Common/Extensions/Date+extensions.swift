@@ -105,21 +105,4 @@ extension Date {
     dateFormatter.locale = Locale(identifier: "ko_KR")
     return dateFormatter.string(from: self)
   }
-  
-  // N월 N주차 리턴
-  public func currentWeek() -> String {
-    let calendar = Calendar.current
-    let year = calendar.component(.year, from: self)
-    let month = calendar.component(.month, from: self)
-    let day = calendar.component(.day, from: self)
-
-    guard let firstDayOfMonth = calendar.date(from: DateComponents(year: year, month: month, day: 1)) else {
-      return "0월 0주차"
-    }
-    let firstThursday = (5 - (calendar.component(.weekday, from: firstDayOfMonth) + 5) % 7) % 7 + 1
-    let daysSinceFirstThursday = (day - firstThursday + 7) % 7
-    let currentWeek = (daysSinceFirstThursday / 7) + 1
-
-    return "\(month)월 \(currentWeek)주차"
-  }
 }
