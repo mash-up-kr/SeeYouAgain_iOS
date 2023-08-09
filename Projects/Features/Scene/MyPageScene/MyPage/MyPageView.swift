@@ -66,6 +66,9 @@ public struct MyPageView: View {
                   action: MyPageAction.myAchievementsAction
                 )
               )
+              
+              Spacer()
+                .frame(height: 82 + 46)
             }
             .padding(.horizontal, 24)
             .myStatisticsBackgroundView()
