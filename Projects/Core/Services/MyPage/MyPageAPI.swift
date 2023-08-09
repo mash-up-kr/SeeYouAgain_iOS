@@ -25,7 +25,12 @@ public enum MyPageAPI {
 
 extension MyPageAPI: TargetType {
   public var baseURL: URL {
-    return URL(string: "http://3.36.227.253:8080/v1")!
+    switch self {
+    case .fetchWeeklyStats:
+      return URL(string: "http://3.36.227.253:8081/v1")!
+    default:
+      return URL(string: "http://3.36.227.253:8080/v1")!
+    }
   }
   
   public var path: String {

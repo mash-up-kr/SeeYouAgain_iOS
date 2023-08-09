@@ -16,7 +16,7 @@ public struct MyPageState: Equatable {
   var statistics: StatisticsState = StatisticsState(statistics: .stub)
   var myAchievements: MyAchievementsState = MyAchievementsState()
   
-  public init() {}
+  public init() { }
 }
 
 public enum MyPageAction {
@@ -114,9 +114,7 @@ public let myPageReducer = Reducer<
           case let .success(statistics):
             return Effect.concatenate([
               Effect(value: ._setStatisticsState(statistics)),
-              Effect(value: .statisticsAction(.weeklyStatisticsAction(._calculateStates))),
-              Effect(value: .statisticsAction(.categoryStatisticsAction(._calculateStates))),
-              Effect(value: .statisticsAction(.continuousStatisticsAction(._calculateStates)))
+              Effect(value: .statisticsAction(._calculateStates))
             ])
 
           case .failure:

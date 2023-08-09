@@ -35,8 +35,8 @@ struct CategoryStatisticsView: View {
         Spacer()
           .frame(height: 32)
         
-        CategoryStatisticsGraphView(store: store)
-          .frame(height: 135) // 20 + 32 + 83
+          CategoryStatisticsGraphView(store: store)
+            .frame(height: viewStore.state.graphHeight)
       }
       .padding(.horizontal, 24)
       .padding(.vertical, 32)

@@ -43,7 +43,7 @@ private struct CategoryStatisticsActualView: View {
       VStack(spacing: 32) {
         GeometryReader { geometry in
           HStack(spacing: 2) {
-            ForEach(1..<viewStore.categoryOfInterestPercentageList.count, id: \.self) { index in
+            ForEach(0..<viewStore.categoryOfInterestPercentageList.count, id: \.self) { index in
               Group {
                 CategoryType(
                   uppercasedName: viewStore.categoryOfInterestPercentageList[index].key
@@ -58,7 +58,7 @@ private struct CategoryStatisticsActualView: View {
         .cornerRadius(8)
         
         VStack(spacing: 16) {
-          ForEach(1..<viewStore.categoryOfInterestPercentageList.count - 1, id: \.self) { index in
+          ForEach(0..<viewStore.categoryOfInterestList.count, id: \.self) { index in
             HStack(spacing: 16) {
               Circle()
                 .foregroundColor(

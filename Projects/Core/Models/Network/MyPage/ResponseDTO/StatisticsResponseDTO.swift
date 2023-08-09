@@ -10,7 +10,7 @@ import Foundation
 
 public struct StatisticsResponseDTO: Decodable {
   public let weeklyShortsCount: [String: Int]
-  public let categoryOfInterest: [String: Int]?
+  public let categoryOfInterest: [String: Int]
   public let dateOfShortsRead: DateOfShortsReadListDTO
   
   enum CodingKeys: String, CodingKey {
