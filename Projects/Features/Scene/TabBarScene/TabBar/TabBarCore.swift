@@ -254,8 +254,6 @@ public let tabBarReducer = Reducer<
       state.achievementBottomSheetIsPresented = true
       return .none
       
-    case .myPage(.routeAction(_, action: .myPage(.settingButtonTapped))):
-      return Effect(value: ._setTabHiddenStatus(true))
     case .myPage(.routeAction(_, action: .myPage(.info(.shortsAction(.shortShortsButtonTapped))))):
       return Effect(value: ._setTabHiddenStatus(true))
       

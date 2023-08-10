@@ -87,10 +87,6 @@ public let myPageCoordinatorReducer: Reducer<
         state.routes.pop()
         return .none
         
-      case .routeAction(_, action: .setting(.routeAction(_, action: .setting(.backButtonTapped)))):
-        state.routes.pop()
-        return .none
-        
       case let .routeAction(_, action: .myPage(.myAchievementsAction(._presentAchievementShareScreen(achievement)))):
         state.routes.presentCover(
           .achievementShare(.init(achievementType: achievement.type)),
