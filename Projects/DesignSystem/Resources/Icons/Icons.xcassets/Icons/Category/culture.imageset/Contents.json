@@ -1,8 +1,19 @@
 {
   "images" : [
     {
-      "filename" : "culture.svg",
-      "idiom" : "universal"
+      "filename" : "culture@1x.png",
+      "idiom" : "universal",
+      "scale" : "1x"
+    },
+    {
+      "filename" : "culture@2x.png",
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
+      "filename" : "culture@3x.png",
+      "idiom" : "universal",
+      "scale" : "3x"
     }
   ],
   "info" : {
