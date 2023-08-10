@@ -27,12 +27,7 @@ public enum NewsCardAPI {
 
 extension NewsCardAPI: TargetType {
   public var baseURL: URL {
-    switch self {
-    case .postNewsRead:
-      return URL(string: "http://3.36.227.253:8081/v1")!
-    default:
-      return URL(string: "http://3.36.227.253:8080/v1")!
-    }
+    return URL(string: "http://3.36.227.253:8080/v1")!
   }
   
   public var path: String {
