@@ -59,39 +59,57 @@ fileprivate struct AchievementsGridView: View {
     WithViewStore(store) { viewStore in
       LazyVGrid(columns: columns, spacing: 24) {
         ForEach(viewStore.state, id: \.type) { achievement in
-          AchievementBadgeView(achievement: achievement.type)
+          AchievementBadgeView(achievement: achievement)
             .onTapGesture {
               viewStore.send(.achievementBadgeTapped(achievement))
             }
         }
-      }
-      .onAppear {
-        viewStore.send(._onAppear)
       }
     }
   }
 }
 
 fileprivate struct AchievementBadgeView: View {
-  private let achievement: AchievementType
+  private let achievement: Achievement
   
-  fileprivate init(achievement: AchievementType) {
+  fileprivate init(achievement: Achievement) {
     self.achievement = achievement
   }
   
   fileprivate var body: some View {
     VStack(spacing: 6) {
-      Rectangle()
-        .fill(DesignSystem.Colors.white)
-        .frame(width: 98, height: 98)
-        .cornerRadius(16)
-        .overlay {
-          DesignSystem.Icons.iconLockWhite
-        }
+      achievement.isAchieved ? achievement.type.openedIcon : DesignSystem.Icons.iconBadgeLock
       
-      Text(achievement.rawValue)
+      Text(achievement.type.rawValue)
         .font(.r12)
         .foregroundColor(DesignSystem.Colors.grey80)
+    }
+  }
+}
+
+fileprivate extension AchievementType {
+  var openedIcon: Image {
+    switch self {
+    case .threeDaysContinuousAttendance:
+      return DesignSystem.Icons.iconBadgeThreeDays
+      
+    case .explorer:
+      return DesignSystem.Icons.iconBadgeExplorer
+      
+    case .kingOfSharing:
+      return DesignSystem.Icons.iconBadgeSharing
+      
+    case .excitedSave:
+      return DesignSystem.Icons.iconBadgeExcitedSave
+      
+    case .firstAllReadShorts:
+      return DesignSystem.Icons.iconBadgeHalfstart
+      
+    case .changeMode:
+      return DesignSystem.Icons.iconBadgeRespectTaste
+      
+    case .tenDaysContinuousAttendance:
+      return DesignSystem.Icons.iconBadgeTenDaysAttendance      
     }
   }
 }

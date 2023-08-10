@@ -25,7 +25,7 @@ public struct TabBarState: Equatable {
   public var warningToastMessage: String?
   
   // 업적 바텀시트에 보여줄 업적 정보
-  public var selectedAchievement: AchievementType = .none
+  public var selectedAchievement: Achievement = .init(type: .firstAllReadShorts, isAchieved: false) // 초기 임시데이터
   public var achievementBottomSheetIsPresented: Bool = false
   
   public init(
@@ -245,7 +245,7 @@ public let tabBarReducer = Reducer<
         .myAchievementsAction(._presentAchievementBottomSheet(achievement))
       ))
     ):
-      state.selectedAchievement = achievement.type
+      state.selectedAchievement = achievement
       state.achievementBottomSheetIsPresented = true
       return .none
       

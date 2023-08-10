@@ -12,10 +12,10 @@ import Models
 import SwiftUI
 
 struct AchievementBottomSheet: ViewModifier {
-  private let achievement: AchievementType
+  private let achievement: Achievement
   @Binding private var isPresented: Bool
   
-  init(achievement: AchievementType, isPresented: Binding<Bool>) {
+  init(achievement: Achievement, isPresented: Binding<Bool>) {
     self.achievement = achievement
     self._isPresented = isPresented
   }
@@ -23,7 +23,7 @@ struct AchievementBottomSheet: ViewModifier {
   func body(content: Content) -> some View {
     content
       .bottomSheet(
-        backgroundColor: DesignSystem.Colors.white.opacity(0.62),
+        backgroundColor: DesignSystem.Colors.white,
         isPresented: $isPresented,
         headerArea: { EmptyView() },
         content: { AchievementBottomSheetContent(achievement: achievement) },
@@ -33,9 +33,9 @@ struct AchievementBottomSheet: ViewModifier {
 }
 
 fileprivate struct AchievementBottomSheetContent: View {
-  private let achievement: AchievementType
+  private let achievement: Achievement
   
-  fileprivate init(achievement: AchievementType) {
+  fileprivate init(achievement: Achievement) {
     self.achievement = achievement
   }
   
@@ -44,19 +44,17 @@ fileprivate struct AchievementBottomSheetContent: View {
       Spacer()
       
       VStack(spacing: 0) {
-        DesignSystem.Icons.iconLockBlack
-          .resizable()
-          .frame(width: 56, height: 56)
+        achievement.isAchieved ? achievement.type.openedIcon : DesignSystem.Icons.iconBadgeLock
         
         Spacer().frame(height: 16)
         
-        Text(achievement.rawValue)
+        Text(achievement.type.rawValue)
           .font(.b24)
           .foregroundColor(DesignSystem.Colors.grey100)
         
         Spacer().frame(height: 8)
         
-        Text(achievement.bottomSheetDescription)
+        Text(achievement.type.bottomSheetDescription)
           .font(.r18)
           .foregroundColor(DesignSystem.Colors.grey90)
           .multilineTextAlignment(.center)
@@ -70,7 +68,34 @@ fileprivate struct AchievementBottomSheetContent: View {
 }
 
 extension View {
-  func achievementBottomSheet(achievement: AchievementType, isPresented: Binding<Bool>) -> some View {
+  func achievementBottomSheet(achievement: Achievement, isPresented: Binding<Bool>) -> some View {
     modifier(AchievementBottomSheet(achievement: achievement, isPresented: isPresented))
+  }
+}
+
+fileprivate extension AchievementType {
+  var openedIcon: Image {
+    switch self {
+    case .threeDaysContinuousAttendance:
+      return DesignSystem.Icons.iconBadgeThreeDays
+      
+    case .explorer:
+      return DesignSystem.Icons.iconBadgeExplorer
+      
+    case .kingOfSharing:
+      return DesignSystem.Icons.iconBadgeSharing
+      
+    case .excitedSave:
+      return DesignSystem.Icons.iconBadgeExcitedSave
+      
+    case .firstAllReadShorts:
+      return DesignSystem.Icons.iconBadgeHalfstart
+      
+    case .changeMode:
+      return DesignSystem.Icons.iconBadgeRespectTaste
+      
+    case .tenDaysContinuousAttendance:
+      return DesignSystem.Icons.iconBadgeTenDaysAttendance
+    }
   }
 }
