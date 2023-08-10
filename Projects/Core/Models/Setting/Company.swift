@@ -13,16 +13,16 @@ public enum Company: String, Equatable, CaseIterable {
   case kakao = "카카오"
   case line = "라인"
   case coupang = "쿠팡"
-  case woowabros = "우아한형제들"
-  case daangn = "당근마켓"
-  case vibariperublika = "비바리퍼블리카"
-  case samsungElectronics = "삼성전자"
-  case hyundaiMotor = "현대자동차"
-  case cjCheilJedang = "CJ제일제당"
-  case koreaElectricPower = "한국전력공사"
-  case lgElectronics = "LG전자"
-  case koreaGasCorporation = "한국가스공사"
-  case skHynix = "SK하이닉스"
+  case wooah = "우아한형제들"
+  case carrot = "당근마켓"
+  case toss = "비바리퍼블리카"
+  case samsung = "삼성전자"
+  case hyundai = "현대자동차"
+  case cj = "CJ제일제당"
+  case korea_elec = "한국전력공사"
+  case lg_elec = "LG전자"
+  case korea_gas = "한국가스공사"
+  case sk_hynics = "SK하이닉스"
 }
 
 public extension Company {
@@ -43,25 +43,25 @@ public extension Company {
       return "LINE"
     case .coupang:
       return "COUPANG"
-    case .woowabros:
+    case .wooah:
       return "WOOAH"
-    case .daangn:
+    case .carrot:
       return "CARROT"
-    case .vibariperublika:
+    case .toss:
       return "TOSS"
-    case .samsungElectronics:
+    case .samsung:
       return "SAMSUNG"
-    case .hyundaiMotor:
+    case .hyundai:
       return "HYUNDAI"
-    case .cjCheilJedang:
+    case .cj:
       return "CJ"
-    case .koreaElectricPower:
+    case .korea_elec:
       return "KOREA_ELEC"
-    case .lgElectronics:
+    case .lg_elec:
       return "LG_ELEC"
-    case .koreaGasCorporation:
+    case .korea_gas:
       return "KOREA_GAS"
-    case .skHynix:
+    case .sk_hynics:
       return "SK_HYNICS"
     }
   }

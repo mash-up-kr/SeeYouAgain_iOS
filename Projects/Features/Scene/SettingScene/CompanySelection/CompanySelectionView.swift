@@ -156,25 +156,25 @@ extension Company {
       return DesignSystem.Icons.iconLine
     case .coupang:
       return DesignSystem.Icons.iconCoupang
-    case .woowabros:
+    case .wooah:
       return DesignSystem.Icons.iconWoowabros
-    case .daangn:
+    case .carrot:
       return DesignSystem.Icons.iconDaangn
-    case .vibariperublika:
+    case .toss:
       return DesignSystem.Icons.iconVibariperublika
-    case .samsungElectronics:
+    case .samsung:
       return DesignSystem.Icons.iconSamsungElectronics
-    case .hyundaiMotor:
+    case .hyundai:
       return DesignSystem.Icons.iconHyundaiMotor
-    case .cjCheilJedang:
+    case .cj:
       return DesignSystem.Icons.iconCjCheilJedang
-    case .koreaElectricPower:
+    case .korea_elec:
       return DesignSystem.Icons.iconKoreaElectricPower
-    case .lgElectronics:
+    case .lg_elec:
       return DesignSystem.Icons.iconLgElectronics
-    case .koreaGasCorporation:
+    case .korea_gas:
       return DesignSystem.Icons.iconKoreaGasCorporation
-    case .skHynix:
+    case .sk_hynics:
       return DesignSystem.Icons.iconSkHynix
     }
   }

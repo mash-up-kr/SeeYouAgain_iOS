@@ -74,6 +74,34 @@ fileprivate extension CategoryType {
       return DesignSystem.Images.cardCulture
     case .science:
       return DesignSystem.Images.cardIt
+    case .naver:
+      return DesignSystem.Images.naverNewscard
+    case .kakao:
+      return DesignSystem.Images.kakaoNewscard
+    case .line:
+      return DesignSystem.Images.lineNewscard
+    case .coupang:
+      return DesignSystem.Images.coupangNewscard
+    case .wooah:
+      return DesignSystem.Images.worldNewscard
+    case .carrot:
+      return DesignSystem.Images.daangnNewscard
+    case .toss:
+      return DesignSystem.Images.vibariperublikaNewscard
+    case .samsung:
+      return DesignSystem.Images.samsungElectronicsNewscard
+    case .hyundai:
+      return DesignSystem.Images.hyundaiMotorNewscard
+    case .cj:
+      return DesignSystem.Images.cjCheilJedangNewscard
+    case .korea_elec:
+      return DesignSystem.Images.koreaElectricPowerNewscard
+    case .lg_elec:
+      return DesignSystem.Images.lgElectronicsNewscard
+    case .korea_gas:
+      return DesignSystem.Images.koreaGasCorporationNewscard
+    case .sk_hynics:
+      return DesignSystem.Images.skHynixNewscard
     }
   }
 }

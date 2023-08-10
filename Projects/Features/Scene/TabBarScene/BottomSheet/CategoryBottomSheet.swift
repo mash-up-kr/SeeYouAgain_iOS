@@ -116,15 +116,15 @@ fileprivate extension CategoryType {
     switch self {
     case .politics:
       return DesignSystem.Icons.politicsSmall
-    case .economic:
+    case .economic, .kakao, .cj:
       return DesignSystem.Icons.economicSmall
-    case .society:
+    case .society, .wooah:
       return DesignSystem.Icons.societySmall
-    case .world:
+    case .world, .naver, .line:
       return DesignSystem.Icons.worldSmall
-    case .culture:
+    case .culture, .lg_elec, .sk_hynics, .carrot:
       return DesignSystem.Icons.cultureSmall
-    case .science:
+    case .science, .toss, .samsung, .coupang, .hyundai, .korea_gas, .korea_elec:
       return DesignSystem.Icons.scienceSmall
     }
   }
@@ -133,15 +133,15 @@ fileprivate extension CategoryType {
     switch self {
     case .politics:
       return DesignSystem.Icons.selectPoliticsSmall
-    case .economic:
+    case .economic, .kakao, .cj:
       return DesignSystem.Icons.selectEconomicSmall
-    case .society:
+    case .society, .wooah:
       return DesignSystem.Icons.selectSocietySmall
-    case .world:
+    case .world, .naver, .line:
       return DesignSystem.Icons.selectWorldSmall
-    case .culture:
+    case .culture, .lg_elec, .sk_hynics, .carrot:
       return DesignSystem.Icons.selectCultureSmall
-    case .science:
+    case .science, .toss, .samsung, .coupang, .hyundai, .korea_gas, .korea_elec:
       return DesignSystem.Icons.selectScienceSmall
     }
   }
