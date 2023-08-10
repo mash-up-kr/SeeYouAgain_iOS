@@ -20,6 +20,7 @@ public struct ModeSelectionState: Equatable {
   var intersestCompanyModeIsSelected: Bool {
     return selectedMode == .interestCompany
   }
+  var isAlertPresented: Bool = false  // 관심 기업 모드 알럿
   
   public init() {}
 }
@@ -34,17 +35,14 @@ public enum ModeSelectionAction: Equatable {
   
   // MARK: - Inner Business Action
   case _onAppear
-  case _fetchCompanyModeHistory
+  case _presentAlert
+  case _setIsAlertPresented(Bool)
   
   // MARK: - Inner SetState Action
 }
 
 public struct ModeSelectionEnvironment {
-  fileprivate let userDefaultService: UserDefaultsService
-  
-  public init(userDefaultService: UserDefaultsService = .live) {
-    self.userDefaultService = userDefaultService
-  }
+  public init() { }
 }
 
 public let modeSelectionReducer: Reducer<
@@ -65,7 +63,7 @@ public let modeSelectionReducer: Reducer<
       return Effect(value: .navigateHome)
     }
     else {
-      return Effect(value: ._fetchCompanyModeHistory)
+      return Effect(value: ._presentAlert)
     }
     
   case .navigateHome:
@@ -74,17 +72,15 @@ public let modeSelectionReducer: Reducer<
   case .navigateCompanySelection:
     return .none
     
-  case ._fetchCompanyModeHistory:
-    return env.userDefaultService.load(UserDefaultsKey.hasCompanyModeHistory)
-      .map { hasHistory -> ModeSelectionAction in
-        if hasHistory {
-          return .navigateHome
-        } else {
-          return .navigateCompanySelection
-        }
-      }
-    
   case ._onAppear:
+    return .none
+    
+  case ._presentAlert:
+    state.isAlertPresented = true
+    return .none
+    
+  case let ._setIsAlertPresented(isPresented):
+    state.isAlertPresented = isPresented
     return .none
   }
 }

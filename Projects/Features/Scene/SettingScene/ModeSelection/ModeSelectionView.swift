@@ -49,6 +49,11 @@ public struct ModeSelectionView: View {
         }
         .padding(.bottom, 8)
       }
+      .basicModal(
+        isPresented: viewStore.binding(get: \.isAlertPresented, send: ModeSelectionAction._setIsAlertPresented),
+        opacity: 0.5,
+        content: { CompanySelectAlert(dismiss: { viewStore.send(._setIsAlertPresented(false)) }) }
+      )
     }
     .navigationBarHidden(true)
   }
@@ -84,8 +89,15 @@ private struct ModeRow: View {
     WithViewStore(store) { viewStore in
       ZStack(alignment: .topTrailing) {
         card
-        (viewStore.state ? DesignSystem.Icons.iconModeSelect : DesignSystem.Icons.iconModeDeselect)
-          .offset(x: -12, y: 12)
+        HStack {
+          if mode == .interestCompany {
+            DesignSystem.Icons.iconBeta
+          }
+          Spacer()
+          (viewStore.state ? DesignSystem.Icons.iconModeSelect : DesignSystem.Icons.iconModeDeselect)
+        }
+        .padding(.horizontal, 12)
+        .padding(.top, 12)
       }
     }
   }
