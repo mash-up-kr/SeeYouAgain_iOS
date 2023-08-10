@@ -167,7 +167,7 @@ public let newsListReducer = Reducer.combine([
       ])
       
     case ._handleSaveTodayShortsResponse(.success):
-      return Effect(value: ._presentSuccessToast("오늘 읽을 숏스에 저장됐어요:)"))
+      return Effect(value: ._presentSuccessToast("뉴스 키워드가 저장됐어요:)"))
       
     case let ._handleSaveTodayShortsResponse(.failure(error)):
       return presentToast(on: error)

@@ -98,7 +98,7 @@ public let newsCardCoordinatorReducer: Reducer<
       case let .routeAction(_, action: .web(.backButtonTapped(source))):
         switch source {
         case .hot, .main, .shortStorage:
-          state.routes.pop()
+          state.routes.goBack()
           return .none
           
         case .longStorage:

@@ -80,11 +80,11 @@ public let myPageCoordinatorReducer: Reducer<
         return .none
         
       case .routeAction(_, action: .shortStorage(.routeAction(_, action: .shortStorageNewsList(.backButtonTapped)))):
-        state.routes.pop()
+        state.routes.goBack()
         return .none
         
       case .routeAction(_, action: .longStorage(.routeAction(_, action: .longStorageNewsList(.backButtonTapped)))):
-        state.routes.pop()
+        state.routes.goBack()
         return .none
         
       case let .routeAction(_, action: .myPage(.myAchievementsAction(._presentAchievementShareScreen(achievement)))):

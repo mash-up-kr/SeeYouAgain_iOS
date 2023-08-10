@@ -231,18 +231,11 @@ public let tabBarReducer = Reducer<
     ):
       switch response {
       case .success:
-        return Effect(value: ._presentInfoToast("오늘 읽을 숏스에 저장됐어요:)"))
+        return Effect(value: ._presentInfoToast("뉴스 키워드가 저장됐어요:)"))
         
       case let .failure(error):
         return presentToast(on: error)
       }
-      
-    // 메인: 뉴스 카드를 선택하여 뉴스 리스트로 이동할 때 
-    case .main(.routeAction(_, action: .main(.newsCardScroll(.newsCard(id: _, action: ._navigateNewsList))))):
-      return Effect(value: ._setTabHiddenStatus(true))
-      
-    case .hotKeyword(.routeAction(_, action: .hotKeyword(.showKeywordNewsList))):
-      return Effect(value: ._setTabHiddenStatus(true))
     
     // 마이페이지: 업적을 탭하여 바텀시트를 띄우는 액션
     case let .myPage(
