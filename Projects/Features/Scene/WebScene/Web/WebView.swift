@@ -95,7 +95,7 @@ private struct TooltipShape: View {
     ZStack {
       CustomTriangleShape()
         .fill(DesignSystem.Colors.blue200)
-        .padding(.leading, 178)
+        .padding(.leading, 170)
       
       CustomRectangleShape()
     }
