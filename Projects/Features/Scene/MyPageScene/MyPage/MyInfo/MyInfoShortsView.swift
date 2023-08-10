@@ -1,5 +1,5 @@
 //
-//  MyShortsView.swift
+//  MyInfoShortsView.swift
 //  MyPage
 //
 //  Created by 안상희 on 2023/06/16.
@@ -10,8 +10,8 @@ import ComposableArchitecture
 import DesignSystem
 import SwiftUI
 
-struct MyShortsView: View {
-  let store: Store<MyShortsState, MyShortsAction>
+struct MyInfoShortsView: View {
+  let store: Store<MyInfoShortsState, MyInfoShortsAction>
   
   var body: some View {
     WithViewStore(store) { viewStore in
