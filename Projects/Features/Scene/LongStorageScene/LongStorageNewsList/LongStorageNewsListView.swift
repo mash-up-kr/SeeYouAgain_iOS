@@ -39,11 +39,6 @@ public struct LongStorageNewsListView: View {
         
         ScrollView {
           VStack(spacing: 0) {
-            MonthInfoView(store: store)
-            
-            Spacer()
-              .frame(height: viewStore.state.isInEditMode ? 40 : 48)
-            
             // 필터 뷰
             if !viewStore.state.isInEditMode && viewStore.state.shortsNewsItemsCount != 0 {
               HStack {

@@ -221,7 +221,7 @@ public let longStorageNewsListReducer = Reducer<
       
     case let ._fetchSavedNews(fetchType):
       return env.myPageService.fetchSavedNews(
-        state.targetDate.toFormattedTargetDate(),
+        "",
         state.pagingSize
       )
       .catchToEffect()

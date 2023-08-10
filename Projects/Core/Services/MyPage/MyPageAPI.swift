@@ -41,7 +41,7 @@ extension MyPageAPI: TargetType {
       return "/member-news-card"
       
     case .fetchSavedNews:
-      return "/member-news"
+      return "/member/news"
       
     case .deleteSavedNews:
       return "/member/news/bulk-delete"
@@ -98,9 +98,9 @@ extension MyPageAPI: TargetType {
       let requestDTO = DeleteTodayShortsRequestDTO(shortsIds: shortsIds)
       return .requestJSONEncodable(requestDTO)
       
-    case let .fetchSavedNews(targetDate, size):
+    case let .fetchSavedNews(cursorWrittenDateTime, size):
       let requestDTO = SavedNewsRequestDTO(
-        targetDate: targetDate,
+        cursorWrittenDateTime: cursorWrittenDateTime,
         size: size
       )
       return .requestParameters(
