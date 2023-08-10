@@ -150,7 +150,7 @@ public let tabBarReducer = Reducer<
         return Effect(value: .hotKeyword(.routeAction(0, action: .hotKeyword(.hotkeywordTabTapped))))
       } else if tab == .myPage {
         return .concatenate(
-          Effect(value: .myPage(.routeAction(0, action: .myPage(._viewWillAppear)))),
+          Effect(value: .myPage(.routeAction(0, action: .myPage(._onAppear)))),
           Effect(value: .hotKeyword(.routeAction(0, action: .hotKeyword(.otherTabsTapped))))
         )
       } else {

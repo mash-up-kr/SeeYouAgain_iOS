@@ -55,7 +55,7 @@ public struct MyPageView: View {
         )        
       }
       .onAppear {
-        viewStore.send(._viewWillAppear)
+        viewStore.send(._onAppear)
       }
     }
     .navigationBarHidden(true)

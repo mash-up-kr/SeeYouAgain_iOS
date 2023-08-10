@@ -72,12 +72,6 @@ private struct NameEditView: View {
         Text(viewStore.state.nickname)
           .font(.b24)
           .foregroundColor(DesignSystem.Colors.grey100)
-          
-        Spacer().frame(width: 8)
-        
-        DesignSystem.Icons.iconModify
-          .resizable()
-          .frame(width: 32, height: 32)
         
         Spacer()
       }
