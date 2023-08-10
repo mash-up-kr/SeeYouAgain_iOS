@@ -139,7 +139,7 @@ public let webReducer = Reducer.combine([
           case .success:
             return Effect.concatenate([
               Effect(value: ._setSaveButtonDisabled(true)),
-              Effect(value: ._presentSaveToast("오래 간직할 뉴스에 추가했어요."))
+              Effect(value: ._presentSaveToast("개별 뉴스에 저장했어요."))
             ])
             
           case .failure:

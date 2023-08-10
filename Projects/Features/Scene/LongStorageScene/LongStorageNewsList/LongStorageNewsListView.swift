@@ -62,7 +62,7 @@ public struct LongStorageNewsListView: View {
               Spacer()
                 .frame(height: 128)
               
-              Text("아직 저장한 숏스가 없어요\n하루가 지나도 뉴스를 보고싶다면 저장해보세요")
+              Text("아직 저장한 개별 뉴스가 없어요.\n뉴스 오른쪽 상단의 저장을 눌러 저장할 수 있어요.")
                 .multilineTextAlignment(.center)
                 .font(.b14)
                 .foregroundColor(DesignSystem.Colors.grey70)

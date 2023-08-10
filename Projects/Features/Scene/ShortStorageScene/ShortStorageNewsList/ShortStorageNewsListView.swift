@@ -38,14 +38,11 @@ public struct ShortStorageNewsListView: View {
         
         ScrollView {
           VStack(spacing: 0) {
-            // 현재 저장한 오늘의 숏스가 없는 경우
+            // 현재 저장한 뉴스 키워드가 없는 경우
             if viewStore.shortsNewsItemsCount == 0 {
               EmptyNewsContentView(
                 shortsNewsItemsCount: viewStore.shortsNewsItemsCount,
-                shortsCompleteCount: viewStore.shortsCompleteCount,
-                message: viewStore.shortsCompleteCount == 0 ?
-                "오늘은 아직 저장한 뉴스가 없어요\n뉴스를 보고 마음에 드면 저장해보세요" :
-                  "오늘 저장한 뉴스를 다 읽었어요!" // TODO: 문구 처리 필요
+                message: "아직 저장한 뉴스 키워드가  없어요.\n홈에서 편지를 내리면 저장할 수 있어요."
               )
             } else {
               Spacer()
@@ -95,53 +92,15 @@ public struct ShortStorageNewsListView: View {
   }
 }
 
-private struct TodayInfoView: View {
-  private var today: String
-  private var shortsCompleteCount: Int
-  
-  fileprivate init(
-    today: String,
-    shortsCompleteCount: Int
-  ) {
-    self.today = today
-    self.shortsCompleteCount = shortsCompleteCount
-  }
-  
-  var body: some View {
-    VStack(spacing: 0) {
-      Spacer()
-        .frame(height: 40)
-      
-      Text(today)
-        .font(.b14)
-        .foregroundColor(DesignSystem.Colors.grey90)
-        .padding(.horizontal, 105)
-      
-      Spacer()
-        .frame(height: 8)
-      
-      Text("\(shortsCompleteCount)숏스")
-        .font(.b24)
-        .foregroundColor(
-          shortsCompleteCount == 0 ? DesignSystem.Colors.grey60 : DesignSystem.Colors.grey100
-        )
-        .padding(.horizontal, 24)
-    }
-  }
-}
-
 private struct EmptyNewsContentView: View {
   private var shortsNewsItemsCount: Int
-  private var shortsCompleteCount: Int
   private var message: String
   
   fileprivate init(
     shortsNewsItemsCount: Int,
-    shortsCompleteCount: Int,
     message: String
   ) {
     self.shortsNewsItemsCount = shortsNewsItemsCount
-    self.shortsCompleteCount = shortsCompleteCount
     self.message = message
   }
   
