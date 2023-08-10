@@ -49,10 +49,10 @@ extension NewsCardService {
         .init()
         .request(
           NewsCardAPI.getAllNewsCards(targetDateTime, cursorId, pagingSize),
-          type: [NewsCardsResponseDTO].self
+          type: AllNewsCardReponseDTO.self
         )
         .compactMap { $0 }
-        .map { $0.map { $0.toDomain }}
+        .map { $0.newsCards.map { $0.toDomain }}
         .eraseToEffect()
     },
     saveNewsCard: { newsCardId in
