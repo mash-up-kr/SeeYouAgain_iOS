@@ -25,24 +25,34 @@ public struct SettingView: View {
           leftIcon: DesignSystem.Icons.iconNavigationLeft,
           leftIconButtonAction: {
             viewStore.send(.backButtonTapped)
-          }
+          },
+          navigationBarColor: DesignSystem.Colors.coolgrey100
         )
         
         NameEditView(store: store)
           .padding(.top, 64)
           .padding(.bottom, 84)
         
-        SettingRow(title: "모드 선택", subTitle: " ") {
-          viewStore.send(.navigateModeSelection)
+        VStack(spacing: 0) {
+          SettingRow(title: "모드 선택", subTitle: " ") {
+            viewStore.send(.navigateModeSelection)
+          }
+          .padding(.top, 8)
+          
+          DividerHorizontal(color: .gray20, height: ._1)
+            .padding(.horizontal, 24)
+          
+          SettingRow(title: "앱 버전", subTitle: " ") {
+            viewStore.send(.navigateAppVersion)
+          }
+          
+          Spacer()
         }
-        
-        SettingRow(title: "앱 버전", subTitle: " ") {
-          viewStore.send(.navigateAppVersion)
-        }
-        
-        Spacer()
+        .background(DesignSystem.Colors.white)
+        .cornerRadius(32, corners: [.topLeft, .topRight])
       }
     }
+    .background(DesignSystem.Colors.coolgrey100)
     .navigationBarHidden(true)
   }
 }
@@ -65,9 +75,9 @@ private struct NameEditView: View {
           
         Spacer().frame(width: 8)
         
-        DesignSystem.Icons.iconOutlinedEdit
+        DesignSystem.Icons.iconModify
           .resizable()
-          .frame(width: 20, height: 20)
+          .frame(width: 32, height: 32)
         
         Spacer()
       }
@@ -83,9 +93,9 @@ private struct SettingRow: View {
   fileprivate var body: some View {
     Button(action: action) {
       VStack {
-        Spacer().frame(height: 16)
+        Spacer().frame(height: 24)
         row
-        Spacer().frame(height: 16)
+        Spacer().frame(height: 24)
       }
     }
   }
