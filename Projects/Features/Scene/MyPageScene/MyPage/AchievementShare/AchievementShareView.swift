@@ -10,6 +10,7 @@ import Common
 import ComposableArchitecture
 import DesignSystem
 import Foundation
+import Models
 import SwiftUI
 
 public struct AchievementShareView: View {
@@ -21,27 +22,12 @@ public struct AchievementShareView: View {
   
   public var body: some View {
     WithViewStore(store) { viewStore in
-      VStack {
-        HStack(spacing: 0) {
-          Spacer()
-          
-          DesignSystem.Icons.iconNavigationDismiss
-            .renderingMode(.template)
-            .resizable()
-            .frame(width: 32, height: 32)
-            .foregroundColor(DesignSystem.Colors.white)
-            .onTapGesture {
-              viewStore.send(.dismissButtonDidTapped)
-            }
-          
-          Spacer().frame(width: 16)
-        }
-        .padding(.top, 14)
+      VStack(spacing: 0) {
+        dismissButton
+          .padding(.top, 14)
         
-        Spacer()
-        
-        viewStore.state.achievementType.shareImage
-        Text(viewStore.state.achievementType.rawValue)
+        contents
+          .padding(.top, 77)
         
         Spacer()
         
@@ -51,25 +37,77 @@ public struct AchievementShareView: View {
             viewStore.send(.shareButtonDidTapped)
           }
         )
+        .padding(.bottom, 48)
       }
-      .shortsBackgroundView()
-      .background {
+      .background(
+        DesignSystem.Images.bgRecord
+          .resizable()
+          .aspectRatio(contentMode: .fill)
+          .edgesIgnoringSafeArea(.all)
+      )
+      .background(
         ActivityView(
           isPresented: viewStore.binding(
             get: \.activityViewIsPresented,
             send: AchievementShareAction._setActivityViewIsPresented
           ),
-          activityItems: []
+          activityItems: [viewStore.achievementType.shareImage].compactMap { $0 }
         )
+      )
+    }
+  }
+  
+  private var dismissButton: some View {
+    WithViewStore(store.stateless) { viewStore in
+      HStack(spacing: 0) {
+        Spacer()
+        
+        DesignSystem.Icons.iconNavigationDismiss
+          .renderingMode(.template)
+          .resizable()
+          .frame(width: 32, height: 32)
+          .foregroundColor(DesignSystem.Colors.white)
+          .onTapGesture {
+            viewStore.send(.dismissButtonDidTapped)
+          }
+        
+        Spacer().frame(width: 16)
+      }
+    }
+  }
+  
+  private var contents: some View {
+    WithViewStore(store, observe: \.achievementType) { viewStore in
+      HStack {
+        Spacer()
+        
+        VStack(spacing: 0) {
+          DesignSystem.Icons.iconSelctLarge
+          
+          Text(viewStore.state.rawValue)
+            .font(.b28)
+            .foregroundColor(DesignSystem.Colors.white)
+            .padding(.top, 40)
+          
+          Text(viewStore.state.shareDescription)
+            .font(.r18)
+            .foregroundColor(DesignSystem.Colors.white)
+            .multilineTextAlignment(.center)
+            .padding(.top, 10)
+        }
+        
+        Spacer()
       }
     }
   }
 }
 
-
-// TODO: - Share Image
-extension AchievementType {
-  var shareImage: Image {
-    return DesignSystem.Images.shorts
+// TODO: 공유 이미지로 교체.
+fileprivate extension AchievementType {
+  var shareImage: UIImage? {
+    switch self {
+    default:
+      return UIImage(asset: ImageAsset(name: "img_share"))
+    }
   }
 }
