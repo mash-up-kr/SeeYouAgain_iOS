@@ -38,7 +38,7 @@ extension MyPageAPI: TargetType {
       return "/member/news-card/saved"
       
     case .deleteTodayShorts:
-      return "/member-news-card"
+      return "/member/news-card/bulk-delete"
       
     case .fetchSavedNews:
       return "/member/news"
