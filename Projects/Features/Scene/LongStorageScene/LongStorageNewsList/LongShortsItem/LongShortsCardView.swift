@@ -34,7 +34,7 @@ struct LongShortsCardView: View {
               image
                 .resizable()
                 .frame(width: 60, height: 74)
-                .scaledToFill()
+                .scaledToFit()
                 .cornerRadius(6, corners: .allCorners)
             } else {
               DesignSystem.Colors.grey30
