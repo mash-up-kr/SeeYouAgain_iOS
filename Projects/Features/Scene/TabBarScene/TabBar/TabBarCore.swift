@@ -290,8 +290,11 @@ public let tabBarReducer = Reducer<
         )
       )
     ):
-      return Effect(value: ._setTabHiddenStatus(false))
-      
+      return Effect.merge(
+        Effect(value: ._setTabHiddenStatus(false)),
+        Effect(value: .myPage(.routeAction(0, action: .myPage(._onAppear))))
+      )
+        
     case .myPage(
       .routeAction(
         _,
@@ -303,7 +306,10 @@ public let tabBarReducer = Reducer<
         )
       )
     ):
-      return Effect(value: ._setTabHiddenStatus(false))
+      return Effect.merge(
+        Effect(value: ._setTabHiddenStatus(false)),
+        Effect(value: .myPage(.routeAction(0, action: .myPage(._onAppear))))
+      )
       
     case .myPage(
       .routeAction(
@@ -316,7 +322,10 @@ public let tabBarReducer = Reducer<
         )
       )
     ):
-      return Effect(value: ._setTabHiddenStatus(false))
+      return Effect.merge(
+        Effect(value: ._setTabHiddenStatus(false)),
+        Effect(value: .myPage(.routeAction(0, action: .myPage(._onAppear))))
+      )
       
     case .myPage(
       .routeAction(
@@ -329,7 +338,10 @@ public let tabBarReducer = Reducer<
         )
       )
     ):
-      return Effect(value: ._setTabHiddenStatus(false))
+      return Effect.merge(
+        Effect(value: ._setTabHiddenStatus(false)),
+        Effect(value: .myPage(.routeAction(0, action: .myPage(._onAppear))))
+      )
       
     case .categoryBottomSheet(._categoriesIsUpdated):
       return Effect(value: .main(.routeAction(0, action: .main(._categoriesIsUpdated))))
