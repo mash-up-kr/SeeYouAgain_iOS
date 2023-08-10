@@ -20,9 +20,9 @@ public struct MyInfoState: Equatable {
     self.user = user
     self.shorts = MyInfoShortsState(
       shorts: MyInfoShorts(
-        totalShortsCount: user.totalShortsThisMonth,
-        todayShortsCount: user.todayShorts,
-        savedShortsCount: user.savedShorts
+        totalShortsCount: user.totalSavedNewsCount,
+        todayShortsCount: user.savedNewsCount,
+        savedShortsCount: user.savedNewsCardCount
       )
     )
   }

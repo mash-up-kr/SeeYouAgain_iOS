@@ -231,7 +231,7 @@ public let tabBarReducer = Reducer<
     ):
       switch response {
       case .success:
-        return Effect(value: ._presentInfoToast("오늘 읽을 숏스에 저장됐어요:)"))
+        return Effect(value: ._presentInfoToast("뉴스 키워드가 저장됐어요:)"))
         
       case let .failure(error):
         return presentToast(on: error)
