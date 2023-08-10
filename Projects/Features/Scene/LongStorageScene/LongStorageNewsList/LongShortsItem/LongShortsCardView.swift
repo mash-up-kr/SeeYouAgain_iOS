@@ -33,12 +33,13 @@ struct LongShortsCardView: View {
             if let image = state.image {
               image
                 .resizable()
-                .frame(width: 56, height: 56)
-                .clipShape(Circle())
+                .frame(width: 60, height: 74)
+                .scaledToFill()
+                .cornerRadius(6, corners: .allCorners)
             } else {
               DesignSystem.Colors.grey30
-                .frame(width: 56, height: 56)
-                .clipShape(Circle())
+                .frame(width: 60, height: 74)
+                .cornerRadius(6, corners: .allCorners)
             }
           }
         }
