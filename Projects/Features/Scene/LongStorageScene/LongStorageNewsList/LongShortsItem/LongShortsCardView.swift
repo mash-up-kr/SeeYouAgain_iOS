@@ -23,32 +23,24 @@ struct LongShortsCardView: View {
   var body: some View {
     WithViewStore(store) { viewStore in
       HStack(alignment: .top, spacing: 0) {
+        NewsDataView(news: viewStore.state.news)
+        
         if let imageUrl = viewStore.state.news.thumbnailImageUrl, imageUrl != "null" {
+          Spacer()
+            .frame(width: 16)
+          
           LazyImage(url: URL(string: imageUrl)) { state in
             if let image = state.image {
               image
                 .resizable()
-                .frame(width: 56, height: 56)
-                .clipShape(Circle())
+                .frame(width: 60, height: 74)
+                .scaledToFill()
+                .cornerRadius(6, corners: .allCorners)
             } else {
               DesignSystem.Colors.grey30
-                .frame(width: 56, height: 56)
-                .clipShape(Circle())
+                .frame(width: 60, height: 74)
+                .cornerRadius(6, corners: .allCorners)
             }
-          }
-          
-          Spacer()
-            .frame(width: 16)
-        }
-        
-        NewsDataView(news: viewStore.state.news)
-        
-        if viewStore.isCardSelectable {
-          Button {
-            viewStore.send(.rightButtonTapped)
-          } label: {
-            DesignSystem.Icons.iconChevronRight
-              .frame(width: 16, height: 16)
           }
         }
       }

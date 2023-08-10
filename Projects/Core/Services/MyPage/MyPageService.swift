@@ -20,10 +20,10 @@ import XCTestDynamicOverlay
 
 public struct MyPageService {
   public var getMemberInfo: () -> Effect<User, Error>
-  public var getTodayShorts: (
+  public var fetchMemberNewsCard: (
     _ cursorId: Int,
     _ pagingSize: Int
-  ) -> Effect<TodayShorts, Error>
+  ) -> Effect<KeywordNews, Error>
   public var deleteTodayShorts: (_ shortsIds: [Int]) -> Effect<VoidResponse?, Error>
   public var fetchSavedNews: (
     _ targetDateTime: String,
@@ -47,12 +47,12 @@ extension MyPageService {
         .map { $0.toDomain }
         .eraseToEffect()
     },
-    getTodayShorts: { cursorId, pagingSize in
+    fetchMemberNewsCard: { cursorId, pagingSize in
       return Provider<MyPageAPI>
         .init()
         .request(
-          MyPageAPI.getTodayShorts(cursorId, pagingSize),
-          type: TodayShortsResponseDTO.self
+          MyPageAPI.fetchKeywordNewsCard(cursorId, pagingSize),
+          type: KeywordNewsCardResponseDTO.self
         )
         .compactMap { $0 }
         .map { $0.toDomain }

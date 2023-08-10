@@ -65,18 +65,18 @@ public struct NewsListView: View {
               .padding(.bottom, 16)
             }
           }
-          .padding(.bottom, viewStore.state.source != .hot ? 48 : 0)
+          .padding(.bottom, viewStore.state.source == .main ? 48 : 0)
         }
         .onAppear {
           viewStore.send(._onAppear)
         }
         
-        if viewStore.state.source != .hot {
+        if viewStore.state.source == .main {
           VStack(spacing: 0) {
             Spacer()
             
-            BottomButton(title: viewStore.source == .shortStorage ? "다 읽었어요" : "오늘 읽을 숏스에 저장") {
-              viewStore.send(viewStore.source == .shortStorage ? .completeButtonTapped : .saveButtonTapped)
+            BottomButton(title: "키워드별 뉴스에 저장") {
+              viewStore.send(.saveButtonTapped)
             }
           }
         }

@@ -34,7 +34,7 @@ struct MyInfoView: View {
           Spacer()
         }
         
-        MyShortsView(
+        MyInfoShortsView(
           store: store.scope(
             state: \.shorts,
             action: MyInfoAction.shortsAction

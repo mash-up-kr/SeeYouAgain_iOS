@@ -12,14 +12,14 @@ import Services
 
 public struct MyInfoState: Equatable {
   var user: User
-  var shorts: MyShortsState
+  var shorts: MyInfoShortsState
   
   public init(
     user: User
   ) {
     self.user = user
-    self.shorts = MyShortsState(
-      shorts: MyShorts(
+    self.shorts = MyInfoShortsState(
+      shorts: MyInfoShorts(
         totalShortsCount: user.totalShortsThisMonth,
         todayShortsCount: user.todayShorts,
         savedShortsCount: user.savedShorts
@@ -29,7 +29,7 @@ public struct MyInfoState: Equatable {
 }
 
 public enum MyInfoAction {
-  case shortsAction(MyShortsAction)
+  case shortsAction(MyInfoShortsAction)
 }
 
 public struct MyInfoEnvironment {
@@ -50,7 +50,7 @@ public let myInfoReducer = Reducer<
       state: \MyInfoState.shorts,
       action: /MyInfoAction.shortsAction,
       environment: { _ in
-        MyShortsEnvironment()
+        MyInfoShortsEnvironment()
       }
     ),
   Reducer { state, action, env in

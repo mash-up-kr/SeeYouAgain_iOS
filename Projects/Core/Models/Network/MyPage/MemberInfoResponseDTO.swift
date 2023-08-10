@@ -11,9 +11,9 @@ import Foundation
 public struct MemberInfoResponseDTO: Decodable {
   let nickname: String
   let joinPeriod: Int
-  let totalShortsThisMonth: Int
-  let todayShorts: Int
-  let savedShorts: Int
+  let totalSavedNewsCount: Int
+  let savedNewsCardCount: Int
+  let savedNewsCount: Int
 }
 
 public extension MemberInfoResponseDTO {
@@ -21,9 +21,9 @@ public extension MemberInfoResponseDTO {
     return User(
       nickname: nickname,
       joinPeriod: joinPeriod,
-      totalShortsThisMonth: totalShortsThisMonth,
-      todayShorts: todayShorts,
-      savedShorts: savedShorts
+      totalSavedNewsCount: totalSavedNewsCount,
+      savedNewsCardCount: savedNewsCardCount,
+      savedNewsCount: savedNewsCount
     )
   }
 }

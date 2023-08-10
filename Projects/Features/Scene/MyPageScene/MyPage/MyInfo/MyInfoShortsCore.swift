@@ -8,7 +8,7 @@
 
 import ComposableArchitecture
 
-public struct MyShorts: Equatable {
+public struct MyInfoShorts: Equatable {
   var totalShortsCount: Int
   var todayShortsCount: Int
   var savedShortsCount: Int
@@ -24,27 +24,31 @@ public struct MyShorts: Equatable {
   }
 }
 
-public struct MyShortsState: Equatable {
-  public var shorts: MyShorts
+public struct MyInfoShortsState: Equatable {
+  public var shorts: MyInfoShorts
   
   public init(
-    shorts: MyShorts
+    shorts: MyInfoShorts
   ) {
     self.shorts = shorts
   }
 }
 
-public enum MyShortsAction {
+public enum MyInfoShortsAction {
   case shortShortsButtonTapped
   case longShortsButtonTapped
 }
 
-public struct MyShortsEnvironment {
+public struct MyInfoShortsEnvironment {
   public init() {}
 }
 
 public let myShortsReducer = Reducer.combine([
-  Reducer<MyShortsState, MyShortsAction, MyShortsEnvironment> { state, action, env in
+  Reducer<
+  MyInfoShortsState,
+  MyInfoShortsAction,
+  MyInfoShortsEnvironment
+  > { state, action, env in
     switch action {
     default: return .none
     }
