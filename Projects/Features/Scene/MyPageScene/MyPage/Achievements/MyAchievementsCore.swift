@@ -13,16 +13,20 @@ import Models
 import Services
 
 public struct MyAchievementsState: Equatable {
-  var badges = AchievementType.allCases
-  public init() {}
+  var achievements: [Achievement]
+  
+  public init(achievements: [Achievement]) {
+    self.achievements = achievements
+  }
 }
 
 public enum MyAchievementsAction {
   // MARK: - User Action
-  case achievementBadgeTapped(AchievementType)
+  case achievementBadgeTapped(Achievement)
   
   // MARK: - Inner Business Action
-  case _onAppear
+  case _presentAchievementBottomSheet(Achievement)
+  case _presentAchievementShareScreen(Achievement)
 }
 
 public struct MyAchievementsEnvironment {
@@ -44,10 +48,14 @@ public let myAchievementsReducer = Reducer<
   MyAchievementsEnvironment
 > { state, action, environment in
   switch action {
-  case .achievementBadgeTapped:
-    return .none
+  case let .achievementBadgeTapped(achievement):
+    if achievement.isAchieved {
+      return Effect(value: ._presentAchievementShareScreen(achievement))
+    } else {
+      return Effect(value: ._presentAchievementBottomSheet(achievement))
+    }
     
-  case ._onAppear:
+  default:
     return .none
   }
 }

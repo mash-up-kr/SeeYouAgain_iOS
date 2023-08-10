@@ -9,20 +9,14 @@
 import Foundation
 
 public struct Achievement: Equatable {
-  public let name: String
+  public let type: AchievementType
   public let isAchieved: Bool
   
   public init(
-    name: String,
+    type: AchievementType,
     isAchieved: Bool
   ) {
-    self.name = name
+    self.type = type
     self.isAchieved = isAchieved
   }
 }
-
-#if DEBUG
-extension Achievement {
-  public static let stub: Achievement = .init(name: "김영균", isAchieved: false)
-}
-#endif

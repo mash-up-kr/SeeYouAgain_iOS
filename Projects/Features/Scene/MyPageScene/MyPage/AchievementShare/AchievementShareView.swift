@@ -10,6 +10,7 @@ import Common
 import ComposableArchitecture
 import DesignSystem
 import Foundation
+import Models
 import SwiftUI
 
 public struct AchievementShareView: View {
@@ -21,27 +22,12 @@ public struct AchievementShareView: View {
   
   public var body: some View {
     WithViewStore(store) { viewStore in
-      VStack {
-        HStack(spacing: 0) {
-          Spacer()
-          
-          DesignSystem.Icons.iconNavigationDismiss
-            .renderingMode(.template)
-            .resizable()
-            .frame(width: 32, height: 32)
-            .foregroundColor(DesignSystem.Colors.white)
-            .onTapGesture {
-              viewStore.send(.dismissButtonDidTapped)
-            }
-          
-          Spacer().frame(width: 16)
-        }
-        .padding(.top, 14)
+      VStack(spacing: 0) {
+        dismissButton
+          .padding(.top, 14)
         
-        Spacer()
-        
-        viewStore.state.achievementType.shareImage
-        Text(viewStore.state.achievementType.rawValue)
+        contents
+          .padding(.top, 77)
         
         Spacer()
         
@@ -51,25 +37,120 @@ public struct AchievementShareView: View {
             viewStore.send(.shareButtonDidTapped)
           }
         )
+        .padding(.bottom, 48)
       }
-      .shortsBackgroundView()
-      .background {
+      .background(
+        DesignSystem.Images.bgRecord
+          .resizable()
+          .aspectRatio(contentMode: .fill)
+          .edgesIgnoringSafeArea(.all)
+      )
+      .background(
         ActivityView(
           isPresented: viewStore.binding(
             get: \.activityViewIsPresented,
             send: AchievementShareAction._setActivityViewIsPresented
           ),
-          activityItems: []
+          activityItems: [viewStore.achievementType.shareImage].compactMap { $0 },
+          completion: { viewStore.send(.shareCompleted) }
         )
+      )
+    }
+  }
+  
+  private var dismissButton: some View {
+    WithViewStore(store.stateless) { viewStore in
+      HStack(spacing: 0) {
+        Spacer()
+        
+        DesignSystem.Icons.iconNavigationDismiss
+          .renderingMode(.template)
+          .resizable()
+          .frame(width: 32, height: 32)
+          .foregroundColor(DesignSystem.Colors.white)
+          .onTapGesture {
+            viewStore.send(.dismissButtonDidTapped)
+          }
+        
+        Spacer().frame(width: 16)
+      }
+    }
+  }
+  
+  private var contents: some View {
+    WithViewStore(store, observe: \.achievementType) { viewStore in
+      HStack {
+        Spacer()
+        
+        VStack(spacing: 0) {
+          viewStore.state.shareIcon
+          
+          Text(viewStore.state.rawValue)
+            .font(.b28)
+            .foregroundColor(DesignSystem.Colors.white)
+            .padding(.top, 40)
+          
+          Text(viewStore.state.shareDescription)
+            .font(.r18)
+            .foregroundColor(DesignSystem.Colors.white)
+            .multilineTextAlignment(.center)
+            .padding(.top, 10)
+        }
+        
+        Spacer()
       }
     }
   }
 }
 
-
-// TODO: - Share Image
-extension AchievementType {
-  var shareImage: Image {
-    return DesignSystem.Images.shorts
+fileprivate extension AchievementType {
+  var shareIcon: Image {
+    switch self {
+    case .threeDaysContinuousAttendance:
+      return DesignSystem.Icons.iconShareThreeDays
+      
+    case .explorer:
+      return DesignSystem.Icons.iconShareExplorer
+      
+    case .kingOfSharing:
+      return DesignSystem.Icons.iconShareSharing
+      
+    case .excitedSave:
+      return DesignSystem.Icons.iconShareExcitedSave
+      
+    case .firstAllReadShorts:
+      return DesignSystem.Icons.iconShareHalfstart
+      
+    case .changeMode:
+      return DesignSystem.Icons.iconShareRespectTaste
+      
+    case .tenDaysContinuousAttendance:
+      return DesignSystem.Icons.iconShareTenDaysAttendance
+    }
+  }
+  
+  var shareImage: UIImage? {
+    switch self {
+    case .threeDaysContinuousAttendance:
+      return UIImage(asset: ImageAsset(name: "share_threeDays"))
+      
+    case .explorer:
+      return UIImage(asset: ImageAsset(name: "share_explorer"))
+      
+    case .kingOfSharing:
+      return UIImage(asset: ImageAsset(name: "share_sharing"))
+      
+    case .excitedSave:
+      return UIImage(asset: ImageAsset(name: "share_excited_save"))
+      
+    case .firstAllReadShorts:
+      return UIImage(asset: ImageAsset(name: "share_halfstart"))
+      
+    case .changeMode:
+      return UIImage(asset: ImageAsset(name: "share_respect_taste"))
+      
+    case .tenDaysContinuousAttendance:
+      return UIImage(asset: ImageAsset(name: "share_tenDaysAttendance"))
+    }
   }
 }

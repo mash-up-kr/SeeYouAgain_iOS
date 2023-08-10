@@ -20,6 +20,7 @@ public enum MyPageAPI {
   case deleteTodayShorts([Int])
   case fetchSavedNews(String, Int)
   case deleteSavedNews([Int])
+  case getAchievementBadges
   case fetchWeeklyStats
 }
 
@@ -45,6 +46,9 @@ extension MyPageAPI: TargetType {
     case .deleteSavedNews:
       return "/member/news/bulk-delete"
       
+    case .getAchievementBadges:
+      return "/member/badge"
+      
     case .fetchWeeklyStats:
       return "/member/weekly-stats"
     }
@@ -66,6 +70,9 @@ extension MyPageAPI: TargetType {
       
     case .deleteSavedNews:
       return .post
+      
+    case .getAchievementBadges:
+      return .get
       
     case .fetchWeeklyStats:
       return .get
@@ -104,6 +111,9 @@ extension MyPageAPI: TargetType {
     case let .deleteSavedNews(newsIds):
       let requestDTO = DeleteNewsRequestDTO(newsIds: newsIds)
       return .requestJSONEncodable(requestDTO)
+      
+    case .getAchievementBadges:
+      return .requestPlain
       
     case .fetchWeeklyStats:
       return .requestPlain

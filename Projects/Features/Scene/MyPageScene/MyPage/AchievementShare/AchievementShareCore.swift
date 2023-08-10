@@ -11,6 +11,7 @@ import ComposableArchitecture
 import DesignSystem
 import Foundation
 import Models
+import Services
 
 public struct AchievementShareState: Equatable {
   var achievementType: AchievementType
@@ -29,13 +30,18 @@ public enum AchievementShareAction {
   // MARK: - User Action
   case dismissButtonDidTapped
   case shareButtonDidTapped
+  case shareCompleted
   
   // MARK: - Inner SetState Action
   case _setActivityViewIsPresented(Bool)
 }
 
 public struct AchievementShareEnvironment {
-  public init() {}
+  fileprivate let logService: LogService
+  
+  public init(logService: LogService) {
+    self.logService = logService
+  }
 }
 
 public let achievementShareReducer = Reducer<
@@ -49,6 +55,10 @@ public let achievementShareReducer = Reducer<
     
   case .shareButtonDidTapped:
     return Effect(value: ._setActivityViewIsPresented(true))
+    
+  case .shareCompleted:
+    return environment.logService.sharing()
+      .fireAndForget()
     
   case let ._setActivityViewIsPresented(isPresented):
     state.activityViewIsPresented = isPresented
