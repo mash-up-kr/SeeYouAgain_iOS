@@ -30,6 +30,8 @@ public struct MyPageService {
     _ size: Int
   ) -> Effect<SavedNewsList, Error>
   public var deleteNews: (_ newsIds: [Int]) -> Effect<VoidResponse?, Error>
+  public var getAchievementBadges: () -> Effect<[Achievement], Error>
+  public var fetchWeeklyStats: () -> Effect<Statistics, Error>
 }
 
 extension MyPageService {
@@ -88,6 +90,25 @@ extension MyPageService {
           type: VoidResponse.self
         )
         .compactMap { $0 }
+        .eraseToEffect()
+    },
+    getAchievementBadges: {
+      return Provider<MyPageAPI>
+        .init()
+        .request(MyPageAPI.getAchievementBadges, type: AchievementResponseDTO.self)
+        .compactMap { $0 }
+        .map { $0.toDomain }
+        .eraseToEffect()
+    },
+    fetchWeeklyStats: {
+      return Provider<MyPageAPI>
+        .init()
+        .request(
+          MyPageAPI.fetchWeeklyStats,
+          type: StatisticsResponseDTO.self
+        )
+        .compactMap { $0 }
+        .map { $0.toDomain }
         .eraseToEffect()
     }
   )

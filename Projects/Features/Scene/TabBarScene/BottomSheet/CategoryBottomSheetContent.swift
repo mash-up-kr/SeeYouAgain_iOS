@@ -11,8 +11,47 @@ import ComposableArchitecture
 import DesignSystem
 import SwiftUI
 
-struct CategoryBottomSheetHeader: View {
-  var body: some View {
+struct CategoryBottomSheet: ViewModifier {
+  private let store: Store<CategoryBottomSheetState, CategoryBottomSheetAction>
+  
+  init(store: Store<CategoryBottomSheetState, CategoryBottomSheetAction>) {
+    self.store = store
+  }
+  
+  func body(content: Content) -> some View {
+    WithViewStore(store) { viewStore in
+      content
+        .bottomSheet(
+          backgroundColor: DesignSystem.Colors.white.opacity(0.62).blurEffect(),
+          isPresented: viewStore.binding(
+            get: \.isPresented,
+            send: CategoryBottomSheetAction._setIsPresented
+          ),
+          headerArea: { CategoryBottomSheetHeader() },
+          content: { CategoryBottomSheetContent(store: store) },
+          bottomArea: {
+            BottomButton(
+              title: "변경",
+              disabled: viewStore.selectedCategories.isEmpty,
+              action: {
+                viewStore.send(.updateButtonTapped)
+              }
+            )
+          }
+        )
+    }
+  }
+}
+
+extension View {
+  func categoryBottomSheet(store: Store<CategoryBottomSheetState, CategoryBottomSheetAction>) -> some View {
+    modifier(CategoryBottomSheet(store: store))
+  }
+}
+
+// MARK: CategoryBottomSheet Header
+private struct CategoryBottomSheetHeader: View {
+  fileprivate var body: some View {
     HStack {
       Text("관심 키워드를 선택해주세요")
         .font(.b18)
@@ -23,20 +62,21 @@ struct CategoryBottomSheetHeader: View {
   }
 }
 
-struct CategoryBottomSheet: View {
+// MARK: CategoryBottomSheet Content
+private struct CategoryBottomSheetContent: View {
   private let columns = [
     GridItem(.flexible()),
     GridItem(.flexible()),
     GridItem(.flexible()),
     GridItem(.flexible())
   ]
-  private let store: Store<BottomSheetState, BottomSheetAction>
+  private let store: Store<CategoryBottomSheetState, CategoryBottomSheetAction>
   
-  init(store: Store<BottomSheetState, BottomSheetAction>) {
+  fileprivate init(store: Store<CategoryBottomSheetState, CategoryBottomSheetAction>) {
     self.store = store
   }
   
-  var body: some View {
+  fileprivate var body: some View {
     WithViewStore(store) { viewStore in
       ScrollView {
         LazyVGrid(columns: columns, spacing: 12) {
@@ -57,7 +97,7 @@ struct CategoryBottomSheet: View {
 
 // MARK: - 카테고리 아이템 뷰
 private struct CategoryItemView: View {
-  private let store: Store<Void, BottomSheetAction>
+  private let store: Store<Void, CategoryBottomSheetAction>
   private var category: CategoryType
   @State private var isSelected: Bool
   
@@ -70,7 +110,7 @@ private struct CategoryItemView: View {
   }
   
   fileprivate init(
-    store: Store<Void, BottomSheetAction>,
+    store: Store<Void, CategoryBottomSheetAction>,
     category: CategoryType,
     isSelected: Bool
   ) {

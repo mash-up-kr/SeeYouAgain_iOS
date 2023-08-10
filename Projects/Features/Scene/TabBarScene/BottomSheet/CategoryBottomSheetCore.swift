@@ -1,5 +1,5 @@
 //
-//  BottomSheetCore.swift
+//  CategoryBottomSheetCore.swift
 //  Main
 //
 //  Created by 김영균 on 2023/06/08.
@@ -13,7 +13,7 @@ import Foundation
 import Models
 import Services
 
-public struct BottomSheetState: Equatable {
+public struct CategoryBottomSheetState: Equatable {
   var allCategories: [CategoryType] = CategoryType.allCases
   var selectedCategories: [CategoryType] = []
   public var isPresented: Bool = false
@@ -22,7 +22,7 @@ public struct BottomSheetState: Equatable {
   public init() {}
 }
 
-public enum BottomSheetAction {
+public enum CategoryBottomSheetAction {
   // MARK: - User Action
   case categoryTapped(CategoryType)
   case updateButtonTapped
@@ -39,7 +39,7 @@ public enum BottomSheetAction {
   case _setToastMessage(String?)
 }
 
-public struct BottomSheetEnvironment {
+public struct CategoryBottomSheetEnvironment {
   fileprivate let mainQueue: AnySchedulerOf<DispatchQueue>
   fileprivate let categoryService: CategoryService
   
@@ -57,10 +57,10 @@ enum CategoryBottomSheetID: Hashable {
   case _setCategoryToast
 }
 
-public let bottomSheetReducer: Reducer<
-  BottomSheetState,
-  BottomSheetAction,
-  BottomSheetEnvironment
+public let categoryBottomSheetReducer: Reducer<
+  CategoryBottomSheetState,
+  CategoryBottomSheetAction,
+  CategoryBottomSheetEnvironment
 > = Reducer { state, action, env in
   switch action {
   case let .categoryTapped(category):
@@ -79,7 +79,7 @@ public let bottomSheetReducer: Reducer<
   case let ._updateCategoires(categories):
     return env.categoryService.updateCategories(categories)
       .catchToEffect()
-      .flatMapLatest { result -> Effect<BottomSheetAction, Never> in
+      .flatMapLatest { result -> Effect<CategoryBottomSheetAction, Never> in
         switch result {
         case .success:
           return Effect(value: ._categoriesIsUpdated)
