@@ -22,7 +22,7 @@ public struct LongStorageNewsListView: View {
     WithViewStore(store) { viewStore in
       VStack(spacing: 0) {
         TopNavigationBar(
-          title: "오래 간직할 숏스",
+          title: "개별 뉴스",
           leftIcon: DesignSystem.Icons.iconNavigationLeft,
           leftIconButtonAction: {
             viewStore.send(.backButtonTapped)
