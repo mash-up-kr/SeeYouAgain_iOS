@@ -73,6 +73,8 @@ public struct TabBarEnvironment {
   fileprivate let categoryService: CategoryService
   fileprivate let hotKeywordService: HotKeywordService
   fileprivate let myPageService: MyPageService
+  fileprivate let logService: LogService
+  
   public init(
     mainQueue: AnySchedulerOf<DispatchQueue>,
     userDefaultsService: UserDefaultsService,
@@ -80,7 +82,8 @@ public struct TabBarEnvironment {
     newsCardService: NewsCardService,
     categoryService: CategoryService,
     hotKeywordService: HotKeywordService,
-    myPageService: MyPageService
+    myPageService: MyPageService,
+    logService: LogService
   ) {
     self.mainQueue = mainQueue
     self.userDefaultsService = userDefaultsService
@@ -89,6 +92,7 @@ public struct TabBarEnvironment {
     self.categoryService = categoryService
     self.hotKeywordService = hotKeywordService
     self.myPageService = myPageService
+    self.logService = logService
   }
 }
 
@@ -133,7 +137,8 @@ public let tabBarReducer = Reducer<
         MyPageCoordinatorEnvironment(
           mainQueue: $0.mainQueue,
           appVersionService: $0.appVersionService,
-          myPageService: $0.myPageService
+          myPageService: $0.myPageService,
+          logService: $0.logService
         )
       }
     ),

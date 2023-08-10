@@ -51,7 +51,8 @@ public struct AchievementShareView: View {
             get: \.activityViewIsPresented,
             send: AchievementShareAction._setActivityViewIsPresented
           ),
-          activityItems: [viewStore.achievementType.shareImage].compactMap { $0 }
+          activityItems: [viewStore.achievementType.shareImage].compactMap { $0 },
+          completion: { viewStore.send(.shareCompleted) }
         )
       )
     }

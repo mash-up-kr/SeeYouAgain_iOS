@@ -16,7 +16,7 @@ public struct MyPageState: Equatable {
   var info: MyInfoState = MyInfoState(user: .stub)
   var statistics: StatisticsState = StatisticsState(statistics: .stub)
   var myAchievements: MyAchievementsState = MyAchievementsState(
-    achievements: AchievementType.allCases.map { Achievement(type: $0, isAchieved: true) }
+    achievements: AchievementType.allCases.map { Achievement(type: $0, isAchieved: false) }
   )
   
   public init() { }

@@ -35,15 +35,18 @@ internal struct MyPageScreenEnvironment {
   let mainQueue: AnySchedulerOf<DispatchQueue>
   let appVersionService: AppVersionService
   let myPageService: MyPageService
+  let logService: LogService
   
   internal init(
     mainQueue: AnySchedulerOf<DispatchQueue>,
     appVersionService: AppVersionService,
-    myPageService: MyPageService
+    myPageService: MyPageService,
+    logService: LogService
   ) {
     self.mainQueue = mainQueue
     self.appVersionService = appVersionService
     self.myPageService = myPageService
+    self.logService = logService
   }
 }
 
@@ -67,7 +70,7 @@ internal let myPageScreenReducer = Reducer<
     .pullback(
       state: /MyPageScreenState.achievementShare,
       action: /MyPageScreenAction.achievementShare,
-      environment: { _ in AchievementShareEnvironment() }
+      environment: { AchievementShareEnvironment(logService: $0.logService) }
     ),
   shortStorageCoordinatorReducer
     .pullback(

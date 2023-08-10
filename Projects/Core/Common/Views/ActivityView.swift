@@ -13,13 +13,16 @@ public struct ActivityView: UIViewControllerRepresentable {
   @Binding var isPresented: Bool
   public let activityItems: [Any]
   public let applicationActivities: [UIActivity]? = nil
+  public var completion: (() -> Void)?
   
   public init(
     isPresented: Binding<Bool>,
-    activityItems: [Any]
+    activityItems: [Any],
+    completion: (() -> Void)? = nil
   ) {
     self._isPresented = isPresented
     self.activityItems = activityItems
+    self.completion = completion
   }
   
   public func makeUIViewController(context: Context) -> UIViewController {
@@ -38,6 +41,7 @@ public struct ActivityView: UIViewControllerRepresentable {
     
     activityViewController.completionWithItemsHandler = { (_, _, _, _) in
       isPresented = false
+      completion?()
     }
   }
 }
