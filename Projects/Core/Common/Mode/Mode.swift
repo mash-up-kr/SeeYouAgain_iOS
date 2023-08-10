@@ -8,7 +8,7 @@
 
 import Foundation
 
-public enum Mode: Equatable {
+public enum Mode: String, Equatable {
   case basic
   case interestCompany
 }

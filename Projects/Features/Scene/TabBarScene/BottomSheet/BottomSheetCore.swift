@@ -14,7 +14,8 @@ import Models
 import Services
 
 public struct BottomSheetState: Equatable {
-  var allCategories: [CategoryType] = CategoryType.allCases
+  var mode: Mode = .basic
+  var allCategories: [CategoryType] = CategoryType.basicCategoires
   var selectedCategories: [CategoryType] = []
   public var isPresented: Bool = false
   var toastMessage: String?
@@ -32,6 +33,7 @@ public enum BottomSheetAction {
   case _categoriesIsUpdated
   case _presentToast(String)
   case _hideToast
+  case _fetchMode
   
   // MARK: - Inner SetState Action
   case _setSelectedCategories([CategoryType])
@@ -105,6 +107,19 @@ public let bottomSheetReducer: Reducer<
     
   case ._hideToast:
     return Effect(value: ._setToastMessage(nil))
+    
+  case ._fetchMode:
+    if let appMode = UserDefaults.standard.string(forKey: UserDefaultsKey.currentMode.rawValue),
+      let currentMode = Mode(rawValue: appMode) {
+      state.mode = currentMode
+    }
+    switch state.mode {
+    case .basic:
+      state.allCategories = CategoryType.basicCategoires
+    case .interestCompany:
+      state.allCategories = CategoryType.companyCategories
+    }
+    return .none
     
   case let ._setSelectedCategories(categories):
     state.selectedCategories = categories

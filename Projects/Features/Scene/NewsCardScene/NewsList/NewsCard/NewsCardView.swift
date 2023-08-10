@@ -117,15 +117,15 @@ fileprivate extension CategoryType {
     switch self {
     case .politics:
       return DesignSystem.Colors.politics
-    case .economic:
+    case .economic, .kakao, .cj:
       return DesignSystem.Colors.economic
-    case .society:
+    case .society, .wooah:
       return DesignSystem.Colors.society
-    case .world:
+    case .world, .naver, .line:
       return DesignSystem.Colors.world
-    case .culture:
+    case .culture, .lg_elec, .sk_hynics, .carrot:
       return DesignSystem.Colors.culture
-    case .science:
+    case .science, .toss, .samsung, .coupang, .hyundai, .korea_gas, .korea_elec:
       return DesignSystem.Colors.science
     }
   }

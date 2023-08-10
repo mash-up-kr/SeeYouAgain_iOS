@@ -16,7 +16,7 @@ public enum LogAPI {
 
 extension LogAPI: TargetType {
   public var baseURL: URL {
-    return URL(string: "http://3.36.227.253:8080/v1/member/log")!
+    return URL(string: "http://3.36.227.253:8081/v1/member/log")!
   }
   
   public var path: String {

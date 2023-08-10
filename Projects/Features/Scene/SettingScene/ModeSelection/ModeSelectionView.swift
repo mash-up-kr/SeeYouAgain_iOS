@@ -49,6 +49,7 @@ public struct ModeSelectionView: View {
         }
         .padding(.bottom, 8)
       }
+      .onAppear { viewStore.send(._onAppear) }
     }
     .navigationBarHidden(true)
   }

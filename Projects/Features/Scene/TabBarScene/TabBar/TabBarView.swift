@@ -93,9 +93,16 @@ public struct TabBarView: View {
             )
           }
         ),
-        headerArea: { CategoryBottomSheetHeader() },
+        headerArea: {
+          CategoryBottomSheetHeader(
+            store: store.scope(
+              state: \.categoryBottomSheet,
+              action: TabBarAction.categoryBottomSheet
+            )
+          )
+        },
         content: {
-          CategoryBottomSheet(
+          CategoryBottomSheetContent(
             store: store.scope(
               state: \.categoryBottomSheet,
               action: TabBarAction.categoryBottomSheet

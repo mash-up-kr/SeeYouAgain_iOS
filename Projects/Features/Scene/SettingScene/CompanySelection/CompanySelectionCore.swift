@@ -91,6 +91,7 @@ public let companySelectionReducer: Reducer<
   case .companySelectCompleted:
     return Effect.merge(
       env.settingService.changeMode(["MY_COMPANY"]).fireAndForget(),
+      env.userDefaultsService.saveCurrentMode(Mode.interestCompany.rawValue).fireAndForget(),
       env.userDefaultsService.save(UserDefaultsKey.hasCompanyModeHistory, true).fireAndForget()
     )
     

@@ -37,6 +37,7 @@ public enum ModeSelectionAction: Equatable {
   case _fetchCompanyModeHistory
   
   // MARK: - Inner SetState Action
+  case _setCurrentMode(Mode)
 }
 
 public struct ModeSelectionEnvironment {
@@ -69,7 +70,7 @@ public let modeSelectionReducer: Reducer<
     }
     
   case .navigateHome:
-    return .none
+    return env.userDefaultService.saveCurrentMode(state.selectedMode.rawValue).fireAndForget()
     
   case .navigateCompanySelection:
     return .none
@@ -85,6 +86,13 @@ public let modeSelectionReducer: Reducer<
       }
     
   case ._onAppear:
+    return env.userDefaultService.fetchCurrentMode()
+      .map { mode -> ModeSelectionAction in
+        return ._setCurrentMode(mode)
+      }
+    
+  case let ._setCurrentMode(mode):
+    state.selectedMode = mode
     return .none
   }
 }

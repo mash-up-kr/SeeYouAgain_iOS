@@ -25,14 +25,14 @@ public struct UserDefaultsService {
   public let load: (UserDefaultsKey) -> Effect<Bool, Never>
   public let saveUserID: (String) -> Effect<Void, Never>
   public let fetchCurrentMode: () -> Effect<Mode, Never>
-  public let saveCurrentMode: (Mode) -> Effect<Void, Never>
+  public let saveCurrentMode: (String) -> Effect<Void, Never>
   
   private init(
     save: @escaping (UserDefaultsKey, Bool) -> Effect<Void, Never>,
     load: @escaping (UserDefaultsKey) -> Effect<Bool, Never>,
     saveUserID: @escaping (String) -> Effect<Void, Never>,
     fetchCurrentMode: @escaping () -> Effect<Mode, Never>,
-    saveCurrentMode: @escaping (Mode) -> Effect<Void, Never>
+    saveCurrentMode: @escaping (String) -> Effect<Void, Never>
   ) {
     self.save = save
     self.load = load
@@ -70,13 +70,13 @@ public extension UserDefaultsService {
     },
     fetchCurrentMode: {
       return Publishers.Create<Mode, Never>(factory: { subscriber -> Cancellable in
-        if let mode = UserDefaults.standard.object(
-          forKey: UserDefaultsKey.currentMode.rawValue
-        ) as? Mode {
+        if let modeString = UserDefaults.standard.string(forKey: UserDefaultsKey.currentMode.rawValue),
+          let mode = Mode(rawValue: modeString) {
           subscriber.send(mode)
         } else {
           subscriber.send(.basic)
         }
+        
         subscriber.send(completion: .finished)
         return AnyCancellable({})
       })

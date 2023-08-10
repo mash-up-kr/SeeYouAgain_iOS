@@ -26,14 +26,23 @@ public enum NewsCardAPI {
 
 extension NewsCardAPI: TargetType {
   public var baseURL: URL {
-    return URL(string: "http://3.36.227.253:8080/v1")!
+    switch self {
+    case .getAllNewsCards:
+      return URL(string: "http://3.36.227.253:8081/v1")!
+    default:
+      return URL(string: "http://3.36.227.253:8080/v1")!
+    }
   }
   
   public var path: String {
     switch self {
     case .getAllNewsCards:
+    #if DEBUG
+      return "/member/news-card"
+    #else
       return "/member-news-card"
-    
+    #endif
+      
     case .saveNewsCard:
       return "/member/news-card"
       
@@ -81,11 +90,9 @@ extension NewsCardAPI: TargetType {
   
   public var task: Task {
     switch self {
-    case let .getAllNewsCards(targetDateTime, cursorId, pagingSize):
+    case let .getAllNewsCards(targetDateTime, _, _):
       let requestDTO = NewsCardsRequestDTO(
-        targetDateTime: targetDateTime.toFormattedString(format: "yyyy-MM-dd'T'HH:mm:ss"),
-        cursorId: cursorId,
-        size: pagingSize
+        targetDateTime: targetDateTime.toFormattedString(format: "yyyy-MM-dd'T'HH:mm:ss")
       )
       return .requestParameters(
         parameters: requestDTO.toDictionary,
