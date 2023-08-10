@@ -22,7 +22,7 @@ public struct LongStorageNewsListView: View {
     WithViewStore(store) { viewStore in
       VStack(spacing: 0) {
         TopNavigationBar(
-          title: "오래 간직할 숏스",
+          title: "개별 뉴스",
           leftIcon: DesignSystem.Icons.iconNavigationLeft,
           leftIconButtonAction: {
             viewStore.send(.backButtonTapped)
@@ -39,11 +39,6 @@ public struct LongStorageNewsListView: View {
         
         ScrollView {
           VStack(spacing: 0) {
-            MonthInfoView(store: store)
-            
-            Spacer()
-              .frame(height: viewStore.state.isInEditMode ? 40 : 48)
-            
             // 필터 뷰
             if !viewStore.state.isInEditMode && viewStore.state.shortsNewsItemsCount != 0 {
               HStack {
@@ -62,7 +57,7 @@ public struct LongStorageNewsListView: View {
               Spacer()
                 .frame(height: 128)
               
-              Text("아직 저장한 숏스가 없어요\n하루가 지나도 뉴스를 보고싶다면 저장해보세요")
+              Text("아직 저장한 개별 뉴스가 없어요.\n뉴스 오른쪽 상단의 저장을 눌러 저장할 수 있어요.")
                 .multilineTextAlignment(.center)
                 .font(.b14)
                 .foregroundColor(DesignSystem.Colors.grey70)

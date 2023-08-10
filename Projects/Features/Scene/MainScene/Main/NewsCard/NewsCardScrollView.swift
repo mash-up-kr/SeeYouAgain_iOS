@@ -26,25 +26,19 @@ struct NewsCardScrollView: View {
         .frame(height: viewStore.layout.size.height)
       }
       .onAppear {
-        DispatchQueue.main.async {
-          viewStore.send(._onAppear, animation: .easeInOut)
-        }
+        viewStore.send(._onAppear, animation: .easeInOut)
       }
       .offset(x: viewStore.currentScrollOffset, y: 0)
       .simultaneousGesture(
         DragGesture()
           .onChanged { value in
-            DispatchQueue.main.async {
-              viewStore.send(.dragOnChanged(value.translation), animation: .easeInOut)
-            }
+            viewStore.send(.dragOnChanged(value.translation), animation: .easeInOut)
           }
           .onEnded { value in
-            DispatchQueue.main.async {
-              withAnimation(.easeInOut) {
-                viewStore.send(._calculateScrollIndex)
-                viewStore.send(._fetchNewsCardsIfNeeded(viewStore.currentScrollIndex, viewStore.newsCards.count))
-                viewStore.send(.dragOnEnded(value.translation))
-              }
+            withAnimation(.easeInOut) {
+              viewStore.send(._calculateScrollIndex)
+              viewStore.send(._fetchNewsCardsIfNeeded(viewStore.currentScrollIndex, viewStore.newsCards.count))
+              viewStore.send(.dragOnEnded(value.translation))
             }
           }
       )

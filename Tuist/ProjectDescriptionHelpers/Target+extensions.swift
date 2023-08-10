@@ -16,28 +16,30 @@ fileprivate let commonScripts: [TargetScript] = [
 
 extension Target {
   public static func make(
-    name: String,
-    product: Product,
-    bundleId: String,
-    infoPlist: InfoPlist? = .default,
-    sources: SourceFilesList,
-    resources: ResourceFileElements? = nil,
-    dependencies: [TargetDependency] = [],
-    settings: Settings? = nil,
-    scripts: [TargetScript] = []
-  ) -> Target {
-    return Target(
-      name: name,
-      platform: .iOS,
-      product: product,
-      bundleId: bundleId,
-      deploymentTarget: .iOS(targetVersion: "16.0", devices: [.iphone]),
-      infoPlist: infoPlist,
-      sources: sources,
-      resources: resources,
-      scripts: commonScripts + scripts,
-      dependencies: dependencies,
-      settings: settings
-    )
-  }
+      name: String,
+      platform: Platform = .iOS,
+      product: Product,
+      bundleId: String,
+      deploymentTarget: DeploymentTarget = .iOS(targetVersion: "16.0", devices: [.iphone]),
+      infoPlist: InfoPlist? = .default,
+      sources: SourceFilesList,
+      resources: ResourceFileElements? = nil,
+      dependencies: [TargetDependency] = [],
+      settings: Settings? = nil,
+      scripts: [TargetScript] = []
+    ) -> Target {
+      return Target(
+        name: name,
+        platform: platform,
+        product: product,
+        bundleId: bundleId,
+        deploymentTarget: deploymentTarget,
+        infoPlist: infoPlist,
+        sources: sources,
+        resources: resources,
+        scripts: commonScripts + scripts,
+        dependencies: dependencies,
+        settings: settings
+      )
+    }
 }

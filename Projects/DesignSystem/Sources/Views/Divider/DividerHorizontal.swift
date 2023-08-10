@@ -31,11 +31,15 @@ public struct DividerHorizontal: View {
 extension DividerHorizontal {
   public enum BackgroundColor {
     case gray
+    case gray20
     
     var usage: Color {
       switch self {
       case .gray:
         return .gray.opacity(0.2)
+        
+      case .gray20:
+        return DesignSystem.Colors.grey20
       }
     }
   }

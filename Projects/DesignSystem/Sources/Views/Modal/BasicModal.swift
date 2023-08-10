@@ -34,8 +34,10 @@ public struct BasicModal<Content: View>: View {
             .transition(.opacity)
           
           content()
+            .padding(.horizontal, 40)
         }
       }
+      .edgesIgnoringSafeArea(.all)
     }
   }
 }

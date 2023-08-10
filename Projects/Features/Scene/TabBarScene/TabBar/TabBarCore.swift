@@ -10,6 +10,7 @@ import ComposableArchitecture
 import Foundation
 import HotKeywordCoordinator
 import MainCoordinator
+import Models
 import MyPageCoordinator
 import Services
 
@@ -17,17 +18,21 @@ public struct TabBarState: Equatable {
   public var hotKeyword: HotKeywordCoordinatorState
   public var main: MainCoordinatorState
   public var myPage: MyPageCoordinatorState
-  public var categoryBottomSheet: BottomSheetState
+  public var categoryBottomSheet: CategoryBottomSheetState
   public var selectedTab: TabBarItem = .house
   public var isTabHidden: Bool = false
   public var infoToastMessage: String?
   public var warningToastMessage: String?
   
+  // 업적 바텀시트에 보여줄 업적 정보
+  public var selectedAchievement: Achievement = .init(type: .firstAllReadShorts, isAchieved: false) // 초기 임시데이터
+  public var achievementBottomSheetIsPresented: Bool = false
+  
   public init(
     hotKeyword: HotKeywordCoordinatorState,
     main: MainCoordinatorState,
     myPage: MyPageCoordinatorState,
-    categoryBottomSheet: BottomSheetState,
+    categoryBottomSheet: CategoryBottomSheetState,
     isTabHidden: Bool
   ) {
     self.hotKeyword = hotKeyword
@@ -51,12 +56,13 @@ public enum TabBarAction {
   case _setTabHiddenStatus(Bool)
   case _setInfoToastMessage(String?)
   case _setWarningToastMessage(String?)
+  case _setAchievementBottomSheetIsPresented(Bool)
   
   // MARK: - Child Action
   case hotKeyword(HotKeywordCoordinatorAction)
   case main(MainCoordinatorAction)
   case myPage(MyPageCoordinatorAction)
-  case categoryBottomSheet(BottomSheetAction)
+  case categoryBottomSheet(CategoryBottomSheetAction)
 }
 
 public struct TabBarEnvironment {
@@ -67,6 +73,8 @@ public struct TabBarEnvironment {
   fileprivate let categoryService: CategoryService
   fileprivate let hotKeywordService: HotKeywordService
   fileprivate let myPageService: MyPageService
+  fileprivate let logService: LogService
+  
   public init(
     mainQueue: AnySchedulerOf<DispatchQueue>,
     userDefaultsService: UserDefaultsService,
@@ -74,7 +82,8 @@ public struct TabBarEnvironment {
     newsCardService: NewsCardService,
     categoryService: CategoryService,
     hotKeywordService: HotKeywordService,
-    myPageService: MyPageService
+    myPageService: MyPageService,
+    logService: LogService
   ) {
     self.mainQueue = mainQueue
     self.userDefaultsService = userDefaultsService
@@ -83,6 +92,7 @@ public struct TabBarEnvironment {
     self.categoryService = categoryService
     self.hotKeywordService = hotKeywordService
     self.myPageService = myPageService
+    self.logService = logService
   }
 }
 
@@ -127,16 +137,17 @@ public let tabBarReducer = Reducer<
         MyPageCoordinatorEnvironment(
           mainQueue: $0.mainQueue,
           appVersionService: $0.appVersionService,
-          myPageService: $0.myPageService
+          myPageService: $0.myPageService,
+          logService: $0.logService
         )
       }
     ),
-  bottomSheetReducer
+  categoryBottomSheetReducer
     .pullback(
       state: \TabBarState.categoryBottomSheet,
       action: /TabBarAction.categoryBottomSheet,
       environment: {
-        BottomSheetEnvironment(
+        CategoryBottomSheetEnvironment(
           mainQueue: $0.mainQueue,
           categoryService: $0.categoryService
         )
@@ -150,7 +161,7 @@ public let tabBarReducer = Reducer<
         return Effect(value: .hotKeyword(.routeAction(0, action: .hotKeyword(.hotkeywordTabTapped))))
       } else if tab == .myPage {
         return .concatenate(
-          Effect(value: .myPage(.routeAction(0, action: .myPage(._viewWillAppear)))),
+          Effect(value: .myPage(.routeAction(0, action: .myPage(._onAppear)))),
           Effect(value: .hotKeyword(.routeAction(0, action: .hotKeyword(.otherTabsTapped))))
         )
       } else {
@@ -196,6 +207,10 @@ public let tabBarReducer = Reducer<
       state.warningToastMessage = message
       return .none
       
+    case let ._setAchievementBottomSheetIsPresented(isPresented):
+      state.achievementBottomSheetIsPresented = isPresented
+      return .none
+      
     case let .main(.routeAction(_, action: .main(.showCategoryBottomSheet(categories)))):
       return Effect.concatenate(
         Effect(value: .categoryBottomSheet(._setSelectedCategories(categories))),
@@ -222,8 +237,15 @@ public let tabBarReducer = Reducer<
         return presentToast(on: error)
       }
     
-    case .myPage(.routeAction(_, action: .myPage(.settingButtonTapped))):
-      return Effect(value: ._setTabHiddenStatus(true))
+    // 마이페이지: 업적을 탭하여 바텀시트를 띄우는 액션
+    case let .myPage(
+      .routeAction(_, action: .myPage(
+        .myAchievementsAction(._presentAchievementBottomSheet(achievement))
+      ))
+    ):
+      state.selectedAchievement = achievement
+      state.achievementBottomSheetIsPresented = true
+      return .none
       
     case .myPage(.routeAction(_, action: .myPage(.info(.shortsAction(.shortShortsButtonTapped))))):
       return Effect(value: ._setTabHiddenStatus(true))
@@ -307,12 +329,6 @@ public let tabBarReducer = Reducer<
         )
       )
     ):
-      return Effect(value: ._setTabHiddenStatus(false))
-      
-    case .myPage(.routeAction(_, action: .setting(.routeAction(_, action: .setting(.backButtonTapped))))):
-      return Effect(value: ._setTabHiddenStatus(false))
-      
-    case .myPage(.routeAction(_, action: .setting(.routeAction(_, action: .setting(._onDisappear))))):
       return Effect(value: ._setTabHiddenStatus(false))
       
     case .categoryBottomSheet(._categoriesIsUpdated):

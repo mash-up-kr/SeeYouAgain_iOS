@@ -7,10 +7,15 @@
 //
 
 import Alamofire
+#if os(watchOS)
+import CommonWatchOS
+import ModelsWatchOS
+#else
 import Common
+import Models
+#endif
 import ComposableArchitecture
 import Foundation
-import Models
 
 #if DEBUG
 import XCTestDynamicOverlay
@@ -35,6 +40,7 @@ public struct NewsCardService {
   
   public var saveNews: (_ newsId: Int) -> Effect<VoidResponse?, Error>
   public var checkSavedStatus: (_ newsId: Int) -> Effect<CheckSavedStatusResponseDTO, Error>
+  public var postNewsRead: (_ newsId: Int) -> Effect<VoidResponse?, Error>
 }
 
 extension NewsCardService {
@@ -44,10 +50,10 @@ extension NewsCardService {
         .init()
         .request(
           NewsCardAPI.getAllNewsCards(targetDateTime, cursorId, pagingSize),
-          type: [NewsCardsResponseDTO].self
+          type: AllNewsCardReponseDTO.self
         )
         .compactMap { $0 }
-        .map { $0.map { $0.toDomain }}
+        .map { $0.newsCards.map { $0.toDomain }}
         .eraseToEffect()
     },
     saveNewsCard: { newsCardId in
@@ -106,6 +112,16 @@ extension NewsCardService {
         .request(
           NewsCardAPI.checkSavedStatus(newsId),
           type: CheckSavedStatusResponseDTO.self
+        )
+        .compactMap { $0 }
+        .eraseToEffect()
+    },
+    postNewsRead: { newsId in
+      return Provider<NewsCardAPI>
+        .init()
+        .request(
+          NewsCardAPI.postNewsRead(newsId),
+          type: VoidResponse.self
         )
         .compactMap { $0 }
         .eraseToEffect()

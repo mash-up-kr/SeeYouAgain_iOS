@@ -7,7 +7,11 @@
 //
 
 import Alamofire
+#if os(watchOS)
+import CommonWatchOS
+#else
 import Common
+#endif
 import Foundation
 
 public struct ProviderError: SeeYouAgainError {

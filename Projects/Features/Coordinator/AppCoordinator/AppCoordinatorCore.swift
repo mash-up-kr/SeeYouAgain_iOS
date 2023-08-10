@@ -34,6 +34,7 @@ public struct AppCoordinatorEnvironment {
   let categoryService: CategoryService
   let hotKeywordService: HotKeywordService
   let myPageService: MyPageService
+  let logService: LogService
   
   public init(
     mainQueue: AnySchedulerOf<DispatchQueue>,
@@ -42,7 +43,8 @@ public struct AppCoordinatorEnvironment {
     newsCardService: NewsCardService,
     categoryService: CategoryService,
     hotKeywordService: HotKeywordService,
-    myPageService: MyPageService
+    myPageService: MyPageService,
+    logService: LogService
   ) {
     self.mainQueue = mainQueue
     self.userDefaultsService = userDefaultsService
@@ -51,6 +53,7 @@ public struct AppCoordinatorEnvironment {
     self.categoryService = categoryService
     self.hotKeywordService = hotKeywordService
     self.myPageService = myPageService
+    self.logService = logService
   }
 }
 
@@ -68,7 +71,8 @@ public let appCoordinatorReducer: Reducer<
         newsCardService: $0.newsCardService,
         categoryService: $0.categoryService,
         hotKeywordService: $0.hotKeywordService,
-        myPageService: $0.myPageService
+        myPageService: $0.myPageService,
+        logService: $0.logService
       )
     }
   )
@@ -116,6 +120,27 @@ public let appCoordinatorReducer: Reducer<
             embedInNavigationView: true
           )
         ]
+        return .none
+      
+      case let .routeAction(
+        _, action: .tabBar(
+          .myPage(
+            .routeAction(
+              _, action: .myPage(.settingButtonTapped(nickname))
+            )
+          )
+        )
+      ):
+        state.routes.push(.setting(.init(nickname: nickname)))
+        return .none
+        
+      case .routeAction(_, action: .setting(.routeAction(_, action: .setting(.backButtonTapped)))):
+        state.routes.goBack()
+        return .none
+        
+      case .routeAction(_, action: .setting(.routeAction(_, action: .modeSelection(.navigateHome)))),
+        .routeAction(_, action: .setting(.routeAction(_, action: .companySelection(.companySelectCompleted)))):
+        state.routes.goBackToRoot()
         return .none
         
       case let .routeAction(
@@ -203,50 +228,12 @@ public let appCoordinatorReducer: Reducer<
         return .none
         
       case .routeAction(_, action: .newsCard(.routeAction(_, action: .shortsComplete(.backButtonTapped)))):
-        state.routes.goBack()
-        return Effect(
-          value: .routeAction(
-            0,
-            action: .tabBar(
-              .myPage(
-                .routeAction(
-                  0,
-                  action: .shortStorage(
-                    .routeAction(
-                      0,
-                      action: .shortStorageNewsList(
-                        .backButtonTapped
-                      )
-                    )
-                  )
-                )
-              )
-            )
-          )
-        )
+        state.routes.pop()
+        return tapShortStorageNewsListBackButton(action: action)
         
       case .routeAction(_, action: .newsCard(.routeAction(_, action: .shortsComplete(.confirmButtonTapped)))):
-        state.routes.goBack()
-        return Effect(
-          value: .routeAction(
-            0,
-            action: .tabBar(
-              .myPage(
-                .routeAction(
-                  0,
-                  action: .shortStorage(
-                    .routeAction(
-                      0,
-                      action: .shortStorageNewsList(
-                        .backButtonTapped
-                      )
-                    )
-                  )
-                )
-              )
-            )
-          )
-        )
+        state.routes.pop()
+        return tapShortStorageNewsListBackButton(action: action)
         
       case let .routeAction(_, action: .newsCard(.routeAction(_, action: .newsList(.backButtonTapped(source))))):
         state.routes.goBack()
@@ -256,3 +243,17 @@ public let appCoordinatorReducer: Reducer<
       }
     }
   )
+
+fileprivate func tapShortStorageNewsListBackButton(
+  action: AppCoordinatorAction
+) -> Effect<AppCoordinatorAction, Never> {
+  return Effect(
+    value: .routeAction(0, action: .tabBar(
+      .myPage(.routeAction(0, action:
+        .shortStorage(.routeAction(0, action:
+          .shortStorageNewsList(.backButtonTapped)
+        ))
+      ))
+    ))
+  )
+}

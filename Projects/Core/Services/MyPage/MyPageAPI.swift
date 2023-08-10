@@ -8,14 +8,20 @@
 
 import Alamofire
 import Foundation
+#if os(watchOS)
+import ModelsWatchOS
+#else
 import Models
+#endif
 
 public enum MyPageAPI {
   case getMemberInfo
-  case getTodayShorts(Int, Int)
+  case fetchKeywordNewsCard(Int, Int)
   case deleteTodayShorts([Int])
   case fetchSavedNews(String, Int)
   case deleteSavedNews([Int])
+  case getAchievementBadges
+  case fetchWeeklyStats
 }
 
 extension MyPageAPI: TargetType {
@@ -28,17 +34,23 @@ extension MyPageAPI: TargetType {
     case .getMemberInfo:
       return "/member/info"
       
-    case .getTodayShorts:
-      return "/member-news-card/saved"
+    case .fetchKeywordNewsCard:
+      return "/member/news-card/saved"
       
     case .deleteTodayShorts:
       return "/member-news-card"
       
     case .fetchSavedNews:
-      return "/member-news"
+      return "/member/news"
       
     case .deleteSavedNews:
       return "/member/news/bulk-delete"
+      
+    case .getAchievementBadges:
+      return "/member/badge"
+      
+    case .fetchWeeklyStats:
+      return "/member/weekly-stats"
     }
   }
   
@@ -47,7 +59,7 @@ extension MyPageAPI: TargetType {
     case .getMemberInfo:
       return .get
       
-    case .getTodayShorts:
+    case .fetchKeywordNewsCard:
       return .get
       
     case .deleteTodayShorts:
@@ -58,6 +70,12 @@ extension MyPageAPI: TargetType {
       
     case .deleteSavedNews:
       return .post
+      
+    case .getAchievementBadges:
+      return .get
+      
+    case .fetchWeeklyStats:
+      return .get
     }
   }
   
@@ -66,8 +84,8 @@ extension MyPageAPI: TargetType {
     case .getMemberInfo:
       return .requestPlain
       
-    case let .getTodayShorts(cursorId, size):
-      let requestDTO = TodayShortsRequestDTO(
+    case let .fetchKeywordNewsCard(cursorId, size):
+      let requestDTO = KeywordNewsCardRequestDTO(
         cursorId: cursorId,
         size: size
       )
@@ -80,9 +98,9 @@ extension MyPageAPI: TargetType {
       let requestDTO = DeleteTodayShortsRequestDTO(shortsIds: shortsIds)
       return .requestJSONEncodable(requestDTO)
       
-    case let .fetchSavedNews(targetDate, size):
+    case let .fetchSavedNews(cursorWrittenDateTime, size):
       let requestDTO = SavedNewsRequestDTO(
-        targetDate: targetDate,
+        cursorWrittenDateTime: cursorWrittenDateTime,
         size: size
       )
       return .requestParameters(
@@ -93,6 +111,12 @@ extension MyPageAPI: TargetType {
     case let .deleteSavedNews(newsIds):
       let requestDTO = DeleteNewsRequestDTO(newsIds: newsIds)
       return .requestJSONEncodable(requestDTO)
+      
+    case .getAchievementBadges:
+      return .requestPlain
+      
+    case .fetchWeeklyStats:
+      return .requestPlain
     }
   }
   

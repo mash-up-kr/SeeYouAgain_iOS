@@ -9,18 +9,17 @@
 import Foundation
 
 public struct SavedNewsRequestDTO: Encodable {
-  let targetDate: String
   let cursorWrittenDateTime: String
   let size: Int
-  public let pivot: Pivot = .desc
+  public let pivot: Pivot
 
   public init(
-    targetDate: String,
     cursorWrittenDateTime: String = "",
-    size: Int = 20
+    size: Int = 20,
+    pivot: Pivot = .desc
   ) {
-    self.targetDate = targetDate
     self.cursorWrittenDateTime = cursorWrittenDateTime
     self.size = size
+    self.pivot = pivot
   }
 }

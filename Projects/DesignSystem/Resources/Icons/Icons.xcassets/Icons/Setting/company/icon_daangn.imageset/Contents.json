@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "icon_daangn.svg",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

@@ -23,5 +23,5 @@ let dependencies = Dependencies(
       requirement: .exact("12.1")
     ),
   ],
-  platforms: [.iOS]
+  platforms: [.iOS, .watchOS]
 )

@@ -21,7 +21,7 @@ public struct ShortStorageNewsListView: View {
     WithViewStore(store) { viewStore in
       VStack(spacing: 0) {
         TopNavigationBar(
-          title: "오늘의 숏스",
+          title: "키워드별 뉴스",
           leftIcon: DesignSystem.Icons.iconNavigationLeft,
           leftIconButtonAction: {
             viewStore.send(.backButtonTapped)
@@ -38,53 +38,16 @@ public struct ShortStorageNewsListView: View {
         
         ScrollView {
           VStack(spacing: 0) {
-            TodayInfoView(
-              today: viewStore.today,
-              shortsCompleteCount: viewStore.shortsCompleteCount
-            )
-            
-            // 현재 저장한 오늘의 숏스가 없는 경우
+            // 현재 저장한 뉴스 키워드가 없는 경우
             if viewStore.shortsNewsItemsCount == 0 {
               EmptyNewsContentView(
                 shortsNewsItemsCount: viewStore.shortsNewsItemsCount,
-                shortsCompleteCount: viewStore.shortsCompleteCount,
-                message: viewStore.shortsCompleteCount == 0 ?
-                "오늘은 아직 저장한 뉴스가 없어요\n뉴스를 보고 마음에 드면 저장해보세요" :
-                  "오늘 저장한 뉴스를 다 읽었어요!"
+                message: "아직 저장한 뉴스 키워드가  없어요.\n홈에서 편지를 내리면 저장할 수 있어요."
               )
             } else {
               Spacer()
                 .frame(height: 16)
               
-              HStack(spacing: 4) {
-                Group {
-                  Text("남은시간")
-                    .font(.r16)
-                  
-                  Text(viewStore.state.remainTimeString)
-                    .font(.b16)
-                    .monospacedDigit()
-                }
-                .foregroundColor(DesignSystem.Colors.blue200)
-                
-                Button {
-                  viewStore.send(.tooltipButtonTapped)
-                } label: {
-                  DesignSystem.Icons.iconSuggestedCircle
-                    .frame(width: 16, height: 16)
-                }
-              }
-
-              if viewStore.state.isDisplayTooltip {
-                TooltipView(store: store)
-                  .padding(.leading, 20)
-                  .padding(.bottom, -55) // VStack 내부에서 겹치게 하기 위해서 마이너스로 설정
-                  .zIndex(1) // 스크롤 할 때 같이 내려가야해서 VStack에 넣고, 맨 위에 겹치도록 zIndex 설정
-              } else {
-                Spacer()
-                  .frame(height: 48)
-              }
-             
               ForEachStore(
                 self.store.scope(
                   state: \.shortsNewsItems,
@@ -129,53 +92,15 @@ public struct ShortStorageNewsListView: View {
   }
 }
 
-private struct TodayInfoView: View {
-  private var today: String
-  private var shortsCompleteCount: Int
-  
-  fileprivate init(
-    today: String,
-    shortsCompleteCount: Int
-  ) {
-    self.today = today
-    self.shortsCompleteCount = shortsCompleteCount
-  }
-  
-  var body: some View {
-    VStack(spacing: 0) {
-      Spacer()
-        .frame(height: 40)
-      
-      Text(today)
-        .font(.b14)
-        .foregroundColor(DesignSystem.Colors.grey90)
-        .padding(.horizontal, 105)
-      
-      Spacer()
-        .frame(height: 8)
-      
-      Text("\(shortsCompleteCount)숏스")
-        .font(.b24)
-        .foregroundColor(
-          shortsCompleteCount == 0 ? DesignSystem.Colors.grey60 : DesignSystem.Colors.grey100
-        )
-        .padding(.horizontal, 24)
-    }
-  }
-}
-
 private struct EmptyNewsContentView: View {
   private var shortsNewsItemsCount: Int
-  private var shortsCompleteCount: Int
   private var message: String
   
   fileprivate init(
     shortsNewsItemsCount: Int,
-    shortsCompleteCount: Int,
     message: String
   ) {
     self.shortsNewsItemsCount = shortsNewsItemsCount
-    self.shortsCompleteCount = shortsCompleteCount
     self.message = message
   }
   

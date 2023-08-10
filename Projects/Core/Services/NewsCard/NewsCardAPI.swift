@@ -8,7 +8,11 @@
 
 import Alamofire
 import Foundation
+#if os(watchOS)
+import ModelsWatchOS
+#else
 import Models
+#endif
 
 public enum NewsCardAPI {
   case getAllNewsCards(Date, Int, Int)
@@ -18,6 +22,7 @@ public enum NewsCardAPI {
   case hotkeywordFetchNews(String, Date, Int, Int)
   case saveNews(Int)
   case checkSavedStatus(Int)
+  case postNewsRead(Int)
 }
 
 extension NewsCardAPI: TargetType {
@@ -28,7 +33,7 @@ extension NewsCardAPI: TargetType {
   public var path: String {
     switch self {
     case .getAllNewsCards:
-      return "/member-news-card"
+      return "/member/news-card"
     
     case .saveNewsCard:
       return "/member/news-card"
@@ -47,6 +52,9 @@ extension NewsCardAPI: TargetType {
       
     case let .checkSavedStatus(newsId):
       return "/news/\(newsId)"
+      
+    case .postNewsRead:
+      return "/member/news/read"
     }
   }
   
@@ -72,16 +80,17 @@ extension NewsCardAPI: TargetType {
       
     case .checkSavedStatus:
       return .get
+      
+    case .postNewsRead:
+      return .post
     }
   }
   
   public var task: Task {
     switch self {
-    case let .getAllNewsCards(targetDateTime, cursorId, pagingSize):
+    case let .getAllNewsCards(targetDateTime, _, _):
       let requestDTO = NewsCardsRequestDTO(
-        targetDateTime: targetDateTime.toFormattedString(format: "yyyy-MM-dd'T'HH:mm:ss"),
-        cursorId: cursorId,
-        size: pagingSize
+        targetDateTime: targetDateTime.toFormattedString(format: "yyyy-MM-dd'T'HH:mm:ss")
       )
       return .requestParameters(
         parameters: requestDTO.toDictionary,
@@ -123,6 +132,10 @@ extension NewsCardAPI: TargetType {
         parameters: SaveNewsRequestDTO.init(newsId: newsId).toDictionary,
         encoding: .queryString
       )
+      
+    case let .postNewsRead(newsId):
+      let requestDTO = SaveNewsRequestDTO(newsId: newsId)
+      return .requestJSONEncodable(requestDTO)
     }
   }
   

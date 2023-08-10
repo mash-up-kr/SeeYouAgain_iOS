@@ -7,10 +7,15 @@
 //
 
 import Alamofire
+#if os(watchOS)
+import CommonWatchOS
+import ModelsWatchOS
+#else
 import Common
+import Models
+#endif
 import ComposableArchitecture
 import Foundation
-import Models
 
 #if DEBUG
 import XCTestDynamicOverlay

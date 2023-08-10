@@ -6,32 +6,42 @@
 //  Copyright © 2023 mashup.seeYouAgain. All rights reserved.
 //
 
+import Common
 import ComposableArchitecture
 import Foundation
 import Models
 import Services
 
 public struct MyPageState: Equatable {
+  var nickname: String = ""
   var info: MyInfoState = MyInfoState(user: .stub)
+  var statistics: StatisticsState = StatisticsState(statistics: .stub)
+  var myAchievements: MyAchievementsState = MyAchievementsState(
+    achievements: AchievementType.allCases.map { Achievement(type: $0, isAchieved: false) }
+  )
   
-  public init() {}
+  public init() { }
 }
 
 public enum MyPageAction {
   // MARK: - User Action
-  case settingButtonTapped
+  case settingButtonTapped(String)
   
   // MARK: - Inner Business Action
-  case _viewWillAppear
+  case _onAppear
   case _fetchUserInfo
+  case _fetchWeeklyStats
+  case _fetchAchievements
   
   // MARK: - Inner SetState Action
   case _setMyInfoState(User)
-   
-   // MARK: - Inner SetState Action
-
+  case _setStatisticsState(Statistics)
+  case _setAchievements([Achievement])
+  
   // MARK: - Child Action
   case info(MyInfoAction)
+  case statisticsAction(StatisticsAction)
+  case myAchievementsAction(MyAchievementsAction)
 }
 
 public struct MyPageEnvironment {
@@ -64,10 +74,30 @@ public let myPageReducer = Reducer<
         MyInfoEnvironment(myPageService: $0.myPageService)
       }
     ),
+  myAchievementsReducer
+    .pullback(
+      state: \MyPageState.myAchievements,
+      action: /MyPageAction.myAchievementsAction,
+      environment: {
+        MyAchievementsEnvironment(mainQueue: $0.mainQueue, myPageService: $0.myPageService)
+      }
+    ),
+  statisticsReducer
+    .pullback(
+      state: \.statistics,
+      action: /MyPageAction.statisticsAction,
+      environment: {
+        StatisticsEnvironment(mainQueue: $0.mainQueue, myPageService: $0.myPageService)
+      }
+    ),
   Reducer { state, action, env in
     switch action {
-    case ._viewWillAppear:
-      return Effect(value: ._fetchUserInfo)
+    case ._onAppear:
+      return Effect.concatenate([
+        Effect(value: ._fetchUserInfo),
+        Effect(value: ._fetchWeeklyStats),
+        Effect(value: ._fetchAchievements)
+      ])
       
     case ._fetchUserInfo:
       return env.myPageService.getMemberInfo()
@@ -83,8 +113,48 @@ public let myPageReducer = Reducer<
         }
         .eraseToEffect()
       
+    case ._fetchWeeklyStats:
+      return env.myPageService.fetchWeeklyStats()
+        .catchToEffect()
+        .flatMap { result -> Effect<MyPageAction, Never> in
+          switch result {
+          case let .success(statistics):
+            return Effect.concatenate([
+              Effect(value: ._setStatisticsState(statistics)),
+              Effect(value: .statisticsAction(._calculateStates))
+            ])
+
+          case .failure:
+            return .none
+          }
+        }
+        .eraseToEffect()
+      
+    case ._fetchAchievements:
+      return env.myPageService.getAchievementBadges()
+        .catchToEffect()
+        .flatMap { result -> Effect<MyPageAction, Never> in
+          switch result {
+          case let .success(achievements):
+            return Effect(value: ._setAchievements(achievements))
+            
+          case .failure:
+            return .none
+          }
+        }
+        .eraseToEffect()
+      
     case let ._setMyInfoState(user):
+      state.nickname = user.nickname
       state.info = MyInfoState(user: user)
+      return .none
+      
+    case let ._setStatisticsState(statistics):
+      state.statistics = StatisticsState(statistics: statistics)
+      return .none
+      
+    case let ._setAchievements(achievements):
+      state.myAchievements = MyAchievementsState(achievements: achievements)
       return .none
       
     default: return .none

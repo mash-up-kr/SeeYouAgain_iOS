@@ -59,7 +59,7 @@ public enum ShortStorageNewsListAction {
   case _decreaseRemainTime
   case _updateZeroTime
   case _fetchTodayShorts(FetchType)
-  case _handleTodayShortsResponse(TodayShorts, FetchType)
+  case _handleTodayShortsResponse(KeywordNews, FetchType)
   case _deleteTodayShorts([Int])
   case _handleDeleteTodayShortsResponse(Result<VoidResponse?, Error>)
   case _presentSuccessToast(String)
@@ -68,7 +68,7 @@ public enum ShortStorageNewsListAction {
   case _hideFailureToast
   
   // MARK: - Inner SetState Action
-  case _setTodayShortsItem(TodayShorts)
+  case _setTodayShortsItem(KeywordNews)
   case _setEditMode
   case _setTodayShortsItemEditMode
   case _setTodayShortsItemList
@@ -163,7 +163,7 @@ public let shortStorageNewsListReducer = Reducer<
       ])
       
     case let ._fetchTodayShorts(fetchType):
-      return env.myPageService.getTodayShorts(
+      return env.myPageService.fetchMemberNewsCard(
         state.cursorId,
         state.pagingSize
       )
@@ -335,13 +335,13 @@ public let shortStorageNewsListReducer = Reducer<
 
 private func handleTodayShortsResponse(
   _ state: inout ShortStorageNewsListState,
-  source todayShorts: TodayShorts,
+  source todayShorts: KeywordNews,
   fetchType: FetchType
 ) -> Effect<ShortStorageNewsListAction, Never> {
   switch fetchType {
   case .initial:
-    state.shortsNewsItemsCount = todayShorts.numberOfShorts
-    state.shortsCompleteCount = todayShorts.numberOfReadShorts
+    state.shortsNewsItemsCount = todayShorts.numberOfNewsCard
+//    state.shortsCompleteCount = todayShorts.numberOfReadShorts
     return Effect(value: ._setTodayShortsItem(todayShorts))
     
     // TODO: 페이징 기능 구현 필요

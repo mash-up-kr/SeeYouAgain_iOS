@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "icon_navigation_dismiss.svg",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

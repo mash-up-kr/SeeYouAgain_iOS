@@ -50,6 +50,7 @@ public enum WebAction: Equatable {
   case _hideSaveToast
   case _hideWarningToast
   case _postNewsId(Int)
+  case _postNewsRead(Int)
   case _handleNewsSavedStatus(Bool)
   
   // MARK: - Inner SetState Action
@@ -138,7 +139,7 @@ public let webReducer = Reducer.combine([
           case .success:
             return Effect.concatenate([
               Effect(value: ._setSaveButtonDisabled(true)),
-              Effect(value: ._presentSaveToast("오래 간직할 뉴스에 추가했어요."))
+              Effect(value: ._presentSaveToast("개별 뉴스에 저장했어요."))
             ])
             
           case .failure:
@@ -147,11 +148,20 @@ public let webReducer = Reducer.combine([
         }
         .eraseToEffect()
       
+    case let ._postNewsRead(id):
+      return env.newsCardService.postNewsRead(id)
+        .catchToEffect()
+        .flatMap { result -> Effect<WebAction, Never> in
+          return .none
+        }
+        .eraseToEffect()
+      
     case let ._handleNewsSavedStatus(isSaved):
       if isSaved {
         return Effect.concatenate([
           Effect(value: ._setSaveButtonDisabled(isSaved)),
-          Effect(value: ._setIsDisplayTooltip(!isSaved))
+          Effect(value: ._setIsDisplayTooltip(!isSaved)),
+          Effect(value: ._postNewsRead(state.newsId)) // 개별 뉴스에 저장된 뉴스에서 뉴스 읽음 처리
         ])
       }
       return Effect.concatenate([

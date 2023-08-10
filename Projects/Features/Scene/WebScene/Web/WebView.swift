@@ -109,7 +109,7 @@ private struct CustomRectangleShape: View {
     VStack {
       Spacer()
       
-      Text("오래 간직할 뉴스에 추가해보세요!")
+      Text("개별 뉴스를 저장해보세요!")
         .font(.r14)
         .foregroundColor(DesignSystem.Colors.white)
         .padding(.vertical, 8)

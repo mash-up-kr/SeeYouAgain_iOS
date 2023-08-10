@@ -12,6 +12,7 @@ let project = Project.make(
       sources: ["Sources/**"],
       resources: ["Resources/**"],
       dependencies: [
+				.project(target: "Prod-SeeYouAgain-WatchOS", path: .relativeToRoot("Projects/WatchApp")),
         .project(target: "CoreKit", path: .relativeToRoot("Projects/Core")),
         .project(target: "DesignSystem", path: .relativeToRoot("Projects/DesignSystem")),
         .project(target: "AppCoordinator", path: .relativeToRoot("Projects/Features/Coordinator")),
@@ -34,6 +35,7 @@ let project = Project.make(
       sources: ["Sources/**"],
       resources: ["Resources/**"],
       dependencies: [
+				.project(target: "Dev-SeeYouAgain-WatchOS", path: .relativeToRoot("Projects/WatchApp")),
         .project(target: "CoreKit", path: .relativeToRoot("Projects/Core")),
         .project(target: "DesignSystem", path: .relativeToRoot("Projects/DesignSystem")),
         .project(target: "AppCoordinator", path: .relativeToRoot("Projects/Features/Coordinator")),

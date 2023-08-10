@@ -46,6 +46,11 @@ public struct AppCoordinatorView: View {
           action: AppScreenAction.newsCard,
           then: NewsCardCoordinatorView.init
         )
+        CaseLet(
+          state: /AppScreenState.setting,
+          action: AppScreenAction.setting,
+          then: SettingCoordinatorView.init
+        )
       }
     }
   }

@@ -25,33 +25,39 @@ public struct SettingView: View {
           leftIcon: DesignSystem.Icons.iconNavigationLeft,
           leftIconButtonAction: {
             viewStore.send(.backButtonTapped)
-          }
+          },
+          navigationBarColor: DesignSystem.Colors.coolgrey100
         )
         
-        AppVersionView(store: store)
+        NameEditView(store: store)
+          .padding(.top, 64)
+          .padding(.bottom, 84)
         
-        Spacer()
-          .frame(height: 24)
-        
-        if !viewStore.state.isLatestAppVersion {
-          UpdateButtonView(store: store)
+        VStack(spacing: 0) {
+          SettingRow(title: "모드 선택", subTitle: " ") {
+            viewStore.send(.navigateModeSelection)
+          }
+          .padding(.top, 8)
+          
+          DividerHorizontal(color: .gray20, height: ._1)
+            .padding(.horizontal, 24)
+          
+          SettingRow(title: "앱 버전", subTitle: " ") {
+            viewStore.send(.navigateAppVersion)
+          }
+          
+          Spacer()
         }
-        
-        Spacer()
-      }
-      .onAppear {
-        viewStore.send(._onAppear)
-      }
-      .onDisappear {
-        viewStore.send(._onDisappear)
+        .background(DesignSystem.Colors.white)
+        .cornerRadius(32, corners: [.topLeft, .topRight])
       }
     }
+    .background(DesignSystem.Colors.coolgrey100)
     .navigationBarHidden(true)
   }
 }
 
-// MARK: - 앱 버전
-private struct AppVersionView: View {
+private struct NameEditView: View {
   private let store: Store<SettingState, SettingAction>
   
   fileprivate init(store: Store<SettingState, SettingAction>) {
@@ -60,61 +66,53 @@ private struct AppVersionView: View {
   
   fileprivate var body: some View {
     WithViewStore(store) { viewStore in
-      HStack {
-        VStack(alignment: .leading, spacing: 4) {
-          Text("앱 버전 v\(viewStore.state.appVersion)")
-            .font(.b16)
-            .foregroundColor(DesignSystem.Colors.grey100)
-          
-          Text(viewStore.state.appVersionDescription)
-            .font(.r14)
-            .foregroundColor(DesignSystem.Colors.grey80)
-        }
+      HStack(spacing: 0) {
+        Spacer()
+        
+        Text(viewStore.state.nickname)
+          .font(.b24)
+          .foregroundColor(DesignSystem.Colors.grey100)
         
         Spacer()
       }
-      .padding(.top, 16)
-      .padding(.horizontal, 24)
     }
   }
 }
 
-// MARK: - 업데이트 버튼
-private struct UpdateButtonView: View {
-  private let store: Store<SettingState, SettingAction>
-  
-  fileprivate init(store: Store<SettingState, SettingAction>) {
-    self.store = store
-  }
+private struct SettingRow: View {
+  fileprivate let title: String
+  fileprivate let subTitle: String
+  fileprivate let action: () -> Void
   
   fileprivate var body: some View {
-    WithViewStore(store) { viewStore in
-      Button(
-        action: {
-          viewStore.send(.updateButtonTapped)
-        },
-        label: {
-          HStack {
-            Spacer()
-            
-            Text("최신버전으로 업데이트")
-              .font(Font.custom("Apple SD Gothic Neo", size: 16))
-              .foregroundColor(DesignSystem.Colors.grey70)
-            
-            Spacer()
-          }
-        }
-      )
-      .frame(height: 52)
-      .overlay(
-        RoundedRectangle(cornerRadius: 12)
-          .inset(by: 0.5)
-          .stroke(
-            DesignSystem.Colors.grey30,
-            lineWidth: 1
-          )
-      )
-      .padding(.horizontal, 24)
+    Button(action: action) {
+      VStack {
+        Spacer().frame(height: 24)
+        row
+        Spacer().frame(height: 24)
+      }
+    }
+  }
+  
+  fileprivate var row: some View {
+    HStack(spacing: 0) {
+      Spacer().frame(width: 27)
+      
+      Text(title)
+        .font(.r16)
+        .foregroundColor(.black)
+      
+      Spacer()
+      
+      Text(subTitle)
+        .font(.r14)
+        .foregroundColor(DesignSystem.Colors.grey70)
+      
+      Spacer().frame(width: 14)
+      
+      DesignSystem.Icons.iconChevronRightBig
+      
+      Spacer().frame(width: 24)
     }
   }
 }
