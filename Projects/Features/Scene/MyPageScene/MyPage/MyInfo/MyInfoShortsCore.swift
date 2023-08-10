@@ -39,12 +39,16 @@ public enum MyInfoShortsAction {
   case longShortsButtonTapped
 }
 
-public struct MyShortsEnvironment {
+public struct MyInfoShortsEnvironment {
   public init() {}
 }
 
 public let myShortsReducer = Reducer.combine([
-  Reducer<MyInfoShortsState, MyInfoShortsAction, MyShortsEnvironment> { state, action, env in
+  Reducer<
+  MyInfoShortsState,
+  MyInfoShortsAction,
+  MyInfoShortsEnvironment
+  > { state, action, env in
     switch action {
     default: return .none
     }

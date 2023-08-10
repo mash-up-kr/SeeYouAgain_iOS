@@ -50,7 +50,7 @@ public let myInfoReducer = Reducer<
       state: \MyInfoState.shorts,
       action: /MyInfoAction.shortsAction,
       environment: { _ in
-        MyShortsEnvironment()
+        MyInfoShortsEnvironment()
       }
     ),
   Reducer { state, action, env in
