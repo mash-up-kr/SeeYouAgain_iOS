@@ -118,9 +118,7 @@ public let setCategoryReducer = Reducer.combine([
       
     case let ._saveUserID(userID):
       return Effect.merge(
-        env.userDefaultsService.saveUserID(userID).fireAndForget(),
-        env.userDefaultsService.saveCurrentMode(.basic).fireAndForget(),
-        env.userDefaultsService.save(UserDefaultsKey.hasCompanyModeHistory, false).fireAndForget()
+        env.userDefaultsService.saveUserID(userID).fireAndForget()
       )
       
     case let ._setSelectedCategories(categories):
