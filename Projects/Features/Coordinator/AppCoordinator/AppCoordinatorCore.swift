@@ -138,6 +138,11 @@ public let appCoordinatorReducer: Reducer<
         state.routes.goBack()
         return .none
         
+      case .routeAction(_, action: .setting(.routeAction(_, action: .modeSelection(.navigateHome)))),
+        .routeAction(_, action: .setting(.routeAction(_, action: .companySelection(.companySelectCompleted)))):
+        state.routes.goBackToRoot()
+        return .none
+        
       case let .routeAction(
         _, action: .tabBar(
           .main(

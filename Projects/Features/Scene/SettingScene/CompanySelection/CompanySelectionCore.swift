@@ -10,24 +10,8 @@ import Combine
 import Common
 import ComposableArchitecture
 import Foundation
+import Models
 import Services
-
-public enum Company: String, Equatable, CaseIterable {
-  case naver = "네이버"
-  case kakao = "카카오"
-  case line = "라인"
-  case coupang = "쿠팡"
-  case woowabros = "우아한형제들"
-  case daangn = "당근마켓"
-  case vibariperublika = "비바리퍼블리카"
-  case samsungElectronics = "삼성전자"
-  case hyundaiMotor = "현대자동차"
-  case cjCheilJedang = "CJ제일제당"
-  case koreaElectricPower = "한국전력공사"
-  case lgElectronics = "LG전자"
-  case koreaGasCorporation = "한국가스공사"
-  case skHynix = "SK하이닉스"
-}
 
 public struct CompanySelectionState: Equatable {
   var allCompanies: [Company] = Company.allCases  // 전체 기업 목록
@@ -46,6 +30,7 @@ public enum CompanySelectionAction: Equatable {
   case companyButtonTapped(Company)
   case selectButtonTapped
   case presentBottomSheet // 원하는 기업이 없나요 바텀 시트 오픈 액션
+  case companySelectCompleted
   
   // MARK: - Inner Business Action
   case _onAppear
@@ -55,7 +40,16 @@ public enum CompanySelectionAction: Equatable {
 }
 
 public struct CompanySelectionEnvironment {
-  public init() {}
+  fileprivate let settingService: SettingService
+  fileprivate let userDefaultsService: UserDefaultsService
+  
+  public init(
+    settingService: SettingService = .live,
+    userDefaultsService: UserDefaultsService = .live
+  ) {
+    self.settingService = settingService
+    self.userDefaultsService = userDefaultsService
+  }
 }
 
 public let companySelectionReducer: Reducer<
@@ -76,11 +70,29 @@ public let companySelectionReducer: Reducer<
     return .none
     
   case .selectButtonTapped:
-    return .none
+    let companies = state.selectedCompanies.map { $0.englishName }
+    return env.settingService.addInterstCompanies(companies)
+      .catchToEffect()
+      .flatMap { result -> Effect<CompanySelectionAction, Never> in
+        switch result {
+        case .success:
+          return Effect(value: .companySelectCompleted)
+        case .failure:
+          return .none
+        }
+      }
+      .eraseToEffect()
+      
     
   case .presentBottomSheet:
     state.bottomSheetIsPresented = true
     return .none
+    
+  case .companySelectCompleted:
+    return Effect.merge(
+      env.settingService.changeMode(["MY_COMPANY"]).fireAndForget(),
+      env.userDefaultsService.save(UserDefaultsKey.hasCompanyModeHistory, true).fireAndForget()
+    )
     
   case ._onAppear:
     return .none

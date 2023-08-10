@@ -165,7 +165,6 @@ fileprivate extension Mode {
       
     case .interestCompany:
       return DesignSystem.Icons.iconCompanyModeDeselected
-    
     }
   }
 }

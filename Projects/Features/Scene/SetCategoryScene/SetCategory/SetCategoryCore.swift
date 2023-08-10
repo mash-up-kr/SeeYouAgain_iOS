@@ -117,8 +117,11 @@ public let setCategoryReducer = Reducer.combine([
       return Effect(value: ._setToastMessage(nil))
       
     case let ._saveUserID(userID):
-      return env.userDefaultsService.saveUserID(userID)
-        .fireAndForget()
+      return Effect.merge(
+        env.userDefaultsService.saveUserID(userID).fireAndForget(),
+        env.userDefaultsService.saveCurrentMode(.basic).fireAndForget(),
+        env.userDefaultsService.save(UserDefaultsKey.hasCompanyModeHistory, false).fireAndForget()
+      )
       
     case let ._setSelectedCategories(categories):
       state.selectedCategories = categories

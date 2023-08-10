@@ -27,18 +27,24 @@ public struct ModeSelectionState: Equatable {
 public enum ModeSelectionAction: Equatable {
   // MARK: - User Action
   case backButtonTapped
-  case modeButtonTapped(Mode)
-  case changeButtonTapped
-  case navigateCompanySelection
+  case modeButtonTapped(Mode) // 모드 선택 버튼 클릭 시
+  case changeButtonTapped // 변경 버튼 선택 시
+  case navigateHome // 일반 모드 선택
+  case navigateCompanySelection // 기업 선택 히스토리가 없어 기업 선택 화면으로 이동
   
   // MARK: - Inner Business Action
   case _onAppear
+  case _fetchCompanyModeHistory
   
   // MARK: - Inner SetState Action
 }
 
 public struct ModeSelectionEnvironment {
-  public init() {}
+  fileprivate let userDefaultService: UserDefaultsService
+  
+  public init(userDefaultService: UserDefaultsService = .live) {
+    self.userDefaultService = userDefaultService
+  }
 }
 
 public let modeSelectionReducer: Reducer<
@@ -55,10 +61,28 @@ public let modeSelectionReducer: Reducer<
     return .none
     
   case .changeButtonTapped:
-    return Effect(value: .navigateCompanySelection)
-  
+    if state.selectedMode == .basic {
+      return Effect(value: .navigateHome)
+    }
+    else {
+      return Effect(value: ._fetchCompanyModeHistory)
+    }
+    
+  case .navigateHome:
+    return .none
+    
   case .navigateCompanySelection:
     return .none
+    
+  case ._fetchCompanyModeHistory:
+    return env.userDefaultService.load(UserDefaultsKey.hasCompanyModeHistory)
+      .map { hasHistory -> ModeSelectionAction in
+        if hasHistory {
+          return .navigateHome
+        } else {
+          return .navigateCompanySelection
+        }
+      }
     
   case ._onAppear:
     return .none
