@@ -1,5 +1,5 @@
 //
-//  TodayNewsCard.swift
+//  KeywordNewsCard.swift
 //  Models
 //
 //  Created by 안상희 on 2023/06/28.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct TodayNewsCard: Equatable {
+public struct KeywordNewsCard: Equatable {
   public let id: Int
   public let keywords: String
   public let category: String
@@ -27,9 +27,9 @@ public struct TodayNewsCard: Equatable {
   }
 }
 
-public extension TodayNewsCard {
+public extension KeywordNewsCard {
 #if DEBUG
-  static let stub = TodayNewsCard(
+  static let stub = KeywordNewsCard(
     id: 0,
     keywords: "자위대 호위함, 사키이 료, 이스턴 엔데버23",
     category: "POLITICS",

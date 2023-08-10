@@ -16,7 +16,7 @@ import Models
 
 public enum MyPageAPI {
   case getMemberInfo
-  case getTodayShorts(Int, Int)
+  case fetchKeywordNewsCard(Int, Int)
   case deleteTodayShorts([Int])
   case fetchSavedNews(String, Int)
   case deleteSavedNews([Int])
@@ -34,8 +34,8 @@ extension MyPageAPI: TargetType {
     case .getMemberInfo:
       return "/member/info"
       
-    case .getTodayShorts:
-      return "/member-news-card/saved"
+    case .fetchKeywordNewsCard:
+      return "/member/news-card/saved"
       
     case .deleteTodayShorts:
       return "/member-news-card"
@@ -59,7 +59,7 @@ extension MyPageAPI: TargetType {
     case .getMemberInfo:
       return .get
       
-    case .getTodayShorts:
+    case .fetchKeywordNewsCard:
       return .get
       
     case .deleteTodayShorts:
@@ -84,8 +84,8 @@ extension MyPageAPI: TargetType {
     case .getMemberInfo:
       return .requestPlain
       
-    case let .getTodayShorts(cursorId, size):
-      let requestDTO = TodayShortsRequestDTO(
+    case let .fetchKeywordNewsCard(cursorId, size):
+      let requestDTO = KeywordNewsCardRequestDTO(
         cursorId: cursorId,
         size: size
       )
