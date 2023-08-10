@@ -97,4 +97,12 @@ extension Date {
     }
     return monthInt
   }
+  
+  // 요일 리턴
+  public func day() -> String {
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = "EEEEEE"
+    dateFormatter.locale = Locale(identifier: "ko_KR")
+    return dateFormatter.string(from: self)
+  }
 }

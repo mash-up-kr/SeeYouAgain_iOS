@@ -21,11 +21,17 @@ public enum MyPageAPI {
   case fetchSavedNews(String, Int)
   case deleteSavedNews([Int])
   case getAchievementBadges
+  case fetchWeeklyStats
 }
 
 extension MyPageAPI: TargetType {
   public var baseURL: URL {
-    return URL(string: "http://3.36.227.253:8080/v1")!
+    switch self {
+    case .fetchWeeklyStats:
+      return URL(string: "http://3.36.227.253:8081/v1")!
+    default:
+      return URL(string: "http://3.36.227.253:8080/v1")!
+    }
   }
   
   public var path: String {
@@ -47,6 +53,9 @@ extension MyPageAPI: TargetType {
       
     case .getAchievementBadges:
       return "/member/badge"
+      
+    case .fetchWeeklyStats:
+      return "/member/weekly-stats"
     }
   }
   
@@ -68,6 +77,9 @@ extension MyPageAPI: TargetType {
       return .post
       
     case .getAchievementBadges:
+      return .get
+
+    case .fetchWeeklyStats:
       return .get
     }
   }
@@ -106,6 +118,9 @@ extension MyPageAPI: TargetType {
       return .requestJSONEncodable(requestDTO)
       
     case .getAchievementBadges:
+      return .requestPlain
+      
+    case .fetchWeeklyStats:
       return .requestPlain
     }
   }
