@@ -121,6 +121,27 @@ public let appCoordinatorReducer: Reducer<
           )
         ]
         return .none
+      
+      case let .routeAction(
+        _, action: .tabBar(
+          .myPage(
+            .routeAction(
+              _, action: .myPage(.settingButtonTapped(nickname))
+            )
+          )
+        )
+      ):
+        state.routes.push(.setting(.init(nickname: nickname)))
+        return .none
+        
+      case .routeAction(_, action: .setting(.routeAction(_, action: .setting(.backButtonTapped)))):
+        state.routes.goBack()
+        return .none
+        
+      case .routeAction(_, action: .setting(.routeAction(_, action: .modeSelection(.navigateHome)))),
+        .routeAction(_, action: .setting(.routeAction(_, action: .companySelection(.companySelectCompleted)))):
+        state.routes.goBackToRoot()
+        return .none
         
       case let .routeAction(
         _, action: .tabBar(
@@ -208,49 +229,11 @@ public let appCoordinatorReducer: Reducer<
         
       case .routeAction(_, action: .newsCard(.routeAction(_, action: .shortsComplete(.backButtonTapped)))):
         state.routes.pop()
-        return Effect(
-          value: .routeAction(
-            0,
-            action: .tabBar(
-              .myPage(
-                .routeAction(
-                  0,
-                  action: .shortStorage(
-                    .routeAction(
-                      0,
-                      action: .shortStorageNewsList(
-                        .backButtonTapped
-                      )
-                    )
-                  )
-                )
-              )
-            )
-          )
-        )
+        return tapShortStorageNewsListBackButton(action: action)
         
       case .routeAction(_, action: .newsCard(.routeAction(_, action: .shortsComplete(.confirmButtonTapped)))):
         state.routes.pop()
-        return Effect(
-          value: .routeAction(
-            0,
-            action: .tabBar(
-              .myPage(
-                .routeAction(
-                  0,
-                  action: .shortStorage(
-                    .routeAction(
-                      0,
-                      action: .shortStorageNewsList(
-                        .backButtonTapped
-                      )
-                    )
-                  )
-                )
-              )
-            )
-          )
-        )
+        return tapShortStorageNewsListBackButton(action: action)
         
       case let .routeAction(_, action: .newsCard(.routeAction(_, action: .newsList(.backButtonTapped(source))))):
         state.routes.pop()
@@ -275,3 +258,17 @@ public let appCoordinatorReducer: Reducer<
       }
     }
   )
+
+fileprivate func tapShortStorageNewsListBackButton(
+  action: AppCoordinatorAction
+) -> Effect<AppCoordinatorAction, Never> {
+  return Effect(
+    value: .routeAction(0, action: .tabBar(
+      .myPage(.routeAction(0, action:
+        .shortStorage(.routeAction(0, action:
+          .shortStorageNewsList(.backButtonTapped)
+        ))
+      ))
+    ))
+  )
+}

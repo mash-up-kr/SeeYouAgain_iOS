@@ -19,7 +19,6 @@ public enum MyPageScreenState: Equatable {
   case myPage(MyPageState)
   case shortStorage(ShortStorageCoordinatorState)
   case longStorage(LongStorageCoordinatorState)
-  case setting(SettingCoordinatorState)
   case achievementShare(AchievementShareState)
 }
 
@@ -27,7 +26,6 @@ public enum MyPageScreenAction {
   case myPage(MyPageAction)
   case shortStorage(ShortStorageCoordinatorAction)
   case longStorage(LongStorageCoordinatorAction)
-  case setting(SettingCoordinatorAction)
   case achievementShare(AchievementShareAction)
 }
 
@@ -92,14 +90,6 @@ internal let myPageScreenReducer = Reducer<
           mainQueue: $0.mainQueue,
           myPageService: $0.myPageService
         )
-      }
-    ),
-  settingCoordinatorReducer
-    .pullback(
-      state: /MyPageScreenState.setting,
-      action: /MyPageScreenAction.setting,
-      environment: {
-        SettingCoordinatorEnvironment(appVersionService: $0.appVersionService)
       }
     )
 ])

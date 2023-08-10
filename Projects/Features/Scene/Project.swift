@@ -124,7 +124,7 @@ let project = Project.make(
       name: "Setting",
       product: .staticLibrary,
       bundleId: "com.mashup.seeYouAgain.setting.setting",
-      sources: ["SettingScene/Setting/**"],
+      sources: ["SettingScene/**"],
       dependencies: [
         .project(target: "CoreKit", path: .relativeToRoot("Projects/Core")),
         .project(target: "DesignSystem", path: .relativeToRoot("Projects/DesignSystem")),

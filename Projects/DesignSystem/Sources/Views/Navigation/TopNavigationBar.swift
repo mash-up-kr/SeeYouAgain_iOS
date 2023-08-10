@@ -16,6 +16,7 @@ public struct TopNavigationBar: View {
   public let rightIcon: Image?
   public let rightText: String?
   public var rightIconButtonAction: () -> Void = {}
+  public let navigationBarColor: Color
   @Binding public var isRightButtonActive: Bool
   
   public init(
@@ -26,7 +27,8 @@ public struct TopNavigationBar: View {
     rightIcon: Image? = nil,
     rightText: String? = nil,
     rightIconButtonAction: @escaping () -> Void = {},
-    isRightButtonActive: Binding<Bool> = .constant(false)
+    isRightButtonActive: Binding<Bool> = .constant(false),
+    navigationBarColor: Color = .white
   ) {
     self.title = title
     self.leftIcon = leftIcon
@@ -36,6 +38,7 @@ public struct TopNavigationBar: View {
     self.rightText = rightText
     self.rightIconButtonAction = rightIconButtonAction
     self._isRightButtonActive = isRightButtonActive
+    self.navigationBarColor = navigationBarColor
   }
   
   public var body: some View {
@@ -72,7 +75,7 @@ public struct TopNavigationBar: View {
       }
     }
     .frame(height: 48, alignment: .center)
-    .background(Color.white)
+    .background(navigationBarColor)
   }
 }
 
