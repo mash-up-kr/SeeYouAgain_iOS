@@ -24,6 +24,7 @@ public struct StatisticsState: Equatable {
   var weeklyShortsCount: [String: Int] // 주차, 각 주차 당 읽은 숏스 수
   var weeklyShortsCountList: [(key: String, value: Int)] // 주차, 각 주차 당 읽은 숏스 수
   var currentWeek: String // 현재 월 주차
+  var topReadCategory: String = "WORLD"
   
   public init(statistics: Statistics) {
     self.statistics = statistics
@@ -40,6 +41,9 @@ public struct StatisticsState: Equatable {
 public enum StatisticsAction {
   // MARK: - Inner Business Action
   case _calculateStates
+  
+  // MARK: - Inner SetState Action
+  case _setTopReadCategory
   
   // MARK: - Child Action
   case weeklyStatisticsAction(WeeklyStatisticsAction)
@@ -97,6 +101,13 @@ public let statisticsReducer = Reducer<
         Effect(value: .categoryStatisticsAction(._calculateStates)),
         Effect(value: .continuousStatisticsAction(._calculateStates))
       ])
+      
+    case ._setTopReadCategory:
+      state.topReadCategory = state.categoryStatistics.categoryOfInterestList[0].key
+      return .none
+    
+    case .categoryStatisticsAction(._setTopReadCategory):
+      return Effect(value: ._setTopReadCategory)
 
     default:
       return .none
