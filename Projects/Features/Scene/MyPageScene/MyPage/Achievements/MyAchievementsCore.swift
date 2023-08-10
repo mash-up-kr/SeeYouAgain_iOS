@@ -13,9 +13,11 @@ import Models
 import Services
 
 public struct MyAchievementsState: Equatable {
-  var achievements = AchievementType.allCases.map { Achievement(type: $0, isAchieved: false) }
+  var achievements: [Achievement]
   
-  public init() {}
+  public init(achievements: [Achievement]) {
+    self.achievements = achievements
+  }
 }
 
 public enum MyAchievementsAction {
@@ -23,8 +25,6 @@ public enum MyAchievementsAction {
   case achievementBadgeTapped(Achievement)
   
   // MARK: - Inner Business Action
-  case _onAppear
-  case _handleMyAchievementsResponse(Result<[Achievement], Error>)
   case _presentAchievementBottomSheet(Achievement)
   case _presentAchievementShareScreen(Achievement)
 }
@@ -53,23 +53,6 @@ public let myAchievementsReducer = Reducer<
       return Effect(value: ._presentAchievementShareScreen(achievement))
     } else {
       return Effect(value: ._presentAchievementBottomSheet(achievement))
-    }
-    
-  case ._onAppear:
-    return environment.myPageService
-      .getAchievementBadges()
-      .receive(on: environment.mainQueue)
-      .catchToEffect()
-      .map(MyAchievementsAction._handleMyAchievementsResponse)
-    
-  case let ._handleMyAchievementsResponse(result):
-    switch result {
-    case let .success(achievements):
-      state.achievements = achievements
-      return .none
-      
-    case let.failure(error):
-      return .none
     }
     
   default:

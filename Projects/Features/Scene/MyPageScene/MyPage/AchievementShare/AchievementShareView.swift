@@ -51,7 +51,8 @@ public struct AchievementShareView: View {
             get: \.activityViewIsPresented,
             send: AchievementShareAction._setActivityViewIsPresented
           ),
-          activityItems: [viewStore.achievementType.shareImage].compactMap { $0 }
+          activityItems: [viewStore.achievementType.shareImage].compactMap { $0 },
+          completion: { viewStore.send(.shareCompleted) }
         )
       )
     }
@@ -82,7 +83,7 @@ public struct AchievementShareView: View {
         Spacer()
         
         VStack(spacing: 0) {
-          DesignSystem.Icons.iconSelctLarge
+          viewStore.state.shareIcon
           
           Text(viewStore.state.rawValue)
             .font(.b28)
@@ -102,12 +103,54 @@ public struct AchievementShareView: View {
   }
 }
 
-// TODO: 공유 이미지로 교체.
 fileprivate extension AchievementType {
+  var shareIcon: Image {
+    switch self {
+    case .threeDaysContinuousAttendance:
+      return DesignSystem.Icons.iconShareThreeDays
+      
+    case .explorer:
+      return DesignSystem.Icons.iconShareExplorer
+      
+    case .kingOfSharing:
+      return DesignSystem.Icons.iconShareSharing
+      
+    case .excitedSave:
+      return DesignSystem.Icons.iconShareExcitedSave
+      
+    case .firstAllReadShorts:
+      return DesignSystem.Icons.iconShareHalfstart
+      
+    case .changeMode:
+      return DesignSystem.Icons.iconShareRespectTaste
+      
+    case .tenDaysContinuousAttendance:
+      return DesignSystem.Icons.iconShareTenDaysAttendance
+    }
+  }
+  
   var shareImage: UIImage? {
     switch self {
-    default:
-      return UIImage(asset: ImageAsset(name: "img_share"))
+    case .threeDaysContinuousAttendance:
+      return UIImage(asset: ImageAsset(name: "share_threeDays"))
+      
+    case .explorer:
+      return UIImage(asset: ImageAsset(name: "share_explorer"))
+      
+    case .kingOfSharing:
+      return UIImage(asset: ImageAsset(name: "share_sharing"))
+      
+    case .excitedSave:
+      return UIImage(asset: ImageAsset(name: "share_excited_save"))
+      
+    case .firstAllReadShorts:
+      return UIImage(asset: ImageAsset(name: "share_halfstart"))
+      
+    case .changeMode:
+      return UIImage(asset: ImageAsset(name: "share_respect_taste"))
+      
+    case .tenDaysContinuousAttendance:
+      return UIImage(asset: ImageAsset(name: "share_tenDaysAttendance"))
     }
   }
 }

@@ -26,7 +26,7 @@ public extension AchievementResponseDTO {
       Achievement(type: .explorer, isAchieved: explorer),
       Achievement(type: .kingOfSharing, isAchieved: kingOfSharing),
       Achievement(type: .firstAllReadShorts, isAchieved: firstAllReadShorts),
-      Achievement(type: .firstOldShortsSaving, isAchieved: firstOldShortsSaving),
+      Achievement(type: .excitedSave, isAchieved: firstOldShortsSaving),
       Achievement(type: .changeMode, isAchieved: changeMode)
     ]
   }

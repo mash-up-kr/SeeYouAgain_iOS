@@ -104,7 +104,8 @@ internal let appScreenReducer = Reducer<
           newsCardService: $0.newsCardService,
           categoryService: $0.categoryService,
           hotKeywordService: $0.hotKeywordService,
-          myPageService: $0.myPageService
+          myPageService: $0.myPageService,
+          logService: $0.logService
         )
       }
     ),

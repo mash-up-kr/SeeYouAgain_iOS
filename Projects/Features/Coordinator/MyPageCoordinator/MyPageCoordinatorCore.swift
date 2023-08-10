@@ -38,15 +38,18 @@ public struct MyPageCoordinatorEnvironment {
   let mainQueue: AnySchedulerOf<DispatchQueue>
   let appVersionService: AppVersionService
   let myPageService: MyPageService
+  let logService: LogService
   
   public init(
     mainQueue: AnySchedulerOf<DispatchQueue>,
     appVersionService: AppVersionService,
-    myPageService: MyPageService
+    myPageService: MyPageService,
+    logService: LogService
   ) {
     self.mainQueue = mainQueue
     self.appVersionService = appVersionService
     self.myPageService = myPageService
+    self.logService = logService
   }
 }
 
@@ -60,7 +63,8 @@ public let myPageCoordinatorReducer: Reducer<
       MyPageScreenEnvironment(
         mainQueue: $0.mainQueue,
         appVersionService: $0.appVersionService,
-        myPageService: $0.myPageService
+        myPageService: $0.myPageService,
+        logService: $0.logService
       )
     }
   )
