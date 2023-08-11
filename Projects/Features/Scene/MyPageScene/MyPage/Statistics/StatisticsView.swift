@@ -6,6 +6,7 @@
 //  Copyright © 2023 mashup.seeYouAgain. All rights reserved.
 //
 
+import Common
 import ComposableArchitecture
 import DesignSystem
 import Models
@@ -55,7 +56,7 @@ struct StatisticsView: View {
               )
             )
             
-            DesignSystem.Images.imageMoney
+            CategoryType(uppercasedName: viewStore.state.topReadCategory)?.image
               .frame(width: 140, height: 140)
               .offset(y: -45)
           }
@@ -71,6 +72,25 @@ struct StatisticsView: View {
           }
         }
       }
+    }
+  }
+}
+
+fileprivate extension CategoryType {
+  var image: Image {
+    switch self {
+    case .politics:
+      return DesignSystem.Images.iconCategoryPolitics
+    case .economic:
+      return DesignSystem.Images.iconCategoryEconomics
+    case .society:
+      return DesignSystem.Images.iconCategorySociety
+    case .world:
+      return DesignSystem.Images.iconCategoryWorld
+    case .culture:
+      return DesignSystem.Images.iconCategoryCulture
+    case .science:
+      return DesignSystem.Images.iconCategoryScience
     }
   }
 }
