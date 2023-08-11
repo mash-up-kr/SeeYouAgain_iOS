@@ -98,6 +98,9 @@ public let categoryStatisticsReducer = Reducer<
     state.categoryOfInterestList = sortKeysByValue(state.categoryOfInterest)
     state.shortsCountOfThisWeek = state.categoryOfInterestList.first?.value ?? 0
     state.categoryOfInterestList.removeFirst()
+    if state.categoryOfInterestList.count >= 3 {
+      state.categoryOfInterestList = Array(state.categoryOfInterestList[0..<3])
+    }
     return .none
     
   case ._setShortsCountOfThisWeek:
