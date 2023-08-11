@@ -63,7 +63,7 @@ private struct CategoryStatisticsActualView: View {
               Circle()
                 .foregroundColor(
                   CategoryType(
-                    uppercasedName: viewStore.categoryOfInterestPercentageList[index].key
+                    uppercasedName: viewStore.categoryOfInterestList[index].key
                   )?.color ?? DesignSystem.Colors.grey40)
                 .frame(width: 6, height: 6)
               
