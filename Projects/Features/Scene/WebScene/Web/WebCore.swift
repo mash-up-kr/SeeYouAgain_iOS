@@ -80,7 +80,10 @@ public let webReducer = Reducer.combine([
     
     switch action {
     case ._onAppear:
-      return Effect(value: ._checkNewsSavedStatus)
+      return Effect.concatenate([
+        Effect(value: ._checkNewsSavedStatus),
+        Effect(value: ._postNewsRead(state.newsId))
+      ])
       
     case ._checkNewsSavedStatus:
       return env.newsCardService.checkSavedStatus(state.newsId)
@@ -160,8 +163,7 @@ public let webReducer = Reducer.combine([
       if isSaved {
         return Effect.concatenate([
           Effect(value: ._setSaveButtonDisabled(isSaved)),
-          Effect(value: ._setIsDisplayTooltip(!isSaved)),
-          Effect(value: ._postNewsRead(state.newsId)) // 개별 뉴스에 저장된 뉴스에서 뉴스 읽음 처리
+          Effect(value: ._setIsDisplayTooltip(!isSaved))
         ])
       }
       return Effect.concatenate([
