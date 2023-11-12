@@ -17,7 +17,6 @@ public struct ShortStorageNewsListState: Equatable {
   var isInEditMode: Bool
   var today: String
   var shortsNewsItemsCount: Int // 저장한 숏스 수
-  var shortsCompleteCount: Int // 완료한 숏스 수 (리스트에 표시되는 숏스 = 저장 숏스 - 완료 숏스)
   var shortsNewsItems: IdentifiedArrayOf<TodayShortsItemState> = []
   var remainTimeString: String
   var remainTime: Int = 24 * 60 * 60
@@ -33,12 +32,10 @@ public struct ShortStorageNewsListState: Equatable {
   public init(
     isInEditMode: Bool,
     shortsNewsItemsCount: Int,
-    shortsCompleteCount: Int,
     isLoading: Bool = false
   ) {
     self.isInEditMode = isInEditMode
     self.shortsNewsItemsCount = shortsNewsItemsCount
-    self.shortsCompleteCount = shortsCompleteCount
     self.today = Date().fullDateToString()
     self.remainTimeString = initializeRemainTimeString()
     self.isLoading = isLoading
@@ -341,7 +338,6 @@ private func handleTodayShortsResponse(
   switch fetchType {
   case .initial:
     state.shortsNewsItemsCount = todayShorts.numberOfNewsCard
-//    state.shortsCompleteCount = todayShorts.numberOfReadShorts
     return Effect(value: ._setTodayShortsItem(todayShorts))
     
     // TODO: 페이징 기능 구현 필요

@@ -21,8 +21,7 @@ public struct ShortStorageCoordinatorState: Equatable, IndexedRouterState {
         .shortStorageNewsList(
           .init(
             isInEditMode: false,
-            shortsNewsItemsCount: 10,
-            shortsCompleteCount: 0
+            shortsNewsItemsCount: 10
           )
         ),
         embedInNavigationView: true
