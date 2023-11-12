@@ -23,7 +23,7 @@ public struct LongStorageNewsListState: Equatable {
   var month: String
   var savedNewsCount: Int = 0 // 저장된 전체 개별 뉴스 수
   var currentShortsNewsItemsCount: Int = 0 // 현재 표시되는 개별 뉴스 수
-  var allShortsNewsItems: IdentifiedArrayOf<LongShortsItemState> = [] // 현재 가져온 개별 뉴스
+  var allNewsItems: IdentifiedArrayOf<LongShortsItemState> = [] // 현재 가져온 개별 뉴스
   var shortsNewsItems: IdentifiedArrayOf<LongShortsItemState> = [] // 필터링된 개별 숏스
   var isLatestMode: Bool = true
   var sortType: SortType
@@ -83,6 +83,7 @@ public enum LongStorageNewsListAction {
   
   // MARK: - Inner SetState Action
   case _setEditMode
+  case _setAllNewsItems
   case _setLongShortsItemEditMode
   case _setLongShortsItemInitial([News])
   case _setLongShortsItem([News])
@@ -214,7 +215,7 @@ public let longStorageNewsListReducer = Reducer<
       return .none
       
     case ._filterLongShortsItems:
-      var filteredShortsNewsItems = state.allShortsNewsItems.filter {
+      var filteredShortsNewsItems = state.allNewsItems.filter {
         if let category = CategoryType(uppercasedName: $0.cardState.news.category) {
           return state.selectedCategories.contains(category)
         }
@@ -295,6 +296,10 @@ public let longStorageNewsListReducer = Reducer<
       state.isInEditMode.toggle()
       return .none
       
+    case ._setAllNewsItems:
+      state.allNewsItems = state.shortsNewsItems
+      return .none
+      
     case ._setLongShortsItemEditMode:
       for index in 0..<state.shortsNewsItems.count {
         state.shortsNewsItems[index].isInEditMode = state.isInEditMode
@@ -316,8 +321,10 @@ public let longStorageNewsListReducer = Reducer<
           )
         )
       })
-      state.allShortsNewsItems = state.shortsNewsItems
-      return Effect(value: ._setLongShortsLastItem(true))
+      return Effect.concatenate(
+        Effect(value: ._setAllNewsItems),
+        Effect(value: ._setLongShortsLastItem(true))
+      )
 
     case let ._setLongShortsItem(newsList):
       state.shortsNewsItems.append(contentsOf:
@@ -336,7 +343,7 @@ public let longStorageNewsListReducer = Reducer<
         }
       )
 
-      state.allShortsNewsItems = state.shortsNewsItems
+      state.allNewsItems = state.shortsNewsItems
       return Effect(value: ._setLongShortsLastItem(true))
       
     case ._setLongShortsItemList:
@@ -353,8 +360,7 @@ public let longStorageNewsListReducer = Reducer<
         state.shortsNewsItems.removeLast()
         state.shortsNewsItems.append(lastItem)
       }
-      state.allShortsNewsItems = state.shortsNewsItems
-      return .none
+      return Effect(value: ._setAllNewsItems)
       
     case let ._setSortType(sortType):
       state.sortType = sortType
