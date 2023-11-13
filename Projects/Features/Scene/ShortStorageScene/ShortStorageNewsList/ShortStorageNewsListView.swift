@@ -47,14 +47,21 @@ public struct ShortStorageNewsListView: View {
             } else {
               Spacer()
                 .frame(height: 16)
-              
+
               ForEachStore(
                 self.store.scope(
                   state: \.shortsNewsItems,
                   action: { .shortsNewsItem(id: $0, action: $1) }
                 )
-              ) {
-                TodayShortsItemView(store: $0)
+              ) { store in
+                WithViewStore(store) { viewStore in
+                  TodayShortsItemView(store: store)
+                    .onAppear {
+                      if viewStore.state.isLastItem {
+                        viewStore.send(._fetchMoreItems(viewStore.state.id))
+                      }
+                    }
+                }
               }
               .padding(.horizontal, 24)
               .padding(.bottom, 16)
@@ -67,7 +74,7 @@ public struct ShortStorageNewsListView: View {
       }
       .loading(viewStore.state.isLoading)
       .onAppear {
-        viewStore.send(._viewWillAppear)
+        viewStore.send(._onAppear)
       }
       .onDisappear {
         viewStore.send(._onDisappear)

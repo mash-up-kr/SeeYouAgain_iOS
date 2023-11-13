@@ -80,17 +80,17 @@ fileprivate extension CategoryType {
   var image: Image {
     switch self {
     case .politics:
-      return DesignSystem.Images.iconCategoryPolitics
+      return DesignSystem.Images.statisticsPolitics
     case .economic:
-      return DesignSystem.Images.iconCategoryEconomics
+      return DesignSystem.Images.statisticsEconomics
     case .society:
-      return DesignSystem.Images.iconCategorySociety
+      return DesignSystem.Images.statisticsSociety
     case .world:
-      return DesignSystem.Images.iconCategoryWorld
+      return DesignSystem.Images.statisticsWorld
     case .culture:
-      return DesignSystem.Images.iconCategoryCulture
+      return DesignSystem.Images.statisticsCulture
     case .science:
-      return DesignSystem.Images.iconCategoryScience
+      return DesignSystem.Images.statisticsScience
     }
   }
 }

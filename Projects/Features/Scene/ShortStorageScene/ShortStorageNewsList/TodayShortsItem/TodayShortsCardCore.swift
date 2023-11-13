@@ -10,9 +10,9 @@ import ComposableArchitecture
 import Models
 
 public struct TodayShortsCardState: Equatable {
-  public var shortsNews: NewsCard
-  public var isCardSelectable: Bool
-  public var isSelected: Bool
+  var shortsNews: NewsCard
+  var isCardSelectable: Bool
+  var isSelected: Bool
   
   public init(
     shortsNews: NewsCard,

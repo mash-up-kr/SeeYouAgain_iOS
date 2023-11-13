@@ -17,30 +17,25 @@ public struct ShortStorageNewsListState: Equatable {
   var isInEditMode: Bool
   var today: String
   var shortsNewsItemsCount: Int // 저장한 숏스 수
-  var shortsCompleteCount: Int // 완료한 숏스 수 (리스트에 표시되는 숏스 = 저장 숏스 - 완료 숏스)
   var shortsNewsItems: IdentifiedArrayOf<TodayShortsItemState> = []
-  var remainTimeString: String
-  var remainTime: Int = 24 * 60 * 60
   var currentTimeSeconds: Int = 0 // 지금 시간이 몇초를 담고있냐! 17:27:21 => 62841
   var cursorId: Int = 0
   var isDisplayTooltip = false
-  let pagingSize = 10
+  let pagingSize = 20
   var successToastMessage: String?
   var failureToastMessage: String?
   var selectedItemCounts: Int = 0
   var isLoading: Bool
+  var fetchAll = false
   
   public init(
     isInEditMode: Bool,
     shortsNewsItemsCount: Int,
-    shortsCompleteCount: Int,
     isLoading: Bool = false
   ) {
     self.isInEditMode = isInEditMode
     self.shortsNewsItemsCount = shortsNewsItemsCount
-    self.shortsCompleteCount = shortsCompleteCount
     self.today = Date().fullDateToString()
-    self.remainTimeString = initializeRemainTimeString()
     self.isLoading = isLoading
   }
 }
@@ -53,11 +48,8 @@ public enum ShortStorageNewsListAction {
   case tooltipButtonTapped
   
   // MARK: - Inner Business Action
-  case _viewWillAppear
+  case _onAppear
   case _onDisappear
-  case _updateTimer
-  case _decreaseRemainTime
-  case _updateZeroTime
   case _fetchTodayShorts(FetchType)
   case _handleTodayShortsResponse(KeywordNews, FetchType)
   case _deleteTodayShorts([Int])
@@ -68,17 +60,15 @@ public enum ShortStorageNewsListAction {
   case _hideFailureToast
   
   // MARK: - Inner SetState Action
+  case _setTodayShortsLastItem(Bool)
+  case _setTodayShortsItemInitial(KeywordNews)
   case _setTodayShortsItem(KeywordNews)
   case _setEditMode
   case _setTodayShortsItemEditMode
   case _setTodayShortsItemList
   case _setTodayShortsItemCount
   case _setSelectedItemIds
-  case _setCurrentTimeSeconds
-  case _setRemainTime(Int)
-  case _setRemainTimeString(Int)
   case _toggleIsDisplayTooltip
-  case _initializeShortStorageNewsList
   case _setSuccessToastMessage(String?)
   case _setFailureToastMessage(String?)
   case _setIsLoading(Bool)
@@ -114,7 +104,6 @@ public let shortStorageNewsListReducer = Reducer<
       }
     ),
   Reducer { state, action, env in
-    struct TimerId: Hashable {}
     struct SuccessToastCancelID: Hashable {}
     struct FailureToastCancelID: Hashable {}
     
@@ -131,8 +120,8 @@ public let shortStorageNewsListReducer = Reducer<
     case .tooltipButtonTapped:
       return Effect(value: ._toggleIsDisplayTooltip)
   
-    case ._viewWillAppear:
-      return Effect.concatenate([
+    case ._onAppear:
+      return state.fetchAll ? .none : Effect.concatenate([
         Effect(value: ._setIsLoading(true)),
         Effect(value: ._fetchTodayShorts(.initial))
       ])
@@ -142,25 +131,6 @@ public let shortStorageNewsListReducer = Reducer<
         Effect(value: ._setSuccessToastMessage(nil)),
         Effect(value: ._setFailureToastMessage(nil))
       )
-      
-    case ._updateTimer:
-      return Effect.timer(
-        id: TimerId(),
-        every: 1,
-        on: env.mainQueue
-      ).map { _ in
-        ._decreaseRemainTime
-      }
-      
-    case ._decreaseRemainTime:
-      state.remainTime -= 1
-      return Effect(value: ._setRemainTimeString(state.remainTime))
-      
-    case ._updateZeroTime:
-      return Effect.concatenate([
-        Effect(value: ._setCurrentTimeSeconds),
-        Effect(value: ._initializeShortStorageNewsList)
-      ])
       
     case let ._fetchTodayShorts(fetchType):
       return env.myPageService.fetchMemberNewsCard(
@@ -182,7 +152,6 @@ public let shortStorageNewsListReducer = Reducer<
     case let ._handleTodayShortsResponse(todayShorts, fetchType):
       return Effect.concatenate([
         Effect(value: ._setIsLoading(false)),
-        Effect(value: ._setCurrentTimeSeconds),
         handleTodayShortsResponse(&state, source: todayShorts, fetchType: fetchType)
       ])
 
@@ -229,8 +198,16 @@ public let shortStorageNewsListReducer = Reducer<
       
     case ._hideFailureToast:
       return Effect(value: ._setFailureToastMessage(nil))
-
-    case let ._setTodayShortsItem(todayShorts):
+      
+    case let ._setTodayShortsLastItem(isLast):
+      if var lastItem = state.shortsNewsItems.last {
+        lastItem.isLastItem = isLast
+        state.shortsNewsItems.removeLast()
+        state.shortsNewsItems.append(lastItem)
+      }
+      return .none
+      
+    case let ._setTodayShortsItemInitial(todayShorts):
       state.shortsNewsItems = IdentifiedArrayOf(uniqueElements: todayShorts.memberShorts.map {
         TodayShortsItemState(
           id: $0.id,
@@ -246,7 +223,27 @@ public let shortStorageNewsListReducer = Reducer<
           )
         )
       })
-      return .none
+      return Effect(value: ._setTodayShortsLastItem(true))
+
+    case let ._setTodayShortsItem(todayShorts):
+      state.shortsNewsItems.append(contentsOf:
+        todayShorts.memberShorts.map {
+          TodayShortsItemState(
+            id: $0.id,
+            isInEditMode: false,
+            isSelected: false,
+            cardState: TodayShortsCardState(
+              shortsNews: NewsCard(
+                id: $0.id,
+                keywords: $0.keywords.replacingOccurrences(of: " ", with: "").components(separatedBy: ","),
+                category: $0.category),
+              isCardSelectable: true,
+              isSelected: false
+            )
+          )
+        }
+      )
+      return Effect(value: ._setTodayShortsLastItem(true))
       
     case ._setEditMode:
       state.isInEditMode.toggle()
@@ -285,22 +282,6 @@ public let shortStorageNewsListReducer = Reducer<
       }
       return Effect(value: ._deleteTodayShorts(selectedItemIds))
       
-    case ._setCurrentTimeSeconds:
-      state.currentTimeSeconds = calculateCurrentTimeSeconds()
-      return Effect(value: ._setRemainTime(state.currentTimeSeconds))
-      
-    case let ._setRemainTime(currentTimeSeconds):
-      state.remainTime = 24 * 60 * 60 - currentTimeSeconds
-      return Effect(value: ._updateTimer)
-
-    case let ._setRemainTimeString(time):
-      state.remainTimeString = remainTimeToString(time: time)
-      
-      if time == 0 {
-        return Effect(value: ._updateZeroTime)
-      }
-      return .none
-      
     case let ._setIsLoading(isLoading):
       state.isLoading = isLoading
       return .none
@@ -309,11 +290,6 @@ public let shortStorageNewsListReducer = Reducer<
       state.isDisplayTooltip.toggle()
       return .none
       
-    case ._initializeShortStorageNewsList:
-      state.shortsNewsItems.removeAll()
-      state.today = Date().fullDateToString()
-      return Effect(value: ._fetchTodayShorts(.initial))
-      
     case let ._setSuccessToastMessage(toastMessage):
       state.successToastMessage = toastMessage
       return .none
@@ -321,6 +297,10 @@ public let shortStorageNewsListReducer = Reducer<
     case let ._setFailureToastMessage(toastMessage):
       state.failureToastMessage = toastMessage
       return .none
+      
+    case let .shortsNewsItem(id: _, action: ._fetchMoreItems(cursorId)):
+      state.cursorId = cursorId
+      return state.fetchAll ? .none : Effect(value: ._fetchTodayShorts(.continuousPaging))
       
     case let .shortsNewsItem(id: tappedId, action: .itemTapped):
       return .none
@@ -341,49 +321,21 @@ private func handleTodayShortsResponse(
   switch fetchType {
   case .initial:
     state.shortsNewsItemsCount = todayShorts.numberOfNewsCard
-//    state.shortsCompleteCount = todayShorts.numberOfReadShorts
-    return Effect(value: ._setTodayShortsItem(todayShorts))
+    return Effect(value: ._setTodayShortsItemInitial(todayShorts))
     
-    // TODO: 페이징 기능 구현 필요
   case .continuousPaging:
-    return .none
+    state.shortsNewsItemsCount += todayShorts.memberShorts.count
+    
+    if todayShorts.memberShorts.isEmpty {
+      state.fetchAll = true
+      return .none
+    }
+    return Effect.concatenate(
+      Effect(value: ._setTodayShortsLastItem(false)),
+      Effect(value: ._setTodayShortsItem(todayShorts))
+    )
     
   case .newPaging:
     return .none
   }
 }
-
-fileprivate func initializeRemainTimeString() -> String {
-  let currentTimeSeconds = calculateCurrentTimeSeconds()
-  let remainTimeSeconds = 24 * 60 * 60 - currentTimeSeconds
-  return remainTimeToString(time: remainTimeSeconds)
-}
-
-fileprivate func calculateCurrentTimeSeconds() -> Int {
-  let date = Date()
-  var calendar = Calendar.current
-
-  if let timeZone = TimeZone(identifier: "KST") {
-    calendar.timeZone = timeZone
-  }
-  
-  let hour = calendar.component(.hour, from: date)
-  let minute = calendar.component(.minute, from: date)
-  let second = calendar.component(.second, from: date)
-  
-  return hour * 60 * 60 + minute * 60 + second
-}
-
-fileprivate func remainTimeToString(time: Int) -> String {
-  let hour = Int(time) / 3600
-  let minute = Int(time) / 60 % 60
-  let second = Int(time) % 60
-  return String(format: "%02i:%02i:%02i", hour, minute, second)
-}
-
-fileprivate let dateComponentsFormatter: DateComponentsFormatter = {
-  let formatter = DateComponentsFormatter()
-  formatter.allowedUnits = [.hour, .minute, .second]
-  formatter.zeroFormattingBehavior = .pad
-  return formatter
-}()

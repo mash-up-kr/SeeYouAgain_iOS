@@ -21,9 +21,10 @@ public enum MonthType {
 public struct LongStorageNewsListState: Equatable {
   var isInEditMode: Bool = false
   var month: String
-  var shortsNewsItemsCount: Int = 0 // 저장한 숏스 수
-  var allShortsNewsItems: IdentifiedArrayOf<LongShortsItemState> = [] // 전체 오래된 숏스
-  var shortsNewsItems: IdentifiedArrayOf<LongShortsItemState> = [] // 필터링된 오래된 숏스
+  var savedNewsCount: Int = 0 // 저장된 전체 개별 뉴스 수
+  var currentShortsNewsItemsCount: Int = 0 // 현재 표시되는 개별 뉴스 수
+  var allNewsItems: IdentifiedArrayOf<LongShortsItemState> = [] // 현재 가져온 개별 뉴스
+  var shortsNewsItems: IdentifiedArrayOf<LongShortsItemState> = [] // 필터링된 개별 숏스
   var isLatestMode: Bool = true
   var sortType: SortType
   var sortBottomSheetState: SortBottomSheetState
@@ -32,6 +33,7 @@ public struct LongStorageNewsListState: Equatable {
   var cursorDate: Date = .now
   var targetDate = Date().firstDayOfMonth() // 항상 해당 월의 1일로 데이터 조회
   var pagingSize: Int = 20
+  var lastWrittenDateTime: String = ""
   var pivot: Pivot = .desc // 최신순이 기본값
   var successToastMessage: String?
   var failureToastMessage: String?
@@ -41,6 +43,7 @@ public struct LongStorageNewsListState: Equatable {
   var dateFilterBottomSheetState: DateFilterBottomSheetState // 날짜 변경 바텀 시트
   var dateType: DateType
   var isLoading: Bool = false
+  var fetchAll = false
   
   public init() {
     self.month = Date().yearMonthToString()
@@ -66,10 +69,10 @@ public enum LongStorageNewsListAction {
   case showDateFilterBottomSheet
   
   // MARK: - Inner Business Action
+  case _onAppear
   case _onDisappear
   case _sortLongShortsItems(SortType)
   case _filterLongShortsItems
-  case _viewWillAppear
   case _fetchSavedNews(FetchType)
   case _handleFetchSavedNewsResponse(SavedNewsList, FetchType)
   case _deleteSavedNews([Int])
@@ -81,10 +84,13 @@ public enum LongStorageNewsListAction {
   
   // MARK: - Inner SetState Action
   case _setEditMode
+  case _setAllNewsItems
   case _setLongShortsItemEditMode
+  case _setLongShortsItemInitial([News])
   case _setLongShortsItem([News])
   case _setLongShortsItemList
   case _setLongShortsItemCount
+  case _setLongShortsLastItem(Bool)
   case _setSortType(SortType)
   case _setFilteredCategories(Set<CategoryType>)
   case _setSelectedItemIds
@@ -184,17 +190,18 @@ public let longStorageNewsListReducer = Reducer<
       )
       return Effect(value: .dateFilterBottomSheet(._setIsPresented(true)))
       
+    case ._onAppear:
+      return state.fetchAll ? .none : Effect.concatenate([
+        Effect(value: ._setIsLoading(true)),
+        Effect(value: ._fetchSavedNews(.initial))
+      ])
+      
     case ._onDisappear:
       return Effect.merge(
         Effect(value: ._hideSuccessToast),
         Effect(value: ._hideFailureToast)
       )
-    case ._viewWillAppear:
-      return Effect.concatenate([
-        Effect(value: ._setIsLoading(true)),
-        Effect(value: ._fetchSavedNews(.initial))
-      ])
-      
+
     case let ._sortLongShortsItems(sortType):
       var sortedShortsNewsItems = state.shortsNewsItems
       if sortType == .latest {
@@ -210,7 +217,7 @@ public let longStorageNewsListReducer = Reducer<
       return .none
       
     case ._filterLongShortsItems:
-      var filteredShortsNewsItems = state.allShortsNewsItems.filter {
+      var filteredShortsNewsItems = state.allNewsItems.filter {
         if let category = CategoryType(uppercasedName: $0.cardState.news.category) {
           return state.selectedCategories.contains(category)
         }
@@ -221,7 +228,7 @@ public let longStorageNewsListReducer = Reducer<
       
     case let ._fetchSavedNews(fetchType):
       return env.myPageService.fetchSavedNews(
-        "",
+        state.lastWrittenDateTime,
         state.pagingSize
       )
       .catchToEffect()
@@ -291,14 +298,18 @@ public let longStorageNewsListReducer = Reducer<
       state.isInEditMode.toggle()
       return .none
       
+    case ._setAllNewsItems:
+      state.allNewsItems = state.shortsNewsItems
+      return .none
+      
     case ._setLongShortsItemEditMode:
       for index in 0..<state.shortsNewsItems.count {
         state.shortsNewsItems[index].isInEditMode = state.isInEditMode
         state.shortsNewsItems[index].cardState.isCardSelectable = !state.isInEditMode
       }
       return .none
-
-    case let ._setLongShortsItem(newsList):
+      
+    case let ._setLongShortsItemInitial(newsList):
       state.shortsNewsItems = IdentifiedArrayOf(uniqueElements: newsList.map {
         LongShortsItemState(
           id: $0.id,
@@ -312,16 +323,46 @@ public let longStorageNewsListReducer = Reducer<
           )
         )
       })
-      state.allShortsNewsItems = state.shortsNewsItems
-      return .none
+      return Effect.concatenate(
+        Effect(value: ._setAllNewsItems),
+        Effect(value: ._setLongShortsLastItem(true))
+      )
+
+    case let ._setLongShortsItem(newsList):
+      state.shortsNewsItems.append(contentsOf:
+        newsList.map {
+          LongShortsItemState(
+            id: $0.id,
+            isInEditMode: false,
+            isSelected: false,
+            cardState: LongShortsCardState(
+              id: $0.id,
+              news: $0,
+              isCardSelectable: true,
+              isSelected: false
+            )
+          )
+        }
+      )
+
+      state.allNewsItems = state.shortsNewsItems
+      return Effect(value: ._setLongShortsLastItem(true))
       
     case ._setLongShortsItemList:
       state.shortsNewsItems.removeAll(where: \.isSelected)
       return Effect(value: ._setLongShortsItemCount)
       
     case ._setLongShortsItemCount:
-      state.shortsNewsItemsCount = state.shortsNewsItems.count
+      state.currentShortsNewsItemsCount = state.shortsNewsItems.count
       return .none
+      
+    case let ._setLongShortsLastItem(isLast):
+      if var lastItem = state.shortsNewsItems.last {
+        lastItem.isLastItem = isLast // true면 마지막 아이템이고, false면 마지막 아님
+        state.shortsNewsItems.removeLast()
+        state.shortsNewsItems.append(lastItem)
+      }
+      return Effect(value: ._setAllNewsItems)
       
     case let ._setSortType(sortType):
       state.sortType = sortType
@@ -389,6 +430,10 @@ public let longStorageNewsListReducer = Reducer<
       state.isLoading = isLoading
       return .none
       
+    case let .shortsNewsItem(id: id, action: ._fetchMoreItems(writtenDateTime)):
+      state.lastWrittenDateTime = writtenDateTime
+      return state.fetchAll ? .none : Effect(value: ._fetchSavedNews(.continuousPaging))
+      
     case let .sortBottomSheet(._sort(sortType)):
       return Effect.concatenate(
         Effect(value: ._setSortType(sortType)),
@@ -425,12 +470,21 @@ private func handleSavedNewsResponse(
 ) -> Effect<LongStorageNewsListAction, Never> {
   switch fetchType {
   case .initial:
-    state.shortsNewsItemsCount = savedNewsList.savedNewsCount
-    return Effect(value: ._setLongShortsItem(savedNewsList.newsList))
+    state.savedNewsCount = savedNewsList.savedNewsCount
+    state.currentShortsNewsItemsCount = savedNewsList.newsList.count
+    return Effect(value: ._setLongShortsItemInitial(savedNewsList.newsList))
     
-    // TODO: 페이징 기능 구현 필요
   case .continuousPaging:
-    return .none
+    state.currentShortsNewsItemsCount += savedNewsList.newsList.count
+    
+    if savedNewsList.newsList.isEmpty {
+      state.fetchAll = true
+      return .none
+    }
+    return Effect.concatenate(
+      Effect(value: ._setLongShortsLastItem(false)),
+      Effect(value: ._setLongShortsItem(savedNewsList.newsList))
+    )
 
   case .newPaging:
     return .none

@@ -27,7 +27,7 @@ public struct LongStorageNewsListView: View {
           leftIconButtonAction: {
             viewStore.send(.backButtonTapped)
           },
-          rightText: viewStore.shortsNewsItemsCount == 0 ? nil : (viewStore.state.isInEditMode ? "삭제" : "편집"),
+          rightText: viewStore.currentShortsNewsItemsCount == 0 ? nil : (viewStore.state.isInEditMode ? "삭제" : "편집"),
           rightIconButtonAction: {
             if !viewStore.state.isInEditMode {
               viewStore.send(.editButtonTapped)
@@ -40,7 +40,7 @@ public struct LongStorageNewsListView: View {
         ScrollView {
           VStack(spacing: 0) {
             // 필터 뷰
-            if !viewStore.state.isInEditMode && viewStore.state.shortsNewsItemsCount != 0 {
+            if !viewStore.state.isInEditMode && viewStore.state.currentShortsNewsItemsCount != 0 {
               HStack {
                 SortBottomSheetButton(store: store.scope(state: \.sortType))
                 Spacer()
@@ -52,7 +52,7 @@ public struct LongStorageNewsListView: View {
                 .frame(height: 16)
             }
             
-            if viewStore.shortsNewsItemsCount == 0 {
+            if viewStore.currentShortsNewsItemsCount == 0 {
               // 저장한 숏스 없는 경우
               Spacer()
                 .frame(height: 128)
@@ -68,8 +68,15 @@ public struct LongStorageNewsListView: View {
                   state: \.shortsNewsItems,
                   action: { .shortsNewsItem(id: $0, action: $1) }
                 )
-              ){
-                LongShortsItemView(store: $0)
+              ) { store in
+                WithViewStore(store) { viewStore in
+                  LongShortsItemView(store: store)
+                    .onAppear {
+                      if viewStore.state.isLastItem {
+                        viewStore.send(._fetchMoreItems(viewStore.state.cardState.news.writtenDateTime))
+                      }
+                    }
+                }
               }
               .padding(.horizontal, 24)
               .padding(.bottom, 16)
@@ -82,7 +89,7 @@ public struct LongStorageNewsListView: View {
       }
       .loading(viewStore.state.isLoading)
       .onAppear {
-        viewStore.send(._viewWillAppear)
+        viewStore.send(._onAppear)
       }
       .onDisappear {
         viewStore.send(._onDisappear)
@@ -141,7 +148,7 @@ private struct MonthInfoView: View {
           .disabled(viewStore.state.isCurrentMonth)
         }
         
-        Text("\(viewStore.state.shortsNewsItemsCount)숏스")
+        Text("\(viewStore.state.currentShortsNewsItemsCount)숏스")
           .font(.b24)
           .foregroundColor(DesignSystem.Colors.grey100)
       }

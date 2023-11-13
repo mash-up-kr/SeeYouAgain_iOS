@@ -27,7 +27,7 @@ public enum NewsCardAPI {
 
 extension NewsCardAPI: TargetType {
   public var baseURL: URL {
-    return URL(string: "http://3.36.227.253:8080/v1")!
+    return URL(string: "http://52.79.171.93:8080/v1")!
   }
   
   public var path: String {

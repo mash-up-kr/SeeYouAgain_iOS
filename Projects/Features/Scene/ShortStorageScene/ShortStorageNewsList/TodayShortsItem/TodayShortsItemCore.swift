@@ -10,9 +10,10 @@ import ComposableArchitecture
 
 public struct TodayShortsItemState: Equatable, Identifiable {
   public var id: Int
-  public var isInEditMode: Bool
-  public var isSelected: Bool
-  public var cardState: TodayShortsCardState
+  var isInEditMode: Bool
+  var isSelected: Bool
+  var cardState: TodayShortsCardState
+  var isLastItem: Bool = false
   
   public init(
     id: Int,
@@ -33,6 +34,7 @@ public enum TodayShortsItemAction: Equatable {
   case itemTapped // 뉴스 카드 선택
   
   // MARK: - Inner Business Action
+  case _fetchMoreItems(Int)
   case _shortsItemSelectionChanged
   
   // MARK: - Inner SetState Action

@@ -13,6 +13,7 @@ public struct LongShortsItemState: Equatable, Identifiable {
   var isInEditMode: Bool
   var isSelected: Bool
   var cardState: LongShortsCardState
+  var isLastItem: Bool = false
   
   public init(
     id: Int,
@@ -34,6 +35,7 @@ public enum LongShortsItemAction: Equatable {
   
   // MARK: - Inner Business Action
   case _shortsItemSelectionChanged
+  case _fetchMoreItems(String)
   
   // MARK: - Inner SetState Action
   
