@@ -259,7 +259,7 @@ public let tabBarReducer = Reducer<
         action: .shortStorage(
           .routeAction(
             _,
-            action: .shortStorageNewsList(._viewWillAppear)
+            action: .shortStorageNewsList(._onAppear)
           )
         )
       )

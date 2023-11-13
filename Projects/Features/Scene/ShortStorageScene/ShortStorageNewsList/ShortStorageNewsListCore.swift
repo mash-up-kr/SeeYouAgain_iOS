@@ -23,11 +23,12 @@ public struct ShortStorageNewsListState: Equatable {
   var currentTimeSeconds: Int = 0 // 지금 시간이 몇초를 담고있냐! 17:27:21 => 62841
   var cursorId: Int = 0
   var isDisplayTooltip = false
-  let pagingSize = 10
+  let pagingSize = 20
   var successToastMessage: String?
   var failureToastMessage: String?
   var selectedItemCounts: Int = 0
   var isLoading: Bool
+  var fetchAll = false
   
   public init(
     isInEditMode: Bool,
@@ -50,7 +51,7 @@ public enum ShortStorageNewsListAction {
   case tooltipButtonTapped
   
   // MARK: - Inner Business Action
-  case _viewWillAppear
+  case _onAppear
   case _onDisappear
   case _updateTimer
   case _decreaseRemainTime
@@ -130,8 +131,8 @@ public let shortStorageNewsListReducer = Reducer<
     case .tooltipButtonTapped:
       return Effect(value: ._toggleIsDisplayTooltip)
   
-    case ._viewWillAppear:
-      return Effect.concatenate([
+    case ._onAppear:
+      return state.fetchAll ? .none : Effect.concatenate([
         Effect(value: ._setIsLoading(true)),
         Effect(value: ._fetchTodayShorts(.initial))
       ])
@@ -351,7 +352,7 @@ public let shortStorageNewsListReducer = Reducer<
       
     case let .shortsNewsItem(id: _, action: ._fetchMoreItems(cursorId)):
       state.cursorId = cursorId
-      return Effect(value: ._fetchTodayShorts(.continuousPaging))
+      return state.fetchAll ? .none : Effect(value: ._fetchTodayShorts(.continuousPaging))
       
     case let .shortsNewsItem(id: tappedId, action: .itemTapped):
       return .none
@@ -376,6 +377,11 @@ private func handleTodayShortsResponse(
     
   case .continuousPaging:
     state.shortsNewsItemsCount += todayShorts.memberShorts.count
+    
+    if todayShorts.memberShorts.isEmpty {
+      state.fetchAll = true
+      return .none
+    }
     return Effect.concatenate(
       Effect(value: ._setTodayShortsLastItem(false)),
       Effect(value: ._setTodayShortsItem(todayShorts))

@@ -74,7 +74,7 @@ public struct ShortStorageNewsListView: View {
       }
       .loading(viewStore.state.isLoading)
       .onAppear {
-        viewStore.send(._viewWillAppear)
+        viewStore.send(._onAppear)
       }
       .onDisappear {
         viewStore.send(._onDisappear)
