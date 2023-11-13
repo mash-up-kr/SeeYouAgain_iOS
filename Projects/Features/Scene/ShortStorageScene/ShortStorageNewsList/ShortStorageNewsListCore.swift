@@ -65,6 +65,8 @@ public enum ShortStorageNewsListAction {
   case _hideFailureToast
   
   // MARK: - Inner SetState Action
+  case _setTodayShortsLastItem(Bool)
+  case _setTodayShortsItemInitial(KeywordNews)
   case _setTodayShortsItem(KeywordNews)
   case _setEditMode
   case _setTodayShortsItemEditMode
@@ -226,8 +228,16 @@ public let shortStorageNewsListReducer = Reducer<
       
     case ._hideFailureToast:
       return Effect(value: ._setFailureToastMessage(nil))
-
-    case let ._setTodayShortsItem(todayShorts):
+      
+    case let ._setTodayShortsLastItem(isLast):
+      if var lastItem = state.shortsNewsItems.last {
+        lastItem.isLastItem = isLast
+        state.shortsNewsItems.removeLast()
+        state.shortsNewsItems.append(lastItem)
+      }
+      return .none
+      
+    case let ._setTodayShortsItemInitial(todayShorts):
       state.shortsNewsItems = IdentifiedArrayOf(uniqueElements: todayShorts.memberShorts.map {
         TodayShortsItemState(
           id: $0.id,
@@ -243,7 +253,27 @@ public let shortStorageNewsListReducer = Reducer<
           )
         )
       })
-      return .none
+      return Effect(value: ._setTodayShortsLastItem(true))
+
+    case let ._setTodayShortsItem(todayShorts):
+      state.shortsNewsItems.append(contentsOf:
+        todayShorts.memberShorts.map {
+          TodayShortsItemState(
+            id: $0.id,
+            isInEditMode: false,
+            isSelected: false,
+            cardState: TodayShortsCardState(
+              shortsNews: NewsCard(
+                id: $0.id,
+                keywords: $0.keywords.replacingOccurrences(of: " ", with: "").components(separatedBy: ","),
+                category: $0.category),
+              isCardSelectable: true,
+              isSelected: false
+            )
+          )
+        }
+      )
+      return Effect(value: ._setTodayShortsLastItem(true))
       
     case ._setEditMode:
       state.isInEditMode.toggle()
@@ -319,6 +349,10 @@ public let shortStorageNewsListReducer = Reducer<
       state.failureToastMessage = toastMessage
       return .none
       
+    case let .shortsNewsItem(id: _, action: ._fetchMoreItems(cursorId)):
+      state.cursorId = cursorId
+      return Effect(value: ._fetchTodayShorts(.continuousPaging))
+      
     case let .shortsNewsItem(id: tappedId, action: .itemTapped):
       return .none
       
@@ -338,11 +372,14 @@ private func handleTodayShortsResponse(
   switch fetchType {
   case .initial:
     state.shortsNewsItemsCount = todayShorts.numberOfNewsCard
-    return Effect(value: ._setTodayShortsItem(todayShorts))
+    return Effect(value: ._setTodayShortsItemInitial(todayShorts))
     
-    // TODO: 페이징 기능 구현 필요
   case .continuousPaging:
-    return .none
+    state.shortsNewsItemsCount += todayShorts.memberShorts.count
+    return Effect.concatenate(
+      Effect(value: ._setTodayShortsLastItem(false)),
+      Effect(value: ._setTodayShortsItem(todayShorts))
+    )
     
   case .newPaging:
     return .none
