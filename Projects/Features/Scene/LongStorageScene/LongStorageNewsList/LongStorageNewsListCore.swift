@@ -69,10 +69,10 @@ public enum LongStorageNewsListAction {
   case showDateFilterBottomSheet
   
   // MARK: - Inner Business Action
+  case _onAppear
   case _onDisappear
   case _sortLongShortsItems(SortType)
   case _filterLongShortsItems
-  case _onAppear
   case _fetchSavedNews(FetchType)
   case _handleFetchSavedNewsResponse(SavedNewsList, FetchType)
   case _deleteSavedNews([Int])
@@ -190,17 +190,18 @@ public let longStorageNewsListReducer = Reducer<
       )
       return Effect(value: .dateFilterBottomSheet(._setIsPresented(true)))
       
-    case ._onDisappear:
-      return Effect.merge(
-        Effect(value: ._hideSuccessToast),
-        Effect(value: ._hideFailureToast)
-      )
     case ._onAppear:
       return state.fetchAll ? .none : Effect.concatenate([
         Effect(value: ._setIsLoading(true)),
         Effect(value: ._fetchSavedNews(.initial))
       ])
       
+    case ._onDisappear:
+      return Effect.merge(
+        Effect(value: ._hideSuccessToast),
+        Effect(value: ._hideFailureToast)
+      )
+
     case let ._sortLongShortsItems(sortType):
       var sortedShortsNewsItems = state.shortsNewsItems
       if sortType == .latest {
