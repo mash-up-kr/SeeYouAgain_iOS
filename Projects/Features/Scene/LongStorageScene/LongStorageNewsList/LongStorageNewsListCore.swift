@@ -43,6 +43,7 @@ public struct LongStorageNewsListState: Equatable {
   var dateFilterBottomSheetState: DateFilterBottomSheetState // 날짜 변경 바텀 시트
   var dateType: DateType
   var isLoading: Bool = false
+  var fetchAll = false
   
   public init() {
     self.month = Date().yearMonthToString()
@@ -71,7 +72,7 @@ public enum LongStorageNewsListAction {
   case _onDisappear
   case _sortLongShortsItems(SortType)
   case _filterLongShortsItems
-  case _viewWillAppear
+  case _onAppear
   case _fetchSavedNews(FetchType)
   case _handleFetchSavedNewsResponse(SavedNewsList, FetchType)
   case _deleteSavedNews([Int])
@@ -194,8 +195,8 @@ public let longStorageNewsListReducer = Reducer<
         Effect(value: ._hideSuccessToast),
         Effect(value: ._hideFailureToast)
       )
-    case ._viewWillAppear:
-      return Effect.concatenate([
+    case ._onAppear:
+      return state.fetchAll ? .none : Effect.concatenate([
         Effect(value: ._setIsLoading(true)),
         Effect(value: ._fetchSavedNews(.initial))
       ])
@@ -430,7 +431,7 @@ public let longStorageNewsListReducer = Reducer<
       
     case let .shortsNewsItem(id: id, action: ._fetchMoreItems(writtenDateTime)):
       state.lastWrittenDateTime = writtenDateTime
-      return Effect(value: ._fetchSavedNews(.continuousPaging))
+      return state.fetchAll ? .none : Effect(value: ._fetchSavedNews(.continuousPaging))
       
     case let .sortBottomSheet(._sort(sortType)):
       return Effect.concatenate(
@@ -474,6 +475,11 @@ private func handleSavedNewsResponse(
     
   case .continuousPaging:
     state.currentShortsNewsItemsCount += savedNewsList.newsList.count
+    
+    if savedNewsList.newsList.isEmpty {
+      state.fetchAll = true
+      return .none
+    }
     return Effect.concatenate(
       Effect(value: ._setLongShortsLastItem(false)),
       Effect(value: ._setLongShortsItem(savedNewsList.newsList))
