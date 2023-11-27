@@ -34,6 +34,7 @@ public struct LongStorageNewsListView: View {
             } else {
               viewStore.send(.deleteButtonTapped)
             }
+            UIImpactFeedbackGenerator(style: .light).impactOccurred()
           }
         )
         

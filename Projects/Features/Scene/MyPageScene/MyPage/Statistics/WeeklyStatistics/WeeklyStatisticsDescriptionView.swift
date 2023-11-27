@@ -56,17 +56,23 @@ private struct WeeklyStatisticsActualDescriptionView: View {
         .frame(height: 9)
       
       HStack(spacing: 0) {
-        Text("저번 주보다 ")
-          .font(.r14)
-          .foregroundColor(DesignSystem.Colors.grey60)
-        
-        Text("\(viewStore.state.weeklyShortsCountDifference)개 더")
-          .font(.b14)
-          .foregroundColor(DesignSystem.Colors.grey60)
-        
-        Text(" 읽었어요")
-          .font(.r14)
-          .foregroundColor(DesignSystem.Colors.grey60)
+        if viewStore.state.weeklyShortsCountDifferenceString.isEmpty {
+          Text("읽은 숏스 수가 지난주와 같아요.")
+            .font(.r14)
+            .foregroundColor(DesignSystem.Colors.grey60)
+        } else {
+          Text("저번 주보다 ")
+            .font(.r14)
+            .foregroundColor(DesignSystem.Colors.grey60)
+          
+          Text("\(viewStore.state.weeklyShortsCountDifferenceString)")
+            .font(.b14)
+            .foregroundColor(DesignSystem.Colors.grey60)
+          
+          Text(" 읽었어요")
+            .font(.r14)
+            .foregroundColor(DesignSystem.Colors.grey60)
+        }
         
         Spacer()
       }

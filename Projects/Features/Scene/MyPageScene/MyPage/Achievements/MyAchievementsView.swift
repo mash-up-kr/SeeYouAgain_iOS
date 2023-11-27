@@ -62,6 +62,7 @@ fileprivate struct AchievementsGridView: View {
           AchievementBadgeView(achievement: achievement)
             .onTapGesture {
               viewStore.send(.achievementBadgeTapped(achievement))
+              UIImpactFeedbackGenerator(style: .light).impactOccurred()
             }
         }
       }

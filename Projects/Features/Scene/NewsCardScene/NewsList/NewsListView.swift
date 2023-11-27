@@ -77,6 +77,7 @@ public struct NewsListView: View {
             
             BottomButton(title: "키워드별 뉴스에 저장") {
               viewStore.send(.saveButtonTapped)
+              UIImpactFeedbackGenerator(style: .light).impactOccurred()
             }
           }
         }

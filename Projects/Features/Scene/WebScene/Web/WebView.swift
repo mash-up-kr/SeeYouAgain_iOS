@@ -26,7 +26,10 @@ public struct WebView: View {
             leftIcon: DesignSystem.Icons.iconNavigationLeft,
             leftIconButtonAction: { viewStore.send(.backButtonTapped(viewStore.source)) },
             rightText: "저장",
-            rightIconButtonAction: { viewStore.send(.saveButtonTapped) },
+            rightIconButtonAction: {
+              viewStore.send(.saveButtonTapped)
+              UIImpactFeedbackGenerator(style: .light).impactOccurred()
+            },
             isRightButtonActive: viewStore.binding(
               get: \.saveButtonDisabled,
               send: { WebAction._setSaveButtonDisabled($0) }

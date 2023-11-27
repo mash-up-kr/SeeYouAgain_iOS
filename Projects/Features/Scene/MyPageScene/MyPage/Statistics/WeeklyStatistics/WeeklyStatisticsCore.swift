@@ -18,6 +18,7 @@ public struct WeeklyStatisticsState: Equatable {
   
   var weeklyShortsCountList: [(key: String, value: Int)] // 주차, 각 주차 당 읽은 숏스 수
   var weeklyShortsCountDifference: Int = 0 // 지난 주와 이번 주 숏스 읽은 수 비교 값
+  var weeklyShortsCountDifferenceString: String = ""
   var weeklyShortsPercentageList: [Double] = Array(repeating: 0.0, count: 4) // 4주간 읽은 숏스 비율을 담은 리스트
   var shortsCountOfThisWeek = 0 // 이번주 읽은 숏스 카운트
   var totalOfFourWeeksShortsCount = 0 // 4주 간의 숏스 데이터 더한 값
@@ -37,6 +38,7 @@ public enum WeeklyStatisticsAction {
   
   // MARK: - Inner SetState Action
   case _setWeeklyShortsCountDifference // 지난 주와 이번 주 숏스 읽은 수 비교 값 계산
+  case _setWeeklyShortsCountDifferenceString
   case _setWeeklyShortsPercentageList // 4주 간의 숏스 데이터를 퍼센테이지 비율로 저장
   case _setShortsCountOfThisWeek // 이번주 읽은 숏스 카운트
   case _setTotalOfFourWeeksShortsCount(Int) // 4주 간의 숏스 데이터 계산
@@ -85,6 +87,16 @@ public let weeklyStatisticsReducer = Reducer<
     
   case ._setWeeklyShortsCountDifference:
     state.weeklyShortsCountDifference = state.weeklyShortsCountList[3].value - state.weeklyShortsCountList[2].value
+    return Effect(value: ._setWeeklyShortsCountDifferenceString)
+    
+  case ._setWeeklyShortsCountDifferenceString:
+    if state.weeklyShortsCountDifference > 0 { // 이번주 > 저번주
+      state.weeklyShortsCountDifferenceString = "\(state.weeklyShortsCountDifference)개 더"
+    } else if state.weeklyShortsCountDifference == 0 { // 이번주랑 저번주랑 동일
+      state.weeklyShortsCountDifferenceString = ""
+    } else { // 이번주 < 저번주
+      state.weeklyShortsCountDifferenceString = "\(-state.weeklyShortsCountDifference)개 덜"
+    }
     return .none
     
   case ._setShortsCountOfThisWeek:

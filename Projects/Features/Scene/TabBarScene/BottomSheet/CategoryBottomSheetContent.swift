@@ -35,6 +35,7 @@ struct CategoryBottomSheet: ViewModifier {
               disabled: viewStore.selectedCategories.isEmpty,
               action: {
                 viewStore.send(.updateButtonTapped)
+                UIImpactFeedbackGenerator(style: .light).impactOccurred()
               }
             )
           }
