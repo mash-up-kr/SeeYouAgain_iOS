@@ -17,7 +17,8 @@ public struct CategoryBottomSheetState: Equatable {
   var allCategories: [CategoryType] = CategoryType.allCases
   var selectedCategories: [CategoryType] = []
   public var isPresented: Bool = false
-  var toastMessage: String?
+  var successToastMessage: String?
+  var failureToastMessage: String?
   
   public init() {}
 }
@@ -30,13 +31,16 @@ public enum CategoryBottomSheetAction {
   // MARK: - Inner Business Action
   case _updateCategoires([String])
   case _categoriesIsUpdated
-  case _presentToast(String)
-  case _hideToast
+  case _presentSuccessToast(String)
+  case _presentFailureToast(String)
+  case _hideSuccessToast
+  case _hideFailureToast
   
   // MARK: - Inner SetState Action
   case _setSelectedCategories([CategoryType])
   case _setIsPresented(Bool)
-  case _setToastMessage(String?)
+  case _setSuccessToastMessage(String?)
+  case _SetFailureToastMessage(String?)
 }
 
 public struct CategoryBottomSheetEnvironment {
@@ -52,16 +56,14 @@ public struct CategoryBottomSheetEnvironment {
   }
 }
 
-enum CategoryBottomSheetID: Hashable {
-  case _updateCategoires
-  case _setCategoryToast
-}
-
 public let categoryBottomSheetReducer: Reducer<
   CategoryBottomSheetState,
   CategoryBottomSheetAction,
   CategoryBottomSheetEnvironment
 > = Reducer { state, action, env in
+  struct SuccessToastCancelID: Hashable {}
+  struct FailureToastCancelID: Hashable {}
+  
   switch action {
   case let .categoryTapped(category):
     if state.selectedCategories.contains(category) {
@@ -82,10 +84,13 @@ public let categoryBottomSheetReducer: Reducer<
       .flatMapLatest { result -> Effect<CategoryBottomSheetAction, Never> in
         switch result {
         case .success:
-          return Effect(value: ._categoriesIsUpdated)
+          return Effect.concatenate([
+            Effect(value: ._categoriesIsUpdated),
+            Effect(value: ._presentSuccessToast("관심 키워드가 변경되었어요."))
+          ])
           
         case .failure:
-          return Effect(value: ._presentToast("인터넷이 불안정해서 변경되지 못했어요."))
+          return Effect(value: ._presentFailureToast("인터넷이 불안정해서 변경되지 못했어요."))
         }
       }
       .eraseToEffect()
@@ -93,18 +98,31 @@ public let categoryBottomSheetReducer: Reducer<
   case ._categoriesIsUpdated:
     return Effect(value: ._setIsPresented(false))
     
-  case let ._presentToast(toastMessage):
+  case let ._presentSuccessToast(toastMessage):
     return .concatenate(
-      Effect(value: ._setToastMessage(toastMessage)),
-      Effect.cancel(id: CategoryBottomSheetID._setCategoryToast),
-      Effect(value: ._hideToast)
+      Effect(value: ._setSuccessToastMessage(toastMessage)),
+      Effect.cancel(id: SuccessToastCancelID()),
+      Effect(value: ._hideSuccessToast)
         .delay(for: 2, scheduler: env.mainQueue)
         .eraseToEffect()
-        .cancellable(id: CategoryBottomSheetID._setCategoryToast, cancelInFlight: true)
+        .cancellable(id: SuccessToastCancelID(), cancelInFlight: true)
     )
     
-  case ._hideToast:
-    return Effect(value: ._setToastMessage(nil))
+  case let ._presentFailureToast(toastMessage):
+    return .concatenate(
+      Effect(value: ._SetFailureToastMessage(toastMessage)),
+      Effect.cancel(id: FailureToastCancelID()),
+      Effect(value: ._hideFailureToast)
+        .delay(for: 2, scheduler: env.mainQueue)
+        .eraseToEffect()
+        .cancellable(id: FailureToastCancelID(), cancelInFlight: true)
+    )
+    
+  case ._hideSuccessToast:
+    return Effect(value: ._setSuccessToastMessage(nil))
+    
+  case ._hideFailureToast:
+    return Effect(value: ._SetFailureToastMessage(nil))
     
   case let ._setSelectedCategories(categories):
     state.selectedCategories = categories
@@ -114,8 +132,12 @@ public let categoryBottomSheetReducer: Reducer<
     state.isPresented = isPresented
     return .none
     
-  case let ._setToastMessage(message):
-    state.toastMessage = message
+  case let ._setSuccessToastMessage(message):
+    state.successToastMessage = message
+    return .none
+    
+  case let ._SetFailureToastMessage(message):
+    state.failureToastMessage = message
     return .none
   }
 }
