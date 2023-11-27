@@ -33,6 +33,7 @@ public struct ShortStorageNewsListView: View {
             } else {
               viewStore.send(.deleteButtonTapped)
             }
+            UIImpactFeedbackGenerator(style: .light).impactOccurred()
           }
         )
         

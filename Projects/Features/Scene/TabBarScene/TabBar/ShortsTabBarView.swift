@@ -77,6 +77,7 @@ extension ShortsTabBarView {
     .onTapGesture {
       withAnimation(.linear(duration: 0.2)) {
         selection = tab
+        UIImpactFeedbackGenerator(style: .soft).impactOccurred()
       }
     }
   }

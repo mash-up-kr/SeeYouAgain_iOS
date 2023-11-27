@@ -27,6 +27,7 @@ public struct MyPageView: View {
                 rightIcon: DesignSystem.Icons.iconSetting,
                 rightIconButtonAction: {
                   viewStore.send(.settingButtonTapped(viewStore.state.nickname))
+                  UIImpactFeedbackGenerator(style: .light).impactOccurred()
                 }
               )
               
